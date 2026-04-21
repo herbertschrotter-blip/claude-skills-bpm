@@ -1,23 +1,12 @@
 ---
 name: tracker
 description: >
-  Zentrale Schreibschnittstelle für den ClickUp Offene-Punkte-Tracker.
-  Triggert bei: "tracker status", "tracker neu", "tracker done",
-  "tracker update", "tracker suche", "tracker listen", "tracker next",
-  "tracker split", "tracker relate", "tracker field",
-  "was ist offen", "neuer punkt", "neue aufgabe",
-  "punkt erstellen", "ist erledigt", "task erledigt", "offene punkte",
-  "offene tasks", "was soll ich als nächstes machen",
-  "was ist am wichtigsten".
-  Auch triggern bei: "was ist offen", "was muss ich noch machen",
-  "neuer punkt", "neue aufgabe", "punkt erstellen", "ist erledigt",
-  "task erledigt", "offene punkte", "offene tasks".
-  NICHT triggern bei: reiner Code-Erstellung ohne Task-Bezug,
-  reinem Chat-Wechsel (das macht chat-wechsel), Backlog-Diskussion,
-  "merk dir" / "remember" (das ist Memory, kein Task).
-  Alle ClickUp-Schreiboperationen für BPM-Tasks laufen über diesen Skill.
-  Andere Skills (code-erstellen, chat-wechsel) rufen tracker-Logik auf,
-  schreiben aber NICHT selbst nach ClickUp.
+  Verwaltet BPM-Tasks in ClickUp über explizite Tracker-Kommandos wie
+  "tracker neu", "tracker done", "tracker update", "tracker suche",
+  "tracker status", "tracker next", "tracker split", "tracker relate",
+  und "tracker field". Use when users want a concrete ClickUp action for a
+  BPM task. Do not trigger for allgemeine Gespräche über offene Punkte,
+  Backlog-Diskussionen, Priorisierung ohne ClickUp-Aktion, or free-form notes.
 ---
 
 # Tracker Skill — ClickUp Offene-Punkte-Verwaltung
