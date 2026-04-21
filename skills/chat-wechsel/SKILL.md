@@ -188,6 +188,57 @@ Bei "Trotzdem Prompt erstellen": Hinweis in Prompt einfügen, Übergabe aus Chat
 
 ---
 
+## Chat-Anker-Übergabe
+
+**Zweck:** Die Live-Registry `[ANKER-LIVE]` (aus dem Chat-Anker-System, siehe tracker-Skill) muss beim Chat-Wechsel in den neuen Chat transportiert werden, weil Memory pro Session gilt.
+
+### Schritt 1: `[ANKER-LIVE]` aus Memory lesen
+
+```
+memory_user_edits(command: "view")
+→ alle Zeilen mit Prefix "[ANKER-LIVE]" herausfiltern
+```
+
+### Schritt 2: Einträge klassifizieren
+
+- Typ `offen` → TEMP-Anker ohne Task (Phase 1 Ausarbeitung)
+- Typ `erstellt` → Task existiert, aber noch nicht erledigt
+- Typ `erledigt` → sollte eigentlich nicht auftauchen (wird bei `tracker done` entfernt)
+
+Alle Einträge werden in den Übergabeprompt übernommen — im neuen Chat stellt Claude sie wieder her.
+
+### Schritt 3: Sektion "Offene Anker" in Übergabeprompt
+
+```markdown
+## Offene Anker aus Teil N
+
+Folgende IDs wurden im Chat gesetzt und sind noch nicht abgeschlossen:
+
+| ID | Typ | Thema |
+|----|-----|-------|
+| TEMP-01JS7KABCD | offen | Wetter-Modul GS-Worker (noch kein Task) |
+| 86c9eupfk | erstellt | tracker-Skill Anker-Logik (BPM-XXX) |
+
+Claude im neuen Chat: Diese Einträge in `[ANKER-LIVE]` übernehmen via
+`memory_user_edits` (add pro Zeile).
+```
+
+### Schritt 4: Nach Prompt-Erstellung — Memory leeren
+
+Alle `[ANKER-LIVE]`-Einträge des alten Chats aus Memory entfernen:
+
+```
+memory_user_edits(command: "remove", line_number: <N>)
+```
+
+Pro Eintrag einen Remove-Call. Die Daten reisen per Übergabeprompt — nicht per Memory — in den neuen Chat.
+
+### Keine Anker vorhanden?
+
+Sektion komplett weglassen. Nicht als leere Tabelle in den Prompt schreiben.
+
+---
+
 ## PROMPT-STRUKTUR
 
 ```
@@ -214,6 +265,13 @@ PlanManager:
 Docs:
 - [Priority] [Meilenstein] BPM-NNN | Beschreibung
 (nur Listen mit offenen Tasks auflisten)
+
+### Offene Anker aus Teil [N] (aus [ANKER-LIVE]):
+| ID | Typ | Thema |
+|----|-----|-------|
+| TEMP-xxx | offen | Thema (noch kein Task) |
+| 86c9xxx | erstellt | Thema (BPM-NNN) |
+(nur wenn Einträge vorhanden — sonst Sektion weglassen)
 
 ### Im Chat neu erkannt (noch nicht in ClickUp):
 - Modul — Beschreibung
@@ -286,6 +344,7 @@ Ermittlung der aktuellen Chat-URL:
 12. **Nächste Schritte basierend auf V1 + Priority ableiten**
 13. **Sonstige offene Punkte** (Pending Commits, Frontmatter, Invarianten) ZUSÄTZLICH zu ClickUp auflisten
 14. **Aktuelle Chat-URL** in Übergabe-Prompt einfügen (für Nachpflege)
+15. **`[ANKER-LIVE]` aus Memory in Übergabeprompt kopieren** und danach aus Memory leeren — Anker reisen per Prompt, nicht per Memory
 
 ---
 
@@ -305,3 +364,5 @@ Ermittlung der aktuellen Chat-URL:
 - **Pending Commits/Doc-Updates/Frontmatter-Updates vergessen nur weil ClickUp da ist**
 - **"ja/nein/einzeln wählen" Fragen als Text statt ask_user_input_v0**
 - Chat-URLs raten oder erfinden — bei Unsicherheit Feld leer lassen
+- **`[ANKER-LIVE]`-Einträge im alten Chat-Memory belassen nach Übergabe** — müssen geleert werden
+- **Anker-Sektion im Prompt als leere Tabelle einfügen wenn keine Anker vorhanden** — dann Sektion komplett weglassen
