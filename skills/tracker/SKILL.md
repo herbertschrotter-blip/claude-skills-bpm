@@ -837,6 +837,53 @@ nicht automatisch füllen."
 
 Wenn User ignoriert: Nicht nerven, aber bei erstem tracker-Call fragen.
 
+### Stale-Check für `[ANKER-LIVE]`
+
+Am Chat-Start (nach dem Laden des Memory) prüfen ob es veraltete Anker gibt.
+
+**Veraltet** = älter als 24 Stunden, berechnet aus dem `<timestamp>`-Feld jedes `[ANKER-LIVE]`-Eintrags.
+
+#### Ablauf
+
+1. **Alle `[ANKER-LIVE]`-Einträge parsen**: 
+   - Format: `[ANKER-LIVE] <id>|<typ>|<timestamp>|<kurzbeschreibung>`
+   - Timestamp ist ISO `YYYY-MM-DDTHH:MM`
+2. **Aktuelle Zeit ermitteln** (ISO via `[DateTimeOffset]::UtcNow` oder Claude-intern)
+3. **Differenz berechnen** — wenn älter als 24h → stale
+4. **Stale-Liste anzeigen** (nur wenn ≥1 stale):
+   ```
+   ⚠️ Veraltete Anker in [ANKER-LIVE] (älter als 24h):
+   
+   | ID | Alter | Thema |
+   |----|-------|-------|
+   | TEMP-01JS7KABCD | 3 Tage | Wetter-Modul GS-Worker |
+   | 86c9eupfk | 26 Std | tracker-Skill Anker-Logik |
+   ```
+5. **Per `ask_user_input_v0`** fragen was damit passieren soll:
+   ```
+   Frage: "Was mit den veralteten Ankern tun?"
+   Optionen:
+   - "Alle verwerfen (Memory bereinigen)"
+   - "Einzeln entscheiden"
+   - "Behalten (nur Hinweis)"
+   ```
+6. **Bei "Alle verwerfen":** Alle stale Einträge via `memory_user_edits(remove, <line>)` entfernen
+7. **Bei "Einzeln entscheiden":** Pro stale Eintrag `ask_user_input_v0` mit Optionen:
+   - "Verwerfen"
+   - "`tracker neu` — Task daraus machen"
+   - "Behalten"
+8. **Bei "Behalten":** Nichts tun, nur im Chat notiert
+
+#### Keine stale Anker vorhanden?
+
+Ausgabe unterdrücken. Kein "Alles OK"-Hinweis — der Chat-Start soll nicht überladen werden.
+
+#### Edge Cases
+
+- **Timestamp unparseable** → Eintrag als stale behandeln, im Hinweis markieren ("unbekanntes Alter")
+- **Mehr als 10 stale Einträge** → nur die 10 ältesten anzeigen, Gesamtzahl erwähnen
+- **Memory nicht lesbar** → Check überspringen (still)
+
 ---
 
 ## Priority-Regeln
@@ -1050,3 +1097,5 @@ Claude intern:
 - Relationships als Freitext statt ClickUp-Dependency nutzen
 - Custom Field Option-IDs raten — immer aus dem Skill-Kapitel kopieren
 - Description ohne Template bei Standard-Tasks (Meta-Tasks dürfen verkürzen)
+- **Stale-Check-Ergebnis automatisch aus Memory entfernen** ohne `ask_user_input_v0` Bestätigung
+- **Stale-Check bei jedem Chat-Turn wiederholen** — nur einmal beim Chat-Start ausführen
