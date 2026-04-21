@@ -1,10 +1,11 @@
 ---
 name: git-commit-helper
 description: >
-  Generiert fertige Git-Terminal-Befehle mit korrektem Commit-Format:
-  [vX.Y.Z] Modul, Typ: Kurztitel. Triggert bei "commit", "committen",
-  "git commit", "mach den commit", "push das". Auch bei "ok", "passt"
-  nach Code-Blöcken. Wird von code-erstellen als letzter Schritt aufgerufen.
+  Erstellt fertige Git-Commit-Befehle und Commit-Messages im BPM-Format
+  [vX.Y.Z] Modul, Typ: Kurztitel. Use when users want to commit changes,
+  need a git commit command, ask for a commit message, or want the correct
+  version bump for an existing change. Do not trigger for code creation,
+  code review, git push, or general Zustimmung wie "ok" oder "passt".
 ---
 
 # Git Commit Helper
