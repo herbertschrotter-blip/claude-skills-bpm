@@ -1,16 +1,11 @@
 ---
 name: cc-steuerung
 description: >
-  Steuert wie Claude den Desktop Commander MCP-Server für
-  Dateioperationen und Terminal-Befehle auf dem PC des Users nutzt.
-  Verwende diesen Skill IMMER wenn der User explizit Claude Code erwähnt,
-  z.B.: "mit claude code", "über claude code", "cc erstelle", "cc lies",
-  "lass claude code", "claude code soll", "dc mach", "schreib auf platte".
-  NICHT triggern wenn der User nur "erstelle die datei", "code erstellen",
-  "lies den code" sagt — das sind normale Chat-Aufgaben (Code-Blöcke
-  im Chat oder SUCHE/ERSETZE). Die Unterscheidung ist entscheidend: ohne
-  explizite Erwähnung von "claude code", "cc" oder "dc" wird NIE direkt
-  auf den PC geschrieben.
+  Steuert Desktop Commander für direkte Datei-, Verzeichnis- und Terminal-
+  Operationen auf Herberts PC. Use when users explicitly say "cc", "dc",
+  "Claude Code", "direkt auf den PC", or want reading, writing, editing,
+  building, or git commands executed on disk. Do not trigger for normal chat
+  answers, code blocks in chat, or requests without explicit cc/dc intent.
 ---
 
 # Claude Code Steuerung (Desktop Commander)

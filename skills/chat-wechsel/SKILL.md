@@ -1,10 +1,11 @@
 ---
 name: chat-wechsel
 description: >
-  Erstellt einen Übergabe-Prompt für den nächsten Chat. Triggert bei
-  "neuer chat", "nächster chat", "session beenden", "chat wechsel",
-  "weiter im nächsten chat", "mach mir den prompt", "übergabe".
-  NICHT bei "pause", "tschüss", "gute nacht".
+  Erstellt einen Handover-Prompt für die nächste Claude-Session inklusive
+  aktuellem Stand, offenen Punkten und relevanten Next Steps. Use when users
+  want to continue in a new chat, ask for a session handover, a continuation
+  prompt, or a next-chat summary. Do not trigger for ChatGPT review prompts,
+  generic prompt requests, or casual goodbyes like "tschüss" or "gute Nacht".
 ---
 
 # Chat-Wechsel Skill

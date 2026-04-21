@@ -1,12 +1,12 @@
 ---
 name: tracker
 description: >
-  Verwaltet BPM-Tasks in ClickUp über explizite Tracker-Kommandos wie
-  "tracker neu", "tracker done", "tracker update", "tracker suche",
-  "tracker status", "tracker next", "tracker split", "tracker relate",
-  und "tracker field". Use when users want a concrete ClickUp action for a
-  BPM task. Do not trigger for allgemeine Gespräche über offene Punkte,
-  Backlog-Diskussionen, Priorisierung ohne ClickUp-Aktion, or free-form notes.
+  Führt konkrete ClickUp-Aktionen für BPM-Tasks aus, z.B. "tracker neu",
+  "tracker done", "tracker update", "tracker status", "tracker suche",
+  "tracker next", "tracker split", "tracker relate" und "tracker field".
+  Use when users want an explicit BPM task action in ClickUp. Do not trigger
+  for general talk about priorities, open points, brainstorming, notes, or
+  free-form project planning without a concrete tracker command.
 ---
 
 # Tracker Skill — ClickUp Offene-Punkte-Verwaltung

@@ -1,10 +1,12 @@
 ---
 name: audit
 description: >
-  Prüft Konsistenz zwischen Code und Dokumentation. Triggert bei "audit",
-  "prüfe alles", "konsistenzcheck". Nutzt die verbindliche Ladereihenfolge
-  aus DOC-STANDARD.md Kapitel 8. Prüft Frontmatter, Quickload,
-  Kapitelvorlagen, Pflichtlesen und Fachliche Invarianten.
+  Prüft Konsistenz zwischen BPM-Code, INDEX-Routing, Frontmatter, Quickloads
+  und Projektdokumentation. Use when users want a consistency audit, a
+  documentation-vs-code check, a Frontmatter or Quickload validation, or a
+  systematic read-only review of project rules. Do not trigger for code
+  implementation, build debugging, or general code review without doc/context
+  comparison.
 ---
 
 # Audit-Skill — Projekt-Konsistenz-Prüfung

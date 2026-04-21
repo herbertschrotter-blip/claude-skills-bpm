@@ -1,11 +1,12 @@
 ---
 name: code-erstellen
 description: >
-  Plant und erzeugt BPM-Codeänderungen auf Basis von INDEX.md, Quickloads und
-  fachlichen Invarianten. Use when users want to implement or change application
-  code, add a method, service, dialog, data flow, validation, or persistence
-  logic. Do not trigger for mockups, git commits, explicit documentation work,
-  ClickUp task management, or pure consistency audits.
+  Plant und erzeugt BPM-Codeänderungen auf Basis von INDEX.md, Quickloads,
+  Pflichtlesen und fachlichen Invarianten. Use when users want to implement or
+  change application code, create or modify services, dialogs, data flows,
+  validation, persistence logic, or code across BPM modules. Do not trigger for
+  UI mockups, git commit commands, explicit documentation authoring, ClickUp
+  task actions, or read-only audits.
 ---
 
 # Code-Erstellen — Orchestrator Skill

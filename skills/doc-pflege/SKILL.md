@@ -1,15 +1,12 @@
 ---
 name: doc-pflege
 description: >
-  Pflegt Projektdokumentation aktiv. Triggert bei: 1) INIT "neues Projekt".
-  2) AKTIV "neues Konzept", "pflege docs", "schreib ADR". 3) PASSIV als
-  Teil von code-erstellen. 4) ADVISORY nach doc-relevanten Änderungen
-  (neue Tabelle, neues Interface, neuer Dialog, neue Abhängigkeit).
-  5) VALIDIERUNG "prüfe frontmatter", "quickload check".
-  6) KONZEPT-ERSTELLUNG "neues Konzept" — erzwingt Kapitelvorlage.
-  NICHT triggern bei: UI-Textfixes, kleinen Refactors, Umbenennungen,
-  Formatierungen, explorativen Zwischenständen.
-  Nutzt die verbindliche Ladereihenfolge aus DOC-STANDARD.md Kapitel 8.
+  Erstellt, aktualisiert und validiert BPM-Dokumentation nach DOC-STANDARD,
+  inklusive Frontmatter, Quickload, Kapitelvorlagen und Routing in INDEX.md.
+  Use when users want to write or update docs, create an ADR or concept doc,
+  validate Frontmatter or Quickload, or refactor documentation to the project
+  standard. Do not trigger for code implementation, automatic post-change
+  advisory checks, or generic project discussion without explicit doc intent.
 ---
 
 # Doc-Pflege — Dokumentations-Skill

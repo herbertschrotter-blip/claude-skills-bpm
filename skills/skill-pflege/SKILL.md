@@ -1,14 +1,11 @@
 ---
 name: skill-pflege
 description: >
-  Ändert, erweitert oder aktualisiert bestehende Skills im Projekt.
-  Triggert bei: "Skill updaten", "Skill ändern", "Skill erweitern",
-  "Skill aktualisieren", "Skill anpassen", "SKILL.md erstellen",
-  "Skill-Version", "Skill XY neu", "skill pflege".
-  NICHT triggern bei: Skills nutzen/aufrufen, Skills diskutieren ohne Änderungsabsicht,
-  neuen Skill komplett von Null erstellen (das macht skill-creator).
-  Stellt sicher dass bestehende Inhalte NICHT ungewollt gekürzt, gelöscht
-  oder umformuliert werden — additive Änderungen als Default.
+  Ändert und erweitert bestehende BPM-Skills, ohne deren Originalinhalt
+  ungewollt zu kürzen oder umzuschreiben. Use when users want to update an
+  existing skill, add rules to a current SKILL.md, adjust trigger wording, or
+  refine an already existing skill safely. Do not trigger for creating a brand
+  new skill from scratch, running skill evals, or designing a new skill system.
 ---
 
 # Skill-Pflege — Sichere Änderung bestehender Skills

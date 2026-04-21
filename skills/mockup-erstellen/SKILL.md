@@ -1,18 +1,11 @@
 ---
 name: mockup-erstellen
 description: >
-  Erstellt UI-Mockups als HTML-Dateien für BPM-Screens.
-  Triggert bei: "Mockup erstellen", "erstelle ein Mockup", "Mockup für",
-  "zeig mir wie X aussehen soll", "Screen-Entwurf", "UI-Mockup",
-  "Screen-Design", "HTML-Mockup", "wie soll der Screen aussehen",
-  "UI-Vorschlag". Auch triggern wenn ein neuer Screen gebaut werden soll
-  und noch kein Mockup existiert.
-  NICHT triggern bei: "Design" im Architektur-/Datenbank-/Konzept-Kontext,
-  reiner Code-Erstellung ohne Screen-Entwurf.
-  Der Skill kennt die Namenskonvention, den Workflow (Visualizer → Bestätigung → DC auf Platte),
-  und welche Docs für Design-Token gelesen werden müssen.
-  Speichert KEINE UI-Daten (Farben, Tokens, Spacing) im Skill selbst —
-  diese stehen in den Projekt-Docs und werden bei Bedarf geladen.
+  Erstellt BPM-UI-Mockups als HTML-Entwürfe für neue Screens, Dialoge und
+  Layoutvarianten. Use when users want a mockup, a screen design, a UI proposal,
+  a layout draft, or need to clarify how a screen should look before coding.
+  Do not trigger for direct XAML implementation, small UI fixes in existing
+  code, or non-UI design topics like architecture or database design.
 ---
 
 # Mockup-Erstellen — UI-Entwürfe für BPM
