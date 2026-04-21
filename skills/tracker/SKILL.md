@@ -102,8 +102,9 @@ Space hat **10 Custom Fields**. Pflegen unterscheidet sich je Phase:
 | **Commit ID** | `a851a04d-f34a-429f-abce-bec0b0b6859f` | short_text | done | 7-char Hash |
 | **Commit Text** | `cae9f6cb-e0eb-44aa-81f8-df2e1194111e` | text | done | Erste Zeile Commit-Message |
 | **Erledigt** | `457bde4f-c9c1-40ab-b464-897b7f87e6bc` | date | done | YYYY-MM-DD |
-| **Chat erstellt** | `e14d860d-0b59-47e6-8424-4e8235fdf7a6` | url | neu + done | Chat wo Feature ausgearbeitet |
-| **Chat erledigt** | `05c84816-d3a8-4abf-94cf-b5c54db25df1` | url | done | Chat wo Commit gemacht |
+| **Chat-Anker temp** | `fef35671-3752-4bf2-bcb8-f29482d3a2d7` | short_text | neu (Phase 1) | TEMP-ID aus Ausarbeitungsphase (optional) |
+| **Chat-Anker erstellt** | `512b8920-e958-4e43-826e-110e3bccdfc2` | short_text | neu | ClickUp-Task-ID beim Anlegen |
+| **Chat-Anker erledigt** | `0c72a2ea-630e-4320-9cdb-80a19bc5ebb6` | short_text | done | ClickUp-Task-ID beim Abschluss |
 
 ### Typ-Dropdown (Option-IDs)
 
@@ -130,7 +131,10 @@ Space hat **10 Custom Fields**. Pflegen unterscheidet sich je Phase:
 
 **Pflicht ausfüllen** (wenn ermittelbar):
 - Typ (aus Kontext oder ask_user_input_v0)
-- Chat erstellt (aktueller Chat)
+- Chat-Anker erstellt (ClickUp-Task-ID, wird nach `clickup_create_task` direkt gesetzt)
+
+**Wenn vorhanden** (aus `[ANKER-LIVE]` Memory):
+- Chat-Anker temp (TEMP-ID aus Ausarbeitungsphase)
 
 **Wenn bekannt** (sonst leer lassen):
 - Aufwand, Zielversion, Komponente, Zugehörige Docs
@@ -140,10 +144,77 @@ Space hat **10 Custom Fields**. Pflegen unterscheidet sich je Phase:
 **Pflicht ausfüllen**:
 - Commit ID + Commit Text (aus DC `git log`)
 - Erledigt (Commit-Datum)
-- Chat erledigt (aktueller Chat)
+- Chat-Anker erledigt (ClickUp-Task-ID)
 
 **Nachpflegen** (falls bei `tracker neu` nicht gesetzt):
 - Typ, Zugehörige Docs, Komponente, Zielversion
+
+---
+
+## Chat-Anker-System
+
+**Zweck:** Präzise Rückverfolgung welcher Chat welchen Task ausgelöst/abgeschlossen hat — per `conversation_search` auf eindeutige Anker-Strings. Löst die Chat-URL-Problematik (URL nicht programmatisch auslesbar, Indexierungs-Verzögerung).
+
+**Konzept-Doc:** `docs/chat-anker-konzept.md` im Skill-Repo.
+
+### Anker-Format im Chat-Body
+
+```
+[BPM-ANCHOR-<id>] — <typ>: <kurzbeschreibung max 80 Zeichen>
+```
+
+- `<id>` = `TEMP-<10-char-base32>` (Phase 1, vor Task-Erstellung) **oder** ClickUp-Task-ID (Phase 2/3)
+- `<typ>` = `erstellt` | `erledigt`
+
+Beispiele:
+```
+[BPM-ANCHOR-TEMP-01JS7KABCD] — Idee: Wetter-Modul Google-Sheets-Worker
+[BPM-ANCHOR-86c9eupfk] — erstellt: tracker-Skill Anker-Logik (war TEMP-01JS7KABCD)
+[BPM-ANCHOR-86c9eupfk] — erledigt: Commit abc1234 tracker Anker-Logik
+```
+
+### Memory-Registry `[ANKER-LIVE]`
+
+Live-Liste aller aktiven Anker der aktuellen Session.
+
+**Format:**
+```
+[ANKER-LIVE] <id>|<typ>|<timestamp>|<kurzbeschreibung>
+```
+
+- `<id>` = TEMP-ID oder Task-ID
+- `<typ>` = `offen` (temp, kein Task) | `erstellt` | `erledigt`
+- `<timestamp>` = ISO `YYYY-MM-DDTHH:MM`
+- `<kurzbeschreibung>` = max 60 Zeichen
+
+**Beispiel während Session:**
+```
+[ANKER-LIVE] TEMP-01JS7KABCD|offen|2026-04-21T18:45|Wetter-Modul GS-Worker
+[ANKER-LIVE] 86c9eupfk|erstellt|2026-04-21T19:00|tracker Anker-Logik
+```
+
+### Lifecycle
+
+| Event | Aktion auf `[ANKER-LIVE]` |
+|-------|---------------------------|
+| `anker setzen: <text>` (Task 6.5) | Eintrag mit Typ `offen` hinzufügen |
+| `tracker neu` mit vorhandenem TEMP | TEMP-Eintrag **ersetzen** durch Task-ID-Eintrag mit Typ `erstellt` |
+| `tracker neu` ohne TEMP | neuer Eintrag mit Typ `erstellt` |
+| `tracker done` erfolgreich | **beide Einträge** (erstellt + erledigt wenn vorhanden) entfernen |
+| `chat-wechsel` (Task 6.3) | komplette Liste in Übergabeprompt kopieren, dann leeren |
+
+### TEMP-ID Generierung
+
+**Format:** `TEMP-<10 Zeichen Crockford-Base32>`
+
+**Via DC PowerShell:**
+```powershell
+$ts = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
+$rand = Get-Random -Maximum 1024
+"TEMP-" + ("{0:x}{1:x}" -f $ts, $rand).ToUpper().Substring(0, 10)
+```
+
+**Fallback (Claude selbst):** Base32-Hash aus `yyMMddHHmm` + Zufallsbuchstaben. Reicht für Session-Eindeutigkeit.
 
 ---
 
@@ -428,8 +499,17 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 2. Kürzel + Liste-ID aus Tabelle
 3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen
 4. **Description**: Template aus Kapitel "Description-Template" generieren
-5. **Chat erstellt ermitteln:** aktueller Chat (siehe „Chat-URL-Ermittlung")
-6. **Custom Fields befüllen:**
+5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe Kapitel "Chat-Anker-System"):
+   - `[ANKER-LIVE]` aus Memory lesen
+   - Gibt es einen Eintrag mit Typ `offen` zum Thema dieses Tasks? → TEMP-ID merken
+   - Sonst: kein TEMP (Phase 2 ohne vorherige Phase 1)
+6. `clickup_create_task(list_id, name, priority, tags, markdown_description)` → Task-ID erhalten
+7. **Anker-Text in Chat schreiben** (direkt nach `clickup_create_task`):
+   ```
+   [BPM-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung> (war TEMP-<id>)
+   ```
+   (Brücke `(war TEMP-...)` nur wenn TEMP existierte)
+8. **Custom Fields nachträglich setzen** via `clickup_update_task`:
    ```
    custom_fields = [
      {"id": "<Typ-ID>", "value": "<Typ-Option-ID>"},
@@ -437,12 +517,16 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
      {"id": "<Zielversion-ID>", "value": "v0.26.0"},
      {"id": "<Komponente-ID>", "value": "DocumentTypeRecognizer.cs"},
      {"id": "<Zugehörige Docs-ID>", "value": "Docs/Kern/DB-SCHEMA.md"},
-     {"id": "<Chat erstellt-ID>", "value": "https://claude.ai/chat/..."}
+     {"id": "512b8920-e958-4e43-826e-110e3bccdfc2", "value": "<task-id>"},
+     // Falls TEMP existierte:
+     {"id": "fef35671-3752-4bf2-bcb8-f29482d3a2d7", "value": "TEMP-<id>"}
    ]
    ```
-7. `clickup_create_task(list_id, name, priority, tags, markdown_description, custom_fields)`
-8. Memory: Next +1
-9. Bestätigung
+9. **Memory `[ANKER-LIVE]` aktualisieren**:
+   - Falls TEMP existierte: Eintrag **ersetzen** (TEMP-... → Task-ID-Eintrag mit Typ `erstellt`)
+   - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
+10. Memory: Next +1
+11. Bestätigung an User inkl. Task-ID als Anker-Referenz
 
 ---
 
@@ -464,23 +548,24 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
      - Commit ID + Commit Text leer lassen
      - Erledigt-Datum = heute (YYYY-MM-DD)
 4. **Bei mehreren Commits:** `ask_user_input_v0` mit allen Kandidaten (Hash + erste Zeile)
-5. **Chat erledigt ermitteln:** Chat wo der Commit gemacht wurde (siehe „Chat-URL-Ermittlung")
-6. **Chat erstellt ermitteln:** Falls noch nicht gesetzt — Chat wo Feature ausgearbeitet wurde
-7. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
+5. **Anker-Text in Chat schreiben** (direkt vor `clickup_update_task`):
+   ```
+   [BPM-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
+   ```
+6. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
    - Falls alle leer: `ask_user_input_v0` mit fehlenden Feldern
-8. **Custom Fields vorbereiten**:
+7. **Custom Fields vorbereiten**:
    ```
    custom_fields = [
-     {"id": "<Commit ID-ID>", "value": "<7-char-hash>"},
-     {"id": "<Commit Text-ID>", "value": "<erste Zeile der Commit-Message>"},
-     {"id": "<Erledigt-ID>", "value": "<YYYY-MM-DD>"},
-     {"id": "<Chat erstellt-ID>", "value": "<chat-erstellt-url>"},
-     {"id": "<Chat erledigt-ID>", "value": "<chat-erledigt-url>"},
+     {"id": "a851a04d-f34a-429f-abce-bec0b0b6859f", "value": "<7-char-hash>"},
+     {"id": "cae9f6cb-e0eb-44aa-81f8-df2e1194111e", "value": "<erste Zeile der Commit-Message>"},
+     {"id": "457bde4f-c9c1-40ab-b464-897b7f87e6bc", "value": "<YYYY-MM-DD>"},
+     {"id": "0c72a2ea-630e-4320-9cdb-80a19bc5ebb6", "value": "<task-id>"},
      // + Nachpflege-Felder falls gesetzt
    ]
    ```
-9. **Einziger API-Call**:
+8. **Einziger API-Call**:
    ```
    clickup_update_task(
      task_id: "<TaskID>",
@@ -488,13 +573,16 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
      custom_fields: custom_fields
    )
    ```
+9. **Memory `[ANKER-LIVE]` aufräumen**:
+   - Eintrag mit Task-ID und Typ `erstellt` entfernen
+   - Falls temporär ein Typ `erledigt` gesetzt wurde: auch entfernen
+   - Nach diesem Schritt existiert im Memory nichts mehr zu diesem Task
 10. **Bestätigung** an User:
     ```
     ✅ BPM-XXX auf Done gesetzt
        Commit: <hash> — <Erste Zeile der Message>
        Erledigt: <YYYY-MM-DD>
-       Chat erstellt: <Chat-Titel>
-       Chat erledigt: <Chat-Titel>
+       Anker: [BPM-ANCHOR-<task-id>] (erstellt + erledigt)
     ```
 
 #### Status-Werte IMMER kleingeschrieben
