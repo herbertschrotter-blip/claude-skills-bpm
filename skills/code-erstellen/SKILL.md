@@ -122,6 +122,63 @@ IMMER `[System.Environment]::GetEnvironmentVariable('OneDrive', 'User')` verwend
 
 ---
 
+## Auto-Anker bei Task-Keywords (Phase 1 des Chat-Anker-Systems)
+
+**Zweck:** Wenn im Chat ein Thema auftaucht das offensichtlich ein späterer Task wird (aber aktuell noch kein Task existiert), setzt dieser Skill automatisch einen temp-Anker. Das stellt sicher, dass die Diskussionsstelle später via `conversation_search` wiederfindbar ist.
+
+Konzept-Doc: `docs/chat-anker-konzept.md` (Phase 1).
+Anker-Format + Memory-Registry: siehe tracker-Skill Kapitel "Chat-Anker-System".
+
+### Task-Keywords (Trigger für Auto-Anker)
+
+Claude erkennt folgende Formulierungen als klares Task-Signal:
+
+- "das müssen wir noch bauen"
+- "später implementieren"
+- "ins backlog"
+- "backlog-wert"
+- "da brauchen wir einen task"
+- "sollten wir im task tracken"
+- "muss noch gemacht werden"
+- "als task anlegen"
+
+Wenn User diese Keywords nutzt UND das Thema noch keinen offenen Task hat → Auto-Anker setzen.
+
+### Ablauf
+
+1. Keyword erkannt UND Kontext ist klar (Thema identifizierbar)
+2. TEMP-ID generieren:
+   - Primär via DC PowerShell (siehe tracker-Skill "TEMP-ID Generierung")
+   - Fallback: Claude erzeugt `TEMP-<yyMMddHHmm><3 Zufallsbuchstaben>`
+3. Anker-Zeile im Chat-Response einfügen (möglichst am Anfang des relevanten Abschnitts):
+   ```
+   [BPM-ANCHOR-TEMP-<id>] — Idee: <kurzbeschreibung max 60 Zeichen>
+   ```
+4. Memory aktualisieren:
+   ```
+   memory_user_edits(command: "add", control: "[ANKER-LIVE] TEMP-<id>|offen|<ISO-timestamp>|<kurzbeschreibung>")
+   ```
+5. Kurzer Hinweis im Chat: "Anker gesetzt — wird bei `tracker neu` mit Task-ID verknüpft."
+
+### Wann KEIN Auto-Anker
+
+- User spricht nur über bestehende Tasks (nicht Task-würdiger Neu-Content)
+- Thema ist zu vage für eine 60-Zeichen-Kurzbeschreibung
+- Innerhalb 24h existiert bereits ein Anker mit ähnlichem Thema (Duplikat-Check via `[ANKER-LIVE]`)
+- User sagt explizit "kein Task daraus" o.ä.
+- Mehr als 10 Anker bereits in `[ANKER-LIVE]` — User sollte erst aufräumen
+
+**Im Zweifel: KEIN Anker.** Lieber ein paar Anker verpassen als den Chat zuspammen.
+
+### Anti-Pattern
+
+- Anker mitten in Code-Blöcken einfügen
+- Mehrere Anker direkt hintereinander für dasselbe Thema
+- Anker setzen für Dinge die der User nur erwähnt ohne Handlungsabsicht
+- Anker mit generischen Beschreibungen wie "Feature X" oder "TODO"
+
+---
+
 ## Voraussetzung
 
 INDEX.md im Repo. Optional DOC-STANDARD.md.
@@ -323,3 +380,6 @@ Beispiel-Ausgabe nach Commit:
 - **Blocking-Condition-Auflösung als Prosa** wenn Kandidaten bekannt — IMMER ask_user_input_v0
 - Optionen im Chat aufzählen und auf getippte Antwort warten
 - Migration / Backward-Compatibility automatisch bauen ohne User-Freigabe (siehe Frühphasen-Prinzip in INDEX.md)
+- **Auto-Anker bei vagen Themen setzen** — lieber keinen Anker als einen unscharfen
+- **Anker mit generischen Beschreibungen** ("Feature X", "TODO") — immer konkret benennen
+- **Anker setzen ohne Memory-Update** — Chat-Zeile UND `[ANKER-LIVE]`-Eintrag gehören zusammen
