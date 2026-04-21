@@ -61,12 +61,15 @@ Stand: `a5b17bb` — 2026-04-21 (Phase 1.1)
 
 ### baseline
 
-- date: _(wird in 1a.3 gefüllt)_
-- should_trigger: X/9
-- should_not_trigger: X/5
-- other_skill: X/3
+- date: 2026-04-21
+- tester: Claude Opus 4.7 (Blind-Modus — nur Name + Description)
+- should_trigger: 8/9
+- should_not_trigger: 5/5
+- other_skill: 3/3
 - ambiguous: _dokumentiert_
-- notes: ...
+- notes:
+  - Query 9 `PATCH oder MINOR für dieses feature?`: Semver-Entscheidungsfrage triggerte nicht zuverlässig. Description nennt "version bump for existing change", aber "PATCH/MINOR" ohne "version bump" ist für einen blinden Router schwer zuzuordnen. Phase-2-Hinweis: Description um Semver-Keywords erweitern.
+  - Ausschluss-Block greift sauber bei `ok` / `passt` / `push das` / `erstelle die CommitService.cs` / `review den letzten commit`.
 
 ### after-refactor
 

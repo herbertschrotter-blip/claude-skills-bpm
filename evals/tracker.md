@@ -65,12 +65,16 @@ Stand: `74cda17` — 2026-04-21 (Phase 1.3)
 
 ### baseline
 
-- date: _(wird in 1a.3 gefüllt)_
-- should_trigger: X/9
-- should_not_trigger: X/7
-- other_skill: X/3
+- date: 2026-04-21
+- tester: Claude Opus 4.7 (Blind-Modus — nur Name + Description)
+- should_trigger: 9/9
+- should_not_trigger: 7/7
+- other_skill: 3/3
 - ambiguous: _dokumentiert_
-- notes: ...
+- notes:
+  - Sauberes Ergebnis — 100% Treffer in allen Kategorien.
+  - Explizite `tracker <kommando>`-Form macht den Router unmissverständlich; Ausschluss-Block (allgemeine Gespräche, free-form notes) greift sauber bei `was ist offen?` / `merk dir das` / `notiz: ...`.
+  - Ambiguous-Queries 1+2 dokumentieren reale Grenzfälle (`neue aufgabe: ...`, `das ist erledigt` nach Commit) — diese bleiben kontextabhängig und sind korrekt NICHT in Trigger-Keywords aufgenommen.
 
 ### after-refactor
 

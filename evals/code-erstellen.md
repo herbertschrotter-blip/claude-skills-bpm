@@ -65,12 +65,16 @@ Stand: `4028411` — 2026-04-21 (Phase 1.4)
 
 ### baseline
 
-- date: _(wird in 1a.3 gefüllt)_
-- should_trigger: X/10
-- should_not_trigger: X/3
-- other_skill: X/6
+- date: 2026-04-21
+- tester: Claude Opus 4.7 (Blind-Modus — nur Name + Description)
+- should_trigger: 9/10
+- should_not_trigger: 3/3
+- other_skill: 6/6
 - ambiguous: _dokumentiert_
-- notes: ...
+- notes:
+  - Query 5 `neue View für ProfileWizard`: Konflikt zwischen "dialog" (triggert) und "mockups" (ausgeschlossen). "View" ist in WPF eine UI-Datei; für einen blinden Router mehrdeutig (Code-View vs Mockup-View). Description sollte Phase-2 klarstellen: "Code-Views (.xaml + .xaml.cs) triggern, reine HTML/SVG-Mockups triggern nicht".
+  - Ausschluss-Block ist sehr stark — 6/6 other_skill-Queries werden korrekt abgewiesen. Phase 1.4 Description-Fix hat den erwarteten Effekt.
+  - should_not_trigger (Konzept-/Erklärungsfragen) sauber abgewiesen.
 
 ### after-refactor
 

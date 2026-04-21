@@ -62,12 +62,16 @@ Stand: `ea6895f` — 2026-04-21 (Phase 1.2)
 
 ### baseline
 
-- date: _(wird in 1a.3 gefüllt)_
-- should_trigger: X/9
-- should_not_trigger: X/4
-- other_skill: X/3
+- date: 2026-04-21
+- tester: Claude Opus 4.7 (Blind-Modus — nur Name + Description)
+- should_trigger: 8/9
+- should_not_trigger: 4/4
+- other_skill: 2/3
 - ambiguous: _dokumentiert_
-- notes: ...
+- notes:
+  - Query 6 `Runde 3 erstellen`: Ohne Chat-Kontext kein erkennbarer ChatGPT-Bezug. Description fordert "ongoing ChatGPT review exchange" — für einen blinden Router nicht ableitbar aus 3 Wörtern. Phase-2-Hinweis: "Runde N" als Keyword aufnehmen, oder akzeptieren dass dieser Query nur kontextbasiert triggert.
+  - Query other_skill 2 `mach mir einen prompt für GPT zu einem anderen Thema`: Grenzfall — "GPT" statt "ChatGPT", plus "anderes Thema" als Ausschluss-Hinweis. Im Blind-Modus mehrdeutig gewertet, daher als Fehltrigger.
+  - Ausschluss bei `antworte darauf` / `reagier darauf` / `was sagst du dazu?` / `ok` greift sauber.
 
 ### after-refactor
 
