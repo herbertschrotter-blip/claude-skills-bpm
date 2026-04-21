@@ -1,12 +1,11 @@
 ---
 name: code-erstellen
 description: >
-  Orchestriert die KI-gestützte Code-Erstellung für jedes Projekt.
-  Triggert bei JEDER Anfrage die Code-Erstellung impliziert.
-  Dieser Skill ist der zentrale Orchestrator — er lädt den Projektindex,
-  nutzt den Quickload-First-Pass für effizientes Doc-Routing,
-  prüft Fachliche Invarianten und Pflichtlesen-Kapitel,
-  und delegiert an suche-ersetze und git-commit-helper.
+  Plant und erzeugt BPM-Codeänderungen auf Basis von INDEX.md, Quickloads und
+  fachlichen Invarianten. Use when users want to implement or change application
+  code, add a method, service, dialog, data flow, validation, or persistence
+  logic. Do not trigger for mockups, git commits, explicit documentation work,
+  ClickUp task management, or pure consistency audits.
 ---
 
 # Code-Erstellen — Orchestrator Skill
