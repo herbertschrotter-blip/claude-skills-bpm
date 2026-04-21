@@ -1,12 +1,12 @@
 ---
 name: chatgpt-review
 description: >
-  Erstellt Prompts für ein Review-Gespräch zwischen Claude und ChatGPT.
-  Verwende diesen Skill immer wenn der User sagt: "besprich das mit ChatGPT",
-  "ChatGPT Review", "frag ChatGPT", "zweite Meinung von ChatGPT",
-  "Cross-Review", "Prompt für ChatGPT", "weiter mit ChatGPT",
-  "antworte darauf" (im Kontext eines laufenden ChatGPT-Reviews).
-  Nutzt Quickloads verwandter Docs als Kontext im Initialprompt.
+  Erstellt strukturierte Prompts für ein technisches Review-Gespräch zwischen
+  Claude und ChatGPT. Use when users want a ChatGPT review prompt, a cross-LLM
+  second opinion, a reply prompt for an ongoing ChatGPT review exchange, or a
+  synthesized response to ChatGPT feedback. Do not trigger for normalen
+  Chat-Handover, allgemeine Prompts ohne ChatGPT-Bezug, or vague replies like
+  "antworte darauf" without explicit review context.
 ---
 
 # ChatGPT Review-Gespräch
