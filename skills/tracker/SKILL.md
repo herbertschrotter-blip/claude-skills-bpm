@@ -654,6 +654,69 @@ Bei Dropdown-Feldern (Typ, Aufwand): Option-ID aus dem Skill-Kapitel nehmen.
 
 ---
 
+### `anker setzen: <text>`
+
+**Zweck:** Manueller TEMP-Anker in der Phase 1 des Chat-Anker-Systems. Nutze dieses Kommando wenn die Auto-Keyword-Erkennung im `code-erstellen`-Skill nicht greift aber der User eine Stelle im Chat für späteres Wiederfinden markieren will.
+
+Abgrenzung:
+- **Auto-Anker** (code-erstellen): Claude setzt automatisch bei Task-Keywords
+- **`anker setzen`** (manuell): User fordert explizit einen Anker
+
+#### Trigger-Phrasen
+
+- "anker setzen: <text>"
+- "setze einen anker: <text>"
+- "anker für <text>"
+- "merk dir diese stelle: <text>"
+
+#### Ablauf
+
+1. **TEMP-ID generieren** (siehe Kapitel "TEMP-ID Generierung"):
+   - Primär via DC PowerShell
+   - Fallback: Claude erzeugt `TEMP-<yyMMddHHmm><3 Zufallsbuchstaben>`
+2. **Kurzbeschreibung** aus `<text>` ableiten (max 60 Zeichen, keine Zeilenumbrüche)
+3. **Anker-Zeile im Chat schreiben**:
+   ```
+   [BPM-ANCHOR-TEMP-<id>] — Idee: <kurzbeschreibung>
+   ```
+4. **Memory aktualisieren**:
+   ```
+   memory_user_edits(
+     command: "add",
+     control: "[ANKER-LIVE] TEMP-<id>|offen|<ISO-timestamp>|<kurzbeschreibung>"
+   )
+   ```
+5. **Bestätigung an User**:
+   ```
+   ✅ Anker gesetzt: TEMP-<id>
+      Thema: <kurzbeschreibung>
+      Wird bei `tracker neu` mit Task-ID verknüpft oder bei `chat-wechsel` in Übergabeprompt übernommen.
+   ```
+
+#### Wann KEIN manueller Anker?
+
+- Beschreibung unter 10 Zeichen (zu vage)
+- Mehr als 10 Einträge bereits in `[ANKER-LIVE]` (erst aufräumen per `tracker neu` oder `tracker done`)
+- Nahezu identischer Anker existiert bereits in `[ANKER-LIVE]` (Duplikat-Check)
+
+Bei Duplikat: Hinweis auf bestehenden Anker statt neuen zu setzen.
+
+#### Beispiel
+
+```
+User: anker setzen: Wetter-Modul Google-Sheets Polling-Intervall diskutiert
+
+Claude:
+  1. TEMP-ID: TEMP-01JS9ABCDE
+  2. [BPM-ANCHOR-TEMP-01JS9ABCDE] — Idee: Wetter-Modul GS Polling-Intervall
+  3. memory_user_edits(add, "[ANKER-LIVE] TEMP-01JS9ABCDE|offen|2026-04-21T23:15|Wetter-Modul GS Polling-Intervall")
+  4. ✅ Anker gesetzt: TEMP-01JS9ABCDE
+     Thema: Wetter-Modul GS Polling-Intervall
+     Wird bei `tracker neu` mit Task-ID verknüpft oder bei `chat-wechsel` in Übergabeprompt übernommen.
+```
+
+---
+
 ### `tracker status`
 
 1. `clickup_filter_tasks(space_ids, statuses: ["open", "in progress"])`
@@ -817,6 +880,7 @@ Nach jeder Änderung `[CLICKUP]` in Memory aktualisieren:
 | "tracker split: ..." | Vorschlag + ask_user_input_v0 zur Bestätigung + NN.NN-Nummerierung |
 | "tracker relate: ..." | Dependency setzen via ClickUp API |
 | "tracker field: ..." | Einzelnes Feld gezielt aktualisieren |
+| "anker setzen: ..." | Manuellen TEMP-Anker setzen + Memory-Eintrag |
 | code-erstellen nach Commit | NUR vorschlagen (per ask_user_input_v0) |
 | chat-wechsel am Ende | Batch-Vorschlag + Chat-URL in Prompt einbetten |
 | Alle Unteraufgaben done | ask_user_input_v0: Parent auch schliessen? |
