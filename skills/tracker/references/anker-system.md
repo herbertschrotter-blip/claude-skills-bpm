@@ -56,6 +56,7 @@ Live-Liste aller aktiven Anker der aktuellen Session.
 | `tracker neu` mit vorhandenem TEMP | TEMP-Eintrag **ersetzen** durch Task-ID-Eintrag mit Typ `erstellt` |
 | `tracker neu` ohne TEMP | neuer Eintrag mit Typ `erstellt` |
 | `tracker done` erfolgreich | **beide Einträge** (erstellt + erledigt wenn vorhanden) entfernen |
+| **Batch (≥2 Task-Operationen in einer Antwort)** | Obige Regeln **pro Task einzeln** anwenden — keine Sammelaktualisierung am Batch-Ende. Spec: `batch-protocol.md` |
 | `chat-wechsel` (Task 6.3) | komplette Liste in Übergabeprompt kopieren, dann leeren |
 
 ---

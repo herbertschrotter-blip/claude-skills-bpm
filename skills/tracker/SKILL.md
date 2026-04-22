@@ -42,6 +42,30 @@ Prosa-Fragen NUR wenn:
 
 ---
 
+## 🚨 Kernregel: Pro-Task-Quittung (Format-Zwang)
+
+Nach **jedem** `clickup_create_task` oder status-änderndem `clickup_update_task`
+MUSS im selben Antwort-Block eine Quittungszeile stehen:
+
+```
+✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — <typ>: <kurz>
+```
+
+Die Quittung ist Bestätigung + Body-Anker + Audit-Spur in einem Format.
+Keine Quittung am Ende gesammelt. Keine Tabellen statt Quittungen.
+
+**Zusätzlich im selben Tool-Call-Block:** Custom Field `Chat-Anker erstellt`
+(`512b8920-...`) bzw. `Chat-Anker erledigt` (`0c72a2ea-...`) setzen — nicht
+später nachtragen.
+
+Bei ≥2 Task-Operationen in derselben Antwort greift das **Batch-Protokoll**:
+Batch-Ansage vor Beginn, Pro-Task-Zyklus, Batch-Audit am Ende.
+Vollständige Spec: `references/batch-protocol.md`.
+
+Adressiert `tracker-001` + `tracker-004`.
+
+---
+
 ## Routing: Kommando → Reference-Datei
 
 | Kommando | Reference |
@@ -57,6 +81,7 @@ Prosa-Fragen NUR wenn:
 | `tracker split: <BPM-NNN>` | `references/split-and-relations.md` |
 | `tracker relate: <A> <Bez> <B>` | `references/split-and-relations.md` |
 | `anker setzen: <text>` | `references/anker-system.md` |
+| ≥2 Task-Operationen in einer Antwort | `references/batch-protocol.md` |
 
 ---
 
@@ -66,6 +91,7 @@ Prosa-Fragen NUR wenn:
 |-----------|--------|
 | `clickup-fields.md` | 10 Custom Fields mit IDs + Option-IDs, Modul-Kürzel, Listen-IDs, BPM-Nummerierung, Titel-Format, Meilensteine, Priority, Status, Memory-Pflege |
 | `anker-system.md` | Chat-Anker Master-Spec: Format, `[ANKER-LIVE]` Registry, Lifecycle, TEMP-ID-Generierung, `anker setzen`, Stale-Check |
+| `batch-protocol.md` | Pro-Task-Quittung + Batch-Ansage + Batch-Audit + Subtask/Parent-Regeln. Gilt immer wenn ≥2 Task-Operationen in einer Antwort |
 | `chat-url-handling.md` | Chat erstellt/erledigt ermitteln, Chat-Start Kontext, recent_chats/conversation_search |
 | `create-task.md` | `tracker neu` Ablauf, Description-Template, Beispiel-Workflow |
 | `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Status-Werte, Beispiel-Workflow |
@@ -143,5 +169,9 @@ Details in `references/anti-patterns.md`.
 - Status mit Grossbuchstaben setzen — IMMER klein (`open`/`in progress`/`done`)
 - Custom Field Option-IDs raten — immer aus `references/clickup-fields.md` kopieren
 - Chat-URLs raten oder erfinden — bei Unsicherheit ask_user_input_v0 oder leer lassen
+- **Pro-Task-Quittung weglassen** nach `create`/`update` — Format-Zwang ist Pflicht
+- **Custom Fields (Chat-Anker) erst am Ende eines Batches sammeln** — pro Task setzen
+- **em-dash `—` in Custom-Field-Values** verwenden (nur ASCII `-`, em-dash löst ClickUp-Fehler aus)
+- **Batch-Audit weglassen** (`N/N Body-Anker ✅ | N/N Custom Fields ✅`)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

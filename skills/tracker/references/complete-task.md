@@ -26,10 +26,12 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
      - Commit ID + Commit Text leer lassen
      - Erledigt-Datum = heute (YYYY-MM-DD)
 4. **Bei mehreren Commits:** `ask_user_input_v0` mit allen Kandidaten (Hash + erste Zeile)
-5. **Anker-Text in Chat schreiben** (direkt vor `clickup_update_task`):
+5. **Pro-Task-Quittung im Chat schreiben** (direkt vor `clickup_update_task`):
    ```
-   [BPM-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
+   ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
    ```
+   Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
+   **Bei ≥2 Tasks in einer Antwort:** Vollständiges Batch-Protokoll greift — siehe `references/batch-protocol.md` (Batch-Ansage, Pro-Task-Zyklus, Batch-Audit).
 6. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
    - Falls alle leer: `ask_user_input_v0` mit fehlenden Feldern
@@ -146,7 +148,9 @@ Claude intern:
      → Teil 10 (d546b50b-...) als ältester konkreter Treffer
   7. Nachpflege: Typ fehlt noch
      → ask_user_input_v0: Typ → Feature
-  8. clickup_update_task(
+  8. Pro-Task-Quittung im Chat:
+     ✅ BPM-007 — [BPM-ANCHOR-<task-id>] — erledigt: Commit cb46a48 PlanTyp-Erkennung
+  9. clickup_update_task(
        status: "done",
        custom_fields: [
          {id: "<Typ-ID>", value: "<Feature-Option-ID>"},
@@ -154,8 +158,9 @@ Claude intern:
          {id: "<Commit Text-ID>", value: "[v0.25.5] PlanManager, Feature: ..."},
          {id: "<Erledigt-ID>", value: "2026-04-15"},
          {id: "<Chat erstellt-ID>", value: "https://claude.ai/chat/d546b50b-..."},
-         {id: "<Chat erledigt-ID>", value: "https://claude.ai/chat/015353fe-..."}
+         {id: "<Chat erledigt-ID>", value: "https://claude.ai/chat/015353fe-..."},
+         {id: "0c72a2ea-630e-4320-9cdb-80a19bc5ebb6", value: "[BPM-ANCHOR-<task-id>] - erledigt: Commit cb46a48"}
        ]
      )
-  9. Bestätigung: "✅ BPM-007 Done. Commit cb46a48 (Teil 17), Ausarbeitung Teil 10, Typ Feature."
+  10. Memory `[ANKER-LIVE]`: Einträge zu BPM-007 entfernen
 ```

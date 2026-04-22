@@ -74,3 +74,18 @@ Gleiches 10-Fields-Schema wie bei Code-Tasks.
 - Description ohne Template bei Standard-Tasks (Meta-Tasks dürfen verkürzen)
 - **Stale-Check-Ergebnis automatisch aus Memory entfernen** ohne `ask_user_input_v0` Bestätigung
 - **Stale-Check bei jedem Chat-Turn wiederholen** — nur einmal beim Chat-Start ausführen
+
+### Batch-spezifisch (≥2 Task-Operationen in einer Antwort)
+
+Vollständige Spec: `batch-protocol.md`. Kurzliste:
+
+- **Pro-Task-Quittung weglassen** nach `create`/`update` — Format-Zwang ist Pflicht (tracker-004)
+- **Custom Fields (Chat-Anker) erst am Ende eines Batches sammeln** — pro Task setzen (tracker-001)
+- **Tabelle statt einzelner Quittungszeilen** bei mehreren Tasks
+- **Parent-Anker nutzen um Subtask-Anker zu sparen** — jeder Subtask hat eigene Task-ID und braucht eigene Quittung
+- **Batch-Audit weglassen** (`N/N Body-Anker ✅ | N/N Custom Fields ✅`)
+- **Batch-Ansage weglassen** (`📦 Batch: N Tasks (create/update/done)`) vor Beginn
+- **em-dash `—` in Custom-Field-Values** (nur ASCII `-` — em-dash löst ClickUp-API-Fehler aus)
+- **"wie gehabt" / "analog für die anderen" / "..."** statt jeder Quittung im Klartext
+- **Mehrere Tool-Calls hintereinander ohne zwischendurch Quittungen** — Quittung direkt nach jedem Call
+- **Parent als Container-Task ohne eigenen Anker** abschließen — auch Kaskaden-Abschlüsse brauchen eigene Quittung

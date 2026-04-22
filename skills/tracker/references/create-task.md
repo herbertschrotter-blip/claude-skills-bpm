@@ -47,11 +47,13 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
    - Gibt es einen Eintrag mit Typ `offen` zum Thema dieses Tasks? → TEMP-ID merken
    - Sonst: kein TEMP (Phase 2 ohne vorherige Phase 1)
 6. `clickup_create_task(list_id, name, priority, tags, markdown_description)` → Task-ID erhalten
-7. **Anker-Text in Chat schreiben** (direkt nach `clickup_create_task`):
+7. **Pro-Task-Quittung im Chat schreiben** (direkt nach `clickup_create_task`):
    ```
-   [BPM-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung> (war TEMP-<id>)
+   ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung>
    ```
-   (Brücke `(war TEMP-...)` nur wenn TEMP existierte)
+   Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
+   Bei TEMP-Brücke: ` (war TEMP-<id>)` anhängen.
+   **Bei ≥2 Tasks in einer Antwort:** Vollständiges Batch-Protokoll greift — siehe `references/batch-protocol.md` (Batch-Ansage, Pro-Task-Zyklus, Batch-Audit).
 8. **Custom Fields nachträglich setzen** via `clickup_update_task`:
    ```
    custom_fields = [
@@ -146,7 +148,9 @@ Claude intern:
   8. Chat erstellt = aktueller Chat (URL aus Session-Memory)
   9. custom_fields = [Typ=Feature, Aufwand=M, Zielversion=v0.26.0, 
                       Komponente=DocumentTypeRecognizer.cs, Chat erstellt=<url>]
-  10. clickup_create_task(...)
-  11. Memory: Next 082 → 083
-  12. Bestätigung: "✅ BPM-082 angelegt — PM | Neue Regex-Erkennung [v1, high, Feature, M]"
+  10. clickup_create_task(...) → Task-ID 86c9xyz12 erhalten
+  11. Pro-Task-Quittung im Chat:
+      ✅ BPM-082 — [BPM-ANCHOR-86c9xyz12] — erstellt: Neue Regex-Erkennung DocumentTypeRecognizer
+  12. clickup_update_task(task_id="86c9xyz12", custom_fields=[{Chat-Anker erstellt: "[BPM-ANCHOR-86c9xyz12] - erstellt: Neue Regex-Erkennung"}])
+  13. Memory: Next 082 → 083
 ```
