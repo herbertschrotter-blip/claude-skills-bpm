@@ -9,6 +9,10 @@ Kollektion aller Regeln die verhindern sollen dass tracker-Operationen schiefgeh
 | Situation | Verhalten |
 |-----------|-----------|
 | "tracker neu: ..." | Schnellmodus oder Fragemodus (ask_user_input_v0!) + Chat erstellt + Custom Fields |
+| "tracker start: ..." | Status auf `in progress` + Parent-Check + Pro-Task-Quittung |
+| "starte BPM-NNN" / "fangen wir mit BPM-NNN an" | ask_user_input_v0: Beide / Nur Subtask / Nein |
+| "los geht's" / "fangen wir an" OHNE Task-ID | Ignorieren (kein impliziter Start) |
+| User bestätigt vorgeschlagenen Task-Fokus ("ok", "mach", "weiter") | `tracker start` vor inhaltlicher Arbeit |
 | "tracker done: ..." | Commit-Info ermitteln + 10 Custom Fields + Status setzen |
 | "tracker split: ..." | Vorschlag + ask_user_input_v0 zur Bestätigung + NN.NN-Nummerierung |
 | "tracker relate: ..." | Dependency setzen via ClickUp API |
@@ -89,3 +93,12 @@ Vollständige Spec: `batch-protocol.md`. Kurzliste:
 - **"wie gehabt" / "analog für die anderen" / "..."** statt jeder Quittung im Klartext
 - **Mehrere Tool-Calls hintereinander ohne zwischendurch Quittungen** — Quittung direkt nach jedem Call
 - **Parent als Container-Task ohne eigenen Anker** abschließen — auch Kaskaden-Abschlüsse brauchen eigene Quittung
+
+### Start-spezifisch (tracker-002)
+
+- **Inhaltliche Arbeit beginnen BEVOR `tracker start` ausgeführt wurde** — Task muss vorher auf `in progress`
+- **Impliziter Start-Trigger OHNE Task-ID im Satz** — "los geht's" / "fangen wir an" ohne BPM-Nummer triggert NICHT
+- **User-Zustimmung zu Task-Fokus ignorieren** — nach "ok" / "mach" / "weiter" auf einen vorgeschlagenen Task MUSS `tracker start` vor der Arbeit
+- **Parent überschreiben wenn er schon `in progress` oder `done` ist** — nur `to do`/`open`-Parents werden auf `in progress` gesetzt
+- **Task-ID raten** wenn User Kurzform ohne eindeutige Zuordnung nutzt — stattdessen `ask_user_input_v0`
+- **Status-Wert raten** bei Listen-Typen — Fallback-Reihenfolge einhalten, bei Scheitern `ask_user_input_v0`

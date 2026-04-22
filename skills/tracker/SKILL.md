@@ -71,6 +71,7 @@ Adressiert `tracker-001` + `tracker-004`.
 | Kommando | Reference |
 |----------|-----------|
 | `tracker neu: <Beschreibung>` | `references/create-task.md` |
+| `tracker start: <BPM-NNN>` | `references/start-task.md` |
 | `tracker done: <BPM-NNN>` | `references/complete-task.md` |
 | `tracker update: <BPM-NNN> → <Änderung>` | `references/update-task.md` |
 | `tracker field: <BPM-NNN> <Feld> <Wert>` | `references/update-task.md` |
@@ -94,6 +95,7 @@ Adressiert `tracker-001` + `tracker-004`.
 | `batch-protocol.md` | Pro-Task-Quittung + Batch-Ansage + Batch-Audit + Subtask/Parent-Regeln. Gilt immer wenn ≥2 Task-Operationen in einer Antwort |
 | `chat-url-handling.md` | Chat erstellt/erledigt ermitteln, Chat-Start Kontext, recent_chats/conversation_search |
 | `create-task.md` | `tracker neu` Ablauf, Description-Template, Beispiel-Workflow |
+| `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID, Status-Werte pro Listen-Typ |
 | `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Status-Werte, Beispiel-Workflow |
 | `update-task.md` | `tracker update` + `tracker field` |
 | `search-and-status.md` | `tracker status`, `next`, `suche`, `listen` |
@@ -173,5 +175,7 @@ Details in `references/anti-patterns.md`.
 - **Custom Fields (Chat-Anker) erst am Ende eines Batches sammeln** — pro Task setzen
 - **em-dash `—` in Custom-Field-Values** verwenden (nur ASCII `-`, em-dash löst ClickUp-Fehler aus)
 - **Batch-Audit weglassen** (`N/N Body-Anker ✅ | N/N Custom Fields ✅`)
+- **Impliziter Start-Trigger OHNE Task-ID** im Satz — "los geht's" / "fangen wir an" ohne BPM-Nummer triggert NICHT
+- **Inhaltliche Arbeit starten BEVOR `tracker start` ausgeführt wurde** — Task muss vorher auf `in progress`
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

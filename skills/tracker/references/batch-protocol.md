@@ -12,7 +12,11 @@ Beide haben dieselbe Wurzel: Claude verliert bei Mehrfach-Operationen die pro-Ta
 
 ## 1. Batch-Definition
 
-**Batch** = ≥2 `clickup_create_task` **oder** status-ändernde `clickup_update_task` Aufrufe in derselben Antwort.
+**Batch** = ≥2 schreibende Task-Operationen in derselben Antwort. Schreibend heißt:
+
+- `clickup_create_task` (tracker neu)
+- `clickup_update_task` mit Status-Änderung (tracker start, tracker done)
+- `tracker start` mit Parent-Kaskade zählt als **2 Operationen** (Subtask + Parent)
 
 Auch wenn die Tasks inhaltlich unabhängig sind (z.B. 3 Issue-Tasks in verschiedenen Listen) gilt dieses Protokoll — die Disziplin-Lücke entsteht durch die Anzahl der Operationen, nicht durch deren thematische Verwandtschaft.
 
@@ -20,6 +24,7 @@ Auch wenn die Tasks inhaltlich unabhängig sind (z.B. 3 Issue-Tasks in verschied
 - 1 Task-Create + beliebig viele Custom-Field-Updates am selben Task (zählt als 1 Operation)
 - `clickup_search` / `clickup_get_task` ohne schreibenden Folgecall
 - Mehrfaches `clickup_update_task` am selben Task (gleiche Task-ID = 1 Operation)
+- `tracker start` ohne Parent (1 Operation) → keine Batch-Pflicht, aber Pro-Task-Quittung bleibt
 
 ---
 

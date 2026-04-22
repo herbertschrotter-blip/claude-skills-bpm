@@ -195,12 +195,28 @@ Tags kleingeschrieben in ClickUp. Nur an Hauptaufgaben, nicht an Unteraufgaben.
 
 | Status | Bedeutung |
 |--------|-----------|
-| open | Noch nicht angefangen |
+| open / to do | Noch nicht angefangen |
 | in progress | Wird bearbeitet (Mehr-Chat-Arbeit) |
-| done | Erledigt und committet |
+| done / complete | Erledigt und committet |
 
-**IMMER kleingeschrieben in API-Calls!** (`open` / `in progress` / `done`).
-API ist case-sensitive. Grossgeschrieben kann Fehler werfen.
+**IMMER kleingeschrieben in API-Calls!** API ist case-sensitive.
+Grossgeschrieben wirft `"Status does not exist"`-Fehler.
+
+### Status-Werte pro Listen-Typ
+
+Nicht alle ClickUp-Listen nutzen die gleichen Status-Werte. Aktueller Stand:
+
+| Listen-Typ | open | in progress | done |
+|---|---|---|---|
+| BPM-Listen (PM, DOC, SET, etc.) | `open` | `in progress` | `done` |
+| Skill-Issue-Listen (tracker, cc-steuerung, etc.) | `to do` | `in progress` | `complete` |
+
+**Regel bei Status-Änderung:**
+1. Zuerst den listen-typischen Wert versuchen (BPM → `done`, Skill-Issues → `complete`)
+2. Bei Fehler `"Status does not exist"`: Alternative probieren
+3. Wenn beide scheitern: `ask_user_input_v0` mit den bekannten Werten
+
+Für `in progress` ist der Wert listen-übergreifend gleich.
 
 ---
 
