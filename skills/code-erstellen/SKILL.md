@@ -19,6 +19,30 @@ aus DOC-STANDARD.md Kapitel 8.
 
 ---
 
+## Vorrang / Delegation an andere Skills
+
+**code-erstellen ist der größte Catch-all und würde sonst auch bei verwandten
+Themen anspringen. Deshalb gilt lokal: wenn die Hauptabsicht einer dieser
+Punkte ist, NICHT hier weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| UI-Entwurf, Layout-Klärung, Screen-Vorschlag | **mockup-erstellen** |
+| Commit-Befehl, Commit-Message, Version-Bump | **git-commit-helper** |
+| ADR, Konzept, Frontmatter, Quickload, Doku-Refactor | **doc-pflege** |
+| ClickUp-Task-Aktion (neu, done, update, split, …) | **tracker** |
+| Read-only Konsistenzprüfung zwischen Code und Docs | **audit** |
+
+Nur wenn die Hauptabsicht **echte Code-Implementierung** ist
+(Services, ViewModels, Dialoge, Persistenzlogik, Validierung, etc.),
+bleibt code-erstellen zuständig.
+
+**Wichtig:** Das ist kein globales Regelsystem, sondern lokaler Vorrang
+für den größten Catch-all. Die Delegation wird hier explizit genannt, weil
+code-erstellen sonst unbeabsichtigt die genannten Nachbarskills überschreibt.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
