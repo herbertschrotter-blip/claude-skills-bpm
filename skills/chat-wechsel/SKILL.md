@@ -189,6 +189,78 @@ Bei "Trotzdem Prompt erstellen": Hinweis in Prompt einfügen, Übergabe aus Chat
 
 ---
 
+## Memory-Scan (PFLICHT bei Handover)
+
+**Zweck:** Offene Merker, Verifikationen und Architektur-Fragen aus Memory in den Handover-Prompt übernehmen, damit sie nicht zwischen Chats verloren gehen.
+
+### Schritt 1: Memory lesen
+
+```
+memory_user_edits(command: "view")
+```
+
+### Schritt 2: Nach 4 Rubriken filtern
+
+Nur Einträge mit diesen Prefixen berücksichtigen:
+
+- `[VERIFY]` — ausstehende Prüfung / Verifikation
+- `[ARCH-OPEN]` — offene Architektur- oder Systementscheidung
+- `[INFRA-TODO]` — kleine Infrastruktur-/Prozessaufgabe, nicht ClickUp-würdig
+- `[REVIEW-PENDING]` — externe Rückmeldung oder Review-Antwort steht noch aus
+
+### Schritt 3: NICHT übernehmen
+
+Folgende Memory-Einträge gehören NICHT in den Handover:
+
+- `[CLICKUP]`-Einträge (sind Projekt-Konvention, bleiben dauerhaft)
+- `[SKILL-ISSUES]`-Einträge (Skill-Konvention, bleiben dauerhaft)
+- `[ANKER-LIVE]`-Einträge (werden separat in Chat-Anker-Übergabe behandelt)
+- Dauerhafte Konventions-Einträge ohne Rubrik-Prefix
+
+### Schritt 4: Eskalations-Hinweis
+
+Für jeden `[VERIFY]`- oder `[INFRA-TODO]`-Eintrag prüfen:
+
+- Ist der Eintrag in 3 aufeinanderfolgenden Handovern aufgetaucht?
+- Wenn ja: im Handover-Prompt kennzeichnen mit:
+  > "Dieser Punkt war jetzt in 3 Übergaben offen. Prüfen, ob ClickUp-Task sinnvoll ist."
+
+### Schritt 5: Vor Prompt-Abschluss prüfen
+
+Vor dem Finalisieren des Prompts:
+
+1. Einträge durchgehen: Wurde in diesem Chat einer erledigt?
+2. Wenn ja: Herbert fragen (per `ask_user_input_v0`):
+   > "Folgende Memory-Punkte wurden in diesem Chat bearbeitet. Entfernen?"
+3. Bei Bestätigung: `memory_user_edits(command: "remove")` pro Eintrag
+4. **Nie stillschweigend entfernen**
+
+### Schritt 6: Sektion in Handover-Prompt erzeugen
+
+Gemeinsamer Block (NICHT pro Rubrik eigener H2-Block):
+
+```markdown
+## Offene Punkte aus Memory
+
+### VERIFY
+- [Eintragstext]
+
+### ARCH-OPEN
+- [Eintragstext]
+
+### INFRA-TODO
+- [Eintragstext]
+
+### REVIEW-PENDING
+- [Eintragstext]
+```
+
+**Leere Rubriken weglassen** — nicht als leere H3-Header einfügen.
+
+Wenn KEINE Rubrik Einträge hat: komplette Sektion `## Offene Punkte aus Memory` weglassen.
+
+---
+
 ## Chat-Anker-Übergabe
 
 **Zweck:** Die Live-Registry `[ANKER-LIVE]` (aus dem Chat-Anker-System, siehe tracker-Skill) muss beim Chat-Wechsel in den neuen Chat transportiert werden, weil Memory pro Session gilt.
@@ -274,6 +346,21 @@ Docs:
 | 86c9xxx | erstellt | Thema (BPM-NNN) |
 (nur wenn Einträge vorhanden — sonst Sektion weglassen)
 
+### Offene Punkte aus Memory (gefiltert nach Rubriken):
+
+#### VERIFY
+- [Eintragstext]
+
+#### ARCH-OPEN
+- [Eintragstext]
+
+#### INFRA-TODO
+- [Eintragstext]
+
+#### REVIEW-PENDING
+- [Eintragstext]
+(leere Rubriken weglassen; wenn alle leer: ganze Sektion weglassen)
+
 ### Im Chat neu erkannt (noch nicht in ClickUp):
 - Modul — Beschreibung
 
@@ -346,6 +433,8 @@ Ermittlung der aktuellen Chat-URL:
 13. **Sonstige offene Punkte** (Pending Commits, Frontmatter, Invarianten) ZUSÄTZLICH zu ClickUp auflisten
 14. **Aktuelle Chat-URL** in Übergabe-Prompt einfügen (für Nachpflege)
 15. **`[ANKER-LIVE]` aus Memory in Übergabeprompt kopieren** und danach aus Memory leeren — Anker reisen per Prompt, nicht per Memory
+16. **Memory-Scan nach 4 Rubriken** (`[VERIFY]`, `[ARCH-OPEN]`, `[INFRA-TODO]`, `[REVIEW-PENDING]`) durchführen und als Sektion `## Offene Punkte aus Memory` in Prompt einfügen
+17. **Memory-Cleanup nur mit Bestätigung** — bei Einträgen die in diesem Chat bearbeitet wurden per `ask_user_input_v0` fragen, nie stillschweigend entfernen
 
 ---
 
@@ -367,3 +456,6 @@ Ermittlung der aktuellen Chat-URL:
 - Chat-URLs raten oder erfinden — bei Unsicherheit Feld leer lassen
 - **`[ANKER-LIVE]`-Einträge im alten Chat-Memory belassen nach Übergabe** — müssen geleert werden
 - **Anker-Sektion im Prompt als leere Tabelle einfügen wenn keine Anker vorhanden** — dann Sektion komplett weglassen
+- **`[CLICKUP]`- oder `[SKILL-ISSUES]`-Memories in Handover-Prompt übernehmen** — das sind dauerhafte Konventionen, nicht offene Punkte
+- **Rubriken `[VERIFY]`, `[ARCH-OPEN]`, `[INFRA-TODO]`, `[REVIEW-PENDING]` als leere H3-Blöcke einfügen** wenn Rubrik keine Einträge hat
+- **Memory-Einträge stillschweigend entfernen nach Abschluss** — Herbert muss explizit bestätigen
