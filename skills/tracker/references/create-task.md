@@ -1,0 +1,152 @@
+# tracker neu — Task anlegen
+
+Vollständiger Ablauf, Description-Template und Beispiel-Workflow für `tracker neu`.
+
+---
+
+## Kommando
+
+`tracker neu: <Beschreibung>`
+
+### Schnellmodus
+"neue aufgabe: PM — Index-Erkennung spinnt, v1, high, Fix, M"
+→ Direkt anlegen.
+
+### Fragemodus (Infos fehlen)
+
+Per `ask_user_input_v0` (nicht Prosa!):
+```
+Frage 1 — Modul: PlanManager, Settings, Infrastructure, Docs, Anderes
+Frage 2 — Meilenstein: v1, v1-nice, post-v1, backlog
+Frage 3 — Priorität: urgent, high, normal, low
+```
+
+Nach Basics fragen per `ask_user_input_v0`:
+```
+Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
+Frage 2 — Aufwand: S (<1h), M (1-4h), L (halber Tag), XL (>1 Tag), Später
+Frage 3 — Zielversion?: Aktuelle (v0.25.x), Nächste Minor, v1.0, Später
+```
+
+Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
+
+**Prosa-Fragen für Freitext:**
+- "Welche Komponente/Datei ist betroffen?" (falls Code-Bezug)
+- "Welche Docs sind relevant?" (falls Doc-Bezug)
+
+---
+
+## Ablauf
+
+1. BPM-<Next> aus Memory
+2. Kürzel + Liste-ID aus Tabelle (siehe `clickup-fields.md`)
+3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen
+4. **Description**: Template aus Abschnitt "Description-Template" unten generieren
+5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe `anker-system.md`):
+   - `[ANKER-LIVE]` aus Memory lesen
+   - Gibt es einen Eintrag mit Typ `offen` zum Thema dieses Tasks? → TEMP-ID merken
+   - Sonst: kein TEMP (Phase 2 ohne vorherige Phase 1)
+6. `clickup_create_task(list_id, name, priority, tags, markdown_description)` → Task-ID erhalten
+7. **Anker-Text in Chat schreiben** (direkt nach `clickup_create_task`):
+   ```
+   [BPM-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung> (war TEMP-<id>)
+   ```
+   (Brücke `(war TEMP-...)` nur wenn TEMP existierte)
+8. **Custom Fields nachträglich setzen** via `clickup_update_task`:
+   ```
+   custom_fields = [
+     {"id": "<Typ-ID>", "value": "<Typ-Option-ID>"},
+     {"id": "<Aufwand-ID>", "value": "<Aufwand-Option-ID>"},
+     {"id": "<Zielversion-ID>", "value": "v0.26.0"},
+     {"id": "<Komponente-ID>", "value": "DocumentTypeRecognizer.cs"},
+     {"id": "<Zugehörige Docs-ID>", "value": "Docs/Kern/DB-SCHEMA.md"},
+     {"id": "512b8920-e958-4e43-826e-110e3bccdfc2", "value": "<task-id>"},
+     // Falls TEMP existierte:
+     {"id": "fef35671-3752-4bf2-bcb8-f29482d3a2d7", "value": "TEMP-<id>"}
+   ]
+   ```
+9. **Memory `[ANKER-LIVE]` aktualisieren**:
+   - Falls TEMP existierte: Eintrag **ersetzen** (TEMP-... → Task-ID-Eintrag mit Typ `erstellt`)
+   - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
+10. Memory: Next +1
+11. Bestätigung an User inkl. Task-ID als Anker-Referenz
+
+---
+
+## Description-Template (Default bei tracker neu)
+
+Neue Tasks bekommen automatisch dieses Markdown-Template als Description:
+
+```markdown
+## Problem
+<Was ist kaputt / was fehlt / was muss besser werden?>
+
+## Lösungsansatz
+<Wie lösen wir das konkret? Falls noch unklar: "Offen">
+
+## Acceptance Criteria
+- [ ] <Kriterium 1>
+- [ ] <Kriterium 2>
+
+## Definition of Done
+- [ ] Code implementiert
+- [ ] Manuell getestet
+- [ ] Dokumentation aktualisiert
+- [ ] Commit gemacht
+
+## Abhängigkeiten / Related
+<Falls ClickUp-Dependencies gesetzt: hier noch mal Freitext-Notizen>
+<Oder Verweise auf Docs: Docs/Kern/DB-SCHEMA.md>
+
+## Technische Notizen
+<Beliebige weitere Infos, Code-Snippets, Links, Hintergrund>
+```
+
+**Regeln:**
+- Für **Meta-Tasks** (ClickUp-Pflege, Skill-Updates) das Template **verkürzen**:
+  nur Problem + Lösungsansatz
+- Für **Mockup-Tasks**: AC ersetzen durch konkrete Screen-Bereiche
+- Für **Konzept-Tasks**: DoD nur "Konzept-Doc geschrieben + in INDEX verlinkt"
+- Template auch bei `tracker done` prüfen: DoD-Checkliste abhaken
+
+### Bei Unteraufgaben
+
+Unteraufgaben bekommen ein **verkürztes Template**:
+
+```markdown
+## Aufgabe
+<Was genau in diesem Schritt?>
+
+## Definition of Done
+- [ ] <konkret>
+```
+
+Kein Problem/Lösungsansatz (das steht im Parent).
+
+---
+
+## Beispiel-Workflow: tracker neu mit allen Feldern
+
+```
+User: tracker neu: PM — neue Regex-Erkennung in DocumentTypeRecognizer, v1, high
+
+Claude intern:
+  1. BPM-<Next> aus Memory: BPM-082
+  2. Kürzel PM → Liste 901522848097
+  3. Dedup: clickup_search "Regex DocumentTypeRecognizer" → kein Treffer
+  4. ask_user_input_v0:
+     Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
+     Frage 2 — Aufwand: S, M, L, XL, Später
+     User antwortet: Feature, M
+  5. Prosa-Frage: "Welche Komponente?"
+     User: "DocumentTypeRecognizer.cs"
+  6. Prosa-Frage: "Zielversion?"
+     User: "v0.26.0"
+  7. Description-Template generieren
+  8. Chat erstellt = aktueller Chat (URL aus Session-Memory)
+  9. custom_fields = [Typ=Feature, Aufwand=M, Zielversion=v0.26.0, 
+                      Komponente=DocumentTypeRecognizer.cs, Chat erstellt=<url>]
+  10. clickup_create_task(...)
+  11. Memory: Next 082 → 083
+  12. Bestätigung: "✅ BPM-082 angelegt — PM | Neue Regex-Erkennung [v1, high, Feature, M]"
+```
