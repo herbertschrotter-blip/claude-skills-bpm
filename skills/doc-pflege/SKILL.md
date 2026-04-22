@@ -115,11 +115,17 @@ oder das Frühphasen-Kapitel in INDEX.md offiziell entfernt wurde.
 
 ---
 
-## Automatischer Checkpoint (Modus 4) — Advisory
+## Advisory-Checkliste nach code-relevanten Änderungen
 
-### Wann? (Change-Class-basiert)
+**Dieser Abschnitt ist KEIN Trigger.**
+Er wird von anderen Skills nach einer Änderung als **Nachlauf-Checkliste** genutzt.
+Der User-Intent für doc-pflege steht ausschließlich in der Frontmatter-Description.
+Die hier beschriebene Checkliste wird passiv konsumiert (z.B. durch code-erstellen
+oder git-commit-helper), sie aktiviert doc-pflege nicht selbst.
 
-Modus 4 triggert NUR nach doc-relevanten Änderungen:
+### Typische Fälle (Change-Class-basiert)
+
+Die Nachlauf-Checkliste wird nach doc-relevanten Änderungen durchlaufen:
 - Neue Tabelle / Schemaänderung
 - Neue Architekturentscheidung
 - Neuer Code-Entry-Point (neues Interface, neuer Service, neuer Dialog)
@@ -195,7 +201,7 @@ Hints konsumieren, Hinweise ausgeben.
 
 ### Modus 4 — Automatischer Checkpoint (Advisory)
 
-**Wann:** Nach doc-relevanten Änderungen (siehe Change-Class oben).
+**Wann:** Nach doc-relevanten Änderungen (siehe Abschnitt "Advisory-Checkliste nach code-relevanten Änderungen" oben — Nachlauf-Checkliste, kein Trigger).
 
 Kurze Advisory-Merkliste ausgeben.
 NICHT bei trivialen Änderungen.
