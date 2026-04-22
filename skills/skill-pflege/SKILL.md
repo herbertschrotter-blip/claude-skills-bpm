@@ -5,7 +5,8 @@ description: >
   ungewollt zu kürzen oder umzuschreiben. Use when users want to update an
   existing skill, add rules to a current SKILL.md, adjust trigger wording, or
   refine an already existing skill safely. Do not trigger for creating a brand
-  new skill from scratch, running skill evals, or designing a new skill system.
+  new skill from scratch (use skill-neu instead), running skill evals, or
+  designing a new skill system.
 ---
 
 # Skill-Pflege — Sichere Änderung bestehender Skills
@@ -294,3 +295,16 @@ Claude:
 - Zwischen mehreren Skills ohne ask_user_input_v0 Bestätigung wechseln
 - Diff-Report weglassen bei nicht-trivialen Änderungen
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER ask_user_input_v0
+
+
+---
+
+## VERWEIS
+
+**Komplett neuen Skill anlegen? → `skill-neu`**
+
+`skill-neu` ist der Schwester-Skill für Neu-Erstellung. Er hat eigene Struktur (Capture-Intent-Interview, BPM-Description-Schema, Test-Prompt-Setup). `skill-pflege` macht ausschließlich Änderungen an bestehenden Skills.
+
+Faustregel:
+- Existiert die SKILL.md schon? → `skill-pflege` (hier)
+- Datei wird ganz neu angelegt? → `skill-neu`
