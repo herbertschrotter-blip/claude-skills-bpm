@@ -62,7 +62,15 @@ Bei ≥2 Task-Operationen in derselben Antwort greift das **Batch-Protokoll**:
 Batch-Ansage vor Beginn, Pro-Task-Zyklus, Batch-Audit am Ende.
 Vollständige Spec: `references/batch-protocol.md`.
 
-Adressiert `tracker-001` + `tracker-004`.
+**In Folge-Antworten** die einen Task inhaltlich besprechen (ohne Tool-Call)
+steht oben ein Referenz-Anker:
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<task-id>] <name>.
+```
+Bei Quittung in derselben Antwort entfällt der Referenz-Anker für diesen Task
+(Quittung hat Vorrang). Spec: `references/batch-protocol.md` Kapitel 2b.
+
+Adressiert `tracker-001`, `tracker-004`, `tracker-005`.
 
 ---
 
@@ -177,5 +185,6 @@ Details in `references/anti-patterns.md`.
 - **Batch-Audit weglassen** (`N/N Body-Anker ✅ | N/N Custom Fields ✅`)
 - **Impliziter Start-Trigger OHNE Task-ID** im Satz — "los geht's" / "fangen wir an" ohne BPM-Nummer triggert NICHT
 - **Inhaltliche Arbeit starten BEVOR `tracker start` ausgeführt wurde** — Task muss vorher auf `in progress`
+- **Referenz-Anker in Folge-Antworten weglassen** — wenn eine Antwort einen Task inhaltlich betrifft und keine Quittung enthält, MUSS oben `Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<id>] <name>.` stehen
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

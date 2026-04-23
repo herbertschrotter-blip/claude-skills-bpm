@@ -102,3 +102,11 @@ Vollständige Spec: `batch-protocol.md`. Kurzliste:
 - **Parent überschreiben wenn er schon `in progress` oder `done` ist** — nur `to do`/`open`-Parents werden auf `in progress` gesetzt
 - **Task-ID raten** wenn User Kurzform ohne eindeutige Zuordnung nutzt — stattdessen `ask_user_input_v0`
 - **Status-Wert raten** bei Listen-Typen — Fallback-Reihenfolge einhalten, bei Scheitern `ask_user_input_v0`
+
+### Referenz-Anker in Folge-Antworten (tracker-005)
+
+- **Referenz-Anker weglassen** in Folge-Antworten die einen Task inhaltlich betreffen (Commit-Vorschlag, Klärung, Fehler-Fix, Fortschritt)
+- **Referenz-Anker unten** statt oben in der Antwort — erschwert Suche und Überblick
+- **Referenz-Anker und Quittung für denselben Task doppelt** zeigen — Quittung enthält den Anker bereits inline
+- **Referenz-Anker für rein beiläufige Erwähnung** setzen — "die 4 tracker-Issues" in einer Aufzählung braucht keinen Anker
+- **Task inhaltlich diskutieren ohne Anker** — Thread verliert sonst die Audit-Spur für spätere `conversation_search`

@@ -56,6 +56,91 @@ Beispiele:
 
 ---
 
+## 2b. Referenz-Anker in Folge-Antworten (PFLICHT)
+
+Adressiert `tracker-005`. Die Pro-Task-Quittung aus Kapitel 2 greift nur **im
+Moment des Tool-Calls**. Wenn ein Task über mehrere Antworten hinweg inhaltlich
+besprochen wird (Commit-Vorschlag, Klärungsfrage, Fehler-Fix, Fortschritt),
+versinkt er ohne Anker im Chat.
+
+### Format
+
+**Am Anfang jeder Antwort** die einen bereits existierenden Task inhaltlich
+betrifft:
+
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<task-id>] <name>.
+```
+
+- Einzelner Task: `[BPM-ANCHOR-86c9feyj9] tracker-005.`
+- Mehrere Tasks: `[BPM-ANCHOR-86c9feyj9] tracker-005, [BPM-ANCHOR-86c9f7awj] tracker-001.`
+
+### Wann Pflicht
+
+- Commit-Vorschlag für einen Task
+- Klärungsfrage zu laufendem Task-Fix
+- Fehler-Diagnose während Task-Arbeit
+- Status-Update / Fortschrittsbericht
+- Nachträgliche Analyse oder Konzept-Änderung
+- Antwort in einem Thread der einen aktiven Task behandelt
+
+### Wann NICHT Pflicht
+
+- Task-ID nur in Aufzählung erwähnt ("die 4 tracker-Issues")
+- Antwort rein über Meta/Tooling (DC, git, Skill-System)
+- Rückfrage ohne Task-Bezug
+- Reine Begrüßung / Abschluss
+
+### Abgrenzung zu Pro-Task-Quittung
+
+Die Quittung aus Kapitel 2 enthält den Anker bereits inline
+(`✅ <id> — [BPM-ANCHOR-<task-id>] — <typ>: <kurz>`). Wenn in derselben
+Antwort eine Quittung steht, **entfällt der separate Referenz-Anker oben**
+für diesen Task.
+
+Für Tasks die *nur erwähnt* werden (ohne Tool-Call) bleibt der Referenz-Anker
+oben aber pflicht — auch wenn in derselben Antwort ein anderer Task eine
+Quittung bekommt.
+
+### Beispiele
+
+**Quittung in der Antwort → KEIN separater Referenz-Anker für diesen Task:**
+
+```
+[clickup_update_task tracker-002 status: "in progress"]
+
+✅ tracker-002 — [BPM-ANCHOR-86c9f7cm4] — start: in progress
+```
+
+**Reine inhaltliche Diskussion ohne Tool-Call → Referenz-Anker oben:**
+
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-86c9feyj9] tracker-005.
+
+Dein Vorschlag A passt besser weil [...]
+```
+
+**Mix: Ein Task mit Tool-Call, zweiter nur erwähnt:**
+
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-86c9feyj9] tracker-005.
+
+[clickup_update_task tracker-002 status: "in progress"]
+
+✅ tracker-002 — [BPM-ANCHOR-86c9f7cm4] — start: in progress
+
+Die Regel für tracker-005 greift danach analog [...]
+```
+
+### VERBOTEN
+
+- Referenz-Anker weglassen in Folge-Antworten die den Task inhaltlich betreffen
+- Referenz-Anker unten statt oben (erschwert Suche und Überblick)
+- Referenz-Anker und Quittung für denselben Task doppelt zeigen
+- Referenz-Anker für Tasks setzen die nur am Rande erwähnt werden (z.B. in langen Aufzählungen)
+
+---
+
 ## 3. Pro-Task-Custom-Fields (PFLICHT)
 
 Im **selben Tool-Call-Block** wie `clickup_create_task` bzw. der status-ändernde `clickup_update_task` müssen gesetzt werden:
