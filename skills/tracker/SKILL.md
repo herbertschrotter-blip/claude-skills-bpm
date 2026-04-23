@@ -142,6 +142,7 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 | Kommando | Reference |
 |----------|-----------|
 | `tracker neu: <Beschreibung>` | `references/create-task.md` |
+| `tracker issue <skill>: <Titel>` | `references/issue-task.md` |
 | `tracker start: <BPM-NNN>` | `references/start-task.md` |
 | `tracker done: <BPM-NNN>` | `references/complete-task.md` |
 | `tracker update: <BPM-NNN> → <Änderung>` | `references/update-task.md` |
@@ -166,7 +167,8 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 | `batch-protocol.md` | Pro-Task-Quittung + Batch-Ansage + Batch-Audit + Subtask/Parent-Regeln. Gilt immer wenn ≥2 Task-Operationen in einer Antwort |
 | `chat-url-handling.md` | Chat erstellt/erledigt ermitteln, Chat-Start Kontext, recent_chats/conversation_search |
 | `create-task.md` | `tracker neu` Ablauf, Description-Template, Beispiel-Workflow |
-| `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID, Status-Werte pro Listen-Typ |
+| `issue-task.md` | `tracker issue` Ablauf, Skill-Issue-Listen-Routing, Issue-ID-Nummerierung, Skill-Issues-Scope Custom Fields |
+| `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID |
 | `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Status-Werte, Beispiel-Workflow |
 | `update-task.md` | `tracker update` + `tracker field` |
 | `search-and-status.md` | `tracker status`, `next`, `suche`, `listen` |
