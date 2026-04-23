@@ -186,6 +186,41 @@ Antwort N+1 (nach User-Bestätigung "gespeichert"):
 
 **Gilt für:** jede Kombination aus Artifact + Folgefrage. Nicht nur bei SKILL.md-Artifacts, sondern bei allen Artifacts, bei denen der User noch eine Aktion (Kopieren, Speichern, Ansehen) ausführen muss.
 
+### 14b. 🔴 Artifact-Pflicht nach Skill-Commit (KRITISCH, skill-pflege-005)
+
+Nach JEDEM Skill-Commit (PATCH/MINOR auf einen beliebigen Skill) MUSS Claude
+in derselben oder direkt folgenden Antwort ein Artifact mit der kompletten
+neuen SKILL.md erzeugen.
+
+**Ohne Artifact bleibt der aktive Skill in Claude.ai unverändert.** Herbert
+arbeitet weiter mit der alten Version, obwohl das Repo längst aktualisiert ist.
+
+**Pflicht-Trigger (Artifact MUSS erzeugt werden):**
+
+- `tracker done` auf einen Skill-Task (Skill-Issues-Listen-Scope)
+- Direkter `edit_block` oder `write_file` auf `skills/*/SKILL.md`
+- Git-Commit mit Format `[vX.Y.Z] <skill>, <Typ>: ...`
+
+**Ausnahmen (kein Artifact nötig):**
+
+- Zero-Change-Commits auf Skills (reine Pfad-Anpassungen ohne Inhaltsänderung)
+- Commits die ausschliesslich `references/`-Dateien ändern, NICHT die
+  SKILL.md selbst
+
+**Workflow-Reihenfolge (verbindlich):**
+
+1. Repo-Edit via DC (`edit_block` / `write_file`)
+2. Git-Commit
+3. Artifact mit `create_file path=/home/claude/SKILL.md` im selben oder direkt
+   folgenden Antwort-Block
+4. Antwort abschliessen (kein `ask_user_input_v0`, siehe 14a)
+
+**Bei mehreren Skill-Commits in einer Session:**
+
+- Pro geändertem Skill EIN Artifact
+- In SEPARATEN Antwort-Blöcken (nicht zwei Artifacts in einer Antwort)
+- User bestätigt "gespeichert" zwischen den Skills (siehe Regel 15 + 16)
+
 ### 15. Nach Speicher-Bestätigung erst weiter
 
 Nicht gleich mehrere Skills hintereinander aktualisieren. Jeder einzelne wird gespeichert, dann weiter.
@@ -402,6 +437,7 @@ Fälle erkennt, MUSS er den User informieren und ein Issue vorschlagen:
 - Diff-Report weglassen bei nicht-trivialen Änderungen
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER ask_user_input_v0
 - **`ask_user_input_v0` direkt nach Artifact-Erstellung im selben Antwort-Block** — verdrängt das Artifact in der UI (skill-pflege-003)
+- **Skill-Commit ohne Artifact im Chat liefern** — aktive Claude.ai-Skills bleiben sonst beim alten Stand (skill-pflege-005)
 
 
 ---
