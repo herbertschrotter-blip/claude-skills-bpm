@@ -169,7 +169,7 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 | `create-task.md` | `tracker neu` Ablauf, Description-Template, Beispiel-Workflow |
 | `issue-task.md` | `tracker issue` Ablauf, Skill-Issue-Listen-Routing, Issue-ID-Nummerierung, Skill-Issues-Scope Custom Fields |
 | `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID |
-| `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Status-Werte, Beispiel-Workflow |
+| `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Commit-Disziplin (ein Task = ein Commit), Status-Werte, Beispiel-Workflow |
 | `update-task.md` | `tracker update` + `tracker field` |
 | `search-and-status.md` | `tracker status`, `next`, `suche`, `listen` |
 | `split-and-relations.md` | Unteraufgaben-Regeln, `tracker split`, `tracker relate`, Dependency-Typen |
@@ -253,5 +253,6 @@ Details in `references/anti-patterns.md`.
 - **Referenz-Anker in Folge-Antworten weglassen** — wenn eine Antwort einen Task inhaltlich betrifft und keine Quittung enthält, MUSS oben `Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<id>] <name>.` stehen
 - **Projekt-Daten hartkodieren** im Skill (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel) — alles aus `projects/<[PROJECT]>/` lesen
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
+- **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

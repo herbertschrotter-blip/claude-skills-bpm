@@ -66,6 +66,50 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
     ```
 ---
 
+## Commit-Disziplin: ein Task = ein Commit
+
+**Kernregel:** Jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen
+Commit. Kein Sammeln am Session-Ende.
+
+### Workflow pro Task
+
+1. Task umsetzen (Code/Doc-Änderung)
+2. Review-Workflow-Check (siehe `tracker-006` Regel): Parent / Siblings / verweisende offene Tasks betroffen?
+3. Commit-Befehl vorbereiten (Versionierung siehe unten)
+4. Commit **sofort** nach Abschluss — nicht sammeln
+5. Hash aus Commit-Output übernehmen (oder via `git log -1 --format="%h"` ermitteln)
+6. `tracker done` mit Commit-Hash im Custom Field `Commit ID` ausführen
+
+### Ausnahmen
+
+- **Nachhol-Commits bei Skill-Regel-Wechsel mitten in einer Session:**
+  Wenn die Commit-Disziplin-Regel selbst erst mitten in einer laufenden Phase
+  eingeführt/geändert wird, ist ein einmaliger Sammel-Commit für alle
+  bereits erledigten Subtasks erlaubt. Diese Ausnahme MUSS im
+  Session-Protokoll (Übergabeprompt) dokumentiert sein.
+
+- **Zero-Change-Tasks:** Tasks ohne Git-Änderung (Task-Description-Updates,
+  Memory-Edits, reine ClickUp-Pflege) brauchen keinen Commit. Custom Field
+  `Commit ID` und `Commit Text` bleiben leer. Im Quittungstext mit
+  `(Zero-Change)` markieren, damit das leere Feld nachvollziehbar ist.
+
+### Versionierung
+
+- **PATCH** (`vX.Y.Z+1`): kleine Refactors, Doku-Ergänzungen, Bugfixes innerhalb einer Phase
+- **MINOR** (`vX.Y+1.0`): neue Features, abgeschlossene Phasen, neue Reference-Dateien
+- **MAJOR** (`vX+1.0.0`): Breaking Changes (Skill-Struktur-Umbau, Routing-Bruch)
+
+### Abgrenzung zu `git-commit-helper`
+
+| Skill | Verantwortung |
+|-------|---------------|
+| `tracker` | **WANN** committet wird (Task-Lebenszyklus-Kopplung) |
+| `git-commit-helper` | **WIE** der Commit formatiert wird (Format, Version, Titel, Body) |
+
+Commit-Disziplin gehört in `tracker`, Commit-Formatierung in `git-commit-helper`.
+
+---
+
 ## Status-Werte IMMER kleingeschrieben
 
 - `open` (nicht Open)

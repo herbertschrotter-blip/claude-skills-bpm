@@ -79,6 +79,14 @@ Gleiches 10-Fields-Schema wie bei Code-Tasks.
 - **Stale-Check-Ergebnis automatisch aus Memory entfernen** ohne `ask_user_input_v0` Bestätigung
 - **Stale-Check bei jedem Chat-Turn wiederholen** — nur einmal beim Chat-Start ausführen
 
+### Commit-Disziplin (tracker-007)
+
+- **Sammeln von mehreren Subtasks auf einen Commit** ohne dokumentierte Ausnahme — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit
+- **Commit aufschieben bis zum Session-Ende** — Commit direkt nach Task-Abschluss, nicht sammeln
+- **Zero-Change-Tasks mit leerem `Commit ID`-Feld unkommentiert lassen** — Quittung MUSS `(Zero-Change)` enthalten damit das leere Feld nachvollziehbar ist
+- **Versionierung ignorieren** — PATCH für kleine Refactors, MINOR für Features/Phasen, MAJOR für Breaking Changes
+- **WANN vs. WIE vermischen** — `tracker` steuert WANN committet wird, `git-commit-helper` formatiert WIE; Commit-Disziplin gehört NICHT in `git-commit-helper`
+
 ### Batch-spezifisch (≥2 Task-Operationen in einer Antwort)
 
 Vollständige Spec: `batch-protocol.md`. Kurzliste:
