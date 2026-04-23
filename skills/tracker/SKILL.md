@@ -74,6 +74,69 @@ Adressiert `tracker-001`, `tracker-004`, `tracker-005`.
 
 ---
 
+## 🚨 Kernregel: Projekt-Config aus `projects/<[PROJECT]>/`
+
+**Alle projekt-spezifischen Daten (Listen-IDs, Custom-Field-IDs,
+Option-IDs, Modul-Kürzel, Meilenstein-Tags, Status-Werte-Matrix) werden
+zur Laufzeit aus `projects/<[PROJECT]>/` gelesen — NICHT hartkodiert
+im Skill.**
+
+### Wie Claude das aktive Projekt ermittelt
+
+1. Memory scannen nach Eintrag `[PROJECT] <n> | ...`
+2. Projekt-Config-Pfad konstruieren: `projects/<n>/`
+3. Benötigte Datei lesen:
+   - `projects/<[PROJECT]>/clickup-lists.md` — Listen-IDs + Scope-Routing
+   - `projects/<[PROJECT]>/clickup-fields.md` — Custom-Field-IDs + Option-IDs + Modul-Kürzel + Status-Werte
+   - `projects/<[PROJECT]>/memory-format.md` — Memory-Eintragsformate
+
+### Fallback wenn `[PROJECT]`-Memory fehlt
+
+```
+1. Claude scannt Memory → kein [PROJECT]-Eintrag gefunden
+2. Claude listet vorhandene Ordner in projects/
+3. ask_user_input_v0: "Welches Projekt ist aktiv?"
+   Optionen = gefundene Ordner-Namen
+4. User wählt → Claude schlägt Memory-Eintrag vor
+5. User bestätigt → Claude schreibt [PROJECT]-Eintrag via memory_user_edits
+```
+
+### Fallback wenn Projekt-Config-Datei fehlt
+
+```
+1. Claude versucht projects/<[PROJECT]>/<datei>.md zu lesen
+2. Datei existiert nicht → Prosa-Info: "Datei fehlt, Skill läuft im
+   Universell-Modus. Bitte Daten manuell angeben oder Datei anlegen."
+3. Claude fragt nach den konkreten Daten die aktuell benötigt werden
+```
+
+### Fallback wenn `projects/`-Verzeichnis leer
+
+```
+Skill läuft im Universell-Modus. Alle konkreten Werte werden ad-hoc
+vom User abgefragt. Empfehlung: Projekt-Ordner anlegen — siehe
+docs/project-architecture.md.
+```
+
+### Beispiel-Muster für Skill-interne Verweise
+
+Statt einer hartkodierten Tabelle wie früher:
+```
+| PlanManager | PM | 901522848097 |
+| Docs | DOC | 901522848102 |
+...
+```
+
+steht jetzt im Skill nur noch:
+```
+Modul-Kürzel und Listen-IDs siehe
+`projects/<[PROJECT]>/clickup-fields.md` Abschnitt 3.
+```
+
+Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
+
+---
+
 ## Routing: Kommando → Reference-Datei
 
 | Kommando | Reference |
@@ -186,5 +249,7 @@ Details in `references/anti-patterns.md`.
 - **Impliziter Start-Trigger OHNE Task-ID** im Satz — "los geht's" / "fangen wir an" ohne BPM-Nummer triggert NICHT
 - **Inhaltliche Arbeit starten BEVOR `tracker start` ausgeführt wurde** — Task muss vorher auf `in progress`
 - **Referenz-Anker in Folge-Antworten weglassen** — wenn eine Antwort einen Task inhaltlich betrifft und keine Quittung enthält, MUSS oben `Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<id>] <name>.` stehen
+- **Projekt-Daten hartkodieren** im Skill (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel) — alles aus `projects/<[PROJECT]>/` lesen
+- **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

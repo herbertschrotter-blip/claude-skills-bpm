@@ -15,12 +15,12 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 1. **Task finden** via `clickup_search` (falls BPM-NNN nicht explizit)
 2. **Mehrere Treffer** → mit `ask_user_input_v0` User wählen lassen
 3. **Commit-Infos ermitteln** (Pflicht):
-   - Wenn Task Code-Bezug hat (SET/PM/INF/APP/DOM/THM):
+   - Wenn Task Code-Bezug hat (Modul mit Code-Scope — siehe `projects/<[PROJECT]>/clickup-fields.md` Modul-Kürzel):
      - Claude fragt User: "Welche Datei(en) sind betroffen?" (Prosa, offene Frage!)
      - Per DC: `git log -1 --format="%h|%ad|%s" --date=short -- <Datei>`
      - Oder: `git log --all --diff-filter=A --format="%h %ad %s" --date=short -- <Datei>` (erste Erwähnung)
      - Oder: `git log --grep="vX.Y.Z" --format="%h %ad %s" --date=short` (Version bekannt)
-   - Wenn Task reiner Doc-Bezug (DOC/KON):
+   - Wenn Task reiner Doc-Bezug:
      - Gleicher Weg, aber auf Docs/ Pfade
    - Wenn Task keinen Code-Bezug hat (z.B. Meta-Task):
      - Commit ID + Commit Text leer lassen
@@ -35,13 +35,13 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 6. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
    - Falls alle leer: `ask_user_input_v0` mit fehlenden Feldern
-7. **Custom Fields vorbereiten**:
+7. **Custom Fields vorbereiten** (konkrete Field-IDs siehe `projects/<[PROJECT]>/clickup-fields.md`):
    ```
    custom_fields = [
-     {"id": "a851a04d-f34a-429f-abce-bec0b0b6859f", "value": "<7-char-hash>"},
-     {"id": "cae9f6cb-e0eb-44aa-81f8-df2e1194111e", "value": "<erste Zeile der Commit-Message>"},
-     {"id": "457bde4f-c9c1-40ab-b464-897b7f87e6bc", "value": "<YYYY-MM-DD>"},
-     {"id": "0c72a2ea-630e-4320-9cdb-80a19bc5ebb6", "value": "<task-id>"},
+     {"id": "<Commit-ID-Field>",         "value": "<7-char-hash>"},
+     {"id": "<Commit-Text-Field>",       "value": "<erste Zeile der Commit-Message>"},
+     {"id": "<Erledigt-Field>",          "value": "<YYYY-MM-DD>"},
+     {"id": "<Chat-Anker-erledigt-Field>", "value": "[BPM-ANCHOR-<task-id>] - erledigt: ..."},
      // + Nachpflege-Felder falls gesetzt
    ]
    ```
@@ -49,7 +49,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    ```
    clickup_update_task(
      task_id: "<TaskID>",
-     status: "done",     ← KLEINGESCHRIEBEN (case-sensitive)
+     status: "<done-oder-complete-je-nach-Listen-Typ>",   ← KLEINGESCHRIEBEN, Wert aus projects/<[PROJECT]>/clickup-fields.md Status-Matrix
      custom_fields: custom_fields
    )
    ```
@@ -128,7 +128,10 @@ In der Regel: Erster Commit der die Funktionalität eingeführt hat (diff-filter
 - Für Chat-Suche: ISO-Zeitstempel mit Stunde/Minute (für recent_chats Zeitfilter)
 ---
 
-## Beispiel-Workflow: tracker done mit vollständiger Chat-Ermittlung
+## Beispiel-Workflow (BPM-Projekt, `tracker done` mit Commit-Ermittlung)
+
+Dieser Beispiel-Ablauf zeigt einen konkreten `tracker done`-Durchlauf für BPM.
+Feld-IDs und Status-Werte stehen in `projects/bpm/clickup-fields.md`.
 
 ```
 User: tracker done BPM-007
@@ -159,7 +162,7 @@ Claude intern:
          {id: "<Erledigt-ID>", value: "2026-04-15"},
          {id: "<Chat erstellt-ID>", value: "https://claude.ai/chat/d546b50b-..."},
          {id: "<Chat erledigt-ID>", value: "https://claude.ai/chat/015353fe-..."},
-         {id: "0c72a2ea-630e-4320-9cdb-80a19bc5ebb6", value: "[BPM-ANCHOR-<task-id>] - erledigt: Commit cb46a48"}
+         {id: "<Chat-Anker-erledigt-ID>", value: "[BPM-ANCHOR-<task-id>] - erledigt: Commit cb46a48"}
        ]
      )
   10. Memory `[ANKER-LIVE]`: Einträge zu BPM-007 entfernen

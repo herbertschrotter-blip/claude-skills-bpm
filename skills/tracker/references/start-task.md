@@ -115,17 +115,14 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 ## Status-Werte pro Listen-Typ
 
-Nicht alle ClickUp-Listen nutzen die gleichen Status-Werte. Aktueller Stand:
-
-| Listen-Typ | open | in progress | done |
-|---|---|---|---|
-| BPM-Listen | `open` | `in progress` | `done` |
-| Skill-Issue-Listen | `to do` | `in progress` | `complete` |
+Nicht alle Listen nutzen die gleichen Status-Werte. Die konkrete Matrix
+(z.B. BPM-Listen mit `done`, Skill-Issues-Listen mit `complete`) steht in
+`projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Status-Werte pro Listen-Typ".
 
 Bei `tracker start` ist nur `in progress` relevant — der Wert ist
 listen-übergreifend gleich.
 
-Bei `tracker done`: Fallback-Reihenfolge `done` → `complete`. Bei Fehler
+Bei `tracker done`: Fallback-Reihenfolge gemäß Projekt-Matrix. Bei Fehler
 `ask_user_input_v0` mit Alternativen.
 
 ---

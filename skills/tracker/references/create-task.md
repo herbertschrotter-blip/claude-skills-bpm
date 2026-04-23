@@ -14,7 +14,12 @@ Vollständiger Ablauf, Description-Template und Beispiel-Workflow für `tracker 
 
 ### Fragemodus (Infos fehlen)
 
-Per `ask_user_input_v0` (nicht Prosa!):
+Per `ask_user_input_v0` (nicht Prosa!). Gültige Werte für Modul-Auswahl
+und Meilensteine stehen in `projects/<[PROJECT]>/clickup-fields.md`
+(Modul-Kürzel-Tabelle + Meilenstein-Tags). Konkrete Zielversion-Optionen
+ergeben sich aus Memory `[CLICKUP]` und dem aktuellen Release-Stand.
+
+Beispiel (BPM-Projekt):
 ```
 Frage 1 — Modul: PlanManager, Settings, Infrastructure, Docs, Anderes
 Frage 2 — Meilenstein: v1, v1-nice, post-v1, backlog
@@ -25,8 +30,11 @@ Nach Basics fragen per `ask_user_input_v0`:
 ```
 Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
 Frage 2 — Aufwand: S (<1h), M (1-4h), L (halber Tag), XL (>1 Tag), Später
-Frage 3 — Zielversion?: Aktuelle (v0.25.x), Nächste Minor, v1.0, Später
+Frage 3 — Zielversion: Aktuelle, Nächste Minor, später
 ```
+
+Die konkreten Typ/Aufwand-Options sind projekt-spezifisch — siehe
+`projects/<[PROJECT]>/clickup-fields.md`.
 
 Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 
@@ -38,8 +46,8 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 
 ## Ablauf
 
-1. BPM-<Next> aus Memory
-2. Kürzel + Liste-ID aus Tabelle (siehe `clickup-fields.md`)
+1. Nächste freie Haupt-Nummer aus Memory `[CLICKUP]` (z.B. `BPM-<Next>`) — Prefix aus `projects/<[PROJECT]>/clickup-fields.md`
+2. Kürzel + Liste-ID aus `projects/<[PROJECT]>/clickup-fields.md` (Modul-Kürzel-Tabelle) bzw. `projects/<[PROJECT]>/clickup-lists.md`
 3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen
 4. **Description**: Template aus Abschnitt "Description-Template" unten generieren
 5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe `anker-system.md`):
@@ -54,19 +62,20 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
    Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
    Bei TEMP-Brücke: ` (war TEMP-<id>)` anhängen.
    **Bei ≥2 Tasks in einer Antwort:** Vollständiges Batch-Protokoll greift — siehe `references/batch-protocol.md` (Batch-Ansage, Pro-Task-Zyklus, Batch-Audit).
-8. **Custom Fields nachträglich setzen** via `clickup_update_task`:
+8. **Custom Fields nachträglich setzen** via `clickup_update_task`. Beispiel-Struktur:
    ```
    custom_fields = [
-     {"id": "<Typ-ID>", "value": "<Typ-Option-ID>"},
-     {"id": "<Aufwand-ID>", "value": "<Aufwand-Option-ID>"},
-     {"id": "<Zielversion-ID>", "value": "v0.26.0"},
-     {"id": "<Komponente-ID>", "value": "DocumentTypeRecognizer.cs"},
-     {"id": "<Zugehörige Docs-ID>", "value": "Docs/Kern/DB-SCHEMA.md"},
-     {"id": "512b8920-e958-4e43-826e-110e3bccdfc2", "value": "<task-id>"},
+     {"id": "<Typ-Field-ID>",         "value": "<Typ-Option-ID>"},
+     {"id": "<Aufwand-Field-ID>",     "value": "<Aufwand-Option-ID>"},
+     {"id": "<Zielversion-Field-ID>", "value": "<Version>"},
+     {"id": "<Komponente-Field-ID>",  "value": "<Datei/Modul>"},
+     {"id": "<Docs-Field-ID>",        "value": "<Doc-Pfad>"},
+     {"id": "<Chat-Anker-erstellt-ID>", "value": "[BPM-ANCHOR-<task-id>] ..."},
      // Falls TEMP existierte:
-     {"id": "fef35671-3752-4bf2-bcb8-f29482d3a2d7", "value": "TEMP-<id>"}
+     {"id": "<Chat-Anker-temp-ID>",   "value": "TEMP-<id>"}
    ]
    ```
+   Konkrete Field-IDs und Option-IDs: `projects/<[PROJECT]>/clickup-fields.md`.
 9. **Memory `[ANKER-LIVE]` aktualisieren**:
    - Falls TEMP existierte: Eintrag **ersetzen** (TEMP-... → Task-ID-Eintrag mit Typ `erstellt`)
    - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
@@ -127,14 +136,17 @@ Kein Problem/Lösungsansatz (das steht im Parent).
 
 ---
 
-## Beispiel-Workflow: tracker neu mit allen Feldern
+## Beispiel-Workflow (BPM-Projekt, `tracker neu` mit allen Feldern)
+
+Dieser Beispiel-Ablauf zeigt einen konkreten `tracker neu`-Durchlauf für BPM.
+Feld-IDs und Option-IDs stehen in `projects/bpm/clickup-fields.md`.
 
 ```
 User: tracker neu: PM — neue Regex-Erkennung in DocumentTypeRecognizer, v1, high
 
 Claude intern:
   1. BPM-<Next> aus Memory: BPM-082
-  2. Kürzel PM → Liste 901522848097
+  2. Kürzel PM → Liste-ID aus projects/bpm/clickup-fields.md (PlanManager-Zeile)
   3. Dedup: clickup_search "Regex DocumentTypeRecognizer" → kein Treffer
   4. ask_user_input_v0:
      Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
