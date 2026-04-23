@@ -27,7 +27,7 @@ Punkte ist, NICHT hier weiterarbeiten, sondern delegieren.**
 
 | Hauptabsicht | Zuständiger Skill |
 |--------------|-------------------|
-| UI-Entwurf, Layout-Klärung, Screen-Vorschlag | **mockup-erstellen** |
+| UI-Entwurf, Layout-Klärung, Screen-Vorschlag, neues HTML-Mockup | **mockup-erstellen** |
 | Commit-Befehl, Commit-Message, Version-Bump | **git-commit-helper** |
 | ADR, Konzept, Frontmatter, Quickload, Doku-Refactor | **doc-pflege** |
 | ClickUp-Task-Aktion (neu, done, update, split, …) | **tracker** |

@@ -21,6 +21,27 @@ Erstellt HTML-Mockups für BPM-Screens. Stellt sicher dass:
 
 ---
 
+## Vorrang / Delegation an andere Skills
+
+**mockup-erstellen ist für UI-Entwürfe als HTML-Mockup. Wenn die Hauptabsicht
+echte Code-Implementierung ist, NICHT hier weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| XAML-Datei schreiben oder ändern (View, UserControl, Dialog) | **code-erstellen** |
+| ViewModel, Commands, Bindings implementieren | **code-erstellen** |
+| Kleiner UI-Fix in bestehendem Code (Farbe, Größe, Binding) | **code-erstellen** |
+| Code-Struktur oder Logik der UI | **code-erstellen** |
+
+Nur wenn die Hauptabsicht **ein neuer UI-Entwurf als HTML-Mockup** ist
+(Screen-Vorschlag, Layout-Klärung vor dem Code, Dialog-Skizze),
+bleibt mockup-erstellen zuständig.
+
+**Wichtig:** Mockup-erstellen liefert HTML für `Docs/Mockups/`. Sobald es um
+echten XAML-Code oder C# geht, gehört die Arbeit in code-erstellen.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
