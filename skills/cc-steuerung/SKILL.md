@@ -157,13 +157,20 @@ Per ask_user_input_v0 fragen: "Wie liefern?" mit Optionen "SUCHE/ERSETZE im Chat
 Beim ersten DC-Aufruf einer Session diesen Befehl ausführen:
 
 ```powershell
-$pc = hostname; $od = [System.Environment]::GetEnvironmentVariable('OneDrive', 'User'); Write-Host "$pc|$od"
+powershell -NoProfile -Command "hostname; [System.Environment]::GetEnvironmentVariable('OneDrive','User')"
 ```
+
+Claude parst zeilenweise:
+- Zeile 1 = COMPUTERNAME (aus `hostname`)
+- Zeile 2 = OneDrive-Basispfad
 
 **Wichtig:** `$env:OneDrive` funktioniert NICHT über DC `start_process`
 (Umgebungsvariablen sind im DC-Prozesskontext nicht verfügbar).
 Stattdessen IMMER `[System.Environment]::GetEnvironmentVariable('OneDrive', 'User')` verwenden.
 `hostname` funktioniert zuverlässig (statt `$env:COMPUTERNAME`).
+
+**KEINE `$`-Variablen-Assignments im Command-String** — Details siehe
+Abschnitt "PowerShell-Aufrufe via DC" weiter unten.
 
 ### 4.2 PC-Lookup in INDEX.md
 
@@ -221,6 +228,58 @@ Wenn `False` → Nachfragen, NICHT raten oder alternativen Pfad probieren.
 - Erste Chunk: mode="rewrite"
 - Weitere Chunks: mode="append"
 - Immer absolute Pfade verwenden
+
+---
+
+## 5a. PowerShell-Aufrufe via DC (cc-steuerung-002)
+
+**Regel:** KEINE `$`-Variablen in DC-PowerShell-Command-Strings verwenden.
+
+### Problem
+
+Der Command-String wird durch eine Shell-Schicht geschickt, die `$pc`
+interpoliert **bevor** er PowerShell erreicht. Innerhalb von äußeren `"..."`
+werden alle `$`-Referenzen durch leere Strings ersetzt. Ergebnis: Syntax-Fehler.
+
+### Falsch
+
+```powershell
+powershell -Command "$pc = hostname; Write-Output $pc"
+```
+→ Fehler: `Die Benennung "=" wurde nicht als Name eines Cmdlet ... erkannt`
+
+### Richtig: Sequentielle Ausgabe ohne Variablen
+
+```powershell
+powershell -NoProfile -Command "hostname; [System.Environment]::GetEnvironmentVariable('OneDrive','User')"
+```
+
+Claude parst die Ausgabe zeilenweise. Jeder Befehl wird per Semikolon
+getrennt, seine Ausgabe landet als eigene Zeile im stdout.
+
+### Richtig: Komplexe Skripte als `.ps1`-Datei
+
+Wenn Variable-Assignments, Schleifen oder längere Logik nötig sind:
+
+1. Skript in temporäre Datei schreiben:
+   ```
+   write_file(path: "C:\temp\script.ps1", content: "$pc = hostname; $od = [System.Environment]::GetEnvironmentVariable('OneDrive','User'); Write-Output "$pc|$od"", mode: "rewrite")
+   ```
+2. Skript ausführen:
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File "C:\temp\script.ps1"
+   ```
+3. `.ps1`-Datei nach Ausführung löschen.
+
+Im Skript-File werden `$`-Variablen korrekt interpretiert, weil sie nicht
+mehr durch die äußere Shell-Schicht müssen.
+
+### Auch `$env:`-Variablen betroffen
+
+`$env:OneDrive`, `$env:COMPUTERNAME` etc. funktionieren aus dem gleichen
+Grund nicht zuverlässig über DC-Command-Strings. Stattdessen:
+- Für PC-Name: `hostname` (Cmdlet-Aufruf, nicht Variable)
+- Für Env-Variablen: `[System.Environment]::GetEnvironmentVariable('NAME','User')`
 
 ---
 
@@ -296,3 +355,5 @@ Allgemeine Regeln:
 - Löschen ohne ask_user_input_v0-Rückfrage
 - **`bash_tool hostname` zur DC-Erkennung nutzen** — liefert immer `runsc` und sagt NICHTS über DC-Verfügbarkeit aus (cc-steuerung-001)
 - **Aus `bash_tool`-Output auf "nicht in Claude Desktop" schließen** — `bash_tool` ist die interne Container-Sandbox, nicht der User-PC. DC-Verfügbarkeit wird ausschließlich über die Tool-Liste ermittelt
+- **`$`-Variablen in DC-PowerShell-Command-Strings verwenden** — die äußere Shell-Schicht interpoliert `$pc` zu leerem String bevor PowerShell den Befehl sieht. Sequentielle Ausgabe per Semikolon oder `.ps1`-Datei verwenden (cc-steuerung-002)
+- **`$env:OneDrive` / `$env:COMPUTERNAME` in DC-Commands** — aus dem gleichen Grund nicht zuverlässig. Stattdessen `hostname` und `[System.Environment]::GetEnvironmentVariable(...)` verwenden
