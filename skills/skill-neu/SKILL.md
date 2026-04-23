@@ -76,6 +76,30 @@ Komm mit Kontext vorbereitet — reduziert die Fragelast für den User.
 
 ---
 
+### Schritt 2a — Auto-Issue-Erkennung (skill-pflege-002)
+
+Während der Skill-Erstellung proaktiv erkennen wenn:
+
+- Neuer Skill hätte Trigger-Überlappung mit bestehendem Skill (Konflikt-Risiko)
+- Bestehender Skill enthält veraltete Pfade/IDs die gerade auffallen (tote Referenzen)
+- User-Wünsche im aktuellen Chat widersprechen Regeln bestehender Skills
+
+Bei Erkennung:
+
+1. User informieren (kurze Prosa): "Beim Anlegen aufgefallen: X widerspricht Y in Skill Z"
+2. `ask_user_input_v0`:
+   ```
+   Frage: "Issue für Skill Z anlegen?"
+   Optionen: "Ja, <skill>-NNN", "Später selbst", "Kein Issue nötig"
+   ```
+3. Bei Zustimmung: `tracker issue <skill>: <kurztitel>` (Issue-ID via tracker-003 automatisch)
+
+**NICHT** auslösen bei: Tippfehlern, stilistischen Unterschieden, User-initiierten aktiven Änderungen im aktuellen Chat, fehlenden Features die nie angefragt wurden.
+
+Vollständige Spec: `skill-pflege/SKILL.md` Abschnitt "AUTO-ISSUE-ERKENNUNG".
+
+---
+
 ### Schritt 3 — Description nach BPM-Schema schreiben
 
 **Pflicht-Format:** `Was + Use when + Do not trigger for`

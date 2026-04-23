@@ -340,6 +340,55 @@ Claude:
 
 ---
 
+## AUTO-ISSUE-ERKENNUNG (skill-pflege-002)
+
+Wenn Claude beim Arbeiten mit einem Skill **proaktiv** einen der folgenden
+Fälle erkennt, MUSS er den User informieren und ein Issue vorschlagen:
+
+### Trigger für Auto-Issue-Erkennung
+
+- **Skill-Regel widerspricht expliziter User-Anweisung im aktuellen Chat**
+  (z.B. User sagt "mach X mit DC", Skill-Regel sagt "SUCHE/ERSETZE verwenden")
+- **Zwei Skills haben widersprüchliche Anweisungen zum gleichen Thema**
+- **Referenzen im Skill auf nicht-existente Dateien/Pfade** (tote Links)
+- **Veraltete Pfade oder IDs im Skill** (z.B. Listen-IDs die sich geändert haben)
+- **Trigger greift in Near-Miss-Phrasen versehentlich** (Over-triggering)
+- **Trigger greift NICHT wo er sollte** (Under-triggering)
+
+### Ablauf bei Trigger-Erkennung
+
+1. **User kurz informieren** (Prosa, offene Info):
+   ```
+   Hinweis: Beim Arbeiten mit Skill <X> ist mir aufgefallen, dass
+   <Regel Y> widerspricht <expliziter User-Anweisung Z / anderer Regel>.
+   ```
+
+2. **`ask_user_input_v0`** mit Issue-Vorschlag:
+   ```
+   Frage: "Issue in <skill>-Issues-Liste anlegen?"
+   Optionen:
+     - "Ja, <skill>-NNN anlegen"
+     - "Später selbst"
+     - "Kein Issue nötig"
+   ```
+
+3. Bei Zustimmung: `tracker issue <skill>: <kurztitel>`
+   (Issue-ID wird automatisch via `tracker-003` ermittelt)
+
+### Was NICHT auslöst
+
+- Minimale Inkonsistenzen (Tippfehler, Kommas)
+- Stilistische Unterschiede zwischen Skills
+- Regeln die User selbst im aktuellen Chat gerade ändert (dann ist das keine Issue, sondern aktive Pflege)
+- Fehlende Features die der User nie angefragt hat
+
+### Abgrenzung
+
+- **Auto-Issue-Erkennung ≠ Auto-Issue-Anlage**: Claude informiert + schlägt vor, User entscheidet. Nie ungefragt anlegen.
+- **Auto-Issue-Erkennung ≠ Review-Workflow** (tracker-006): Review prüft Task-Scope vor Übergängen, Auto-Erkennung prüft Skill-Qualität während der Arbeit.
+
+---
+
 ## VERBOTEN
 
 - Skills aus dem Gedächtnis neu schreiben (immer Original laden)
