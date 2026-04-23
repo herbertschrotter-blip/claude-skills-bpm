@@ -18,6 +18,36 @@ Terminal-Befehle ausführen, Projektstruktur prüfen.
 
 ---
 
+## 🚨 Kernregel: Umgebungs-Erkennung über Tool-Liste (cc-steuerung-001)
+
+**Claude erkennt die Verfügbarkeit von Desktop Commander AUSSCHLIESSLICH
+über die Tool-Liste, NIEMALS über `bash_tool hostname`.**
+
+### Richtig
+
+- `Desktop Commander:start_process`, `Desktop Commander:write_file`,
+  `Desktop Commander:edit_block` etc. erscheinen in der Tool-Liste
+  → DC ist aktiv → direkt verwenden
+- Am Chat-Start oder beim ersten DC-bezogenen Kommando:
+  `tool_search(query: "desktop commander")` aufrufen um die DC-Tools
+  in den Namespace zu laden falls sie noch nicht sichtbar sind
+
+### Falsch
+
+- `bash_tool hostname` liefert in der Sandbox immer `runsc` — auch wenn
+  der Chat in Claude Desktop läuft und DC vollständig verfügbar ist
+- `bash_tool` läuft im Claude-internen Container, **nicht** auf Herberts PC.
+  Hostname-Output sagt nichts über die Verfügbarkeit externer MCP-Tools aus
+
+### Konsequenz bei Verwechslung (Session Teil 28)
+
+Wenn Claude `bash_tool hostname → runsc` als "ich bin nicht in Claude
+Desktop" fehlinterpretiert, fällt er in den Modus "DC nicht verfügbar,
+liefere Code-Block zum User-Copy-Paste". Das verschenkt die komplette
+DC-Automatisierung und kostet User-Geduld am Chat-Anfang.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
@@ -264,3 +294,5 @@ Allgemeine Regeln:
 - Branch-Auswahl als Prosa — IMMER ask_user_input_v0
 - Liefer-Entscheidung (Chat/PC) als Prosa — IMMER ask_user_input_v0
 - Löschen ohne ask_user_input_v0-Rückfrage
+- **`bash_tool hostname` zur DC-Erkennung nutzen** — liefert immer `runsc` und sagt NICHTS über DC-Verfügbarkeit aus (cc-steuerung-001)
+- **Aus `bash_tool`-Output auf "nicht in Claude Desktop" schließen** — `bash_tool` ist die interne Container-Sandbox, nicht der User-PC. DC-Verfügbarkeit wird ausschließlich über die Tool-Liste ermittelt
