@@ -13,6 +13,33 @@ description: >
 Ermöglicht strukturiertes Review zwischen Claude und ChatGPT.
 Der User kopiert Prompts zwischen beiden und entscheidet.
 
+---
+
+## Vorrang / Delegation an andere Skills
+
+**chatgpt-review erzeugt Prompts für ein Review-Gespräch mit ChatGPT
+(zweite Meinung, Cross-LLM-Kritik). Wenn die Hauptabsicht ein anderer
+Prompt-Typ oder Workflow ist, NICHT hier weiterarbeiten, sondern
+delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Handover-Prompt für nächste Claude-Session | **chat-wechsel** |
+| Code schreiben | **code-erstellen** |
+| ClickUp-Task-Aktion | **tracker** |
+| Doc schreiben (ADR, Konzept) | **doc-pflege** |
+
+Nur wenn die Hauptabsicht **ein ChatGPT-Review-Prompt oder Folgeprompt**
+ist ("Review-Prompt für GPT", "zweite Meinung", "ChatGPT fragen",
+"Cross-LLM-Kritik"), bleibt chatgpt-review zuständig.
+
+**Wichtig:** Generische "mach mir den Prompt"-Aufforderungen ohne ChatGPT-
+oder Claude-Kontext triggern KEINEN der beiden Skills automatisch — per
+`ask_user_input_v0` den Typ klären: "Claude-Handover (chat-wechsel) oder
+ChatGPT-Review (chatgpt-review)?"
+
+---
+
 ## Branch-Ermittlung
 
 Branch aus Chat-Kontext verwenden.

@@ -16,6 +16,30 @@ description: >
 
 ---
 
+## Vorrang / Delegation an andere Skills
+
+**chat-wechsel erzeugt den Handover-Prompt für die NÄCHSTE Claude-Session.
+Wenn die Hauptabsicht ein ChatGPT-Review-Prompt oder ein anderer
+Prompt-Typ ist, NICHT hier weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Prompt für ChatGPT-Review (zweite Meinung, Cross-LLM-Kritik) | **chatgpt-review** |
+| Code schreiben | **code-erstellen** |
+| ClickUp-Task-Aktion | **tracker** |
+| Doc schreiben | **doc-pflege** |
+
+Nur wenn die Hauptabsicht **ein Handover-Prompt für den nächsten Claude-Chat** ist
+("neuer chat", "nächster chat", "übergabe", "session beenden"), bleibt
+chat-wechsel zuständig.
+
+**Wichtig:** Beide Skills können im selben Chat nacheinander laufen
+(erst ChatGPT-Review abschließen, dann Claude-Handover). Sie triggern
+aber nicht gemeinsam auf einen Satz — der User-Intent entscheidet,
+welcher zuerst dran ist.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
