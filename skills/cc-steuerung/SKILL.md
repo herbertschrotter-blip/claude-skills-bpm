@@ -108,28 +108,52 @@ verwendet werden — KEINE Prosa-Fragen.**
 
 ## 2. WANN WAS EINSETZEN
 
-### Desktop Commander einsetzen wenn (User muss "cc" oder "dc" triggern):
+**Kernregel (cc-steuerung-003):** DC ist Default-Ausführungsmodus sobald
+der User das Konzept freigegeben hat ("code bitte", "mach", "ok",
+"ausführen"). SUCHE/ERSETZE-Blöcke im Chat NUR wenn:
+
+1. User explizit nach SUCHE/ERSETZE fragt ("liefer mir suchen-ersetzen", "zeig mir die blöcke")
+2. DC nicht verfügbar ist (Tool-Liste zeigt keine `Desktop Commander:*`-Tools)
+3. Änderung betrifft Dateien außerhalb bekannter Repos (kein `projects/<[PROJECT]>/`-Pfad)
+
+### Desktop Commander einsetzen (nach Konzept-Freigabe Default):
 - Neue Dateien erstellen → direkt auf Platte, kein Kopieren
 - XAML-Dateien → kein Encoding-Problem
 - Aktuellen Code lesen → immer aktuell, nicht letzter GitHub-Push
-- Build testen → über start_process
+- Build testen → über `start_process`
 - Multi-File-Änderungen → mehrere Dateien nacheinander
-- git status / git log → über start_process
-- Projektstruktur prüfen → list_directory
+- `git status` / `git log` / `git commit` → über `start_process`
+- Projektstruktur prüfen → `list_directory`
+- Jede Skill-Repo- oder BPM-Repo-Änderung nach Konzept-OK
 
-### Claude OHNE DC einsetzen (kein cc/dc-Trigger):
+### Claude OHNE DC einsetzen (keine Ausführung auf Platte nötig):
 - Planung und Konzepte besprechen
-- Kleine Code-Änderungen → SUCHE/ERSETZE im Chat
 - Code erklären oder reviewen
-- Committed Code lesen → github:get_file_contents
-- Commit-Befehle zeigen (User kopiert in Terminal)
-- Docs und Markdown schreiben
+- Committed Code lesen → `github:get_file_contents`
+- Docs/Markdown im Chat-Fluss zeigen (wenn Output-Dokument ist)
+
+### Ad-hoc-Keyword-Trigger (ohne vorheriges Konzept)
+Für einzelne DC-Befehle ohne Konzept-Phase bleibt der Keyword-Trigger erhalten:
+- `"cc: list_directory D:\repo"`
+- `"dc: git status"`
+- `"mit cc: build ausführen"`
+
+Bei Keyword-Trigger wird DC direkt ausgeführt, ohne Konzept-Freigabe-Schritt.
 
 ---
 
 ## 3. TRIGGER-REGELN
 
-### Diese Wörter aktivieren Desktop Commander:
+### Default-Trigger: Konzept-Freigabe
+Nach einem Konzept-Vorschlag durch Claude signalisiert der User die Ausführung mit:
+- "code bitte", "mach", "ausführen", "ok", "passt"
+- "geht klar", "weiter", "los"
+- Jede Zustimmung die auf einen konkreten Umsetzungs-Vorschlag folgt
+
+→ DC wird direkt verwendet, keine weitere Keyword-Rückfrage.
+
+### Ad-hoc Keyword-Trigger (ohne vorheriges Konzept)
+Diese Wörter aktivieren DC sofort für Einzelbefehle:
 - "mit claude code", "über claude code"
 - "cc lies", "cc erstelle", "cc mach", "cc build"
 - "dc lies", "dc erstelle", "dc mach", "dc build"
@@ -137,16 +161,14 @@ verwendet werden — KEINE Prosa-Fragen.**
 - "schreib das mit cc", "schreib auf platte"
 - "direkt auf den pc"
 
-### Diese Wörter aktivieren NICHT Desktop Commander:
-- "erstelle die datei" → Code-Block im Chat
-- "code erstellen" → Code-Block im Chat
-- "lies den code" → github:get_file_contents oder Chat
-- "ändere die datei" → SUCHE/ERSETZE Skill
-- "zeig mir" → Antwort im Chat
-- "commit" / "committen" → git-Befehle im Chat
+### Diese Wörter aktivieren NICHT automatisch DC:
+- "zeig mir" → Antwort im Chat (DC nur wenn Lesen auf Platte nötig)
+- "erklär mir" → Antwort im Chat
+- "wie funktioniert" → Antwort im Chat
+- "soll ich" → Klärungsfrage, noch keine Ausführung
 
 ### Im Zweifel:
-Per ask_user_input_v0 fragen: "Wie liefern?" mit Optionen "SUCHE/ERSETZE im Chat", "Direkt auf PC per DC", "Code-Block zeigen".
+Per `ask_user_input_v0` fragen: "Wie liefern?" mit Optionen "Direkt auf PC per DC", "SUCHE/ERSETZE im Chat", "Code-Block zeigen".
 
 ---
 
@@ -309,13 +331,13 @@ Allgemeine Regeln:
 
 | Aktion | Erlaubt? | Bedingung |
 |--------|----------|-----------|
-| Dateien lesen | ✅ Automatisch | Bei cc/dc-Trigger |
-| Verzeichnis listen | ✅ Automatisch | Bei cc/dc-Trigger |
-| git status / log / diff | ✅ Automatisch | Bei cc/dc-Trigger |
-| Build-Befehle | ✅ Automatisch | Bei cc/dc-Trigger |
-| Dateien erstellen | ⚠️ Nur mit cc/dc-Trigger | User sagt es explizit |
-| Dateien editieren | ⚠️ Nur mit cc/dc-Trigger | User sagt es explizit |
-| Dateien löschen | ⚠️ Rückfrage Pflicht | Immer erst per ask_user_input_v0 fragen |
+| Dateien lesen | ✅ Automatisch | Bei Bedarf (auch ohne expliziten Trigger) |
+| Verzeichnis listen | ✅ Automatisch | Bei Bedarf |
+| git status / log / diff | ✅ Automatisch | Bei Bedarf |
+| Build-Befehle | ✅ Automatisch | Bei Bedarf |
+| Dateien erstellen | ✅ Nach Konzept-Freigabe | User hat "code bitte"/"ok"/"mach" auf konkreten Vorschlag gesagt |
+| Dateien editieren | ✅ Nach Konzept-Freigabe | wie oben |
+| Dateien löschen | ⚠️ Rückfrage Pflicht | Immer erst per `ask_user_input_v0` fragen |
 | git push | ❌ Nie | User pusht selbst |
 | Packages installieren | ❌ Nie | Keine Dependencies ohne Freigabe |
 | Dateien außerhalb Repo | ❌ Nie | — |
@@ -341,7 +363,8 @@ Allgemeine Regeln:
 
 ## 10. VERBOTEN
 
-- Desktop Commander aufrufen ohne expliziten cc/dc-Trigger vom User
+- **SUCHE/ERSETZE-Blöcke im Chat liefern wenn DC verfügbar und Konzept freigegeben wurde** — DC ist Default nach Konzept-OK (cc-steuerung-003)
+- **Schreib-Operationen auf einen unpräzisen Trigger ausführen** — User braucht klaren Umsetzungs-Auftrag (auf konkreten Vorschlag: "code bitte", "mach", "ok"). "Zeig mir" oder "wie funktioniert" sind KEIN Ausführungs-Trigger
 - Dateien schreiben wenn User "zeig mir" sagt
 - git push — unter keinen Umständen
 - Secrets, Tokens oder Passwörter in Befehlen
