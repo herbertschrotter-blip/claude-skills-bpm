@@ -413,6 +413,46 @@ Aus Anthropic-Original Z. 396-400:
 
 ---
 
+## MEMORY-DISZIPLIN
+
+Memory ist für offene Merker, Verifikationen und Architekturfragen gedacht,
+nicht für vollwertige Tasks.
+
+### 4 Rubriken (Master-Doku: `MEMORY-RUBRIKEN.md`)
+
+| Rubrik | Wofür |
+|---|---|
+| `[VERIFY]` | Spätere Routing-/Trigger-Verifikation im Live-Betrieb |
+| `[ARCH-OPEN]` | Offene Struktur- oder Trigger-Fragen |
+| `[INFRA-TODO]` | Kleine Infra-Aufgabe, nicht ClickUp-würdig |
+| `[REVIEW-PENDING]` | Externe Review-Antwort steht noch aus |
+
+### Beim Anlegen oder Redesign eines Skills
+
+- Offene Struktur- oder Trigger-Fragen → `[ARCH-OPEN]`
+- Spätere Routing-/Trigger-Verifikation im Live-Betrieb → `[VERIFY]`
+- Externe Review-Antwort steht noch aus → `[REVIEW-PENDING]`
+
+### Regeln
+
+- **Keine ClickUp-würdigen Aufgaben in Memory ablegen** — wenn substantielle
+  Arbeit anfällt, `tracker neu` statt Memory-Eintrag
+- **Keine neuen Rubriken erfinden** — die 4 Rubriken sind verbindlich
+- **Erledigung nur nach Herbert-Bestätigung:** wenn ein Memory-Eintrag durch
+  den Skill-Abschluss erledigt wurde, zuerst bestätigen lassen, dann
+  `memory_user_edits remove` (kein stilles Löschen)
+
+### Abgrenzung
+
+- **Memory** = offene Merker/Fragen, kleine Todos ohne Versionsrelevanz
+- **ClickUp** = substantielle Arbeit mit Commit, Zielversion, mehreren Schritten
+
+Vollständige Konvention + Abgrenzung + Lifecycle: `MEMORY-RUBRIKEN.md`.
+
+Adressiert Phase 4.2.
+
+---
+
 ## VERBOTEN
 
 - Skill aus dem Gedächtnis schreiben (immer mit Capture Intent zuerst — auch wenn man "weiß was rein muss")
@@ -425,6 +465,7 @@ Aus Anthropic-Original Z. 396-400:
 - Skill ohne Konflikt-Check zu existierenden Skills veröffentlichen (Trigger-Überlappung prüfen)
 - Skill-Namen vergeben ohne Kollisions-Check gegen `/mnt/skills/examples/` und `/mnt/skills/public/` (Anthropic-Beispiele blockieren z.B. `skill-creator`)
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER `ask_user_input_v0`
+- **Memory-Disziplin ignorieren** — ClickUp-würdige Aufgaben in Memory ablegen, neue Rubriken erfinden oder Memory-Einträge ohne Herbert-Bestätigung entfernen (siehe MEMORY-DISZIPLIN-Abschnitt + `MEMORY-RUBRIKEN.md`)
 
 ---
 
