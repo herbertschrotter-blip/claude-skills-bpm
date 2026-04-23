@@ -156,6 +156,8 @@ create_file(path="/home/claude/skill.md", ...)   ← klein, auch falsch
 
 **Grund:** Die Claude.ai-UI erkennt nur exakt `SKILL.md` (Groß-Klein-Schreibung!) als ersetzbare Skill-Datei.
 
+**Hinweis (skill-pflege-006):** Der korrekte Dateiname ist notwendig, aber allein nicht ausreichend. `create_file` schreibt nur in die Container-Sandbox. Damit die Dateikarte mit "Skill speichern"-Button erscheint, muss **direkt anschliessend** `present_files` auf denselben Pfad aufgerufen werden. Siehe Regel 14 und 14b.
+
 ### Mehrere Skills in einer Session
 
 - Pro Skill einen **eigenen Antwort-Block**
@@ -165,6 +167,15 @@ create_file(path="/home/claude/skill.md", ...)   ← klein, auch falsch
 ### 14. Artifact mit vollständigem Skill-Inhalt
 
 Das Artifact enthält die komplette neue SKILL.md (nicht nur den Diff). Der User klickt "Skill speichern" → Claude.ai ersetzt den aktiven Skill.
+
+**Tool-Call-Paar (KRITISCH, skill-pflege-006):**
+
+`create_file` allein erzeugt KEIN UI-Widget — weder in Claude Desktop noch in Claude.ai Web. Die Datei landet nur in der Container-Sandbox. Damit die Dateikarte mit "Skill speichern"-Button rendert, müssen ZWEI Tool-Calls direkt hintereinander kommen:
+
+1. `create_file path="/home/claude/SKILL.md" file_text=<komplette Datei>`
+2. `present_files filepaths=["/home/claude/SKILL.md"]`
+
+`present_files` kopiert die Datei automatisch nach `/mnt/user-data/outputs/SKILL.md` und rendert die UI-Komponente. Weil der Dateiname exakt `SKILL.md` ist, erscheint der "Skill speichern"-Button.
 
 ### 14a. 🔴 Artifact-Separation (skill-pflege-003)
 
@@ -211,8 +222,8 @@ arbeitet weiter mit der alten Version, obwohl das Repo längst aktualisiert ist.
 
 1. Repo-Edit via DC (`edit_block` / `write_file`)
 2. Git-Commit
-3. Artifact mit `create_file path=/home/claude/SKILL.md` im selben oder direkt
-   folgenden Antwort-Block
+3. Artifact als Tool-Call-Paar (create_file + present_files, siehe Regel 14)
+   im selben oder direkt folgenden Antwort-Block
 4. Antwort abschliessen (kein `ask_user_input_v0`, siehe 14a)
 
 **Bei mehreren Skill-Commits in einer Session:**
@@ -322,17 +333,25 @@ Immer absolute Pfade.
 
 ### Schritt 6 — Artifact mit vollständigem neuen Inhalt
 
-Claude erstellt ein Artifact mit der kompletten neuen SKILL.md:
+Claude erstellt ein Artifact als Tool-Call-Paar:
 
 ```
+Schritt A (Container-Schreibvorgang):
 create_file
   path: /home/claude/SKILL.md
-  content: <komplette neue Skill-Datei>
+  file_text: <komplette neue Skill-Datei>
+
+Schritt B (UI-Rendering):
+present_files
+  filepaths: ["/home/claude/SKILL.md"]
 ```
 
 **Dateiname exakt `SKILL.md`** (keine Prefixes/Suffixes — siehe Regel 13).
 
-Der User sieht den Artifact-Block in Claude.ai und klickt "Skill speichern".
+Ohne den `present_files`-Aufruf sieht der User NICHTS in der UI. Siehe
+Regel 14 und skill-pflege-006.
+
+Der User sieht die Dateikarte in Claude.ai und klickt "Skill speichern".
 
 ### Schritt 7 — Diff-Report im Chat
 
@@ -438,6 +457,7 @@ Fälle erkennt, MUSS er den User informieren und ein Issue vorschlagen:
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER ask_user_input_v0
 - **`ask_user_input_v0` direkt nach Artifact-Erstellung im selben Antwort-Block** — verdrängt das Artifact in der UI (skill-pflege-003)
 - **Skill-Commit ohne Artifact im Chat liefern** — aktive Claude.ai-Skills bleiben sonst beim alten Stand (skill-pflege-005)
+- **`create_file` für Skill-Artifacts ohne direkt folgenden `present_files`-Aufruf** — die Datei landet nur in der Container-Sandbox, keine Dateikarte, kein "Skill speichern"-Button (skill-pflege-006)
 
 
 ---
