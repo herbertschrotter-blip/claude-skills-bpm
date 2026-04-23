@@ -52,25 +52,47 @@ als Optionen. **Nie raten.**
   - "Bestehenden nutzen" (liefert Task-ID zurück, kein Create)
   - "Abbrechen"
 
-### 4. Issue-ID ermitteln
+### 4. Issue-ID automatisch ermitteln
 
-**Interim-Lösung (gilt bis tracker-003 Auto-Nummerierung gebaut ist):**
+**Ziel-Lösung (tracker-003):** Issue-ID wird automatisch vom Skill ermittelt,
+ohne User-Bestätigung der Nummer. Der User wird nur gefragt wenn der
+Unique-Check nach der Anlage eine Race Condition zeigt.
 
-1. Aus Memory oder Kontext höchste bekannte Nummer für den Skill rekonstruieren
-2. Vorschlag: `<skill>-<N+1>` (3-stellig, führende Nullen)
-3. Prosa-Frage: "Soll das `<skill>-<N+1>` werden, oder eine andere Nummer?"
-4. User bestätigt oder überschreibt
-5. Bei Lücke-Warnung (z.B. letzte bekannte Nummer 005, aber 006+007 könnten
-   existieren): `clickup_filter_tasks` zum Verifizieren
+**Ablauf:**
 
-**Ziel-Lösung (tracker-003, Folge-Release):**
+1. `clickup_filter_tasks(list_ids: ["<ziel-listen-id>"], include_closed: true)`
+   — alle Issues laden, auch `done`/`complete`-Status. Ohne `include_closed: true`
+   würden hohe erledigte Nummern übersprungen werden.
 
-1. `clickup_filter_tasks(list_ids: ["<ziel-listen-id>"])` alle Issues laden
-2. Custom Field `Issue-ID` jedes Tasks lesen
-3. Pattern `<skill>-NNN` parsen (ungültige Formate ignorieren)
-4. Höchste vorhandene Nummer finden → +1
-5. Lücken NICHT füllen (sonst brechen Chat-Anker-Referenzen)
-6. Race Condition: Nach Task-Anlage Unique-Check → bei Kollision nächste Nummer
+2. Für jeden Task: Custom Field `Issue-ID` (`e286a04a-...`) aus
+   `custom_fields`-Array lesen.
+
+3. Pattern-Match `^<skill>-(\d{3})$` (z.B. `^tracker-(\d{3})$`). Tasks mit
+   ungültigem Format stillschweigend ignorieren.
+
+4. Höchste Nummer `N_max` aus allen gültigen Matches finden.
+
+5. Neue Issue-ID: `<skill>-<N_max + 1>` (3-stellig mit führenden Nullen).
+
+6. **Edge Cases:**
+   - Leere Liste oder keine gültigen Formate: erste Nummer = `<skill>-001`
+   - Lücken (z.B. `tracker-001`, `tracker-003` vorhanden): nächste = `tracker-004`,
+     **nicht** `tracker-002`. Lücken bewusst nicht füllen — sonst brechen
+     Chat-Anker-Referenzen aus alten Sessions.
+
+7. **Unique-Check nach Task-Anlage (Race Condition):** Nach `clickup_create_task`
+   erneut `clickup_filter_tasks` mit derselben `list_ids` ausführen und
+   zählen wieviele Tasks die soeben vergebene Issue-ID haben. Bei >1 Treffer
+   (parallele Erstellung hat kollidiert): nächste Nummer `N_max + 2` vergeben,
+   den neu angelegten Task via `clickup_update_task` korrigieren (Titel +
+   Custom Field `Issue-ID`).
+
+**Chat-Output für den User:**
+```
+Ermittelt: <skill>-NNN (höchste vorhandene: <skill>-<N_max>)
+```
+Keine Prosa-Frage zur Nummer. Bei Race-Condition-Korrektur: zusätzlicher
+Hinweis im Chat.
 
 ### 5. Description-Template generieren
 
@@ -174,7 +196,7 @@ Beim Anlegen greift der Default-Status der Liste (meist `to do`).
 
 ---
 
-## Beispiel-Workflow (BPM-Projekt, Interim-Phase vor tracker-003)
+## Beispiel-Workflow (BPM-Projekt)
 
 ```
 User: tracker issue tracker: Em-Dash-Problem in Custom-Field-Values
@@ -183,28 +205,31 @@ Claude intern:
   1. Skill-Name: "tracker" → gültig (aus projects/bpm/clickup-lists.md)
   2. Listen-ID Lookup: 901522952249
   3. Dedup: clickup_filter_tasks → kein Treffer
-  4. Issue-ID ermitteln (Interim):
-     - Aus Kontext höchste bekannte Nummer: tracker-007
-     - Vorschlag: tracker-008
-     - Prosa-Frage: "Soll das tracker-008 werden?"
-     User: "Ja"
+  4. Issue-ID automatisch:
+     - clickup_filter_tasks(list_ids: ["901522952249"], include_closed: true)
+     - Custom Field Issue-ID jedes Tasks lesen
+     - Pattern ^tracker-(\d{3})$ parsen
+     - Höchste Nummer: 008 (aus tracker-008)
+     - Neue Issue-ID: tracker-009
+     - Chat-Output: "Ermittelt: tracker-009 (höchste vorhandene: tracker-008)"
   5. Typ-Frage: ask_user_input_v0 → User: "Bug"
   6. Beobachtungs-Chat: "Bauprojektmanager Teil 28"
   7. Description-Template mit Bug-Anpassung generieren
   8. clickup_create_task(
        list_id: "901522952249",
-       name: "tracker-008: Em-Dash-Problem in Custom-Field-Values",
+       name: "tracker-009: Em-Dash-Problem in Custom-Field-Values",
        custom_fields: [
-         {id: "<Issue-ID-Field>",          value: "tracker-008"},
+         {id: "<Issue-ID-Field>",          value: "tracker-009"},
          {id: "<Typ-Field>",               value: "<Bug-Option-ID>"},
          {id: "<Beobachtungs-Chat-Field>", value: "Bauprojektmanager Teil 28"}
        ]
      )
      → Task-ID 86c9xyz
-  9. Pro-Task-Quittung:
-     ✅ tracker-008 — [BPM-ANCHOR-86c9xyz] — erstellt: Em-Dash-Problem in Custom-Field-Values
-  10. Chat-Anker nachtragen mit Task-ID 86c9xyz
-  11. Memory [ANKER-LIVE] Eintrag
+  9. Unique-Check: clickup_filter_tasks → genau 1 Treffer mit tracker-009 ✓
+  10. Pro-Task-Quittung:
+      ✅ tracker-009 — [BPM-ANCHOR-86c9xyz] — erstellt: Em-Dash-Problem in Custom-Field-Values
+  11. Chat-Anker nachtragen mit Task-ID 86c9xyz
+  12. Memory [ANKER-LIVE] Eintrag
 ```
 
 ---
@@ -212,8 +237,11 @@ Claude intern:
 ## VERBOTEN
 
 - Skill-Name raten wenn unklar → `ask_user_input_v0`
-- Issue-ID raten ohne User-Bestätigung (in der Interim-Phase)
+- Issue-ID manuell vom User bestätigen lassen — Auto-Nummerierung ist Pflicht gemäß tracker-003
+- `clickup_filter_tasks` ohne `include_closed: true` für Nummerierungs-Scan — höchste Nummer könnte done/complete sein und würde übersprungen
+- Höchste Nummer aus Memory rekonstruieren statt live abzufragen — Memory kann veraltet sein
 - Lücken in Nummerierung füllen — Chat-Anker-Referenzen gehen sonst kaputt
+- Unique-Check nach Task-Anlage weglassen — Race Condition bei paralleler Erstellung erzeugt Duplikate
 - Status `done` verwenden — Skill-Issues nutzen `complete`
 - BPM-Scope Custom Fields verwenden (Typ `f7b8c62a`, Aufwand `ecc194e5`, etc.)
   — Skill-Issues haben eigenen Scope (Typ `5b45b13a`, Issue-ID `e286a04a`, etc.)
@@ -233,15 +261,3 @@ Claude intern:
   Skill-Issues-Scope (6 Fields + 5 Typ-Option-IDs) enthalten
 - `anker-system.md` für Memory-`[ANKER-LIVE]`-Format
 - `batch-protocol.md` wenn mehrere Issues in einer Antwort angelegt werden
-
----
-
-## Nach tracker-003 (Auto-Nummerierung)
-
-Sobald tracker-003 umgesetzt ist, wird Schritt 4 (Issue-ID ermitteln) aktualisiert:
-
-- Interim-Block wird entfernt
-- Ziel-Lösung wird zum Standard
-- Race-Condition-Check dokumentieren
-
-Aktualisierung dieser Datei ist Teil von tracker-003 (siehe dort).

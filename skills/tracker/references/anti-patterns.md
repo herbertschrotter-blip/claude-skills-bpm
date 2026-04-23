@@ -107,6 +107,15 @@ Gleiches 10-Fields-Schema wie bei Code-Tasks.
 - **Nachlauf komplett überspringen** weil "der User weiß ja eh was er will" — die Regel ist verbindlich auch wenn User aktiv ist
 - **Zero-Change-Tasks als Grund für komplettes Überspringen nehmen** — nur Schritt 1 (Hash holen) entfällt, Schritte 2-4 bleiben
 
+### Auto-Nummerierung für Skill-Issues (tracker-003)
+
+- **Issue-ID manuell vom User bestätigen lassen** statt automatisch zu ermitteln — Auto-Nummerierung ist Pflicht für `tracker issue`
+- **`clickup_filter_tasks` ohne `include_closed: true`** für den Nummerierungs-Scan — höchste Nummer könnte `done`/`complete` sein und würde übersprungen
+- **Höchste Nummer aus Memory rekonstruieren** statt live via `clickup_filter_tasks` abzufragen — Memory kann veraltet sein, führt zu Duplikat-IDs
+- **Unique-Check nach Task-Anlage weglassen** — bei paralleler Erstellung (zwei Claude-Sessions gleichzeitig) entstehen sonst doppelte Issue-IDs
+- **Lücken in der Nummerierung füllen** — Chat-Anker-Referenzen aus alten Sessions brechen, wenn eine Nummer wiederverwendet wird
+- **Prosa-Frage nach der Nummer stellen** (`"Soll das tracker-008 werden?"`) — die Nummer ist automatisch ermittelt, es gibt nichts zu fragen
+
 ### Batch-spezifisch (≥2 Task-Operationen in einer Antwort)
 
 Vollständige Spec: `batch-protocol.md`. Kurzliste:

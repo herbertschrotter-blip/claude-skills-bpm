@@ -307,5 +307,6 @@ Details in `references/anti-patterns.md`.
 - **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
 - **Review-Workflow-Check vor Task-Übergang weglassen** — 4-Punkte-Check (aktueller Task + Parent + Siblings + verweisende offene Tasks) ist Pflicht vor `tracker done`, `tracker start` und Fokus-Wechsel (Details: `references/review-workflow.md`)
 - **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash via DC holen + Zwischenstand-Tabelle + Folgeoptionen via `ask_user_input_v0` sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
+- **Issue-IDs manuell vergeben lassen bei `tracker issue`** — Auto-Nummerierung via `clickup_filter_tasks` ist Pflicht, inkl. `include_closed: true` + Unique-Check (Details: `references/issue-task.md` Schritt 4)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.
