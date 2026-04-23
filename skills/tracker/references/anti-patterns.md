@@ -110,3 +110,17 @@ Vollständige Spec: `batch-protocol.md`. Kurzliste:
 - **Referenz-Anker und Quittung für denselben Task doppelt** zeigen — Quittung enthält den Anker bereits inline
 - **Referenz-Anker für rein beiläufige Erwähnung** setzen — "die 4 tracker-Issues" in einer Aufzählung braucht keinen Anker
 - **Task inhaltlich diskutieren ohne Anker** — Thread verliert sonst die Audit-Spur für spätere `conversation_search`
+
+### Projekt-Config (Projekt-Architektur, v0.13.0)
+
+Skills lesen projekt-spezifische Daten aus `projects/<[PROJECT]>/`.
+VERBOTEN ist jede Form von Hartkodierung oder Fallback-Weglassung:
+
+- **Konkrete Listen-IDs / Custom-Field-IDs / Option-IDs** im Skill selbst führen — alles aus `projects/<[PROJECT]>/clickup-fields.md` und `projects/<[PROJECT]>/clickup-lists.md` lesen
+- **Modul-Kürzel raten** wenn `[PROJECT]`-Memory fehlt — stattdessen `ask_user_input_v0` mit den vorhandenen Ordnern in `projects/`
+- **Projekt-Config-Dateipfade raten** — Muster ist immer `projects/<[PROJECT]>/<datei>.md`, niemals davon abweichen
+- **Fallback-Frage weglassen** wenn Memory fehlt — Skill MUSS aktiv nach dem aktiven Projekt fragen, nicht still rumraten
+- **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
+- **`projects/<[PROJECT]>/`-Dateien ohne Lesen verwenden** — zuerst prüfen dass die Datei existiert, dann ihren Inhalt laden, erst dann verwenden
+- **BPM-Spezifika (PlanManager, PM, v1, 901522…) inline im Skill einbauen** statt sie als Beispiele mit Kontext zu markieren — wenn Beispiele, dann explizit als "Beispiel (BPM-Projekt)"
+- **Status-Werte `done` oder `complete` hartkodieren** statt aus `projects/<[PROJECT]>/clickup-fields.md` Status-Werte-Matrix zu lesen
