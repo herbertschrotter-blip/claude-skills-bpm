@@ -55,7 +55,7 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 
 1. Nächste freie Haupt-Nummer aus Memory `[CLICKUP]` (z.B. `BPM-<Next>`) — Prefix aus `projects/<[PROJECT]>/clickup-fields.md`
 2. Kürzel + Liste-ID aus `projects/<[PROJECT]>/clickup-fields.md` (Modul-Kürzel-Tabelle) bzw. `projects/<[PROJECT]>/clickup-lists.md`
-3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen
+3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen. Bei ähnlichen Treffern zusätzlich Review-Workflow-Check gemäß `references/review-workflow.md` — besprochene Änderungen könnten bestehende Tasks im Scope verschieben.
 4. **Description**: Template aus Abschnitt "Description-Template" unten generieren
 5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe `anker-system.md`):
    - `[ANKER-LIVE]` aus Memory lesen

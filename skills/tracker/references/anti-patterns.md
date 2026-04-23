@@ -87,6 +87,16 @@ Gleiches 10-Fields-Schema wie bei Code-Tasks.
 - **Versionierung ignorieren** — PATCH für kleine Refactors, MINOR für Features/Phasen, MAJOR für Breaking Changes
 - **WANN vs. WIE vermischen** — `tracker` steuert WANN committet wird, `git-commit-helper` formatiert WIE; Commit-Disziplin gehört NICHT in `git-commit-helper`
 
+### Review-Workflow (tracker-006)
+
+- **Scope-Check vor Task-Übergang weglassen** — Pflicht vor jedem `tracker done`, `tracker start` (neu oder Wechsel), Fokus-Entscheidung im Dialog, oder nach User-Bestätigung "so machen wir's"
+- **Nur Punkt 1 prüfen und Punkte 2-4 überspringen** — alle 4 Punkte (aktueller Task, Parent, Siblings, verweisende offene Tasks) sind Pflicht wenn Trigger greift
+- **Task auf done setzen während verweisende offene Tasks den Scope ändern würden** — erst Scope der verweisenden Tasks klären
+- **Start auf neuen Task ohne Check auf Auswirkungen auf bereits laufende Tasks** — Task-Wechsel triggert denselben 4-Punkte-Check
+- **User-Bestätigung "so machen wir's" annehmen ohne Parent/Siblings zu prüfen** — Bestätigungen von Regeln/Entscheidungen sind starke Trigger für den Check
+- **Gefundene Änderungen nur mündlich notieren, nicht in ClickUp eintragen** — Descriptions/neue Subtasks MÜSSEN in ClickUp persistiert werden
+- **Check nach dem Task-Übergang nachholen** — muss VORHER passieren, nach dem Übergang ist zu spät
+
 ### Batch-spezifisch (≥2 Task-Operationen in einer Antwort)
 
 Vollständige Spec: `batch-protocol.md`. Kurzliste:

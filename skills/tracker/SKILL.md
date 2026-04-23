@@ -74,6 +74,34 @@ Adressiert `tracker-001`, `tracker-004`, `tracker-005`.
 
 ---
 
+## 🚨 Kernregel: Review-Workflow vor Task-Übergang
+
+**Vor JEDEM `tracker done` / `tracker start` (neu oder Wechsel) / Fokus-Wechsel
+im Dialog MUSS ein 4-Punkte-Scope-Check durchgeführt werden:**
+
+1. **Aktueller Task** — Description ändert sich durch neue Erkenntnisse?
+2. **Parent-Task** — Scope/DoD betroffen?
+3. **Sibling-Subtasks** im selben Parent — betroffen?
+4. **Verweisende offene Tasks** (Related/Links/Dependencies) — betroffen?
+
+Gefundene Änderungen werden in ClickUp umgesetzt **BEVOR** der Task-Übergang
+passiert. Danach ggf. neue Abarbeitungs-Reihenfolge via `ask_user_input_v0`
+vorschlagen.
+
+**Trigger:**
+- Bevor `tracker done` ausgeführt wird
+- Bevor `tracker start` auf neuen oder bereits gestarteten Task
+- Nach expliziter User-Bestätigung `"so machen wir's"` / `"das merken wir uns so"`
+
+**Check ENTFÄLLT bei:** reinen Pflege-Updates ohne Scope-Änderung, Zero-Change-Tasks,
+explizitem User-Skip `"Scope-Check überspringen"`.
+
+Vollständige Spec mit API-Calls und Beispiel-Ablauf: `references/review-workflow.md`.
+
+Adressiert `tracker-006`.
+
+---
+
 ## 🚨 Kernregel: Projekt-Config aus `projects/<[PROJECT]>/`
 
 **Alle projekt-spezifischen Daten (Listen-IDs, Custom-Field-IDs,
@@ -170,6 +198,7 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 | `issue-task.md` | `tracker issue` Ablauf, Skill-Issue-Listen-Routing, Issue-ID-Nummerierung, Skill-Issues-Scope Custom Fields |
 | `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID |
 | `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Commit-Disziplin (ein Task = ein Commit), Status-Werte, Beispiel-Workflow |
+| `review-workflow.md` | 4-Punkte-Scope-Check vor `tracker done` / `tracker start` / Fokus-Wechsel: aktueller Task + Parent + Siblings + verweisende offene Tasks |
 | `update-task.md` | `tracker update` + `tracker field` |
 | `search-and-status.md` | `tracker status`, `next`, `suche`, `listen` |
 | `split-and-relations.md` | Unteraufgaben-Regeln, `tracker split`, `tracker relate`, Dependency-Typen |
@@ -254,5 +283,6 @@ Details in `references/anti-patterns.md`.
 - **Projekt-Daten hartkodieren** im Skill (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel) — alles aus `projects/<[PROJECT]>/` lesen
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
 - **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
+- **Review-Workflow-Check vor Task-Übergang weglassen** — 4-Punkte-Check (aktueller Task + Parent + Siblings + verweisende offene Tasks) ist Pflicht vor `tracker done`, `tracker start` und Fokus-Wechsel (Details: `references/review-workflow.md`)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

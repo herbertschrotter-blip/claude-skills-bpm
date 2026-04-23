@@ -81,7 +81,13 @@ gesetzt — obwohl der Fokus eindeutig war.
 2. **Aktuellen Status prüfen:** `clickup_get_task(task_id)` → wenn schon
    `in progress` oder `done`/`complete`: keine Aktion, Hinweis an User
 
-3. **Subtask-Status setzen:**
+3. **Review-Workflow-Check** (Pflicht vor jedem Task-Wechsel): Wurden im
+   Chat neue Regeln/Entscheidungen besprochen die andere Tasks betreffen?
+   4-Punkte-Check (aktueller Task, Parent, Siblings, verweisende offene
+   Tasks) gemäß `references/review-workflow.md`. Gefundene Änderungen in
+   ClickUp umsetzen BEVOR der Start ausgeführt wird.
+
+4. **Subtask-Status setzen:**
    ```
    clickup_update_task(
      task_id: <id>,
@@ -89,27 +95,27 @@ gesetzt — obwohl der Fokus eindeutig war.
    )
    ```
 
-4. **Parent ermitteln:** `clickup_get_task` liefert `parent`-Feld
-   - Wenn `parent` null: kein Parent vorhanden → zu Schritt 6
+5. **Parent ermitteln:** `clickup_get_task` liefert `parent`-Feld
+   - Wenn `parent` null: kein Parent vorhanden → zu Schritt 7
    - Wenn `parent` vorhanden: weiter
 
-5. **Parent-Status prüfen und ggf. setzen:**
+6. **Parent-Status prüfen und ggf. setzen:**
    - `clickup_get_task(parent_id)` → aktuellen Status lesen
    - Nur wenn Parent auf `open` / `to do`: auch auf `in progress` setzen
    - Wenn Parent schon `in progress` / `done` / `complete`: keine Änderung
 
-6. **Pro-Task-Quittung im Chat** (pro geändertem Task):
+7. **Pro-Task-Quittung im Chat** (pro geändertem Task):
    ```
    ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — start: in progress
    ✅ <Parent-ID> — [BPM-ANCHOR-<parent-task-id>] — start: in progress (als Parent)
    ```
 
-7. **Batch-Audit** (wenn Parent mit geändert wurde):
+8. **Batch-Audit** (wenn Parent mit geändert wurde):
    ```
    Batch-Audit: 2/2 Body-Anker ✅ | 2/2 Custom Fields (Status) ✅
    ```
 
-8. **Erst DANN inhaltliche Arbeit beginnen.**
+9. **Erst DANN inhaltliche Arbeit beginnen.**
 
 ---
 

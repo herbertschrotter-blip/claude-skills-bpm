@@ -14,7 +14,12 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 
 1. **Task finden** via `clickup_search` (falls BPM-NNN nicht explizit)
 2. **Mehrere Treffer** → mit `ask_user_input_v0` User wählen lassen
-3. **Commit-Infos ermitteln** (Pflicht):
+3. **Review-Workflow-Check** (Pflicht vor jedem Task-Abschluss): Wurden im
+   Chat neue Regeln/Entscheidungen besprochen die andere Tasks betreffen?
+   4-Punkte-Check (aktueller Task, Parent, Siblings, verweisende offene
+   Tasks) gemäß `references/review-workflow.md`. Gefundene Änderungen in
+   ClickUp umsetzen BEVOR der Task auf done gesetzt wird.
+4. **Commit-Infos ermitteln** (Pflicht):
    - Wenn Task Code-Bezug hat (Modul mit Code-Scope — siehe `projects/<[PROJECT]>/clickup-fields.md` Modul-Kürzel):
      - Claude fragt User: "Welche Datei(en) sind betroffen?" (Prosa, offene Frage!)
      - Per DC: `git log -1 --format="%h|%ad|%s" --date=short -- <Datei>`
@@ -25,17 +30,17 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    - Wenn Task keinen Code-Bezug hat (z.B. Meta-Task):
      - Commit ID + Commit Text leer lassen
      - Erledigt-Datum = heute (YYYY-MM-DD)
-4. **Bei mehreren Commits:** `ask_user_input_v0` mit allen Kandidaten (Hash + erste Zeile)
-5. **Pro-Task-Quittung im Chat schreiben** (direkt vor `clickup_update_task`):
+5. **Bei mehreren Commits:** `ask_user_input_v0` mit allen Kandidaten (Hash + erste Zeile)
+6. **Pro-Task-Quittung im Chat schreiben** (direkt vor `clickup_update_task`):
    ```
    ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
    ```
    Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
    **Bei ≥2 Tasks in einer Antwort:** Vollständiges Batch-Protokoll greift — siehe `references/batch-protocol.md` (Batch-Ansage, Pro-Task-Zyklus, Batch-Audit).
-6. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
+7. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
    - Falls alle leer: `ask_user_input_v0` mit fehlenden Feldern
-7. **Custom Fields vorbereiten** (konkrete Field-IDs siehe `projects/<[PROJECT]>/clickup-fields.md`):
+8. **Custom Fields vorbereiten** (konkrete Field-IDs siehe `projects/<[PROJECT]>/clickup-fields.md`):
    ```
    custom_fields = [
      {"id": "<Commit-ID-Field>",         "value": "<7-char-hash>"},
@@ -45,7 +50,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
      // + Nachpflege-Felder falls gesetzt
    ]
    ```
-8. **Einziger API-Call**:
+9. **Einziger API-Call**:
    ```
    clickup_update_task(
      task_id: "<TaskID>",
@@ -53,11 +58,11 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
      custom_fields: custom_fields
    )
    ```
-9. **Memory `[ANKER-LIVE]` aufräumen**:
-   - Eintrag mit Task-ID und Typ `erstellt` entfernen
-   - Falls temporär ein Typ `erledigt` gesetzt wurde: auch entfernen
-   - Nach diesem Schritt existiert im Memory nichts mehr zu diesem Task
-10. **Bestätigung** an User:
+10. **Memory `[ANKER-LIVE]` aufräumen**:
+    - Eintrag mit Task-ID und Typ `erstellt` entfernen
+    - Falls temporär ein Typ `erledigt` gesetzt wurde: auch entfernen
+    - Nach diesem Schritt existiert im Memory nichts mehr zu diesem Task
+11. **Bestätigung** an User:
     ```
     ✅ BPM-XXX auf Done gesetzt
        Commit: <hash> — <Erste Zeile der Message>
