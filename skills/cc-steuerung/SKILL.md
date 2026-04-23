@@ -260,6 +260,11 @@ Artifact. Antwort abschließen, User-Reaktion abwarten, erst in der
 Folge-Antwort Folgefragen stellen. Vollständige Regel: `skill-pflege/SKILL.md`
 Abschnitt "14a. Artifact-Separation".
 
+**Artifact-Dateiname bei SKILL.md-Artifacts:** MUSS exakt `SKILL.md` heißen
+(keine Prefixes/Suffixes, exakte Groß-Klein-Schreibung), sonst erscheint der
+"Skill speichern"-Button nicht. Vollständige Regel: `skill-pflege/SKILL.md`
+Abschnitt "13a. Artifact-Dateiname".
+
 ---
 
 ## 5a. PowerShell-Aufrufe via DC (cc-steuerung-002)

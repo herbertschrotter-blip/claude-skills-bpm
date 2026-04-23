@@ -183,6 +183,20 @@ Claude lädt nur die relevante reference-Datei nach. SKILL.md bleibt schlank, de
 
 **Artifact-Separation (skill-pflege-003):** Nach der Artifact-Erstellung KEIN `ask_user_input_v0` im selben Antwort-Block. Die UI verdrängt das Artifact. Antwort abschließen, User-Reaktion abwarten, erst in der Folge-Antwort Folgefragen stellen.
 
+**🔴 Artifact-Dateiname (KRITISCH, skill-pflege-004):**
+
+Der Artifact-Dateiname MUSS **exakt** `SKILL.md` sein (Groß-Klein-Schreibung). Sonst erscheint der "Skill speichern"-Button in Claude.ai nicht.
+
+RICHTIG: `create_file(path="/home/claude/SKILL.md", ...)`
+
+FALSCH (kein Button):
+- `create_file(path="/home/claude/chat-wechsel-SKILL.md", ...)`
+- `create_file(path="/home/claude/SKILL-chat-wechsel.md", ...)`
+- `create_file(path="/home/claude/chat-wechsel.md", ...)`
+- `create_file(path="/home/claude/skill.md", ...)` ← klein, auch falsch
+
+Mehrere Skills in einer Session: Pro Skill eigener Antwort-Block, pro Antwort-Block genau EIN Artifact namens `SKILL.md`, Kontext-Trennung über Antwort-Text statt Dateinamen-Variation.
+
 ---
 
 ### Schritt 7 — Test-Prompts strukturiert sammeln (Eval-Denkweise)

@@ -137,6 +137,31 @@ Jede Skill-Änderung lebt an zwei Orten:
 
 Damit der "Skill speichern"-Button im UI erscheint. Kein `SKILL-<name>.md` oder `skill.md` oder sonst was.
 
+### 13a. 🔴 Artifact-Dateiname (KRITISCH, skill-pflege-004)
+
+Der Artifact-Dateiname MUSS **exakt** `SKILL.md` sein. Sonst erscheint der "Skill speichern"-Button in Claude.ai nicht und Herbert muss den Inhalt manuell copy-pasten.
+
+**RICHTIG:**
+```
+create_file(path="/home/claude/SKILL.md", ...)
+```
+
+**FALSCH (kein "Skill speichern"-Button):**
+```
+create_file(path="/home/claude/chat-wechsel-SKILL.md", ...)
+create_file(path="/home/claude/SKILL-chat-wechsel.md", ...)
+create_file(path="/home/claude/chat-wechsel.md", ...)
+create_file(path="/home/claude/skill.md", ...)   ← klein, auch falsch
+```
+
+**Grund:** Die Claude.ai-UI erkennt nur exakt `SKILL.md` (Groß-Klein-Schreibung!) als ersetzbare Skill-Datei.
+
+### Mehrere Skills in einer Session
+
+- Pro Skill einen **eigenen Antwort-Block**
+- Pro Antwort-Block nur **EIN** Artifact namens `SKILL.md`
+- Kontext-Trennung durch Antwort-Text ("Jetzt Skill X updaten..."), **nicht** durch Dateinamen-Variation
+
 ### 14. Artifact mit vollständigem Skill-Inhalt
 
 Das Artifact enthält die komplette neue SKILL.md (nicht nur den Diff). Der User klickt "Skill speichern" → Claude.ai ersetzt den aktiven Skill.
