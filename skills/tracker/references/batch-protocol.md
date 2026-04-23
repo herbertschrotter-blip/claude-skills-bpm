@@ -58,10 +58,15 @@ Beispiele:
 
 ## 2b. Referenz-Anker in Folge-Antworten (PFLICHT)
 
-Adressiert `tracker-005`. Die Pro-Task-Quittung aus Kapitel 2 greift nur **im
-Moment des Tool-Calls**. Wenn ein Task über mehrere Antworten hinweg inhaltlich
-besprochen wird (Commit-Vorschlag, Klärungsfrage, Fehler-Fix, Fortschritt),
-versinkt er ohne Anker im Chat.
+Adressiert `tracker-005` + `tracker-009`. Die Master-Spec steht in
+`tracker/SKILL.md` Abschnitt "Kernregel: Referenz-Anker in Folge-Antworten".
+Dieses Kapitel ergänzt um Beispiele und batch-spezifische Abgrenzung zur
+Pro-Task-Quittung aus Kapitel 2.
+
+Die Pro-Task-Quittung aus Kapitel 2 greift nur **im moment des Tool-Calls**.
+Wenn ein Task über mehrere Antworten hinweg inhaltlich besprochen wird
+(Commit-Vorschlag, Klärungsfrage, Fehler-Fix, Fortschritt), versinkt er
+ohne Anker im Chat.
 
 ### Format
 

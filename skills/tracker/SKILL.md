@@ -74,6 +74,49 @@ Adressiert `tracker-001`, `tracker-004`, `tracker-005`.
 
 ---
 
+## 🚨 Kernregel: Referenz-Anker in Folge-Antworten
+
+**Bei JEDER Folge-Antwort die einen bereits existierenden Task inhaltlich
+betrifft (ohne Tool-Call), MUSS oben ein Referenz-Anker stehen:**
+
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<task-id>] <n>.
+```
+
+Mehrere Tasks kommagetrennt:
+```
+Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-86c9feyj9] tracker-005, [BPM-ANCHOR-86c9f7awj] tracker-001.
+```
+
+**Pflicht-Trigger:**
+- Commit-Vorschlag für einen Task
+- Klärungsfrage zu laufendem Task-Fix
+- Fehler-Diagnose während Task-Arbeit
+- Status-Update / Fortschrittsbericht
+- Nachträgliche Analyse oder Konzept-Änderung
+- Jede Folge-Antwort in einem Thread der einen aktiven Task behandelt
+
+**Gilt auch wenn der Task nicht via `tracker neu`/`tracker done` angefasst
+wurde, sondern nur per `clickup_get_task` gelesen, besprochen oder per
+`edit_block` umgesetzt wird** (adressiert tracker-009: "Task übernommen
+ohne neu/done").
+
+**Wann NICHT Pflicht:**
+- Task-ID nur in Aufzählung erwähnt ("die 4 tracker-Issues")
+- Antwort rein über Meta/Tooling (DC, git, Skill-System)
+- Rückfrage ohne Task-Bezug
+- Reine Begrüßung / Abschluss
+
+**Wenn in derselben Antwort eine Pro-Task-Quittung steht** (die bereits
+den Anker inline enthält), entfällt der Referenz-Anker oben für diesen
+Task.
+
+Adressiert `tracker-005`, `tracker-009`.
+
+Details + Beispiele: `references/batch-protocol.md` Kapitel 2b.
+
+---
+
 ## 🚨 Kernregel: Review-Workflow vor Task-Übergang
 
 **Vor JEDEM `tracker done` / `tracker start` (neu oder Wechsel) / Fokus-Wechsel
@@ -301,7 +344,7 @@ Details in `references/anti-patterns.md`.
 - **Batch-Audit weglassen** (`N/N Body-Anker ✅ | N/N Custom Fields ✅`)
 - **Impliziter Start-Trigger OHNE Task-ID** im Satz — "los geht's" / "fangen wir an" ohne BPM-Nummer triggert NICHT
 - **Inhaltliche Arbeit starten BEVOR `tracker start` ausgeführt wurde** — Task muss vorher auf `in progress`
-- **Referenz-Anker in Folge-Antworten weglassen** — wenn eine Antwort einen Task inhaltlich betrifft und keine Quittung enthält, MUSS oben `Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<id>] <name>.` stehen
+- **Referenz-Anker in Folge-Antworten weglassen** — wenn eine Antwort einen Task inhaltlich betrifft und keine Quittung enthält, MUSS oben `Betroffene Tasks in dieser Antwort: [BPM-ANCHOR-<id>] <name>.` stehen. **Gilt auch bei Tasks die nur gelesen/bearbeitet wurden, ohne `tracker neu`/`tracker done` auszulösen** (tracker-009)
 - **Projekt-Daten hartkodieren** im Skill (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel) — alles aus `projects/<[PROJECT]>/` lesen
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
 - **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
