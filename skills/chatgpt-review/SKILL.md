@@ -43,6 +43,148 @@ verwendet werden — KEINE Prosa-Fragen.**
 
 Falls der User schon gesagt hat welches Modell: nicht nochmal fragen.
 
+## CGR-Ablagesystem (Phase 4.6)
+
+Jede Review-Runde wird im BPM-Repo unter `Docs/Referenz/chatgpt-reviews/`
+archiviert. Die Archivierung läuft **inkrementell** — pro Runde 4 Dateien,
+angelegt in der jeweiligen Gesprächsphase.
+
+### ID-Schema
+
+```
+CGR-<YYYY-MM>-<thema>-r<runde>
+```
+
+- `YYYY-MM` = Jahr + Monat des Serie-Starts
+- `<thema>` = kebab-case aus Themen-Enum
+- `r<runde>` = Rundennummer (r1, r2, r3, ...)
+
+### Themen-Enum
+
+- `skillsystem` — Skill-System-Architektur, Trigger, Description-Schema
+- `docs-refactor` — Dokumentationsstruktur, Frontmatter, INDEX, Quickloads
+- `bpm-architektur` — BPM-Code-Architektur (SQLite, Domain, Infra)
+- `datenschutz-dbschema` — DSGVO, DB-Schema, Whitelist
+- **Neues Thema** — `ask_user_input_v0` mit Option "neues Thema", dann
+  Namensvorschlag per Prosa-Frage, danach INDEX.md-Enum erweitern
+
+### Ablagestruktur pro Serie
+
+```
+<BPM-Repo>/Docs/Referenz/chatgpt-reviews/
+└── CGR-YYYY-MM-<thema>/
+    ├── README.md          ← Serie-Übersicht, Runden-Zusammenfassung
+    ├── r1/
+    │   ├── 01-claude-prompt.md       ← Claudes Prompt an ChatGPT
+    │   ├── 02-chatgpt-response.md    ← ChatGPTs Antwort im Canvas
+    │   ├── 03-claude-analysis.md     ← Claudes Einschätzung/Reaktion
+    │   └── 04-user-decisions.md      ← Herberts Antworten + Entscheidungen
+    ├── r2/ ...
+    └── r3/ ...
+```
+
+### Globaler Index
+
+```
+<BPM-Repo>/Docs/Referenz/chatgpt-reviews/INDEX.md
+```
+
+Pro Serie eine Zeile in der Tabelle "Aktueller Stand". Bei neuer Runde:
+Status-Update. Bei Serie-Abschluss: Kernergebnis eintragen.
+
+### Serie starten (vor Phase 1)
+
+Wenn der User eine neue Review-Serie startet, VOR Phase 1 Initialprompt:
+
+1. **Thema ermitteln** via `ask_user_input_v0`:
+   ```
+   Frage: "Thema der Review-Serie?"
+   Optionen: "skillsystem", "docs-refactor", "bpm-architektur",
+             "datenschutz-dbschema", "neues Thema"
+   ```
+   Bei "neues Thema": Prosa-Frage nach Kurzname (kebab-case).
+
+2. **CGR-ID festziehen:** `CGR-<aktuelles-YYYY-MM>-<thema>`
+   (aktuelles Datum nehmen, nicht fragen)
+
+3. **BPM-Repo-Pfad ermitteln:**
+   - Memory scannen nach `[PROJECT]`-Eintrag (enthält BPM-Repo-Pfad)
+   - Falls nicht vorhanden: Prosa-Frage nach lokalem Repo-Pfad
+
+4. **Ordner anlegen** via DC:
+   ```
+   DC create_directory <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-<thema>/
+   ```
+
+5. **README.md Stub** via DC:
+   ```markdown
+   # CGR-YYYY-MM-<thema> — <Serie-Titel>
+
+   **Thema:** <Beschreibung>
+   **Zeitraum:** <YYYY-MM>
+   **Ursprungs-Chat:** <optional>
+   **Status:** Runde 1 offen
+
+   ---
+
+   ## Runden-Übersicht
+
+   ### Runde 1 — <Titel>
+   - **Artefakte:** [r1/](./r1/)
+   - **Fokus:** ...
+   - **Kernergebnis:** ...
+   ```
+
+6. **INDEX.md erweitern:**
+   ```
+   DC edit_block <BPM-Repo>/Docs/Referenz/chatgpt-reviews/INDEX.md
+     → neue Zeile in Tabelle "Aktueller Stand"
+   ```
+
+### Runde starten (innerhalb laufender Serie)
+
+Wenn innerhalb einer bestehenden Serie eine neue Runde beginnt:
+
+1. **r<N>/-Ordner anlegen** via DC:
+   ```
+   DC create_directory <BPM-Repo>/.../CGR-YYYY-MM-<thema>/r<N>/
+   ```
+
+2. **4 Platzhalter-Dateien** erst bei Befüllung anlegen — nicht vorab
+   alle 4 leer anlegen. Lifecycle siehe unten.
+
+### Lifecycle pro Runde (4 Datei-Checkpoints)
+
+| Phase | Aktion | Datei |
+|-------|--------|-------|
+| Phase 1 Initialprompt erstellt | `01-claude-prompt.md` via DC schreiben | r<N>/01-claude-prompt.md |
+| User pastet ChatGPT-Antwort | `02-chatgpt-response.md` via DC schreiben | r<N>/02-chatgpt-response.md |
+| Phase 2 Stufe A Claude-Analyse | `03-claude-analysis.md` via DC schreiben | r<N>/03-claude-analysis.md |
+| User-Entscheidungen nach Stufe A | `04-user-decisions.md` via DC schreiben | r<N>/04-user-decisions.md |
+
+**Regel:** Jede Datei wird direkt in der zugehörigen Gesprächsphase
+angelegt — nicht gesammelt am Rundenende. So bleibt das Archiv auch bei
+Chat-Abbruch lückenlos.
+
+### Serie abschließen
+
+Wenn User signalisiert "Serie fertig" / "keine weitere Runde":
+
+1. **README.md finalisieren:**
+   - Kernergebnisse pro Runde
+   - Links zu resultierenden ADRs / Commits
+   - Status: "Abgeschlossen"
+2. **INDEX.md Status-Update:** Status-Spalte auf "Abgeschlossen",
+   Kernergebnis-Spalte befüllen.
+
+### Retroaktive Nutzung
+
+Der Skill verwaltet auch bestehende Serien-Ordner:
+- Neue Runde in bestehender Serie: regulärer "Runde starten"-Ablauf
+- Historische Runden nachrüsten: on-demand, kein Pflicht-Workflow
+
+---
+
 ## ChatGPTs Repo-Zugriff (PFLICHT in jedem Prompt)
 
 ChatGPT hat die Möglichkeit selbst Dateien aus dem GitHub-Repo zu lesen.
@@ -178,20 +320,41 @@ Dieses Gespräch läuft über einen Vermittler (den User).
 - Fachliche Invarianten explizit aufführen
 - Repo-Zugriff Block mit aktuellem Branch IMMER einfügen
 
+**Archivierung (CGR-System):**
+- Vor dem Erstellen: sicherstellen dass `CGR-YYYY-MM-<thema>/r<N>/` existiert
+  (anlegen via DC wenn neu)
+- Nach dem Erstellen: Prompt-Text 1:1 als `r<N>/01-claude-prompt.md` ablegen
+- Bei Runde 1: zusätzlich Serie-Stub anlegen (siehe "Serie starten")
+
 ### Phase 2: Antwort/Reaktion
 
 #### Stufe A — Einschätzung + ask_user_input_v0
 
+**Vor Stufe A: ChatGPT-Antwort archivieren.**
+User hat die Antwort in den Chat gepastet. Vor der Einschätzung:
+- ChatGPT-Antwort 1:1 als `r<N>/02-chatgpt-response.md` ablegen via DC
+
+**Dann Stufe A:**
+
 1. Eigene Einschätzung zusammenfassen
-2. `ask_user_input_v0` mit Entscheidungspunkten (max 3 Fragen)
-3. Immer Option "ChatGPT fragen" anbieten
+2. Einschätzung zusätzlich als `r<N>/03-claude-analysis.md` ablegen via DC
+3. `ask_user_input_v0` mit Entscheidungspunkten (max 3 Fragen)
+4. Immer Option "ChatGPT fragen" anbieten
 
 #### Stufe B — Folgeprompt (nach User-Antwort)
+
+**Vor Stufe B: User-Entscheidungen archivieren.**
+- User-Antworten auf die Stufe-A-Fragen als `r<N>/04-user-decisions.md`
+  ablegen via DC
+
+**Dann Folgeprompt für Runde N+1:**
 
 - Basierend auf User-Entscheidungen
 - Canvas-Rundennummer korrekt mitzählen
 - Repo-Zugriff Block mit aktuellem Branch IMMER einfügen
 - ✅ Einigkeit | ⚠️ Widerspruch | ❓ Rückfragen
+- **Vor dem Folgeprompt: neuen Runden-Ordner `r<N+1>/` anlegen**
+- **Folgeprompt als `r<N+1>/01-claude-prompt.md` ablegen**
 
 ### Phase 3: Abschluss
 
@@ -200,6 +363,13 @@ Dieses Gespräch läuft über einen Vermittler (den User).
 - Offene Punkte
 - Nächste Schritte
 - Optional: überarbeitetes Konzept
+
+**Archivierung (Serie-Abschluss):**
+- `README.md` der Serie finalisieren: Kernergebnisse, Links zu ADRs/Commits,
+  Status auf "Abgeschlossen"
+- `INDEX.md` Status-Update: Status-Spalte "Abgeschlossen", Kernergebnis
+  in entsprechender Spalte
+- Letzte `04-user-decisions.md` in letzter Runde ablegen (falls noch nicht)
 
 ---
 
@@ -215,9 +385,25 @@ Gleichwertiger Gesprächspartner:
 
 ## Formatierung
 
-Prompts als Download (.md) unter `/mnt/user-data/outputs/`:
-- `chatgpt-review-prompt.md`
-- `chatgpt-review-runde-N.md`
+**Zwei Ablage-Orte für Prompts:**
+
+1. **Primär: BPM-Repo-Archiv** (via DC, CGR-System):
+   ```
+   <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-<thema>/r<N>/
+     ├── 01-claude-prompt.md
+     ├── 02-chatgpt-response.md
+     ├── 03-claude-analysis.md
+     └── 04-user-decisions.md
+   ```
+
+2. **Zusätzlich: Copy-Paste-Hilfe** für den User. Damit der User den
+   Prompt schnell in ChatGPT pasten kann, liefert Claude den Prompt-Text
+   zusätzlich als Download-Datei:
+   ```
+   /mnt/user-data/outputs/chatgpt-review-prompt.md        (Initial)
+   /mnt/user-data/outputs/chatgpt-review-runde-N.md       (Folgeprompt)
+   ```
+   Dateien via `create_file` + `present_files` als Dateikarte.
 
 Phase 2 Stufe A: direkt im Chat + ask_user_input_v0.
 Download erst in Stufe B.
@@ -235,3 +421,8 @@ Prompts in der Sprache des Users.
 - Stufe A Entscheidungspunkte als Prosa statt ask_user_input_v0
 - Uneinigkeit ohne ask_user_input_v0 auflösen
 - Initialprompt ohne Frühphasen-Hinweis-Block erstellen (siehe Frühphasen-Prinzip in INDEX.md)
+- **Review-Serie starten ohne CGR-Ordner + README.md + INDEX.md-Zeile** (Phase 4.6)
+- **Runde durchlaufen ohne die 4 Dateien inkrementell abzulegen** — 01 in Phase 1, 02 vor Stufe A, 03 in Stufe A, 04 zwischen Stufe A und B
+- **INDEX.md-Status nicht aktualisieren** bei neuer Runde / Serie-Abschluss
+- **Alle 4 Dateien einer Runde gesammelt am Rundenende anlegen** — Archiv-Lücken bei Chat-Abbruch
+- **CGR-ID aus falschem Monat verwenden** — immer das aktuelle `YYYY-MM` beim Serie-Start nehmen, auch wenn die Runde später läuft
