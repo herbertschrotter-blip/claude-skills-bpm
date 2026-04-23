@@ -10,6 +10,34 @@ description: >
 
 # Git Commit Helper
 
+---
+
+## Vorrang / Delegation an andere Skills
+
+**git-commit-helper ist für Commit-Befehle, Commit-Messages und Version-Bumps.
+Wenn die Hauptabsicht Code-Änderungen oder andere Aktionen sind, NICHT hier
+weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Code schreiben oder ändern (Services, ViewModels, Dialoge, Logik) | **code-erstellen** |
+| UI-Entwurf als HTML-Mockup | **mockup-erstellen** |
+| ClickUp-Task anlegen, updaten, schließen | **tracker** |
+| Doku schreiben (ADR, Konzept, Frontmatter, Quickload) | **doc-pflege** |
+| Konsistenzprüfung Code ↔ Docs | **audit** |
+
+Nur wenn die Hauptabsicht **die Commit-Erstellung selbst** ist
+(Commit-Message formulieren, Version-Bump wählen, git add/commit-Befehle),
+bleibt git-commit-helper zuständig.
+
+**Wichtig:** Nach Code-Änderungen liefert code-erstellen einen
+Commit-Vorschlag INLINE (Schritt 9 seiner Load Order). Das ist kein
+git-commit-helper-Trigger. Dieser Skill springt erst an wenn der User
+explizit "commit", "commit-message", "welche Version" o.ä. fragt ODER
+wenn code-erstellen an ihn delegiert hat.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
