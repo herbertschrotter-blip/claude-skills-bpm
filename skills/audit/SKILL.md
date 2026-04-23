@@ -15,6 +15,33 @@ description: >
 
 Prüft ob Code, Docs, Frontmatter und Quickload konsistent sind.
 
+---
+
+## Vorrang / Delegation an andere Skills
+
+**audit ist strikt read-only. Wenn die Hauptabsicht ein Fix, eine
+Implementierung oder eine Doc-Pflege ist, NICHT hier weiterarbeiten,
+sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Code schreiben oder ändern (Fix, Feature, Refactor) | **code-erstellen** |
+| Doku schreiben, ADR, Konzept, Frontmatter-Pflege | **doc-pflege** |
+| UI-Entwurf als HTML-Mockup | **mockup-erstellen** |
+| Commit-Befehl, Commit-Message | **git-commit-helper** |
+| ClickUp-Task-Aktion | **tracker** |
+
+Nur wenn die Hauptabsicht **read-only Konsistenzprüfung** ist
+(Audit-Report, Frontmatter-Check, Code-vs-Doc-Abgleich, INDEX-Validierung),
+bleibt audit zuständig.
+
+**Wichtig:** Nach einem Audit-Report bietet audit KEINE Fixes selbst an.
+Die im Report empfohlenen Aktionen werden per `ask_user_input_v0` an
+den passenden Skill delegiert (code-erstellen für Code-Fixes, doc-pflege
+für Doc-Fixes). audit ist der Analyse-Skill, nicht der Fix-Skill.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
