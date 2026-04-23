@@ -97,6 +97,16 @@ Gleiches 10-Fields-Schema wie bei Code-Tasks.
 - **Gefundene Änderungen nur mündlich notieren, nicht in ClickUp eintragen** — Descriptions/neue Subtasks MÜSSEN in ClickUp persistiert werden
 - **Check nach dem Task-Übergang nachholen** — muss VORHER passieren, nach dem Übergang ist zu spät
 
+### Automatischer Nachlauf nach tracker done (tracker-008)
+
+- **Nach `tracker done` passiv auf User-Input warten** ohne `ask_user_input_v0` mit Folgeoptionen
+- **Commit-Hash vom User anfordern** wenn DC verfügbar ist — Hash selbst via `git log -1 --format='%h %s'` holen
+- **Zwischenstand-Tabelle nach Task-Abschluss weglassen** — Übersicht über erledigte Items und Push-Pending ist Pflicht
+- **Folgeoptionen als Prosa-Frage statt `ask_user_input_v0`** — "Was willst du als nächstes?" im Fließtext ist VERBOTEN, nur Button-Optionen
+- **Folgeoptionen bereits nach dem ersten Task eines Batches zeigen** — erst nach dem letzten Task des Batches
+- **Nachlauf komplett überspringen** weil "der User weiß ja eh was er will" — die Regel ist verbindlich auch wenn User aktiv ist
+- **Zero-Change-Tasks als Grund für komplettes Überspringen nehmen** — nur Schritt 1 (Hash holen) entfällt, Schritte 2-4 bleiben
+
 ### Batch-spezifisch (≥2 Task-Operationen in einer Antwort)
 
 Vollständige Spec: `batch-protocol.md`. Kurzliste:

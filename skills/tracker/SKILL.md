@@ -102,6 +102,28 @@ Adressiert `tracker-006`.
 
 ---
 
+## 🚨 Kernregel: Automatischer Nachlauf nach tracker done
+
+**Nach jedem erfolgreichen `tracker done` MUSS Claude automatisch weiterführen —
+niemals passiv auf User-Input warten.**
+
+4 Schritte:
+
+1. **Commit-Hash via DC holen** (`git log -1 --format='%h %s'`) — nicht vom User anfordern wenn DC verfügbar
+2. **Custom Fields setzen** (Commit ID, Erledigt-Datum, Chat-Anker erledigt) — typischerweise im Haupt-Ablauf-Schritt 9 bereits erledigt
+3. **Zwischenstand-Tabelle im Chat** (Task / Commit-Hash / Status / Push-Pending)
+4. **Folgeoptionen via `ask_user_input_v0`** — niemals Prosa-Frage, niemals still warten
+
+**Ausnahmen:** Zero-Change-Tasks (Schritt 1 entfällt), Batches (Schritte 3-4 nur einmal am Batch-Ende), DC nicht verfügbar (Schritt 1 entfällt → Prosa-Frage nach Hash).
+
+Baut auf `cc-steuerung-003` auf (DC ist Default-Ausführungsmodus).
+
+Vollständige Spec mit Beispiel-Ablauf: `references/complete-task.md` Abschnitt "Automatischer Nachlauf nach tracker done".
+
+Adressiert `tracker-008`.
+
+---
+
 ## 🚨 Kernregel: Projekt-Config aus `projects/<[PROJECT]>/`
 
 **Alle projekt-spezifischen Daten (Listen-IDs, Custom-Field-IDs,
@@ -197,7 +219,7 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 | `create-task.md` | `tracker neu` Ablauf, Description-Template, Beispiel-Workflow |
 | `issue-task.md` | `tracker issue` Ablauf, Skill-Issue-Listen-Routing, Issue-ID-Nummerierung, Skill-Issues-Scope Custom Fields |
 | `start-task.md` | `tracker start` Ablauf, Parent-Kaskade, implizite Trigger mit Task-ID |
-| `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Commit-Disziplin (ein Task = ein Commit), Status-Werte, Beispiel-Workflow |
+| `complete-task.md` | `tracker done` Ablauf, Git-Commit-Ermittlung, Commit-Disziplin (ein Task = ein Commit), Automatischer Nachlauf (Hash holen, Zwischenstand, Folgeoptionen), Status-Werte, Beispiel-Workflow |
 | `review-workflow.md` | 4-Punkte-Scope-Check vor `tracker done` / `tracker start` / Fokus-Wechsel: aktueller Task + Parent + Siblings + verweisende offene Tasks |
 | `update-task.md` | `tracker update` + `tracker field` |
 | `search-and-status.md` | `tracker status`, `next`, `suche`, `listen` |
@@ -284,5 +306,6 @@ Details in `references/anti-patterns.md`.
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
 - **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
 - **Review-Workflow-Check vor Task-Übergang weglassen** — 4-Punkte-Check (aktueller Task + Parent + Siblings + verweisende offene Tasks) ist Pflicht vor `tracker done`, `tracker start` und Fokus-Wechsel (Details: `references/review-workflow.md`)
+- **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash via DC holen + Zwischenstand-Tabelle + Folgeoptionen via `ask_user_input_v0` sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

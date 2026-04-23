@@ -71,6 +71,97 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
     ```
 ---
 
+## Automatischer Nachlauf nach tracker done
+
+**Kernregel:** Nach jedem erfolgreichen `clickup_update_task` auf `done`/`complete`
+MUSS Claude automatisch den Nachlauf ausführen. **Niemals passiv auf
+User-Input warten nach `tracker done`.**
+
+### 4-Schritt-Nachlauf
+
+1. **Commit-Hash selbst via DC holen** (falls nicht schon aus vorhergehendem
+   `git commit`-Call bekannt):
+   ```
+   cd "<Repo-Pfad>"
+   git log -1 --format='%h %s'
+   ```
+   Baut auf cc-steuerung-003 auf (DC ist Default-Ausführungsmodus). Den Hash
+   nicht vom User anfordern wenn DC verfügbar ist.
+
+2. **Custom Fields in ClickUp setzen** — passiert typischerweise schon im
+   Haupt-Ablauf-Schritt 9 (Commit ID, Commit Text, Erledigt-Datum,
+   Chat-Anker erledigt). Falls Hash erst nachträglich via Schritt 1
+   ermittelt wurde: zweiter `clickup_update_task` mit den Feld-Updates.
+
+3. **Zwischenstand-Tabelle im Chat** zeigen — Kompakt-Überblick was erledigt
+   wurde und was noch offen ist:
+   ```
+   | Item | Status |
+   |------|--------|
+   | <Task-ID> done (<hash>, <version>) | ✅ |
+   | Push nach origin/main | ⏳ User |
+   ```
+   Bei mehreren parallelen Items (z.B. Skill-Issues-Session): vollständige
+   Session-Tabelle mit allen abgeschlossenen und offenen Punkten.
+
+4. **Folgeoptionen via `ask_user_input_v0`** — 2-4 Optionen mit konkreten
+   nächsten Schritten:
+   ```
+   ask_user_input_v0:
+     question: "Was als nächstes?"
+     options:
+       - "<Nächster geplanter Issue/Task mit Kurzbeschreibung>"
+       - "<Alternativer thematisch passender Task>"
+       - "Anderen Punkt anpacken (ich sag welchen)"
+       - "Pause"
+   ```
+   Niemals als Prosa-Frage. Niemals still warten.
+
+### Ausnahmen
+
+- **Zero-Change-Tasks:** Schritt 1 entfällt (kein Commit, kein Hash). Schritte
+  2-4 bleiben. Im Quittungstext `(Zero-Change)` vermerkt (gemäß `tracker-007`).
+
+- **Batch-Abschluss (mehrere Tasks hintereinander done):** Schritte 1-2 pro
+  Task durchlaufen, Schritt 3 einmal am Batch-Ende mit Gesamt-Übersicht,
+  Schritt 4 **nur einmal** nach dem letzten Task.
+
+- **DC nicht verfügbar:** Schritt 1 entfällt automatisch. Dann Prosa-Frage
+  an den User: "Commit-Hash?" (offene Frage, nicht `ask_user_input_v0`).
+
+### VERBOTEN
+
+- Nach `tracker done` passiv auf User-Input warten ohne `ask_user_input_v0`
+- Commit-Hash vom User anfordern wenn DC verfügbar ist
+- Zwischenstand-Tabelle nach Task-Abschluss weglassen
+- Folgeoptionen als Prosa-Frage statt `ask_user_input_v0`
+- Folgeoptionen bereits nach dem ersten Task eines Batches zeigen — erst am Batch-Ende
+
+### Beispiel-Ablauf
+
+```
+tracker done auf BPM-082 (Code-Task)
+  [Haupt-Ablauf Schritte 1-11 durchlaufen]
+  ✓ Status auf done gesetzt, Custom Fields gefüllt
+
+Automatischer Nachlauf:
+  1. DC: git log -1 --format='%h %s' → hash bereits bekannt aus Commit-Session
+  2. Custom Fields schon in Schritt 9 mit drin → übersprungen
+  3. Zwischenstand-Tabelle:
+     | Item | Status |
+     |------|--------|
+     | BPM-082 done (ee4476d, v0.26.0) | ✅ |
+     | Push nach origin/main | ⏳ User |
+  4. ask_user_input_v0:
+     "Was als nächstes?"
+     - "BPM-083 (Folgefeature laut Prio)"
+     - "BPM-084 (Bugfix, geplant)"
+     - "Anderer Task"
+     - "Pause"
+```
+
+---
+
 ## Commit-Disziplin: ein Task = ein Commit
 
 **Kernregel:** Jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen
