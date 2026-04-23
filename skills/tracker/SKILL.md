@@ -310,6 +310,34 @@ Details in `references/anker-system.md`.
 
 ---
 
+## Memory-Eskalation
+
+Memory-Einträge (Rubriken `[VERIFY]`, `[ARCH-OPEN]`, `[INFRA-TODO]`,
+`[REVIEW-PENDING]`) werden **nie automatisch** zu ClickUp-Tasks.
+
+Wenn Herbert einen wiederholt auftauchenden Memory-Eintrag zu einem
+echten Task eskalieren will:
+
+1. Memory-Eintrag als Kontext in Task-Description übernehmen
+2. Per `tracker neu` einen ClickUp-Task anlegen (normaler Ablauf)
+3. Nach User-Bestätigung: Memory-Eintrag via `memory_user_edits remove`
+   entfernen — **nie stillschweigend, nie automatisch**
+
+**Memory ≠ Tracker-Light.** Memory bleibt nur offene Merker, Fragen,
+Verifikationen. Substantielle Arbeit gehört in ClickUp.
+
+Abgrenzung:
+- **Ohne User-Anweisung:** Memory bleibt Memory, auch bei wiederholtem
+  Handover-Vorkommen
+- **Mit User-Anweisung:** Memory → Task via `tracker neu`, dann
+  Bestätigung einholen fürs Entfernen
+
+Rubriken-Konvention: `MEMORY-RUBRIKEN.md`.
+
+Adressiert Phase 4.4.
+
+---
+
 ## Automationspolitik (Kurzform)
 
 **Goldene Regel:** Explizit → direkt. Alles andere → ask_user_input_v0 (keine Prosa!).
@@ -351,5 +379,6 @@ Details in `references/anti-patterns.md`.
 - **Review-Workflow-Check vor Task-Übergang weglassen** — 4-Punkte-Check (aktueller Task + Parent + Siblings + verweisende offene Tasks) ist Pflicht vor `tracker done`, `tracker start` und Fokus-Wechsel (Details: `references/review-workflow.md`)
 - **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash via DC holen + Zwischenstand-Tabelle + Folgeoptionen via `ask_user_input_v0` sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
 - **Issue-IDs manuell vergeben lassen bei `tracker issue`** — Auto-Nummerierung via `clickup_filter_tasks` ist Pflicht, inkl. `include_closed: true` + Unique-Check (Details: `references/issue-task.md` Schritt 4)
+- **Memory-Einträge automatisch zu Tasks eskalieren** — nur auf explizite Herbert-Anweisung `tracker neu` aus Memory ableiten, nie ungefragt. Entfernen des Memory-Eintrags erst nach Bestätigung (siehe Memory-Eskalation, Phase 4.4)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.
