@@ -2,6 +2,13 @@
 
 Vollständiger Ablauf, Description-Template und Beispiel-Workflow für `tracker neu`.
 
+**Abgrenzung:** Diese Datei behandelt den Standard-Fall `tracker neu` für
+Haupttasks im Projekt-Scope (z.B. BPM-Listen, ClaudeSkills-Liste).
+Für **Skill-Issues** (`tracker-NNN`, `cc-steuerung-NNN`, etc.) gilt das
+Kommando `tracker issue <skill>: <titel>` und die separate Spec in
+`references/issue-task.md` — mit eigenem Field-Scope und eigener
+Nummerierungslogik.
+
 ---
 
 ## Kommando
