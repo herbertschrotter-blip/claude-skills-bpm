@@ -122,21 +122,24 @@ Nie aus dem Gedächtnis oder aus einer Zusammenfassung arbeiten. `view` auf den 
 view /mnt/skills/user/<skill-name>/SKILL.md
 ```
 
-### 12. Alte SKILL.md löschen vor Neu-Erstellung
+### 12. Two-Place-Pflege (Repo + Artifact)
 
-Im `/mnt/user-data/outputs/` darf nur die eine aktuelle Datei liegen.
+Jede Skill-Änderung lebt an zwei Orten:
 
-```
-rm -f /mnt/user-data/outputs/SKILL.md
-```
+1. **Repo** (versioniert): `claude-skills-bpm/skills/<name>/SKILL.md` — via DC `edit_block` oder `write_file` direkt editieren
+2. **Artifact im Chat**: Claude liefert ein Artifact mit dem vollständigen neuen Inhalt. Der User klickt darauf den "Skill speichern"-Button in Claude.ai.
+
+**Reihenfolge:** Erst Repo, dann Artifact.
+
+**KEINE Download-Datei mehr** in `/mnt/user-data/outputs/SKILL.md`. Kein `present_files` für Skill-Updates. Der Artifact ersetzt beide Schritte.
 
 ### 13. Dateiname immer exakt `SKILL.md`
 
 Damit der "Skill speichern"-Button im UI erscheint. Kein `SKILL-<name>.md` oder `skill.md` oder sonst was.
 
-### 14. Per `present_files` anzeigen
+### 14. Artifact mit vollständigem Skill-Inhalt
 
-Nicht nur erstellen sondern auch sichtbar machen damit der Button erscheint.
+Das Artifact enthält die komplette neue SKILL.md (nicht nur den Diff). Der User klickt "Skill speichern" → Claude.ai ersetzt den aktiven Skill.
 
 ### 15. Nach Speicher-Bestätigung erst weiter
 
@@ -145,15 +148,14 @@ Nicht gleich mehrere Skills hintereinander aktualisieren. Jeder einzelne wird ge
 ### 16. Immer Skill für Skill
 
 Bei Batch-Updates mehrerer Skills NIEMALS mehrere auf einmal erstellen. Strikt:
-1. Einen Skill ändern
-2. `present_files` anzeigen
-3. User speichert
-4. **`ask_user_input_v0`** fragen ob der nächste drankommt:
+1. Einen Skill ändern (Repo via DC + Artifact im Chat)
+2. User speichert via "Skill speichern"-Button
+3. **`ask_user_input_v0`** fragen ob der nächste drankommt:
    ```
    Frage: "Nächsten Skill updaten?"
    Optionen: "Ja, nächster: <Name>", "Pause", "Anderer Skill", "Fertig für heute"
    ```
-5. Erst nach Bestätigung → nächster Skill
+4. Erst nach Bestätigung → nächster Skill
 
 ---
 
@@ -225,31 +227,42 @@ Frage: "Plan für <skill-name> Update. OK so?"
 Optionen: "Ja, umsetzen", "Anders machen", "Abbrechen"
 ```
 
-### Schritt 5 — Alte Output-Datei löschen
+### Schritt 5 — Repo-Datei via DC editieren
+
+Änderungen direkt ins Repo schreiben:
 
 ```
-rm -f /mnt/user-data/outputs/SKILL.md
+DC edit_block <repo-pfad>/skills/<name>/SKILL.md
+  old_string: <zu ersetzender Block>
+  new_string: <neuer Block>
 ```
 
-### Schritt 6 — Neue SKILL.md erstellen
+Für komplette Neu-Schreibe: `DC write_file` mit `mode: "rewrite"`.
+Immer absolute Pfade.
 
-Originalinhalt als Basis. Nur die geplanten Änderungen einfügen.
+### Schritt 6 — Artifact mit vollständigem neuen Inhalt
 
-### Schritt 7 — Per present_files anzeigen
+Claude erstellt ein Artifact mit der kompletten neuen SKILL.md:
 
 ```
-present_files ["/mnt/user-data/outputs/SKILL.md"]
+create_file
+  path: /home/claude/SKILL.md
+  content: <komplette neue Skill-Datei>
 ```
 
-### Schritt 8 — Diff-Report im Chat
+**Dateiname exakt `SKILL.md`** (keine Prefixes/Suffixes — siehe Regel 13).
+
+Der User sieht den Artifact-Block in Claude.ai und klickt "Skill speichern".
+
+### Schritt 7 — Diff-Report im Chat
 
 Kompakt zeigen was sich geändert hat (siehe Regel 10).
 
-### Schritt 9 — Auf User-Speicher-Bestätigung warten
+### Schritt 8 — Auf User-Speicher-Bestätigung warten
 
 Nicht weiter bis User "gespeichert" oder "ok" oder ähnliches bestätigt.
 
-### Schritt 10 — Wenn Batch: ask_user_input_v0 für nächsten Skill
+### Schritt 9 — Wenn Batch: ask_user_input_v0 für nächsten Skill
 
 ```
 Frage: "Nächsten Skill updaten?"
@@ -271,9 +284,8 @@ Claude:
      - view /mnt/skills/user/audit/SKILL.md
      - Plan schreiben
      - ask_user_input_v0 mit Plan
-     - rm outputs
-     - create_file SKILL.md
-     - present_files
+     - DC edit_block auf <repo>/skills/audit/SKILL.md
+     - create_file Artifact /home/claude/SKILL.md
      - Diff-Report
   4. WARTEN auf "gespeichert"
   5. ask_user_input_v0: "Nächster Skill cc-steuerung?"

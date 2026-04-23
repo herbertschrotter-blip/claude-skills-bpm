@@ -172,12 +172,14 @@ Claude lädt nur die relevante reference-Datei nach. SKILL.md bleibt schlank, de
    - Anlegen via Desktop Commander: `write_file`
    - Pfad-Pattern: `<OneDrive>\Dokumente\02 Arbeit\05 Vorlagen - Scripte\00_claude-skills-bpm\skills\<n>\SKILL.md`
 
-2. **Lokal** (claude.ai-aktiv): `/mnt/user-data/outputs/SKILL.md`
-   - Datei IMMER exakt `SKILL.md` nennen (nicht `SKILL-<n>.md`)
-   - Per `present_files` anzeigen → User klickt "Skill speichern"-Button im UI
-   - Vor Erstellung: alte Output-Datei löschen (`rm -f /mnt/user-data/outputs/SKILL.md`)
+2. **Artifact im Chat** (claude.ai-aktiv):
+   - `create_file(path: "/home/claude/SKILL.md", content: <komplette SKILL.md>)`
+   - Dateiname IMMER exakt `SKILL.md` (nicht `SKILL-<n>.md`, nicht `<n>-SKILL.md`)
+   - Der User sieht das Artifact und klickt "Skill speichern" in Claude.ai
 
-**Reihenfolge:** Erst Repo, dann lokal. Repo ist die Wahrheit.
+**Reihenfolge:** Erst Repo, dann Artifact. Repo ist die Wahrheit.
+
+**KEIN** `present_files` mehr, **KEINE** Download-Datei in `/mnt/user-data/outputs/`. Der Artifact ersetzt beide Mechanismen.
 
 ---
 
