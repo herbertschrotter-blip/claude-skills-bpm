@@ -181,6 +181,8 @@ Claude lädt nur die relevante reference-Datei nach. SKILL.md bleibt schlank, de
 
 **KEIN** `present_files` mehr, **KEINE** Download-Datei in `/mnt/user-data/outputs/`. Der Artifact ersetzt beide Mechanismen.
 
+**Artifact-Separation (skill-pflege-003):** Nach der Artifact-Erstellung KEIN `ask_user_input_v0` im selben Antwort-Block. Die UI verdrängt das Artifact. Antwort abschließen, User-Reaktion abwarten, erst in der Folge-Antwort Folgefragen stellen.
+
 ---
 
 ### Schritt 7 — Test-Prompts strukturiert sammeln (Eval-Denkweise)

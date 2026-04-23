@@ -141,6 +141,26 @@ Damit der "Skill speichern"-Button im UI erscheint. Kein `SKILL-<name>.md` oder 
 
 Das Artifact enthält die komplette neue SKILL.md (nicht nur den Diff). Der User klickt "Skill speichern" → Claude.ai ersetzt den aktiven Skill.
 
+### 14a. 🔴 Artifact-Separation (skill-pflege-003)
+
+**Nach Artifact-Erstellung KEIN `ask_user_input_v0` im selben Antwort-Block.**
+
+Claude.ai-UI verdrängt das Artifact, wenn direkt danach ein `ask_user_input_v0`-Dialog erscheint. Der User sieht das Artifact nur kurz, dann deckt der Input-Dialog es ab — Herbert kann nicht in Ruhe auf "Skill speichern" klicken.
+
+**Richtiger Ablauf:**
+
+Antwort N (Artifact-Block):
+1. DC schreibt Datei aufs Laufwerk
+2. DC-Verifikation (Zeilenzahl, Diff-Stat)
+3. Artifact mit vollständiger SKILL.md (`create_file /home/claude/SKILL.md`)
+4. Kurzer Status-Text ("Zum Copy-Paste ins Claude.ai-Projekt via Skill speichern-Button")
+5. **Antwort abschließen** — KEIN `ask_user_input_v0` hier
+
+Antwort N+1 (nach User-Bestätigung "gespeichert"):
+- Erst jetzt `ask_user_input_v0` für nächste Schritte (z.B. "Nächsten Skill updaten?")
+
+**Gilt für:** jede Kombination aus Artifact + Folgefrage. Nicht nur bei SKILL.md-Artifacts, sondern bei allen Artifacts, bei denen der User noch eine Aktion (Kopieren, Speichern, Ansehen) ausführen muss.
+
 ### 15. Nach Speicher-Bestätigung erst weiter
 
 Nicht gleich mehrere Skills hintereinander aktualisieren. Jeder einzelne wird gespeichert, dann weiter.
@@ -307,6 +327,7 @@ Claude:
 - Zwischen mehreren Skills ohne ask_user_input_v0 Bestätigung wechseln
 - Diff-Report weglassen bei nicht-trivialen Änderungen
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER ask_user_input_v0
+- **`ask_user_input_v0` direkt nach Artifact-Erstellung im selben Antwort-Block** — verdrängt das Artifact in der UI (skill-pflege-003)
 
 
 ---

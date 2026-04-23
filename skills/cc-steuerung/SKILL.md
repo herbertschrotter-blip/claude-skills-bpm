@@ -251,6 +251,15 @@ Wenn `False` → Nachfragen, NICHT raten oder alternativen Pfad probieren.
 - Weitere Chunks: mode="append"
 - Immer absolute Pfade verwenden
 
+### Artifact-Separation bei DC + Artifact in einer Antwort
+
+Wenn Claude in einer Antwort DC-Schreib-Operation + Artifact-Erstellung
+(z.B. `create_file /home/claude/SKILL.md`) kombiniert: KEIN
+`ask_user_input_v0` im selben Antwort-Block. Die UI verdrängt sonst das
+Artifact. Antwort abschließen, User-Reaktion abwarten, erst in der
+Folge-Antwort Folgefragen stellen. Vollständige Regel: `skill-pflege/SKILL.md`
+Abschnitt "14a. Artifact-Separation".
+
 ---
 
 ## 5a. PowerShell-Aufrufe via DC (cc-steuerung-002)
