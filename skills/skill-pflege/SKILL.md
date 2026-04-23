@@ -443,6 +443,48 @@ Fälle erkennt, MUSS er den User informieren und ein Issue vorschlagen:
 
 ---
 
+## MEMORY-CLEANUP (nach Abschluss)
+
+Memory-Einträge werden **nie stillschweigend entfernt**. Auch wenn ein
+Change eindeutig einen Memory-Eintrag erledigt, läuft das Cleanup über
+eine explizite Bestätigungs-Sequenz.
+
+### 3-Schritt-Sequenz
+
+Wenn ein Skill-Change einen bestehenden Memory-Eintrag (Rubriken
+`[VERIFY]`, `[ARCH-OPEN]`, `[INFRA-TODO]`, `[REVIEW-PENDING]`) erledigt:
+
+1. **Herbert hinweisen** — kurze Prosa-Zeile im Chat, welcher
+   Memory-Eintrag durch den Change potentiell erledigt ist
+2. **Bestätigung einholen** — `ask_user_input_v0`:
+   ```
+   Frage: "Memory-Eintrag <Kurztext> jetzt entfernen?"
+   Optionen: "Ja, entfernen", "Behalten", "Später entscheiden"
+   ```
+3. **Bei Bestätigung:** `memory_user_edits(command: "remove", line_number: <n>)`
+
+### Wichtig
+
+- **Cleanup ist KEIN eigener Trigger** — läuft nur als Nachgang einer
+  anderen Skill-Pflege-Aktion
+- **Nie stillschweigend entfernen** — auch wenn der Change offensichtlich
+  den Eintrag obsolet macht, immer erst Bestätigung einholen
+- Gilt nur für die 4 Memory-Rubriken. `[CLICKUP]`, `[SKILL-ISSUES]`,
+  `[ANKER-LIVE]`, `[PROJECT]` sind dauerhafte Konventionen und werden
+  durch eigene Lifecycle-Regeln gepflegt.
+
+### Abgrenzung
+
+- **MEMORY-CLEANUP** (hier) = Memory-Einträge entfernen nach Skill-Änderung
+- **Regel 17/18** (oben in HARTE REGELN) = Skill-Inhalte selbst löschen
+  (Abschnitte, Duplikate im SKILL.md) — anderes Thema
+
+Vollständige Memory-Rubriken-Konvention: `MEMORY-RUBRIKEN.md`.
+
+Adressiert Phase 4.3.
+
+---
+
 ## VERBOTEN
 
 - Skills aus dem Gedächtnis neu schreiben (immer Original laden)
@@ -458,6 +500,7 @@ Fälle erkennt, MUSS er den User informieren und ein Issue vorschlagen:
 - **`ask_user_input_v0` direkt nach Artifact-Erstellung im selben Antwort-Block** — verdrängt das Artifact in der UI (skill-pflege-003)
 - **Skill-Commit ohne Artifact im Chat liefern** — aktive Claude.ai-Skills bleiben sonst beim alten Stand (skill-pflege-005)
 - **`create_file` für Skill-Artifacts ohne direkt folgenden `present_files`-Aufruf** — die Datei landet nur in der Container-Sandbox, keine Dateikarte, kein "Skill speichern"-Button (skill-pflege-006)
+- **Memory-Einträge stillschweigend entfernen** — auch nach offensichtlicher Erledigung: erst Hinweis an Herbert, dann Bestätigung via `ask_user_input_v0`, dann `memory_user_edits remove` (siehe MEMORY-CLEANUP, Phase 4.3)
 
 
 ---
