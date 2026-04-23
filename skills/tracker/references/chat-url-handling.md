@@ -70,7 +70,7 @@ Optionen: Manuell URL eingeben, Feld leer lassen, Abbrechen
 
 ## Chat-Start: Automatischer Kontext
 
-Bei `[CLICKUP]` in Memory → kompakte Zusammenfassung:
+Bei `[CLICKUP]` in Memory → kompakte Zusammenfassung. Beispiel (BPM-Projekt):
 ```
 📋 ClickUp: 12 offene V1-Tasks, 4 davon high
    Höchste Prio: BPM-001 | PM | DB-Anbindung Orchestrator [high] [v1] [M]

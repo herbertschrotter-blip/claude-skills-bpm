@@ -51,9 +51,10 @@ NICHT automatisch schließen.
 
 ---
 
-## Kommando `tracker split: <BPM-NNN>`
+## Kommando `tracker split: <Task-ID>`
 
-Hauptaufgabe in Unteraufgaben aufteilen.
+Hauptaufgabe in Unteraufgaben aufteilen. Task-ID im projekt-üblichen Format
+(z.B. `BPM-NNN`, `tracker-NNN`).
 
 1. Task laden: `clickup_get_task(task_id, subtasks: true)`
 2. Claude analysiert den Task und schlägt Unteraufgaben vor
@@ -108,7 +109,7 @@ NICHT als Custom Field oder Freitext in der Description.
 | **relates to** | Lose inhaltliche Verbindung | "linked task" |
 | **duplicates** | A ist Duplikat von B | "duplicate" |
 
-### Einsatz
+### Einsatz (Beispiele aus BPM-Projekt)
 
 - BPM-007 `blocks` BPM-XX → BPM-XX kann nicht beginnen
 - BPM-079 `is blocked by` BPM-079.01 → Mockup muss vor Umsetzung fertig sein
@@ -129,9 +130,9 @@ clickup_add_task_dependency(
 
 ---
 
-## Kommando `tracker relate: <BPM-A> <Beziehung> <BPM-B>`
+## Kommando `tracker relate: <Task-A> <Beziehung> <Task-B>`
 
-Task-Beziehung setzen.
+Task-Beziehung setzen. Task-IDs im projekt-üblichen Format.
 
 1. Beide Tasks laden via `clickup_search` oder direkte ID
 2. Beziehungstyp prüfen:
