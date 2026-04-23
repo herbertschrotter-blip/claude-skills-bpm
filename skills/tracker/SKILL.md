@@ -230,6 +230,33 @@ Universelle Regel: `docs/project-architecture.md` (im Skill-Repo-Root).
 
 ---
 
+## Vorrang / Delegation an andere Skills
+
+**tracker ist für explizite ClickUp-Task-Aktionen. Wenn die Hauptabsicht
+Code-Arbeit, Doku oder andere inhaltliche Tätigkeit ist, NICHT hier
+weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Code schreiben oder ändern (auch wenn ein Task-Bezug besteht) | **code-erstellen** |
+| UI-Entwurf als HTML-Mockup | **mockup-erstellen** |
+| Commit-Befehl, Commit-Message, Version-Bump | **git-commit-helper** |
+| Doku schreiben, ADR, Konzept, Frontmatter-Pflege | **doc-pflege** |
+| Konsistenzprüfung Code ↔ Docs | **audit** |
+
+Nur wenn die Hauptabsicht **eine konkrete ClickUp-Task-Aktion** ist
+(`tracker neu`, `tracker done`, `tracker update`, `tracker status`,
+`tracker suche`, Issue anlegen, Scope-Check, Anker setzen),
+bleibt tracker zuständig.
+
+**Wichtig:** tracker wird NICHT automatisch ausgelöst durch Code-Commits
+oder Doc-Änderungen. Andere Skills (code-erstellen, doc-pflege) rufen
+tracker nur aktiv via `ask_user_input_v0` auf ("Passt zu BPM-XXX.
+tracker done?"). Die User-Bestätigung ist Pflicht. Details siehe
+Kapitel "Integration mit anderen Skills".
+
+---
+
 ## Routing: Kommando → Reference-Datei
 
 | Kommando | Reference |
