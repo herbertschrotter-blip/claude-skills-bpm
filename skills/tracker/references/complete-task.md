@@ -93,6 +93,35 @@ User-Input warten nach `tracker done`.**
    Chat-Anker erledigt). Falls Hash erst nachträglich via Schritt 1
    ermittelt wurde: zweiter `clickup_update_task` mit den Feld-Updates.
 
+2a. **Wenn abgeschlossener Task ein Skill-Issue war: Artifact liefern**
+
+   Gilt wenn der Task aus einer Skill-Issues-Liste stammt (z.B.
+   skill-pflege-NNN, tracker-NNN, cc-steuerung-NNN) UND der zugehörige
+   Commit eine `skills/*/SKILL.md` geändert hat.
+
+   In separatem Antwort-Block (nicht mit Schritt 3/4 vermischen):
+
+   ```
+   Schritt A: create_file
+     path: /home/claude/SKILL.md
+     file_text: <komplette neue Skill-Datei aus dem Repo>
+
+   Schritt B: present_files
+     filepaths: ["/home/claude/SKILL.md"]
+   ```
+
+   Regelwerk: siehe skill-pflege SKILL.md Regel 14b (Artifact-Pflicht) und
+   Regel 14 (Tool-Call-Paar, skill-pflege-006).
+
+   **Ausnahmen (kein Artifact):**
+   - Zero-Change-Tasks
+   - Commits die ausschliesslich `references/`-Dateien ändern
+   - Task betrifft nicht die SKILL.md selbst
+
+   **Reihenfolge bei mehreren Skill-Issues in einer Batch-Session:**
+   Pro geändertem Skill EIN Artifact in SEPARATEM Antwort-Block. User
+   bestätigt "gespeichert" zwischen den Skills (skill-pflege Regel 15 + 16).
+
 3. **Zwischenstand-Tabelle im Chat** zeigen — Kompakt-Überblick was erledigt
    wurde und was noch offen ist:
    ```
@@ -136,6 +165,7 @@ User-Input warten nach `tracker done`.**
 - Zwischenstand-Tabelle nach Task-Abschluss weglassen
 - Folgeoptionen als Prosa-Frage statt `ask_user_input_v0`
 - Folgeoptionen bereits nach dem ersten Task eines Batches zeigen — erst am Batch-Ende
+- Skill-Issue auf done setzen ohne Artifact-Lieferung im nachfolgenden Antwort-Block (skill-pflege-005)
 
 ### Beispiel-Ablauf
 
@@ -158,6 +188,24 @@ Automatischer Nachlauf:
      - "BPM-084 (Bugfix, geplant)"
      - "Anderer Task"
      - "Pause"
+```
+
+### Beispiel-Ablauf (Skill-Issue)
+
+```
+tracker done auf skill-pflege-005 (Skill-Issue)
+  [Haupt-Ablauf Schritte 1-11 durchlaufen]
+  ✓ Status auf complete gesetzt, Commit-Hash 09c120b in Custom Field
+
+Automatischer Nachlauf:
+  1. DC: git log -1 → 09c120b bereits bekannt
+  2. Custom Fields schon gesetzt
+  2a. SKILL.md-Änderung erkannt → Artifact-Block folgt:
+      - create_file path=/home/claude/SKILL.md file_text=<v0.15.5 Inhalt>
+      - present_files filepaths=["/home/claude/SKILL.md"]
+      - User klickt "Skill speichern"
+  3. Zwischenstand-Tabelle (nach "gespeichert"-Bestätigung)
+  4. ask_user_input_v0 für Folgeoptionen
 ```
 
 ---
