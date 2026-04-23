@@ -19,6 +19,33 @@ Projekte mit Standard-Doc-Set. Erzwingt Kapitelvorlagen bei neuen Docs.
 
 ---
 
+## Vorrang / Delegation an andere Skills
+
+**doc-pflege ist für das Schreiben, Validieren und Refactoren von
+Projektdokumentation. Wenn die Hauptabsicht Code, Tasks oder andere
+Aktionen sind, NICHT hier weiterarbeiten, sondern delegieren.**
+
+| Hauptabsicht | Zuständiger Skill |
+|--------------|-------------------|
+| Code schreiben oder ändern (Services, ViewModels, Logik) | **code-erstellen** |
+| UI-Entwurf als HTML-Mockup | **mockup-erstellen** |
+| Commit-Befehl, Commit-Message, Version-Bump | **git-commit-helper** |
+| ClickUp-Task anlegen, updaten, schließen | **tracker** |
+| Konsistenzprüfung Code ↔ Docs (read-only) | **audit** |
+
+Nur wenn die Hauptabsicht **echte Doc-Arbeit** ist (neue Doc erstellen,
+bestehende Doc refactoren, Frontmatter/Quickload validieren, ADR schreiben,
+INDEX.md-Routing pflegen), bleibt doc-pflege zuständig.
+
+**Wichtig:** Code-Änderungen, die "Doc-Folgen" haben (neues Schema,
+neue ADR-würdige Entscheidung), werden von code-erstellen oder
+git-commit-helper als **Advisory-Hinweise** ausgegeben (siehe Kapitel
+"Advisory-Checkliste nach code-relevanten Änderungen"). Diese Hinweise
+sind KEIN Trigger für doc-pflege. Der User entscheidet explizit "pflege
+jetzt die Doku" bevor doc-pflege selbst übernimmt.
+
+---
+
 ## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
 
 **Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
