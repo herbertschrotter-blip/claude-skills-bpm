@@ -6,6 +6,24 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.19.0] — 2026-04-25
+
+- **INDEX, Feature:** Invariante 9 cc-steuerung-Modalitätsregel ergänzt (P0.2 aus CGR-r5/r6)
+- Modalitäts-Definition (cc/dc/Claude Code/direkt-auf-PC), WAS bleibt Fachskill, WIE kommt von cc-steuerung
+- Bei `cc`/`dc` ohne fachliches WAS → `ask_user_input_v0`
+- Datei-/Repo-Nennung allein triggert cc-steuerung nicht — explizite Ausführungsabsicht nötig
+- Smoke-Test-Pflicht für Multi-Intent-Fälle in `evals/smoke-all-skills.md`
+- Exit-Kriterium dokumentiert: bei 2+ FAILs in realer Nutzung → Variante A (Modalitätsblock in Fachskills)
+- Quelle: CGR-2026-04-skillsystem-r5/r6, ClickUp-Task `86c9gmjan`
+
+## [v0.18.1] — 2026-04-25
+
+- **CHANGELOG, Docs:** Drift schließen v0.17.8 bis v0.18.0 (P0.1 aus CGR-r5)
+- 5 fehlende Versionseinträge nachgetragen (v0.17.8/9/10/11 + v0.18.0)
+- Henne-Ei-Eintrag v0.17.8 dokumentiert die CHANGELOG-Pflege selbst
+- Befund verifiziert in CGR-2026-04-skillsystem-r5 (ChatGPT-Audit)
+- Quelle: ClickUp-Task `86c9gmj81`
+
 ## [v0.18.0] — 2026-04-24
 
 - **skill-pflege, Feature:** Max 1 Skill-Artifact pro Antwort (skill-pflege-007)

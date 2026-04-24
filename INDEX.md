@@ -109,6 +109,29 @@ Offene Punkte im Memory werden nach 4 Rubriken strukturiert: `[VERIFY]`, `[ARCH-
 
 Skills werden an zwei Orten gepflegt: `claude-skills-bpm/skills/<n>/SKILL.md` (Repo via DC) und `/mnt/skills/user/<n>/SKILL.md` (Claude.ai via Artifact). Artifact-Dateiname MUSS exakt `SKILL.md` heißen, sonst fehlt der "Skill speichern"-Button. Nach jedem Skill-Commit ist der Artifact-Block Pflicht.
 
+### 9. Modalitäts-Skill `cc-steuerung` läuft parallel zu Fachskills (Phase 5.7)
+
+`cc-steuerung` ist kein konkurrierender Fachskill, sondern eine Ausführungs-Modalität für Desktop Commander / Claude Code / direkte PC-Operationen.
+
+**Trigger für die Modalität:**
+- `cc`
+- `dc`
+- `Claude Code`
+- `direkt auf den PC`
+- explizite Datei-/Terminal-/Build-/Git-Ausführung auf dem User-PC
+
+**Entscheidungsregel:**
+- Das **WAS** bleibt beim Fachskill (`code-erstellen`, `tracker`, `git-commit-helper`, `doc-pflege`, `audit`, `mockup-erstellen`, etc.)
+- Das **WIE** kommt zusätzlich von `cc-steuerung`
+- Bei `cc`/`dc` ohne fachliches WAS: Claude fragt per `ask_user_input_v0` nach der Zielaktion
+- Datei-/Repo-Nennung allein triggert `cc-steuerung` nicht — explizite PC-/DC-/Ausführungsabsicht ist nötig
+
+**Smoke-Test-Pflicht:**
+- Multi-Intent-Fälle (`cc + code`, `cc + commit`, `cc + tracker`, `cc + audit`, `cc + mockup`) werden in `evals/smoke-all-skills.md` geprüft
+- **Exit-Kriterium:** Wenn 2+ Multi-Trigger-Cases in realer Claude.ai-Nutzung nur einen Skill faktisch berücksichtigen, wird Variante A umgesetzt — kurzer Modalitätsblock zusätzlich in den betroffenen Fachskills
+
+**Quellen:** CGR-2026-04-skillsystem-r5/r6, ClickUp-Task `86c9gmjan`
+
 ---
 
 ## Projekt-Kontext und Fallback
