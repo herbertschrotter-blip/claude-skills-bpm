@@ -158,6 +158,25 @@ create_file(path="/home/claude/skill.md", ...)   ← klein, auch falsch
 
 **Hinweis (skill-pflege-006):** Der korrekte Dateiname ist notwendig, aber allein nicht ausreichend. `create_file` schreibt nur in die Container-Sandbox. Damit die Dateikarte mit "Skill speichern"-Button erscheint, muss **direkt anschliessend** `present_files` auf denselben Pfad aufgerufen werden. Siehe Regel 14 und 14b.
 
+### 13b. 🚨 Ein Skill-Artifact pro Antwort (KRITISCH, skill-pflege-007)
+
+**Pro Antwort darf maximal EIN Skill-Artifact erstellt werden.**
+
+**Grund:** Der Pfad `/home/claude/SKILL.md` ist ein einzelner Container-Slot. Jede neue `create_file`-Operation mit diesem Pfad **überschreibt** den vorigen Inhalt. Wenn Claude in einer Antwort zwei Artifacts erstellt, zeigen beide Dateikarten im Chat denselben (zweiten) Inhalt — der User klickt zweimal "Skill speichern" und speichert **denselben Skill zweimal**, während der erste Skill nicht aktualisiert wird.
+
+**Ablauf bei Mehrfach-Updates:**
+
+1. DC-Edits für ALLE betroffenen Skills in einer Antwort sind OK (Repo-Seite, weil Skills dort eigene Pfade haben)
+2. Artifacts werden SEQUENTIELL über mehrere Antworten hinweg erzeugt
+3. Nach jedem Artifact: User-Bestätigung ("gespeichert" / "ok") abwarten
+4. Erst dann nächstes Artifact erstellen
+
+**Ausnahme:** Keine. Auch bei "trivialen" Mehrfach-Updates (z.B. Description-Schärfung in 2 Skills, Refactor mit 3 Skills) gilt die Regel strikt.
+
+**Konkretes Beispiel (Teil 31 / v0.17.11):**
+
+Description-Schärfung von `git-commit-helper` + `chatgpt-review` in einer Antwort → zweite `create_file` überschrieb erste → beide Dateikarten zeigten chatgpt-review-Inhalt. Der git-commit-helper-Skill wurde erst in einer Folge-Antwort korrekt als Artifact bereitgestellt.
+
 ### Mehrere Skills in einer Session
 
 - Pro Skill einen **eigenen Antwort-Block**
@@ -489,6 +508,7 @@ Adressiert Phase 4.3.
 
 - Skills aus dem Gedächtnis neu schreiben (immer Original laden)
 - Mehrere Skills parallel in einer Antwort erstellen
+- **Zwei oder mehr Skill-Artifacts in einer Antwort erstellen** — das zweite `create_file /home/claude/SKILL.md` überschreibt das erste. Beide Dateikarten zeigen dann denselben Inhalt. Ein Artifact pro Antwort, User-Bestätigung abwarten, dann nächstes (skill-pflege-007, siehe Regel 13b)
 - Originalinhalte still entfernen, kürzen, zusammenfassen
 - Stilistische "Verbesserungen" am Original ohne Freigabe
 - Umformulieren bestehender Formulierungen ohne Freigabe
