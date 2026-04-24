@@ -4,8 +4,9 @@ description: >
   Erstellt fertige Git-Commit-Befehle und Commit-Messages im BPM-Format
   [vX.Y.Z] Modul, Typ: Kurztitel. Use when users want to commit changes,
   need a git commit command, ask for a commit message, or want the correct
-  version bump for an existing change. Do not trigger for code creation,
-  code review, git push, or general Zustimmung wie "ok" oder "passt".
+  version bump for an existing change (including PATCH/MINOR/MAJOR decisions
+  or semver questions). Do not trigger for code creation, code review, git
+  push, or general Zustimmung wie "ok" oder "passt".
 ---
 
 # Git Commit Helper

@@ -2,10 +2,11 @@
 name: chatgpt-review
 description: >
   Erstellt Prompts und Folgeprompts für ein technisches Review-Gespräch zwischen
-  Claude und ChatGPT. Use when users want a ChatGPT review prompt, a second
-  opinion from ChatGPT, a reply prompt to ChatGPT feedback, or a structured
-  cross-LLM critique. Do not trigger for normal chat handovers, prompts for the
-  next Claude session, or vague replies without explicit ChatGPT review context.
+  Claude und ChatGPT (inkl. Runden-Folgeprompts wie "Runde 3 erstellen"). Use
+  when users want a ChatGPT review prompt, a second opinion from ChatGPT, a
+  reply prompt to ChatGPT feedback, or a structured cross-LLM critique. Do not
+  trigger for normal chat handovers, prompts for the next Claude session, or
+  vague replies without explicit ChatGPT review context.
 ---
 
 # ChatGPT Review-Gespräch
