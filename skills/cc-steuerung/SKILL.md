@@ -18,6 +18,38 @@ Terminal-Befehle ausführen, Projektstruktur prüfen.
 
 ---
 
+## Vorrang / Verhältnis zu Fachskills (Modalität, KEIN Fachvorrang)
+
+**cc-steuerung ist ein Modalitäts-Skill, kein Fachskill.** Er beantwortet
+die Frage "WIE wird ausgeführt" (Desktop Commander auf Platte vs.
+SUCHE/ERSETZE im Chat vs. Code-Block), nicht "WAS wird gemacht".
+
+**Rollentrennung:**
+
+| Ebene | Wer | Beispiele |
+|-------|-----|-----------|
+| WAS (Fachlogik) | Fachskill | code-erstellen, doc-pflege, mockup-erstellen, tracker, chatgpt-review, audit, git-commit-helper, chat-wechsel |
+| WIE (Modalität) | cc-steuerung | DC-Tool-Auswahl, Arbeitsverzeichnis-Ermittlung, Konzept-Freigabe-Pattern, PowerShell-Regeln, Artifact-Separation |
+
+**Konsequenz:**
+- cc-steuerung "übernimmt" niemals einen Fachskill. Wenn User "schreib
+  die Doku mit dc" sagt, bleibt doc-pflege für den Inhalt zuständig, und
+  cc-steuerung liefert nur das WIE-Pattern (Konzept-Freigabe, DC-Call,
+  Arbeitsverzeichnis-Check).
+- Ein Ad-hoc-Keyword-Trigger (`"cc: list_directory ..."`) ist die einzige
+  Ausnahme — hier existiert keine Fach-Aufgabe, nur eine DC-Operation.
+- Die Fachskills referenzieren cc-steuerung passiv ("Bei DC-Zugriff:
+  Arbeitsverzeichnis nach cc-steuerung Kapitel 4 ermitteln"). Das ist
+  kein Trigger-Konflikt — beide Skills sind gleichzeitig aktiv, mit
+  unterschiedlichen Zuständigkeiten.
+
+**Wichtig:** In einem Chat können cc-steuerung UND ein Fachskill
+gleichzeitig relevant sein. Das ist korrekt und erwünscht — der Konflikt
+entsteht nur wenn cc-steuerung Fachlogik übernimmt oder ein Fachskill
+DC-Regeln selbst definiert statt auf cc-steuerung zu verweisen.
+
+---
+
 ## 🚨 Kernregel: Umgebungs-Erkennung über Tool-Liste (cc-steuerung-001)
 
 **Claude erkennt die Verfügbarkeit von Desktop Commander AUSSCHLIESSLICH
