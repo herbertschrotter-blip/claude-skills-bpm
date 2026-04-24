@@ -6,6 +6,41 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.18.0] — 2026-04-24
+
+- **skill-pflege, Feature:** Max 1 Skill-Artifact pro Antwort (skill-pflege-007)
+- Zwei Artifacts mit Dateiname `SKILL.md` überschreiben sich gegenseitig im Container-Pfad `/home/claude/SKILL.md`
+- Bei Multi-Skill-Updates sequentiell über mehrere Antworten — Repo-Edits dürfen gebündelt werden
+- Regel 13b in skill-pflege-Body + VERBOTEN-Eintrag
+
+## [v0.17.11] — 2026-04-24
+
+- **skills, Fix:** Description-Schärfung git-commit-helper + chatgpt-review (ARCH-OPEN aus Phase 5.8)
+- git-commit-helper Description ergänzt um `(including PATCH/MINOR/MAJOR decisions or semver questions)`
+- chatgpt-review Description ergänzt um `(inkl. Runden-Folgeprompts wie "Runde 3 erstellen")`
+- ARCH-OPEN-Memory-Eintrag aus Phase 5.8 entfernt
+
+## [v0.17.10] — 2026-04-24
+
+- **docs, Docs:** INDEX.md neu strukturiert
+- 11 Skills in Routing-Matrix (alphabetisch + nach Hierarchie)
+- 8 Invarianten als DNA des Systems dokumentiert (Phase 1–5 durchgezogen)
+- Phase-5-Delegations-Matrix für 7 Konfliktpaare als Tabelle
+
+## [v0.17.9] — 2026-04-24
+
+- **docs, Docs:** README.md neu strukturiert
+- 12 Kapitel, 549 Zeilen, tiefe Erklärung aller Ordner und Dateien
+- Onboarding-orientiert mit Architektur-Erklärungen, Skill-Gruppen und Refactor-Historie
+- Verweise auf INDEX.md, CHANGELOG.md, MEMORY-RUBRIKEN.md, evals/
+
+## [v0.17.8] — 2026-04-24
+
+- **docs, Docs:** CHANGELOG.md neu strukturiert
+- 60+ Versionseinträge in umgekehrter Chronologie
+- Phasen-Tags auf CGR-2026-04-skillsystem-Runden verweisen
+- Format vereinheitlicht: `[vX.Y.Z] — <Datum>` + Bullet-Liste der Änderungen
+
 ## [v0.17.7] — 2026-04-24
 
 - **evals, Docs:** Phase 5.8 Abschluss-Eval nach Refactor
