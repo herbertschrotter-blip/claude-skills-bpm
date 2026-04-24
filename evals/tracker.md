@@ -78,5 +78,33 @@ Stand: `74cda17` — 2026-04-21 (Phase 1.3)
 
 ### after-refactor
 
-- date: _(wird in Phase 5.8 gefüllt)_
-- ...
+- date: 2026-04-24
+- tester: Claude Opus 4.7 (Selbst-Simulation, kein echter API-Blind-Run)
+- methode: Zwei Durchläufe — Blind-Modus (nur Name + Description) und Vollmodus (inkl. Body-Delegations-Tabelle aus Phase 5.4)
+- commit-range: baseline `74cda17` → after `90c56d3` (Phase 5.4 added Delegations-Tabelle zu Body)
+- confidence: mittel — Selbst-Simulation, methodische Grenze offen dokumentiert (siehe notes)
+
+#### Blind-Modus (Description-only)
+
+- should_trigger: 9/9
+- should_not_trigger: 7/7
+- other_skill: 3/3
+- ambiguous: _dokumentiert_
+- delta vs baseline: ±0 — Baseline war bereits 100%, Description unverändert
+
+#### Vollmodus (Description + Body-Delegation)
+
+- should_trigger: 9/9
+- should_not_trigger: 7/7
+- other_skill: 3/3 (mit höherer Konfidenz — die Delegations-Tabelle verstärkt explizit den Routing-Pfad "Code schreiben auch wenn Task-Bezug besteht → code-erstellen")
+- ambiguous: _dokumentiert_ (unverändert)
+- delta vs baseline: ±0 Score, Konfidenz bei ambiguous-Queries erhöht
+
+#### notes
+
+- Baseline war bereits perfekt (9/9, 7/7, 3/3). Phase 5.4 bringt keinen messbaren Score-Zuwachs.
+- Qualitativer Mehrwert: Der Body-Block "tracker wird NICHT automatisch durch Code-Commits ausgelöst" löst den realen Konflikt aus Paar 5.4 — wenn Claude nach einem Commit die ClickUp-Zuordnung vorschlägt, passiert das jetzt per `ask_user_input_v0`, nicht automatisch. Das ist in der Eval-Matrix nicht sichtbar, aber im echten Workflow entscheidend.
+- Ambiguous-Query 2 `das ist erledigt` nach Commit bleibt kontextabhängig — korrekt nicht in Trigger-Keywords.
+- Methodische Einschränkung wie bei git-commit-helper (siehe dort).
+- verbleibende ❌: keine
+- verbleibende ⚠️: keine

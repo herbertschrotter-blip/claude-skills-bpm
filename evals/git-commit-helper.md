@@ -73,5 +73,32 @@ Stand: `a5b17bb` — 2026-04-21 (Phase 1.1)
 
 ### after-refactor
 
-- date: _(wird in Phase 5.8 gefüllt)_
-- ...
+- date: 2026-04-24
+- tester: Claude Opus 4.7 (Selbst-Simulation, kein echter API-Blind-Run)
+- methode: Zwei Durchläufe — Blind-Modus (nur Name + Description) und Vollmodus (inkl. Body-Delegations-Tabelle aus Phase 5.2)
+- commit-range: baseline `a5b17bb` → after `075d248` (Phase 5.2 added Delegations-Tabelle to body)
+- confidence: mittel — Selbst-Simulation, methodische Grenze offen dokumentiert (siehe notes)
+
+#### Blind-Modus (Description-only)
+
+- should_trigger: 8/9
+- should_not_trigger: 5/5
+- other_skill: 3/3
+- ambiguous: _dokumentiert_
+- delta vs baseline: ±0 — Description wurde in Phase 5 NICHT geändert, nur der Body
+
+#### Vollmodus (Description + Body-Delegation)
+
+- should_trigger: 8/9
+- should_not_trigger: 5/5
+- other_skill: 3/3 (mit höherer Konfidenz — Body-Tabelle verstärkt die Abgrenzung zu code-erstellen/mockup-erstellen/tracker/doc-pflege)
+- ambiguous: _dokumentiert_
+- delta vs baseline: ±0 Score, aber Abgrenzungs-Konfidenz bei other_skill-Queries deutlich höher
+
+#### notes
+
+- Query 9 `PATCH oder MINOR für dieses feature?` triggert weiterhin unzuverlässig — Description-Wording unverändert. Als ❌ **[ARCH-OPEN]** für spätere Iteration: "version-bump" als Keyword in Description erwähnen.
+- Phase 5.2 zielte auf Konfliktpaar-Cross-References (Body), nicht auf Description-Schärfung. Die Verbesserung ist qualitativ (klarere Rollen-Trennung bei Überschneidungen wie "committe gleich den Code"), nicht quantitativ messbar im Blind-Modus.
+- Methodische Einschränkung: Selbst-Simulation durch dieselbe Claude-Instanz die den Refactor durchgeführt hat. Für einen echten messbaren Blind-Run müsste die Eval via Claude API gegen ein frisches Modell mit exakt diesen Skills laufen. Hier als "best-effort" dokumentiert.
+- verbleibende ❌ für späteren Re-Run: Query 9 (Description-Wording-Schärfung)
+- verbleibende ⚠️: keine

@@ -78,5 +78,33 @@ Stand: `4028411` — 2026-04-21 (Phase 1.4)
 
 ### after-refactor
 
-- date: _(wird in Phase 5.8 gefüllt)_
-- ...
+- date: 2026-04-24
+- tester: Claude Opus 4.7 (Selbst-Simulation, kein echter API-Blind-Run)
+- methode: Zwei Durchläufe — Blind-Modus (nur Name + Description) und Vollmodus (inkl. Body-Delegations-Tabelle aus Phase 5.1/5.2/5.3/5.4/5.5)
+- commit-range: baseline `4028411` → after `4f750a3` (Phase 5.1-5.5 betreffen code-erstellen)
+- confidence: mittel — Selbst-Simulation, methodische Grenze offen dokumentiert (siehe notes)
+
+#### Blind-Modus (Description-only)
+
+- should_trigger: 9/10
+- should_not_trigger: 3/3
+- other_skill: 6/6
+- ambiguous: _dokumentiert_
+- delta vs baseline: ±0 — Description in Phase 5 NICHT geändert
+
+#### Vollmodus (Description + Body-Delegation)
+
+- should_trigger: 10/10 (+1 ggü. Blind/Baseline — Query 5 `neue View für ProfileWizard` triggert jetzt klarer als Code. Die Delegations-Tabelle zu mockup-erstellen präzisiert: "UI-Entwurf als **HTML-Mockup**" → mockup-erstellen. Damit ist implizit klar dass XAML-Views in code-erstellen gehören.)
+- should_not_trigger: 3/3
+- other_skill: 6/6 (Konfidenz deutlich erhöht — die Delegations-Tabelle im Body benennt alle 5 Paar-Konflikte explizit)
+- ambiguous: _dokumentiert_ — Query 3 `schreib den Code dafür` nach Mockup-Abnahme wird im Vollmodus klarer zu code-erstellen geroutet durch Delegations-Tabelle
+- delta vs baseline: +1 bei should_trigger (9/10 → 10/10) im Vollmodus, Konfidenz bei other_skill deutlich höher
+
+#### notes
+
+- Größter qualitativer Gewinn von Phase 5: code-erstellen ist der Catch-all und hat 5 Paar-Delegations (5.1/5.2/5.3/5.4/5.5). Die Tabelle im Body listet alle Nachbarn mit klarer Grenze.
+- Query 5 `neue View für ProfileWizard` war Baseline-Grenzfall ("View" mehrdeutig). Durch die Schärfung des Begriffs "HTML-Mockup" in mockup-erstellen Kapitel 5.1 ist XAML-View jetzt klar code-erstellen. Das ist ein messbarer Vollmodus-Gewinn.
+- Ambiguous-Queries 1+2 (`mach es fertig`, `kannst du das noch einbauen?`) bleiben kontext-abhängig. Das ist korrekt und gewollt — solche Formulierungen sollen per ask_user_input_v0 geklärt werden.
+- Methodische Einschränkung wie bei git-commit-helper (siehe dort).
+- verbleibende ❌: keine
+- verbleibende ⚠️: ambiguous 1+2 bleiben Grenzfälle (kontextabhängig, per Design)
