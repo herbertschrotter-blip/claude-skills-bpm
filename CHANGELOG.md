@@ -6,7 +6,29 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.19.1] — 2026-04-25
+
+- **code-erstellen, Refactor:** Description um WPF/XAML/code-behind ergänzt (P0.4 aus CGR-r5/r6)
+- Blind-Miss 3 aus CGR r5 adressiert: "neue View für ProfileWizard" wurde im Blind-Modus unzuverlässig zu code-erstellen geroutet, weil "View" generisch auch ein Design-/Mockup-Wort ist
+- Description-Trigger erweitert: "including WPF/XAML views, dialogs, code-behind, services, validation, persistence logic, or data flows"
+- Vorbereitung für BPM-Feature-Arbeit (PlanManager, ProfileWizard, ImportPreviewDialog) wo UI-Sprache häufig kommt
+- Two-Place-Sync: Repo + Claude.ai-Artifact
+
+---
+
 ## [v0.19.0] — 2026-04-25
+
+- **README, Refactor:** README entnormativiert (P0.3 aus CGR-r6 Kapitel 2)
+- README ist jetzt reines Onboarding, INDEX.md ist verbindliche Regelquelle
+- Top-Intro: "Single Source of Truth" → "Verbindliche Regelquelle: INDEX.md"
+- Source-of-Truth-Hierarchie als neue Sektion (5 Quellen klar abgegrenzt)
+- Kapitel 1 Skill-Liste: operative Details entfernt (Tracker-Kommandos, DC-Default, CGR-Dateien)
+- Kapitel 2 Two-Place-Pflege: auf Verweis reduziert
+- Kapitel 3 Evals: Methodik auf Verweis reduziert
+- Kapitel 8 Refactor-Historie: Tabelle 6 Zeilen statt 6 Absätze
+- Kapitel 9 Workflow-Konventionen: komplett entfernt, Verweis-Block stattdessen
+- 4 Verweis-Block-Patterns konsistent eingeführt (INDEX, Skill, Memory, Eval)
+- Reduktion: 549 → 362 Zeilen (-34%)
 
 - **INDEX, Feature:** Invariante 9 cc-steuerung-Modalitätsregel ergänzt (P0.2 aus CGR-r5/r6)
 - Modalitäts-Definition (cc/dc/Claude Code/direkt-auf-PC), WAS bleibt Fachskill, WIE kommt von cc-steuerung
