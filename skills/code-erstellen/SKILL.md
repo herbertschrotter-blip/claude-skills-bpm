@@ -2,9 +2,9 @@
 name: code-erstellen
 description: >
   Plant und erzeugt BPM-Codeänderungen auf Basis von INDEX.md, Quickloads,
-  Pflichtlesen und fachlichen Invarianten. Use when users want to implement or
-  change application code, create or modify services, dialogs, data flows,
-  validation, persistence logic, or code across BPM modules. Do not trigger for
+  Pflichtlesen und fachlichen Invarianten. Use when users want to implement
+  or change application code, including WPF/XAML views, dialogs, code-behind,
+  services, validation, persistence logic, or data flows. Do not trigger for
   UI mockups, git commit commands, explicit documentation authoring, ClickUp
   task actions, or read-only audits.
 ---
