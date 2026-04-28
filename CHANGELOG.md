@@ -6,6 +6,19 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.3] — 2026-04-28
+
+- **code-erstellen, Fix:** Description-Refactor — Trigger-Vokabular erweitert (code-erstellen-001)
+- Neue Verben: schreiben, erstellen, bauen, implementieren, fixen, refaktorieren, ändern, ergänzen, korrigieren, erweitern
+- Neue Substantive: view models, repositories, handlers, validators, models, controllers, schemas, migrations
+- Neue Endungen explizit: .cs, .xaml, .json
+- Neue Spezialfälle: bug fixes, UI fixes in existing dialogs/screens/views, logic regardless of domain
+- Negativliste geschärft: HTML-Entwürfe (statt nur "UI mockups"), ADR / Konzept-Doc / Frontmatter / Quickload (statt nur "documentation authoring")
+- Ziel: 5 FAIL-Cases aus Smoke-Run 2026-04-28 (CE-02, MU-07, DOC-06, AUD-07, GCH-04) sollen zu PASS werden
+- Sprachstil: Hybrid (deutsche Trigger-Verben, englische Satzstruktur)
+- Schließt: ClickUp `86c9hyq7c` (code-erstellen-001) — re-test nach Push erforderlich
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.2] — 2026-04-28
 
 - **evals, Docs:** P1.2 Smoke-Run-Snapshot als `evals/runs/smoke-2026-04-28-real.md`

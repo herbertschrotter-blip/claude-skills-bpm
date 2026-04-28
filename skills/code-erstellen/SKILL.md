@@ -2,11 +2,17 @@
 name: code-erstellen
 description: >
   Plant und erzeugt BPM-Codeänderungen auf Basis von INDEX.md, Quickloads,
-  Pflichtlesen und fachlichen Invarianten. Use when users want to implement
-  or change application code, including WPF/XAML views, dialogs, code-behind,
-  services, validation, persistence logic, or data flows. Do not trigger for
-  UI mockups, git commit commands, explicit documentation authoring, ClickUp
-  task actions, or read-only audits.
+  Pflichtlesen und fachlichen Invarianten. Use when users want to schreiben,
+  erstellen, bauen, implementieren, fixen, refaktorieren, ändern, ergänzen,
+  korrigieren, or erweitern application code — including WPF/XAML views,
+  dialogs, code-behind, services, view models, repositories, handlers,
+  validators, models, controllers, validation, persistence logic, data flows,
+  schemas, migrations, or any .cs/.xaml/.json files. Triggers also on bug
+  fixes, UI fixes in existing dialogs/screens/views, and implementing logic
+  regardless of domain (e.g., recovery logic, business logic, parsing logic).
+  Do not trigger for UI mockups (HTML-Entwürfe), git commit commands, explicit
+  documentation authoring (ADR / Konzept-Doc / Frontmatter / Quickload),
+  ClickUp task actions, or read-only audits.
 ---
 
 # Code-Erstellen — Orchestrator Skill
