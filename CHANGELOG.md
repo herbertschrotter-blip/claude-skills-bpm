@@ -6,6 +6,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.1] — 2026-04-25
+
+- **tracker, Feature:** ClickUp-Tool-Inventar als `references/clickup-tools.md` (tracker-010)
+- Lade-Pattern dokumentiert: `tool_search` mit EXAKTEM Tool-Namen, nicht Umschreibung
+- Tool-Inventar (Schreiben/Lesen/Suche/Comments/Custom-Fields/Time-Tracking/Members/Reminders/Documents)
+- Befehl→Tool-Mapping für alle 9 tracker-Befehle
+- Workspace-IDs (BPM-Spaces, Skill-Issue-Listen)
+- SKILL.md erweitert um neuen Block "ClickUp-Tools (Lade-Pattern)" + VERBOTEN-Eintrag
+- Schließt: ClickUp `86c9ht3xn` (tracker-010)
+- Quelle: BauProjektManager Teil 32 (CGR-Kontext, Roadmap-Status-Abgleich)
+
 ## [v0.19.1] — 2026-04-25
 
 - **code-erstellen, Refactor:** Description um WPF/XAML/code-behind ergänzt (P0.4 aus CGR-r5/r6)

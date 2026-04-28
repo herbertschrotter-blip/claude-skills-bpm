@@ -373,6 +373,23 @@ Vollständige Tabelle in `references/anti-patterns.md`.
 
 ---
 
+## ClickUp-Tools (Lade-Pattern)
+
+ClickUp-Tools sind in Claude.ai **deferred-loaded** — zu Sessionbeginn nicht im Tool-Inventar, sondern müssen über `tool_search` aktiviert werden.
+
+**Regel:** Wenn ein Tool nicht aufrufbar ist (`Tool '...' not found`), `tool_search` mit dem **EXAKTEN Tool-Namen** verwenden, nicht mit Umschreibung.
+
+```
+✅ tool_search("clickup_get_task")          # lädt das Tool
+❌ tool_search("clickup task subtasks")     # liefert Müll-Treffer
+```
+
+Vollständiges Tool-Inventar + Befehl→Tool-Mapping: `references/clickup-tools.md`.
+
+Adressiert `tracker-010`.
+
+---
+
 ## Integration mit anderen Skills
 
 - **code-erstellen** nach Commit: `ask_user_input_v0` "Passt zu BPM-XXX. `tracker done`?"
@@ -407,5 +424,6 @@ Details in `references/anti-patterns.md`.
 - **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash via DC holen + Zwischenstand-Tabelle + Folgeoptionen via `ask_user_input_v0` sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
 - **Issue-IDs manuell vergeben lassen bei `tracker issue`** — Auto-Nummerierung via `clickup_filter_tasks` ist Pflicht, inkl. `include_closed: true` + Unique-Check (Details: `references/issue-task.md` Schritt 4)
 - **Memory-Einträge automatisch zu Tasks eskalieren** — nur auf explizite Herbert-Anweisung `tracker neu` aus Memory ableiten, nie ungefragt. Entfernen des Memory-Eintrags erst nach Bestätigung (siehe Memory-Eskalation, Phase 4.4)
+- **`tool_search` mit Umschreibung statt exaktem Tool-Namen** wenn ein ClickUp-Tool nicht geladen ist — das liefert Müll-Treffer und kostet Zeit. Bei `Tool '...' not found` IMMER mit dem exakten Tool-Namen suchen (z.B. `tool_search("clickup_get_task")`, nicht `tool_search("clickup task details")`). Tool-Inventar: `references/clickup-tools.md` (tracker-010)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.
