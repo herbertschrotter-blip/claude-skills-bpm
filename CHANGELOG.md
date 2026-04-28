@@ -6,6 +6,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.2] — 2026-04-28
+
+- **evals, Docs:** P1.2 Smoke-Run-Snapshot als `evals/runs/smoke-2026-04-28-real.md`
+- 30 Cases manuell durchlaufen, ein Chat pro Case (Memory aus, Skills aktiv)
+- Ergebnis: PASS 67% (20/30), WARN 7% (2/30), FAIL 27% (8/30)
+- Hauptbefund: `code-erstellen` strukturell schwach (29% PASS) — 5 von 7 Cases gefailt
+- `cc-steuerung` Multi-Trigger 100% PASS — Invariante 9 in Praxis bestätigt
+- P1.3: 5 Skill-Issues angelegt (code-erstellen-001, doc-pflege-001, skill-pflege-008, mockup-erstellen-001, chat-wechsel-001)
+- Schließt: ClickUp `86c9gmk15` (P1.2), `86c9gmk1m` (P1.3)
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.1] — 2026-04-25
 
 - **tracker, Feature:** ClickUp-Tool-Inventar als `references/clickup-tools.md` (tracker-010)
