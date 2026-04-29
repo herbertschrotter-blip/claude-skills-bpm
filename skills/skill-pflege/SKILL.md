@@ -2,11 +2,14 @@
 name: skill-pflege
 description: >
   Ändert und erweitert bestehende BPM-Skills, ohne deren Originalinhalt
-  ungewollt zu kürzen oder umzuschreiben. Use when users want to update an
-  existing skill, add rules to a current SKILL.md, adjust trigger wording, or
-  refine an already existing skill safely. Do not trigger for creating a brand
-  new skill from scratch (use skill-neu instead), running skill evals, or
-  designing a new skill system.
+  ungewollt zu kürzen oder umzuschreiben. Use when users want to ändern,
+  erweitern, ergänzen, einbauen, einfügen, schärfen, refactoren,
+  aktualisieren, anpassen, präzisieren, korrigieren, or update an existing
+  skill — including adding new rules, adjusting trigger wording, refining
+  descriptions, fixing typos, updating references, or restructuring
+  existing SKILL.md content. Do not trigger for creating a brand new skill
+  from scratch (use skill-neu instead), running skill evals, designing a
+  new skill system, or changing skills in unrelated repos.
 ---
 
 # Skill-Pflege — Sichere Änderung bestehender Skills

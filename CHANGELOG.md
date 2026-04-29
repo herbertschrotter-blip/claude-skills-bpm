@@ -6,6 +6,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.5] — 2026-04-29
+
+- **skill-pflege, Fix:** Description-Refactor — Verb-Inventar erweitert (skill-pflege-008)
+- Neue Verben (deutsch): ändern, erweitern, ergänzen, einbauen, einfügen, schärfen, refactoren, aktualisieren, anpassen, präzisieren, korrigieren
+- Neue Spezialfälle: adding new rules, adjusting trigger wording, refining descriptions, fixing typos, updating references, restructuring existing SKILL.md content
+- Negativliste geschärft: "changing skills in unrelated repos" als zusätzlicher Schutz
+- Ziel: FAIL-Case SN-07 (`ergänze beim chat-wechsel die Memory-Auflistung`) soll zu PASS werden
+- Sprachstil: Hybrid (deutsche Trigger-Verben, englische Satzstruktur) — analog zu code-erstellen v0.20.3 und doc-pflege v0.20.4
+- Schließt: ClickUp `86c9hyr87` (skill-pflege-008) — re-test nach Push erforderlich
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.4] — 2026-04-28
 
 - **doc-pflege, Fix:** Description-Refactor — Verb-Inventar erweitert (doc-pflege-001)
