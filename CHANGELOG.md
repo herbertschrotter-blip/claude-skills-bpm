@@ -6,6 +6,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.22.3] — 2026-04-29
+
+- **skills/tracker/SKILL.md, Fix:** Description triggert jetzt auch auf "issue erstellen" / "task anlegen" / "ClickUp-Eintrag"
+- Hintergrund: User-Beobachtung in Claude Code — "neues issue clickup erstellen" hat tracker-Skill nicht ausgelöst
+- Diagnose: Wort "issue" fehlte komplett in Description, obwohl Skill den Befehl `tracker issue <skill>: <Titel>` mit eigener Reference unterstützt
+- Hybrid-Description-Pattern angewandt (deutsche Trigger-Verben + englische Satzstruktur), wie bei code-erstellen-001, doc-pflege-001, mockup-erstellen-001 in v0.20.x
+- 1 Stelle geändert: nur Frontmatter-Description, Body unverändert
+- Two-Place-Pflege: Repo + Artifact für `/mnt/skills/user/`
+- Schließt: ClickUp `86c9jtmk0` (tracker-011)
+- Quelle: BauProjektManager Teil 34
+
 ## [v0.22.2] — 2026-04-29
 
 - **skills/chatgpt-review/SKILL.md, Refactor:** CGR-ID-Schema von `YYYY-MM` auf `YYYY-MM-DD` umgestellt
