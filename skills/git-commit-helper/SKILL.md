@@ -89,17 +89,43 @@ Bei DC-Operationen: Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln
 dc:start_process → "cd '[Pfad]'; git status --short"
 ```
 
-## SCHRITT 2 — Commit-Befehle
+## SCHRITT 2 — Commit-Befehle (One-Block-Regel)
 
-```bash
-cd [Arbeitsverzeichnis]
-git add <spezifische-dateien>
-git commit -m "[vX.Y.Z] Modul, Typ: Kurztitel"
+**KERNREGEL:** Eine komplette Commit-Sequenz wird IMMER in EINEM Code-Block
+geliefert. Niemals aufgeteilt in mehrere Blöcke für `cd` / `add` / `commit`
+/ `push`. Der User soll mit einem Klick kopieren und in eine Shell einfügen
+können.
+
+### PowerShell (Default, Windows)
+
+Trenner: `;` (Semikolon)
+
+```powershell
+cd "[Arbeitsverzeichnis]" ; git add <spezifische-dateien> ; git commit -m "[vX.Y.Z] Modul, Typ: Kurztitel" ; git push origin <branch> ; git log -1 --format="%h %s"
 ```
 
-- Spezifische Pfade, nicht `git add .`
+### Bash (Linux/macOS, WSL)
+
+Trenner: `&&` (nur weitermachen wenn vorheriger Befehl OK)
+
+```bash
+cd "[Arbeitsverzeichnis]" && git add <spezifische-dateien> && git commit -m "[vX.Y.Z] Modul, Typ: Kurztitel" && git push origin <branch> && git log -1 --format="%h %s"
+```
+
+### Regeln für die Sequenz
+
+- Spezifische Pfade nach `git add`, nicht `git add .`
 - Ein Commit pro logische Änderung
-- `"` für Messages (Windows)
+- `"` für Commit-Messages (Windows-kompatibel)
+- `git log -1 --format="%h %s"` am Ende, damit Herbert den Commit-Hash sofort sieht
+- Bei Renames: `git mv` als zusätzliches Glied vor `git add`
+- Branch-Name aus Branch-Ermittlung einsetzen (nie hartkodiert "main" annehmen)
+
+### Mehrzeilig nur wenn User explizit darum bittet
+
+Wenn Herbert eine besser lesbare, mehrzeilige Variante will, in EINEM Block
+mit Backtick-Continuation (PowerShell) oder Backslash (Bash) liefern — nie
+in mehrere Code-Blöcke aufteilen.
 
 ## SCHRITT 3 — Doc-Pflege Trigger (PFLICHT)
 
@@ -121,7 +147,7 @@ Checkliste:
 2. `"` für Messages
 3. Ein Commit = eine Änderung
 4. Version korrekt hochzählen
-5. cd nur beim ersten Block
+5. Komplette Commit-Sequenz in EINEM Code-Block (One-Block-Regel, siehe Schritt 2)
 6. Keine Erklärungen
 7. Bei Renames: git mv
 8. Arbeitsverzeichnis IMMER automatisch
@@ -133,3 +159,5 @@ Checkliste:
 - Typ-Auswahl als Prosa bei Unsicherheit — IMMER ask_user_input_v0
 - Version-Bump als Prosa bei Unsicherheit — IMMER ask_user_input_v0
 - Prosa-Fragen bei festen Entscheidungsoptionen
+- **Mehrere Code-Blöcke für eine Commit-Sequenz** — alles muss in EINEM Block stehen, semikolon- oder `&&`-getrennt (siehe Schritt 2 One-Block-Regel)
+- **Erklärungen zwischen den Befehlen** die das Kopieren stören — Erklärungen kommen vor oder nach dem Block, nie hinein

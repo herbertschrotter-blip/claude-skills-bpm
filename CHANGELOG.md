@@ -6,6 +6,19 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.22.1] — 2026-04-29
+
+- **skills/git-commit-helper/SKILL.md, Fix:** One-Block-Regel für Commit-Sequenzen
+- **Schritt 2 umstrukturiert:** Komplette Commit-Sequenz in EINEM Code-Block, nicht in mehreren
+- **PowerShell-Variante** (Default, `;`-Trenner) und **Bash-Variante** (`&&`-Trenner) explizit dokumentiert
+- `git log -1 --format="%h %s"` als letztes Glied der Sequenz, damit Commit-Hash sofort sichtbar
+- **Regel 5** geändert von „cd nur beim ersten Block" zu „Komplette Commit-Sequenz in EINEM Code-Block"
+- **VERBOTEN-Liste erweitert:** Mehrere Code-Blöcke für eine Commit-Sequenz / Erklärungen zwischen Befehlen
+- Two-Place-Pflege: Repo + Artifact für /mnt/skills/user/
+- Schließt: ClickUp `86c9grk8h` (git-commit-helper-001)
+- Beobachteter Fall: P0.3 README-Refactor 2026-04-25, Commit-Sequenz in 5 separaten Blöcken
+- Quelle: BauProjektManager Teil 34
+
 ## [v0.22.0] — 2026-04-29
 
 - **docs/fragilitaeten-und-fruehwarn.md (neu), Docs:** P3.2 Fragilitäten-und-Frühwarn-Doku angelegt
