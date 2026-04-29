@@ -2,10 +2,14 @@
 name: mockup-erstellen
 description: >
   Erstellt BPM-UI-Mockups als HTML-Entwürfe für neue Screens, Dialoge und
-  Layoutvarianten. Use when users want a mockup, a screen design, a UI proposal,
-  a layout draft, or need to clarify how a screen should look before coding.
-  Do not trigger for direct XAML implementation, small UI fixes in existing
-  code, or non-UI design topics like architecture or database design.
+  Layoutvarianten. Use when users want to mocken, entwerfen, skizzieren,
+  zeigen, visualisieren, layouten, or want to clarify how a screen should
+  look before coding — including mockups, screen designs, UI proposals,
+  layout drafts, dialog sketches, and tab/panel arrangements. For
+  sequential intents like "mock and then implement": triggers as the first
+  step (mockup), then defers to code-erstellen. Do not trigger for direct
+  XAML implementation, small UI fixes in existing code, or non-UI design
+  topics like database design.
 ---
 
 # Mockup-Erstellen — UI-Entwürfe für BPM

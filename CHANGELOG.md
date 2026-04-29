@@ -6,6 +6,18 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.6] — 2026-04-29
+
+- **mockup-erstellen, Fix:** Description-Refactor — Verb-Inventar + Multi-Intent (mockup-erstellen-001)
+- Neue Verben (deutsch): mocken, entwerfen, skizzieren, zeigen, visualisieren, layouten
+- Neue Substantive: mockups, screen designs, UI proposals, layout drafts, dialog sketches, tab/panel arrangements
+- Neuer Multi-Intent-Hinweis: "For sequential intents like 'mock and then implement': triggers as the first step (mockup), then defers to code-erstellen" — adressiert FAIL MU-08
+- Negativliste geschärft: "architecture" entfernt (MU-09 ist doc-pflege/code-erstellen-Domäne, nicht hier negieren), "database design" bleibt
+- Sprachstil: Hybrid (deutsche Trigger-Verben, englische Satzstruktur) — analog zu code-erstellen v0.20.3, doc-pflege v0.20.4, skill-pflege v0.20.5
+- Schließt teilweise: ClickUp `86c9hyrm8` (mockup-erstellen-001)
+- Hinweis: MU-09 (`Architektur für X`) wird NICHT in mockup-erstellen gefixt — gehört zu doc-pflege (bereits in v0.20.4 abgedeckt durch "Architektur-Docs"). Methodik-Befund "Demonstrativ-Bezug ohne Vor-Kontext" wandert in `chat-wechsel-001`.
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.5] — 2026-04-29
 
 - **skill-pflege, Fix:** Description-Refactor — Verb-Inventar erweitert (skill-pflege-008)
