@@ -3,10 +3,15 @@ name: doc-pflege
 description: >
   Erstellt, aktualisiert und validiert BPM-Dokumentation nach DOC-STANDARD,
   inklusive Frontmatter, Quickload, Kapitelvorlagen und Routing in INDEX.md.
-  Use when users want to write or update docs, create an ADR or concept doc,
-  validate Frontmatter or Quickload, or refactor documentation to the project
-  standard. Do not trigger for code implementation, automatic post-change
-  advisory checks, or generic project discussion without explicit doc intent.
+  Use when users want to schreiben, erstellen, pflegen, aktualisieren,
+  draften, anlegen, formulieren, dokumentieren, ergänzen, refactoren,
+  or validieren documentation — including ADRs, Konzept-Docs, Architektur-
+  Docs, Modul-Docs, README, CHANGELOG, BACKLOG, Frontmatter, Quickload,
+  Kapitelvorlagen, or INDEX.md-Routing. Triggers also on bug fixes in
+  documentation (typos, broken links, outdated chapters) and structural
+  refactoring of existing docs. Do not trigger for code implementation,
+  automatic post-change advisory checks, or generic project discussion
+  without explicit doc intent.
 ---
 
 # Doc-Pflege — Dokumentations-Skill

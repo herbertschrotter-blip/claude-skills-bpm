@@ -6,6 +6,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.4] — 2026-04-28
+
+- **doc-pflege, Fix:** Description-Refactor — Verb-Inventar erweitert (doc-pflege-001)
+- Neue Verben (deutsch): schreiben, erstellen, pflegen, aktualisieren, draften, anlegen, formulieren, dokumentieren, ergänzen, refactoren, validieren
+- Neue Substantive: ADRs, Konzept-Docs, Architektur-Docs, Modul-Docs, README, CHANGELOG, BACKLOG, Frontmatter, Quickload, Kapitelvorlagen, INDEX.md-Routing
+- Neue Spezialfälle: bug fixes in documentation (typos, broken links, outdated chapters), structural refactoring of existing docs
+- Ziel: FAIL-Case CE-07 (`schreib ein ADR für die Entscheidung`) soll zu PASS werden
+- Sprachstil: Hybrid (deutsche Trigger-Verben, englische Satzstruktur) — analog zu code-erstellen v0.20.3
+- Schließt: ClickUp `86c9hyqv9` (doc-pflege-001) — re-test nach Push erforderlich
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.3] — 2026-04-28
 
 - **code-erstellen, Fix:** Description-Refactor — Trigger-Vokabular erweitert (code-erstellen-001)
