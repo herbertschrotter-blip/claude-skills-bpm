@@ -6,6 +6,13 @@ Eine Smoke-Eval für **alle 11 Skills** als Sicherheitsnetz vor Freigabe der BPM
 
 Quelle: `Docs/Referenz/chatgpt-reviews/CGR-2026-04-skillsystem/r6/02-chatgpt-response.md` Kapitel 3.
 
+> **Test-Setup-Hinweis:** Bevor du Cases manuell durchläufst, bitte
+> [`evals/methodik-anleitung.md`](methodik-anleitung.md) lesen.
+> Insbesondere: Cases mit Demonstrativ-Bezug ("der bestehende Dialog",
+> "die neue Logik", "die Inkonsistenz") brauchen 2-3 Vor-Nachrichten
+> als Kontext, sonst werden sie systematisch falsch als FAIL klassifiziert.
+> Aus Smoke-Run 2026-04-28 (chat-wechsel-001).
+
 ## Scope
 
 - 11 Skills × 6-11 Cases = ~85 Cases

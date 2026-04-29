@@ -6,6 +6,23 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.20.7] — 2026-04-29
+
+- **evals, Docs:** Methodik-Anleitung für Smoke-Runs (chat-wechsel-001)
+- Neue Datei `evals/methodik-anleitung.md` (171 Zeilen):
+  - Standard-Setup (frischer Chat, Memory aus, eine Query pro Chat)
+  - Demonstrativ-Bezug-Regel mit Beispielen aus Smoke-Run 2026-04-28
+  - chat-wechsel-Spezialfall (braucht Vor-Konversation)
+  - Diagnose-Checkliste "Test-Setup-Bias vs. echter Skill-Bug"
+  - Snapshot-Format
+  - Re-Test-Workflow nach Skill-Refactor
+  - Bias-Hinweis: Selbst-Sim ≠ echter Re-Test
+- Header-Notiz in `evals/smoke-all-skills.md` mit Verweis auf methodik-anleitung
+- Hintergrund: Im Smoke-Run 2026-04-28 wurden 4 von 8 FAILs durch Test-Setup-Bias verursacht (MU-07, DOC-06, AUD-07, CE-07-Re-Test). Diese Cases sind in leeren Sessions nicht testbar, weil sie Demonstrativ-Bezug haben. Mit Vor-Kontext alle PASS.
+- Schließt: ClickUp `86c9hyt0c` (chat-wechsel-001)
+- KEIN Skill-Refactor — reine Doku-Anleitung, kein Re-Test nötig
+- Quelle: BauProjektManager Teil 33
+
 ## [v0.20.6] — 2026-04-29
 
 - **mockup-erstellen, Fix:** Description-Refactor — Verb-Inventar + Multi-Intent (mockup-erstellen-001)
