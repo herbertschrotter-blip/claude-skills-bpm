@@ -44,8 +44,20 @@ entsteht, der nicht ClickUp-würdig ist (siehe Abgrenzung unten).
 Entfernen. Siehe `skill-pflege` Memory-Cleanup-Regel (Phase 4.3).
 
 **Eskalation zu ClickUp:** Wenn derselbe Eintrag bei 3 Handovers in
-Folge steht oder sich zu einer substantiellen Aufgabe entwickelt,
-`tracker neu` vorschlagen. Siehe `tracker` Memory-Eskalation (Phase 4.4).
+Folge steht oder sich zu einer substantiellen Aufgabe entwickelt:
+
+1. `tracker neu` vorschlagen — neuen ClickUp-Task anlegen
+2. Nach Bestätigung der Task-Anlage: Memory-Eintrag entfernen
+   (kein paralleles Tracking — ClickUp ist die Single Source of Truth)
+3. Im neuen Task im Beschreibungstext kurz auf den Memory-Ursprung
+   verweisen (z. B. „aus Memory-Rubrik [VERIFY] eskaliert“)
+
+Siehe `tracker` Memory-Eskalation (Phase 4.4).
+
+**Hygiene-Prüfung beim Handover:** `chat-wechsel` scannt beim Handover
+alle Rubrik-Einträge und erzeugt die Sektion „Offene Punkte aus Memory“
+(Phase 4.1). Dabei werden auch die Frühwarn-Indikatoren (siehe Anhang)
+geprüft und ggf. als Eskalationsempfehlung gemeldet.
 
 ---
 
@@ -98,3 +110,22 @@ Bestehende Memory-Einträge ohne Rubrik-Prefix sind retrofit-fähig:
    (`[CLICKUP]`, `[SKILL-ISSUES]`, `[ANKER-LIVE]`, `[PROJECT]` etc.)
 
 Der Retrofit passiert auf Herbert-Ansage, nicht automatisch.
+
+---
+
+## Anhang: Frühwarn-Indikatoren
+
+Quelle: ChatGPT-Cross-Review CGR-2026-04-skillsystem-r6, Kapitel 4.
+
+`chat-wechsel` und `tracker` prüfen diese Indikatoren beim Handover und
+melden bei Treffern eine Eskalationsempfehlung.
+
+| # | Indikator | Reaktion |
+|---|---|---|
+| 1 | Mehr als 5 offene `[VERIFY]` / `[INFRA-TODO]` nach einem Handover | Memory-Hygiene-Prompt: Welche Einträge sind erledigt? Welche eskalieren? |
+| 2 | Derselbe Memory-Punkt taucht in 3 Handovers wieder auf | `tracker neu` vorschlagen — Eintrag ist substantieller als gedacht |
+| 3 | Claude referenziert Memory-Punkte, die eigentlich erledigt sind | Memory-Cleanup mit Bestätigung — Eintrag entfernen |
+| 4 | Offene Punkte unklar formuliert und nicht entscheidbar | Reformulierung verlangen oder löschen — keine Müllhalde |
+
+**Grundsatz:** Memory-Rubriken sind ein Kurzzeit-Notizblock, kein
+Schatten-Backlog. Bei Zweifel → ClickUp.

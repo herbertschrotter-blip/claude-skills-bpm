@@ -6,6 +6,22 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.21.0] — 2026-04-29
+
+- **MEMORY-RUBRIKEN.md, Docs:** P3.1 Memory-Eskalation geschärft + Frühwarn-Indikatoren
+- Lifecycle-Abschnitt: Eskalations-Aktion in 3 Schritten konkretisiert
+  (1. tracker neu, 2. Memory-Eintrag entfernen, 3. Memory-Ursprung im Task-Body
+  vermerken)
+- Neuer Abschnitt „Hygiene-Prüfung beim Handover“ mit Verweis auf
+  `chat-wechsel` Phase 4.1
+- Neuer Anhang „Frühwarn-Indikatoren“ (4 Indikatoren aus ChatGPT-Review
+  CGR-2026-04-skillsystem-r6 Kapitel 4) mit konkreter Reaktion pro Indikator
+- Schließt: ClickUp `86c9gmkcp` (P3.1 Memory-Rubriken-Eskalation)
+- Roadmap: P3 Doku-Hygiene → P3.1 done (P3.2 Frühwarn-Indikatoren bleibt offen
+  als separater Punkt für Skill-Code-Implementierung in `chat-wechsel`/`tracker`)
+- Version-Bump MINOR: neuer Anhang strukturell hinzugefügt
+- Quelle: BauProjektManager Teil 34
+
 ## [v0.20.7] — 2026-04-29
 
 - **evals, Docs:** Methodik-Anleitung für Smoke-Runs (chat-wechsel-001)
