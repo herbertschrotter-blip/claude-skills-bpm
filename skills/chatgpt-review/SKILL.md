@@ -80,10 +80,10 @@ angelegt in der jeweiligen Gesprächsphase.
 ### ID-Schema
 
 ```
-CGR-<YYYY-MM>-<thema>-r<runde>
+CGR-<YYYY-MM-DD>-<thema>-r<runde>
 ```
 
-- `YYYY-MM` = Jahr + Monat des Serie-Starts
+- `YYYY-MM-DD` = Vollständiges Startdatum der Serie (Tag der ersten Runde)
 - `<thema>` = kebab-case aus Themen-Enum
 - `r<runde>` = Rundennummer (r1, r2, r3, ...)
 
@@ -100,7 +100,7 @@ CGR-<YYYY-MM>-<thema>-r<runde>
 
 ```
 <BPM-Repo>/Docs/Referenz/chatgpt-reviews/
-└── CGR-YYYY-MM-<thema>/
+└── CGR-YYYY-MM-DD-<thema>/
     ├── README.md          ← Serie-Übersicht, Runden-Zusammenfassung
     ├── r1/
     │   ├── 01-claude-prompt.md       ← Claudes Prompt an ChatGPT
@@ -132,7 +132,7 @@ Wenn der User eine neue Review-Serie startet, VOR Phase 1 Initialprompt:
    ```
    Bei "neues Thema": Prosa-Frage nach Kurzname (kebab-case).
 
-2. **CGR-ID festziehen:** `CGR-<aktuelles-YYYY-MM>-<thema>`
+2. **CGR-ID festziehen:** `CGR-<aktuelles-YYYY-MM-DD>-<thema>`
    (aktuelles Datum nehmen, nicht fragen)
 
 3. **BPM-Repo-Pfad ermitteln:**
@@ -141,15 +141,15 @@ Wenn der User eine neue Review-Serie startet, VOR Phase 1 Initialprompt:
 
 4. **Ordner anlegen** via DC:
    ```
-   DC create_directory <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-<thema>/
+   DC create_directory <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-DD-<thema>/
    ```
 
 5. **README.md Stub** via DC:
    ```markdown
-   # CGR-YYYY-MM-<thema> — <Serie-Titel>
+   # CGR-YYYY-MM-DD-<thema> — <Serie-Titel>
 
    **Thema:** <Beschreibung>
-   **Zeitraum:** <YYYY-MM>
+   **Zeitraum:** <YYYY-MM-DD>
    **Ursprungs-Chat:** <optional>
    **Status:** Runde 1 offen
 
@@ -175,7 +175,7 @@ Wenn innerhalb einer bestehenden Serie eine neue Runde beginnt:
 
 1. **r<N>/-Ordner anlegen** via DC:
    ```
-   DC create_directory <BPM-Repo>/.../CGR-YYYY-MM-<thema>/r<N>/
+   DC create_directory <BPM-Repo>/.../CGR-YYYY-MM-DD-<thema>/r<N>/
    ```
 
 2. **4 Platzhalter-Dateien** erst bei Befüllung anlegen — nicht vorab
@@ -349,7 +349,7 @@ Dieses Gespräch läuft über einen Vermittler (den User).
 - Repo-Zugriff Block mit aktuellem Branch IMMER einfügen
 
 **Archivierung (CGR-System):**
-- Vor dem Erstellen: sicherstellen dass `CGR-YYYY-MM-<thema>/r<N>/` existiert
+- Vor dem Erstellen: sicherstellen dass `CGR-YYYY-MM-DD-<thema>/r<N>/` existiert
   (anlegen via DC wenn neu)
 - Nach dem Erstellen: Prompt-Text 1:1 als `r<N>/01-claude-prompt.md` ablegen
 - Bei Runde 1: zusätzlich Serie-Stub anlegen (siehe "Serie starten")
@@ -417,7 +417,7 @@ Gleichwertiger Gesprächspartner:
 
 1. **Primär: BPM-Repo-Archiv** (via DC, CGR-System):
    ```
-   <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-<thema>/r<N>/
+   <BPM-Repo>/Docs/Referenz/chatgpt-reviews/CGR-YYYY-MM-DD-<thema>/r<N>/
      ├── 01-claude-prompt.md
      ├── 02-chatgpt-response.md
      ├── 03-claude-analysis.md
@@ -453,4 +453,4 @@ Prompts in der Sprache des Users.
 - **Runde durchlaufen ohne die 4 Dateien inkrementell abzulegen** — 01 in Phase 1, 02 vor Stufe A, 03 in Stufe A, 04 zwischen Stufe A und B
 - **INDEX.md-Status nicht aktualisieren** bei neuer Runde / Serie-Abschluss
 - **Alle 4 Dateien einer Runde gesammelt am Rundenende anlegen** — Archiv-Lücken bei Chat-Abbruch
-- **CGR-ID aus falschem Monat verwenden** — immer das aktuelle `YYYY-MM` beim Serie-Start nehmen, auch wenn die Runde später läuft
+- **CGR-ID aus falschem Datum verwenden** — immer das aktuelle `YYYY-MM-DD` beim Serie-Start nehmen, auch wenn die Runde später läuft

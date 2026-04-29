@@ -6,6 +6,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.22.2] — 2026-04-29
+
+- **skills/chatgpt-review/SKILL.md, Refactor:** CGR-ID-Schema von `YYYY-MM` auf `YYYY-MM-DD` umgestellt
+- Begründung: Mehrere Serien können im selben Monat starten — Tag macht ID eindeutig und chronologisch sortierbar
+- 6 Stellen im Skill-Body angepasst: ID-Schema-Block, Ablagestruktur, Serie-starten Schritt 2/4/5, Runde-starten Pfad, Formatierungs-Block, VERBOTEN-Liste
+- Themen-Enum unverändert
+- Two-Place-Pflege: Repo + Artifact für `/mnt/skills/user/`
+- BPM-Repo-Anpassungen parallel: 4 alte CGR-Ordner umbenannt auf `CGR-2026-04-22-*`, neuer Ordner `CGR-2026-04-29-cc-vs-dc/`, INDEX.md angepasst
+- Quelle: BauProjektManager Teil 34
+
 ## [v0.22.1] — 2026-04-29
 
 - **skills/git-commit-helper/SKILL.md, Fix:** One-Block-Regel für Commit-Sequenzen
