@@ -6,6 +6,26 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.22.0] — 2026-04-29
+
+- **docs/fragilitaeten-und-fruehwarn.md (neu), Docs:** P3.2 Fragilitäten-und-Frühwarn-Doku angelegt
+- 4 Sektionen mit Indikatoren, Sofortmaßnahmen, Beispielen und Gegenbeispielen:
+  1. cc-steuerung-Pfad-/Modalitätsfragilität (Top 1)
+  2. Tracker-Anker / Task-Scope-Disziplin (Top 2)
+  3. Memory-Schatten-Backlog (verweist auf MEMORY-RUBRIKEN.md Anhang)
+  4. Frühphasen-Verstoss
+- **INDEX.md:** Neue Sektion 10 "Fragilitäten und Frühwarn-Indikatoren" mit
+  Übersichts-Tabelle und Verweis auf Volldoku
+- **chat-wechsel/SKILL.md:** Memory-Scan Schritt 4 erweitert um
+  Fragilitäten-Check beim Handover (Two-Place-Pflege: Repo + Artifact für
+  /mnt/skills/user/)
+- Schließt: ClickUp `86c9gmkd5` (P3.2 Frühwarn-Indikatoren dokumentieren)
+- Roadmap: P3 Doku-Hygiene → P3.1 + P3.2 done → P3 Eltern-Task kann auf
+  done gesetzt werden
+- Quelle: CGR-2026-04-skillsystem-r6 Kapitel 4
+- Version-Bump MINOR: neue Doku-Datei + Skill-Erweiterung
+- Quelle: BauProjektManager Teil 34
+
 ## [v0.21.0] — 2026-04-29
 
 - **MEMORY-RUBRIKEN.md, Docs:** P3.1 Memory-Eskalation geschärft + Frühwarn-Indikatoren

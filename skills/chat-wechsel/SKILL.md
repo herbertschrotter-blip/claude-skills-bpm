@@ -249,6 +249,23 @@ Für jeden `[VERIFY]`- oder `[INFRA-TODO]`-Eintrag prüfen:
 - Wenn ja: im Handover-Prompt kennzeichnen mit:
   > "Dieser Punkt war jetzt in 3 Übergaben offen. Prüfen, ob ClickUp-Task sinnvoll ist."
 
+**Zusätzlich Fragilitäten-Check** (siehe
+[docs/fragilitaeten-und-fruehwarn.md](../../docs/fragilitaeten-und-fruehwarn.md)):
+
+Vier Fragilitäten mit dokumentierten Indikatoren werden gegen den
+Chat-Verlauf geprüft. Bei Treffern wird eine Eskalationsempfehlung in den
+Übergabeprompt aufgenommen:
+
+| Fragilität | Hauptsignal |
+|---|---|
+| 1. cc-steuerung-Pfad-/Modalitätsfragilität | Codeblöcke statt Dateioperation, hartkodierte Pfade, `$`-Variablen |
+| 2. Tracker-Anker / Task-Scope-Disziplin | Fehlender `[BPM-ANCHOR-…]`, `tracker done` ohne Hash, Multi-Task-Commit |
+| 3. Memory-Schatten-Backlog | 5+ offene `[VERIFY]`/`[INFRA-TODO]`, 3-Handovers-Wiederkehr |
+| 4. Frühphasen-Verstoss | Migration-/Legacy-Vorschläge, Backward-Compat-Logik ohne Auftrag |
+
+Volldoku inklusive Sofortmaßnahmen und Beispielen:
+[docs/fragilitaeten-und-fruehwarn.md](../../docs/fragilitaeten-und-fruehwarn.md).
+
 ### Schritt 5: Vor Prompt-Abschluss prüfen
 
 Vor dem Finalisieren des Prompts:

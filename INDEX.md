@@ -132,6 +132,26 @@ Skills werden an zwei Orten gepflegt: `claude-skills-bpm/skills/<n>/SKILL.md` (R
 
 **Quellen:** CGR-2026-04-skillsystem-r5/r6, ClickUp-Task `86c9gmjan`
 
+### 10. Fragilitäten und Frühwarn-Indikatoren (P3.2)
+
+Vier dokumentierte Fragilitäten mit konkreten Beobachtungssignalen und
+Sofortmaßnahmen — Pflichtlektüre vor jedem Smoke-Run und beim Handover-Check.
+
+| # | Fragilität | Hauptsignal |
+|---|---|---|
+| 1 | cc-steuerung-Pfad-/Modalitätsfragilität | Codeblöcke statt Dateioperation, hartkodierte Pfade, `$`-Variablen |
+| 2 | Tracker-Anker / Task-Scope-Disziplin | Fehlender Anker, `tracker done` ohne Hash, Multi-Task-Commit |
+| 3 | Memory-Schatten-Backlog | 5+ offene Punkte, 3-Handovers-Wiederkehr, unklare Formulierung |
+| 4 | Frühphasen-Verstoss | Migration/Legacy-Vorschläge, Backward-Compat ohne Auftrag |
+
+Volldoku mit Indikatoren, Sofortmaßnahmen, Beispielen und Gegenbeispielen:
+[docs/fragilitaeten-und-fruehwarn.md](./docs/fragilitaeten-und-fruehwarn.md).
+
+`chat-wechsel` (Memory-Scan Schritt 4) prüft diese Indikatoren beim Handover
+und nimmt Treffer als Eskalationshinweis in den Übergabeprompt auf.
+
+**Quelle:** CGR-2026-04-skillsystem-r6 Kapitel 4, ClickUp-Task `86c9gmkd5`
+
 ---
 
 ## Projekt-Kontext und Fallback
