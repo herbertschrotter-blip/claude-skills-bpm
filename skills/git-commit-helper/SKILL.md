@@ -81,6 +81,15 @@ Wenn das Projekt eine Aufgaben- oder Ticket-Nummer führt (z.B. Bauplan-
 Schritt, ClickUp-ID), gehört sie an den Anfang des Kurztitels oder in die
 zweite Zeile der Message – nie vor das `[vX.Y.Z]`.
 
+**Modul:** ein Name aus der Modul-Liste des Projektprofils. Berührt eine
+Änderung mehrere Module, gilt das Hauptmodul (wo die Absicht liegt); die
+übrigen werden im Kurztitel genannt. Sind die Teile unabhängig, werden es
+zwei Commits.
+
+**Zweite Zeile (optional):** nach einer Leerzeile ein bis drei Sätze mit
+Begründung, Befund oder Verweis (Ticket, Bauplan-Abschnitt). Nie Prosa in
+die erste Zeile packen.
+
 ### Typen
 - Feature → MINOR
 - Fix → PATCH
@@ -88,6 +97,8 @@ zweite Zeile der Message – nie vor das `[vX.Y.Z]`.
 - Refactor → PATCH
 - Perf → PATCH
 - Docs → PATCH
+- Test → PATCH
+- Chore (Werkzeuge, Konfiguration, Abhängigkeiten) → PATCH
 
 Diese Zuordnung ist der Standard. Die Bump-Regel im Projektprofil darf sie
 überschreiben (z.B. „Vorabversion: jede eingespielte Änderung zählt die
@@ -137,6 +148,20 @@ git status --short
 
 in der Shell der Umgebung ausführen. Kein Commit ohne vorherigen Status.
 
+## SCHRITT 1a — Versionsdatei hochzählen (PFLICHT bei Version-Bump)
+
+Die neue Version steht nicht nur in der Commit-Message: Die Versionsquelle
+aus dem Projektprofil (z.B. Directory.Build.props, package.json samt
+package-lock.json, pom.xml) wird auf die neue Nummer gesetzt und gehört mit
+in denselben Commit. Ohne Änderung der Versionsdatei kein `[vX.Y.Z]` mit
+neuer Nummer.
+
+## SCHRITT 1b — Doku-Checkliste VOR dem Commit
+
+Die Doku-Checkliste (Schritt 3) wird vor der Commit-Sequenz abgearbeitet,
+damit Code, Version und Doku in einem Commit landen. Schritt 3 beschreibt
+die Liste; ausgeführt wird sie hier, vor Schritt 2.
+
 ## SCHRITT 2 — Commit-Befehle (One-Block-Regel)
 
 **KERNREGEL:** Eine komplette Commit-Sequenz wird IMMER in EINEM Code-Block
@@ -172,6 +197,14 @@ cd "[Arbeitsverzeichnis]" && git add <spezifische-dateien> && git commit -m "[vX
 - Verlangt das Projekt Tests vor dem Commit (steht im Profil oder in CLAUDE.md),
   läuft der Testbefehl als erstes Glied der Sequenz; bei rotem Ergebnis kein Commit
 
+### Wenn ein Glied der Sequenz fehlschlägt
+
+Rotes Testergebnis, abgelehnter Push, Hook-Fehler oder Konflikt: Sequenz
+bricht am fehlerhaften Glied ab (dafür `&&` bzw. Prüfung des Exit-Codes).
+Ursache in einem Satz nennen, nichts überspringen, keinen Teil-Commit
+„trotzdem“ pushen. Erst wenn die Ursache behoben ist, die ganze Sequenz
+erneut liefern.
+
 ### Mehrzeilig nur wenn User explizit darum bittet
 
 Wenn Herbert eine besser lesbare, mehrzeilige Variante will, in EINEM Block
@@ -181,9 +214,9 @@ in mehrere Code-Blöcke aufteilen.
 ## SCHRITT 3 — Doc-Pflege Trigger (PFLICHT)
 
 Die Doku-Checkliste kommt aus dem Projektprofil (`Doku-Checkliste:` je Datei
-eine Zeile „Datei → wann“). Sie wird nach dem Commit abgearbeitet; jede
-betroffene Datei wird genannt, geändert und im selben oder nächsten Commit
-mitgenommen.
+eine Zeile „Datei → wann“). Sie wird vor der Commit-Sequenz abgearbeitet
+(Schritt 1b); jede betroffene Datei wird genannt, geändert und im selben
+Commit mitgenommen.
 
 Fehlt die Checkliste im Profil: `docs/` und `*.md` im Repo auflisten und per
 Auswahlfrage klären, welche Dateien bei dieser Änderung dran sind; das
@@ -223,8 +256,10 @@ Checkliste:
 6. Keine Erklärungen
 7. Bei Renames: git mv
 8. Arbeitsverzeichnis IMMER automatisch (Repo-Wurzel)
-9. Doc-Pflege IMMER am Ende (Checkliste aus dem Projektprofil)
+9. Doc-Pflege IMMER vor dem Commit (Checkliste aus dem Projektprofil), damit Code und Doku zusammen landen
 10. Projektprofil IMMER lesen, bevor Version oder Doku angefasst werden
+11. Versionsdatei gehört in denselben Commit wie die Versionsnummer in der Message
+12. Bei mehreren Commits in einer Antwort: je Commit ein eigener Block (One-Block-Regel gilt je Commit)
 
 ## VERBOTEN
 

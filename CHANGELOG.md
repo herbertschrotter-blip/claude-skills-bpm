@@ -6,6 +6,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.24.1] — 2026-09-16
+
+- **skills/git-commit-helper/SKILL.md, Fix:** vier Lücken aus der Bewertung nach dem Neutral-Umbau – (1) Schritt 1a: Versionsdatei (Versionsquelle des Profils) wird hochgezählt und gehört in denselben Commit; (2) Schritt 1b + Regel 9: Doku-Checkliste vor der Commit-Sequenz statt nach dem Push; (3) Abschnitt „Wenn ein Glied der Sequenz fehlschlägt“: Abbruch am roten Glied, Ursache nennen, kein Teil-Commit; (4) Modul-Regel (Hauptmodul bei mehreren, sonst zwei Commits) und zweite Message-Zeile beschrieben
+- Klein: Typen Test und Chore ergänzt; Regel 11 (Versionsdatei im selben Commit) und 12 (ein Block je Commit bei mehreren Commits)
+- Alles Übrige unverändert (Herbert: „nur die wesentlichen Teile umbauen, Rest bleibt Original“)
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.24.0] — 2026-09-16
 
 - **skills/git-commit-helper/SKILL.md, Feature:** projektneutral – Format `[vX.Y.Z] Modul, Typ: Kurztitel` bleibt fest, alles Projektspezifische kommt aus einem **Projektprofil** (Abschnitt `## Commit-Profil` in der CLAUDE.md des Repos: Modul-Namen, Versionsquelle, Bump-Regel, Doku-Checkliste); fehlt es, sucht der Skill docs/, *.md und Versionsdateien im Repo und bietet per Auswahlfrage an, das Profil anzulegen
