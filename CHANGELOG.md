@@ -6,6 +6,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.24.0] — 2026-09-16
+
+- **skills/git-commit-helper/SKILL.md, Feature:** projektneutral – Format `[vX.Y.Z] Modul, Typ: Kurztitel` bleibt fest, alles Projektspezifische kommt aus einem **Projektprofil** (Abschnitt `## Commit-Profil` in der CLAUDE.md des Repos: Modul-Namen, Versionsquelle, Bump-Regel, Doku-Checkliste); fehlt es, sucht der Skill docs/, *.md und Versionsdateien im Repo und bietet per Auswahlfrage an, das Profil anzulegen
+- Bump-Regel des Profils darf die Typenliste überschreiben (z. B. Vorabversion: jede Änderung zählt hoch); Aufgabennummern gehören in den Kurztitel oder die zweite Zeile, nie vor die Version
+- Werkzeugnamen raus: `ask_user_input_v0` → „Auswahlfrage“ (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`), Desktop Commander/cc-steuerung → Shell der Umgebung, Arbeitsverzeichnis per `git rev-parse --show-toplevel`
+- Doku-Checkliste: BPM-Liste bleibt als Beispiel, zweites Beispiel Bauplan/HANDOFF (Heidi); Testbefehl als erstes Glied der Sequenz, wenn das Projekt Tests vor dem Commit verlangt
+- Zwei neue Verbote: Versionsquelle/Doku raten, Werkzeugnamen fest verdrahten; Regel 10 Projektprofil lesen
+- Erster Einsatz außerhalb BPM: herbert-smarthome-v2 (Heidi) mit Commit-Profil in CLAUDE.md
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026 (Herbert: „kann ich diese Skills nicht neutral machen?“)
+
 ## [v0.22.3] — 2026-04-29
 
 - **skills/tracker/SKILL.md, Fix:** Description triggert jetzt auch auf "issue erstellen" / "task anlegen" / "ClickUp-Eintrag"

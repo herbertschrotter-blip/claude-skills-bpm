@@ -17,7 +17,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |
 | **code-erstellen** | Master-Orchestrator für BPM-Code-Erstellung | Jede Anfrage die Code-Erstellung impliziert |
 | **doc-pflege** | Dokumentations-Updates nach DOC-STANDARD.md | "pflege docs", "schreib ADR", "neues Konzept" |
-| **git-commit-helper** | Commit-Befehle im BPM-Format generieren | "commit", "git commit", "PATCH oder MINOR?" |
+| **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-UI-Mockups für BPM-Screens erstellen | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue BPM-Skills von Grund auf erstellen | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills additiv ändern | "Skill updaten", "Skill ändern", "Skill erweitern" |
