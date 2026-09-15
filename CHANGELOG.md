@@ -6,6 +6,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.25.0] — 2026-09-16
+
+- **skills/tracker/SKILL.md, Feature:** projektneutral – Nummernschema, Anker-Präfix und Custom-Field-IDs sind Profilwerte aus `projects/<[PROJECT]>/` (BPM: BPM-NNN + `[BPM-ANCHOR-…]` + 10 Felder; Heidi: Bauplan-Nummer im Titel, keine Anker, keine Felder → Quittung ohne Anker, Commit-Hash als Kommentar); Referenz-Anker-Regel gilt nur für Projekte mit Ankern
+- Werkzeugnamen raus: `ask_user_input_v0` → „Auswahlfrage“ (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`), DC → Shell der Umgebung, `tool_search` → Werkzeugsuche der Umgebung (Claude Code `ToolSearch select:`)
+- Projektkennung je Umgebung: Claude Code liest Abschnitt `## Tracker-Profil` in der CLAUDE.md des Repos, Cowork weiter den `[PROJECT]`-Memory-Eintrag; Fallback-Ablauf entsprechend
+- Kommando-Tabelle mit `<Task-ID>` statt `<BPM-NNN>`; zwei neue VERBOTEN-Punkte (Werkzeuge/Umgebung fest annehmen, BPM-Schema für andere Projekte annehmen)
+- **projects/heidi/** neu: README, clickup-lists (Space Smart Home, Liste dreame_x60 – Bauplan, 9 Status, Übergänge start→in development, done→testing), clickup-fields (keine Felder, Beschreibungs- und Kommentarmuster), memory-format (CLAUDE.md-Abschnitt statt Memory)
+- references/batch-protocol.md: feste Feld-IDs als BPM-Beispiel gekennzeichnet; alle übrigen references unverändert (BPM-Beispiele bleiben Muster)
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.24.1] — 2026-09-16
 
 - **skills/git-commit-helper/SKILL.md, Fix:** vier Lücken aus der Bewertung nach dem Neutral-Umbau – (1) Schritt 1a: Versionsdatei (Versionsquelle des Profils) wird hochgezählt und gehört in denselben Commit; (2) Schritt 1b + Regel 9: Doku-Checkliste vor der Commit-Sequenz statt nach dem Push; (3) Abschnitt „Wenn ein Glied der Sequenz fehlschlägt“: Abbruch am roten Glied, Ursache nennen, kein Teil-Commit; (4) Modul-Regel (Hauptmodul bei mehreren, sonst zwei Commits) und zweite Message-Zeile beschrieben

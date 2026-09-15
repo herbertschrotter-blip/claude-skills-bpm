@@ -1,12 +1,12 @@
 ---
 name: tracker
 description: >
-  Führt konkrete ClickUp-Aktionen für BPM-Tasks und Skill-Issues aus, z.B.
+  Führt konkrete ClickUp-Aktionen für Projekt-Tasks und Skill-Issues aus, z.B.
   "tracker neu", "tracker issue", "tracker done", "tracker update",
   "tracker status", "tracker suche", "tracker next", "tracker split",
   "tracker relate" und "tracker field". Use when users want to anlegen,
   erstellen, eintragen, melden, dokumentieren, abschließen, aktualisieren,
-  or update a ClickUp task or issue — including BPM-Tasks, Skill-Issues,
+  or update a ClickUp task or issue — including Projekt-Tasks (BPM, Heidi, …), Skill-Issues,
   Bug-Reports, neue Aufgaben, offene Punkte, Task-Splits, Dependencies,
   oder Status-Abfragen. Triggers also on "issue erstellen", "task anlegen",
   "ClickUp-Eintrag", "Skill-Issue melden". Do not trigger for general talk
@@ -19,18 +19,24 @@ description: >
 ## Zweck
 
 Einzige standardisierte Schreibschnittstelle für den ClickUp-Task-Tracker.
-Pro Modul eine eigene Liste. Neue Module bekommen automatisch eine neue Liste.
-Globale Nummerierung BPM-001, BPM-002, ... über alle Listen hinweg.
+Listenaufteilung, Nummernschema und Anker-Format kommen aus der Projekt-Config
+`projects/<[PROJECT]>/clickup-lists.md` (BPM: eine Liste je Modul, globale
+Nummerierung BPM-001, BPM-002, …; Heidi: eine Liste, Bauplan-Nummer im Titel,
+keine Anker). Beispiele in diesem Skill und in `references/` zeigen das
+BPM-Schema; sie sind Muster, keine Vorgabe für andere Projekte.
 
 Die operativen Details sind in `references/` ausgelagert. Diese Hauptdatei
 ist nur der Routing-Einstieg — je nach Kommando die passende Referenz laden.
 
 ---
 
-## 🚨 Kernregel: ask_user_input_v0 bei Entscheidungen
+## 🚨 Kernregel: Auswahlfrage bei Entscheidungen
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
-verwendet werden — KEINE Prosa-Fragen.**
+**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
+gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = das Frage-Werkzeug der
+jeweiligen Umgebung mit anklickbaren Optionen (Cowork-Chat `ask_user_input_v0`,
+Claude Code `AskUserQuestion`). Wo unten `ask_user_input_v0` steht, ist diese
+Auswahlfrage gemeint.
 
 Mehrere Fragen in einem Aufruf sind erlaubt (max 3). Zu lange Options-Listen
 (>4) in Multi-Aufrufe aufteilen.
@@ -53,15 +59,19 @@ Nach **jedem** `clickup_create_task` oder status-änderndem `clickup_update_task
 MUSS im selben Antwort-Block eine Quittungszeile stehen:
 
 ```
-✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — <typ>: <kurz>
+✅ <Task-ID nach Nummernschema des Projekts> — [<ANKER-PREFIX>-<task-id>] — <typ>: <kurz>
 ```
+
+BPM: `✅ BPM-123 — [BPM-ANCHOR-86c9…] — Feature: …`. Projekte ohne Chat-Anker
+(`clickup-lists.md` Abschnitt „Chat-Anker: nicht verwendet“) lassen den
+Anker-Teil weg: `✅ <Titel> — <Aktion> — <ClickUp-Link>`.
 
 Die Quittung ist Bestätigung + Body-Anker + Audit-Spur in einem Format.
 Keine Quittung am Ende gesammelt. Keine Tabellen statt Quittungen.
 
-**Zusätzlich im selben Tool-Call-Block:** Custom Field `Chat-Anker erstellt`
-(`512b8920-...`) bzw. `Chat-Anker erledigt` (`0c72a2ea-...`) setzen — nicht
-später nachtragen.
+**Zusätzlich im selben Tool-Call-Block:** die Anker-Felder `Chat-Anker erstellt`
+bzw. `Chat-Anker erledigt` setzen — IDs aus `projects/<[PROJECT]>/clickup-fields.md`,
+nur wenn das Projekt diese Felder hat — nicht später nachtragen.
 
 Bei ≥2 Task-Operationen in derselben Antwort greift das **Batch-Protokoll**:
 Batch-Ansage vor Beginn, Pro-Task-Zyklus, Batch-Audit am Ende.
@@ -80,6 +90,9 @@ Adressiert `tracker-001`, `tracker-004`, `tracker-005`.
 ---
 
 ## 🚨 Kernregel: Referenz-Anker in Folge-Antworten
+
+Gilt nur für Projekte mit Chat-Ankern (Projekt-Config). Ohne Anker entfällt
+die Regel; der Task wird dann mit Titel und ClickUp-Link genannt.
 
 **Bei JEDER Folge-Antwort die einen bereits existierenden Task inhaltlich
 betrifft (ohne Tool-Call), MUSS oben ein Referenz-Anker stehen:**
@@ -157,14 +170,14 @@ niemals passiv auf User-Input warten.**
 
 4 Schritte:
 
-1. **Commit-Hash via DC holen** (`git log -1 --format='%h %s'`) — nicht vom User anfordern wenn DC verfügbar
-2. **Custom Fields setzen** (Commit ID, Erledigt-Datum, Chat-Anker erledigt) — typischerweise im Haupt-Ablauf-Schritt 9 bereits erledigt
+1. **Commit-Hash in der Shell der Umgebung holen** (`git log -1 --format='%h %s'`; Cowork: Desktop Commander, Claude Code: Bash/PowerShell) — nicht vom User anfordern, wenn eine Shell verfügbar ist
+2. **Custom Fields setzen** (Commit ID, Erledigt-Datum, Chat-Anker erledigt) — nur wenn das Projekt die Felder hat (`clickup-fields.md`); sonst Kommentar mit Version und Commit-Hash am Task
 3. **Zwischenstand-Tabelle im Chat** (Task / Commit-Hash / Status / Push-Pending)
-4. **Folgeoptionen via `ask_user_input_v0`** — niemals Prosa-Frage, niemals still warten
+4. **Folgeoptionen als Auswahlfrage** — niemals Prosa-Frage, niemals still warten
 
-**Ausnahmen:** Zero-Change-Tasks (Schritt 1 entfällt), Batches (Schritte 3-4 nur einmal am Batch-Ende), DC nicht verfügbar (Schritt 1 entfällt → Prosa-Frage nach Hash).
+**Ausnahmen:** Zero-Change-Tasks (Schritt 1 entfällt), Batches (Schritte 3-4 nur einmal am Batch-Ende), keine Shell verfügbar (Schritt 1 entfällt → Prosa-Frage nach Hash).
 
-Baut auf `cc-steuerung-003` auf (DC ist Default-Ausführungsmodus).
+Im Cowork-Chat baut das auf `cc-steuerung-003` auf (DC ist dort Default-Ausführungsmodus).
 
 Vollständige Spec mit Beispiel-Ablauf: `references/complete-task.md` Abschnitt "Automatischer Nachlauf nach tracker done".
 
@@ -181,22 +194,25 @@ im Skill.**
 
 ### Wie Claude das aktive Projekt ermittelt
 
-1. Memory scannen nach Eintrag `[PROJECT] <n> | ...`
+1. **Claude Code:** Abschnitt `## Tracker-Profil` in der `CLAUDE.md` des
+   Repos (Zeile `- Projekt: <n>` und `- Skill-Repo (OneDrive-relativ): …`).
+   **Cowork-Chat:** Memory scannen nach Eintrag `[PROJECT] <n> | ...`
 2. Projekt-Config-Pfad konstruieren: `projects/<n>/`
 3. Benötigte Datei lesen:
    - `projects/<[PROJECT]>/clickup-lists.md` — Listen-IDs + Scope-Routing
    - `projects/<[PROJECT]>/clickup-fields.md` — Custom-Field-IDs + Option-IDs + Modul-Kürzel + Status-Werte
    - `projects/<[PROJECT]>/memory-format.md` — Memory-Eintragsformate
 
-### Fallback wenn `[PROJECT]`-Memory fehlt
+### Fallback wenn `[PROJECT]`-Memory bzw. Tracker-Profil fehlt
 
 ```
-1. Claude scannt Memory → kein [PROJECT]-Eintrag gefunden
+1. Claude findet weder Tracker-Profil (Claude Code) noch [PROJECT]-Eintrag (Cowork)
 2. Claude listet vorhandene Ordner in projects/
-3. ask_user_input_v0: "Welches Projekt ist aktiv?"
+3. Auswahlfrage: "Welches Projekt ist aktiv?"
    Optionen = gefundene Ordner-Namen
-4. User wählt → Claude schlägt Memory-Eintrag vor
-5. User bestätigt → Claude schreibt [PROJECT]-Eintrag via memory_user_edits
+4. User wählt → Claude schlägt die Kennung vor
+5. User bestätigt → Claude Code: Abschnitt ## Tracker-Profil in CLAUDE.md schreiben;
+   Cowork: [PROJECT]-Eintrag via memory_user_edits
 ```
 
 ### Fallback wenn Projekt-Config-Datei fehlt
@@ -256,7 +272,7 @@ bleibt tracker zuständig.
 
 **Wichtig:** tracker wird NICHT automatisch ausgelöst durch Code-Commits
 oder Doc-Änderungen. Andere Skills (code-erstellen, doc-pflege) rufen
-tracker nur aktiv via `ask_user_input_v0` auf ("Passt zu BPM-XXX.
+tracker nur aktiv per Auswahlfrage auf ("Passt zu <Task>.
 tracker done?"). Die User-Bestätigung ist Pflicht. Details siehe
 Kapitel "Integration mit anderen Skills".
 
@@ -268,18 +284,20 @@ Kapitel "Integration mit anderen Skills".
 |----------|-----------|
 | `tracker neu: <Beschreibung>` | `references/create-task.md` |
 | `tracker issue <skill>: <Titel>` | `references/issue-task.md` |
-| `tracker start: <BPM-NNN>` | `references/start-task.md` |
-| `tracker done: <BPM-NNN>` | `references/complete-task.md` |
-| `tracker update: <BPM-NNN> → <Änderung>` | `references/update-task.md` |
-| `tracker field: <BPM-NNN> <Feld> <Wert>` | `references/update-task.md` |
+| `tracker start: <Task-ID>` | `references/start-task.md` |
+| `tracker done: <Task-ID>` | `references/complete-task.md` |
+| `tracker update: <Task-ID> → <Änderung>` | `references/update-task.md` |
+| `tracker field: <Task-ID> <Feld> <Wert>` | `references/update-task.md` |
 | `tracker status` | `references/search-and-status.md` |
 | `tracker next` | `references/search-and-status.md` |
 | `tracker suche: <Stichwort>` | `references/search-and-status.md` |
 | `tracker listen` | `references/search-and-status.md` |
-| `tracker split: <BPM-NNN>` | `references/split-and-relations.md` |
+| `tracker split: <Task-ID>` | `references/split-and-relations.md` |
 | `tracker relate: <A> <Bez> <B>` | `references/split-and-relations.md` |
 | `anker setzen: <text>` | `references/anker-system.md` |
 | ≥2 Task-Operationen in einer Antwort | `references/batch-protocol.md` |
+
+`<Task-ID>` = Nummer nach dem Schema des Projekts (BPM: `BPM-NNN`, Heidi: Bauplan-Nummer wie `4.3e` oder ClickUp-Task-ID).
 
 ---
 
@@ -287,7 +305,7 @@ Kapitel "Integration mit anderen Skills".
 
 | Reference | Inhalt |
 |-----------|--------|
-| `clickup-fields.md` | 10 Custom Fields mit IDs + Option-IDs, Modul-Kürzel, Listen-IDs, BPM-Nummerierung, Titel-Format, Meilensteine, Priority, Status, Memory-Pflege |
+| `clickup-fields.md` | BPM-Beispiel: 10 Custom Fields mit IDs + Option-IDs, Modul-Kürzel, Listen-IDs, BPM-Nummerierung, Titel-Format, Meilensteine, Priority, Status, Memory-Pflege. Für andere Projekte gilt `projects/<[PROJECT]>/clickup-fields.md` |
 | `anker-system.md` | Chat-Anker Master-Spec: Format, `[ANKER-LIVE]` Registry, Lifecycle, TEMP-ID-Generierung, `anker setzen`, Stale-Check |
 | `batch-protocol.md` | Pro-Task-Quittung + Batch-Ansage + Batch-Audit + Subtask/Parent-Regeln. Gilt immer wenn ≥2 Task-Operationen in einer Antwort |
 | `chat-url-handling.md` | Chat erstellt/erledigt ermitteln, Chat-Start Kontext, recent_chats/conversation_search |
@@ -372,7 +390,7 @@ Adressiert Phase 4.4.
 
 ## Automationspolitik (Kurzform)
 
-**Goldene Regel:** Explizit → direkt. Alles andere → ask_user_input_v0 (keine Prosa!).
+**Goldene Regel:** Explizit → direkt. Alles andere → Auswahlfrage (keine Prosa!).
 
 Vollständige Tabelle in `references/anti-patterns.md`.
 
@@ -380,12 +398,13 @@ Vollständige Tabelle in `references/anti-patterns.md`.
 
 ## ClickUp-Tools (Lade-Pattern)
 
-ClickUp-Tools sind in Claude.ai **deferred-loaded** — zu Sessionbeginn nicht im Tool-Inventar, sondern müssen über `tool_search` aktiviert werden.
+ClickUp-Tools sind in Claude.ai **deferred-loaded** — zu Sessionbeginn nicht im Tool-Inventar, sondern müssen über die Werkzeugsuche der Umgebung aktiviert werden (Cowork: `tool_search`; Claude Code: `ToolSearch` mit `select:<voller Tool-Name>`, dort heißen die Tools `mcp__<server>__clickup_get_task`).
 
-**Regel:** Wenn ein Tool nicht aufrufbar ist (`Tool '...' not found`), `tool_search` mit dem **EXAKTEN Tool-Namen** verwenden, nicht mit Umschreibung.
+**Regel:** Wenn ein Tool nicht aufrufbar ist (`Tool '...' not found`), die Werkzeugsuche mit dem **EXAKTEN Tool-Namen** verwenden, nicht mit Umschreibung.
 
 ```
-✅ tool_search("clickup_get_task")          # lädt das Tool
+✅ tool_search("clickup_get_task")          # lädt das Tool (Cowork)
+✅ ToolSearch("select:mcp__…__clickup_get_task")   # Claude Code
 ❌ tool_search("clickup task subtasks")     # liefert Müll-Treffer
 ```
 
@@ -397,9 +416,9 @@ Adressiert `tracker-010`.
 
 ## Integration mit anderen Skills
 
-- **code-erstellen** nach Commit: `ask_user_input_v0` "Passt zu BPM-XXX. `tracker done`?"
+- **code-erstellen** nach Commit: Auswahlfrage "Passt zu <Task>. `tracker done`?"
 - **chat-wechsel** am Ende: Batch-Abschluss + Chat-URL in Übergabeprompt
-- **doc-pflege** nach Doc-Update: `ask_user_input_v0` "Doc-Task BPM-XXX erledigt?"
+- **doc-pflege** nach Doc-Update: Auswahlfrage "Doc-Task <Task> erledigt?"
 
 Details in `references/anti-patterns.md`.
 
@@ -409,8 +428,8 @@ Details in `references/anti-patterns.md`.
 
 - Tasks automatisch erstellen aus freiem Chattext
 - Tasks automatisch auf Done setzen ohne Trigger
-- Titel ohne BPM-Nummer oder Kürzel (Hauptaufgaben)
-- BPM-Nummern an Unteraufgaben vergeben
+- Titel ohne Nummer/Kürzel nach dem Nummernschema des Projekts (Hauptaufgaben; BPM: BPM-Nummer + Kürzel, Heidi: Bauplan-Nummer)
+- Projekt-Nummern an Unteraufgaben vergeben
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER ask_user_input_v0
 - Status mit Grossbuchstaben setzen — IMMER klein (`open`/`in progress`/`done`)
 - Custom Field Option-IDs raten — immer aus `references/clickup-fields.md` kopieren
@@ -426,9 +445,11 @@ Details in `references/anti-patterns.md`.
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Memory lesen und den tatsächlichen Wert verwenden
 - **Commits sammeln statt pro Task** — jeder abgeschlossene (Sub-)Task bekommt sofort einen eigenen Commit (Details: `references/complete-task.md`)
 - **Review-Workflow-Check vor Task-Übergang weglassen** — 4-Punkte-Check (aktueller Task + Parent + Siblings + verweisende offene Tasks) ist Pflicht vor `tracker done`, `tracker start` und Fokus-Wechsel (Details: `references/review-workflow.md`)
-- **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash via DC holen + Zwischenstand-Tabelle + Folgeoptionen via `ask_user_input_v0` sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
+- **Nach `tracker done` passiv warten statt Nachlauf ausführen** — Hash in der Shell holen + Zwischenstand-Tabelle + Folgeoptionen als Auswahlfrage sind Pflicht (Details: `references/complete-task.md` Abschnitt "Automatischer Nachlauf")
 - **Issue-IDs manuell vergeben lassen bei `tracker issue`** — Auto-Nummerierung via `clickup_filter_tasks` ist Pflicht, inkl. `include_closed: true` + Unique-Check (Details: `references/issue-task.md` Schritt 4)
 - **Memory-Einträge automatisch zu Tasks eskalieren** — nur auf explizite Herbert-Anweisung `tracker neu` aus Memory ableiten, nie ungefragt. Entfernen des Memory-Eintrags erst nach Bestätigung (siehe Memory-Eskalation, Phase 4.4)
-- **`tool_search` mit Umschreibung statt exaktem Tool-Namen** wenn ein ClickUp-Tool nicht geladen ist — das liefert Müll-Treffer und kostet Zeit. Bei `Tool '...' not found` IMMER mit dem exakten Tool-Namen suchen (z.B. `tool_search("clickup_get_task")`, nicht `tool_search("clickup task details")`). Tool-Inventar: `references/clickup-tools.md` (tracker-010)
+- **Werkzeugsuche mit Umschreibung statt exaktem Tool-Namen** wenn ein ClickUp-Tool nicht geladen ist — das liefert Müll-Treffer und kostet Zeit. Bei `Tool '...' not found` IMMER mit dem exakten Tool-Namen suchen (z.B. `tool_search("clickup_get_task")`, nicht `tool_search("clickup task details")`; Claude Code: `ToolSearch("select:…clickup_get_task")`). Tool-Inventar: `references/clickup-tools.md` (tracker-010)
+- **Werkzeugnamen oder Umgebung fest annehmen** (Desktop Commander, `ask_user_input_v0`, Memory-Einträge) — der Skill beschreibt die Handlung; Claude nimmt Shell, Auswahlfrage und Projektkennung der jeweiligen Umgebung
+- **BPM-Schema für andere Projekte annehmen** (Nummernschema, Anker, Custom Fields) — immer aus `projects/<[PROJECT]>/` lesen; Projekte ohne Felder/Anker arbeiten mit Kommentaren und Titeln
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

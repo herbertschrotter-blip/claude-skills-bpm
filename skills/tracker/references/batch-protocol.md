@@ -148,7 +148,7 @@ Die Regel für tracker-005 greift danach analog [...]
 
 ## 3. Pro-Task-Custom-Fields (PFLICHT)
 
-Im **selben Tool-Call-Block** wie `clickup_create_task` bzw. der status-ändernde `clickup_update_task` müssen gesetzt werden:
+Im **selben Tool-Call-Block** wie `clickup_create_task` bzw. der status-ändernde `clickup_update_task` müssen gesetzt werden (Feld-IDs unten sind das BPM-Beispiel aus `projects/bpm/clickup-fields.md`; andere Projekte nehmen ihre eigene `projects/<[PROJECT]>/clickup-fields.md` — ohne Felder entfällt der Block, Commit-Hash kommt dann als Kommentar):
 
 **Bei `create`:**
 - `Chat-Anker erstellt` (`512b8920-e958-4e43-826e-110e3bccdfc2`) — Wert: `[BPM-ANCHOR-<task-id>] - erstellt: <kurz>`
