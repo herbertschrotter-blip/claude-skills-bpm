@@ -40,8 +40,11 @@ Eine Liste (kein Ordner, keine Modul-Listen):
 ## Nummernschema
 
 Kein BPM-Zähler. Aufgaben tragen die **Bauplan-Nummer** am Anfang des Titels
-(`4.3e Einrichtungsprüfung …`) oder das Präfix `Post-2.0:` für Wünsche ohne Bauplan-Schritt.
-Unteraufgaben ohne eigene Nummer.
+(`4.3e Einrichtungsprüfung …`), das Präfix `Post-2.0:` für Wünsche ohne Bauplan-Schritt oder
+`Backend:` für Paket/Automationen ohne Kartenbezug. Befunde und Helfer-Aufgaben zu einem Schritt
+tragen dessen Nummer (`0.2 GPS-Koordinaten …`, `2.7 [PC] Python …`); `[PC]` markiert Schritte,
+die Herbert selbst am PC ausführt. Phasen heißen `Phase N – …` und sind die Parents der Schritte.
+Unteraufgaben ohne eigene Nummer. Titel kurz halten (Details in die Beschreibung).
 
 ---
 

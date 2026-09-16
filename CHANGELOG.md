@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.25.2] — 2026-09-16
+
+- **projects/heidi, Chore:** Beschreibungs-Muster = Skill-Template mit Heidi-DoD (Herberts Entscheidung), Checkbox-Regeln je Status, Meta-Kurzform für Phasen; Nummernschema um `Backend:`, `[PC]` und Befund-Nummern ergänzt. Alle 62 Aufgaben der Liste „dreame_x60 – Bauplan“ am 16.09. auf dieses Muster umgeschrieben (Titel vereinheitlicht, Struktur und Status unverändert)
+
 ## [v0.25.1] — 2026-09-16
 
 - **skills/tracker/references, Change:** Abläufe für Projekte ohne Zähler, Custom Fields und Chat-Anker ergänzt (additiv, Original bleibt) – create-task: Nummer aus Kontext (Bauplan-Nummer), eine Liste, Beschreibung nach Projektmuster, Quittung ohne Anker; start-task: Status-Wert aus `clickup-lists.md` Übergänge (Heidi `in development`); complete-task: Status `testing` statt `shipped`, Kommentar mit Version und Hash statt Felder, Hash in der Shell der Umgebung (DC oder Bash), Folgeoptionen als Auswahlfrage; chat-url-handling: entfällt ohne Chat-Felder oder ohne Chat-Suche (Claude Code); search-and-status: Anzeige und `tracker next` ohne Felder (Bauplan-Reihenfolge, `testing` zuerst)
