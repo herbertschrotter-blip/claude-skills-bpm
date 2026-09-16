@@ -94,7 +94,7 @@ Stand heute (Skill-Repo v0.12.0, vor v0.13.0-Refactor):
 | Skill | Projekt-spezifisch? | Status |
 |---|---|---|
 | tracker | Ja (Listen, Kürzel, IDs) | Refactor in v0.13.0 |
-| code-erstellen | Ja (Architektur, Pfade) | Später |
+| code-erstellen | Ja (Architektur, Pfade) | Erledigt v0.27.0 – Code-Profil in der CLAUDE.md des Repos |
 | doc-pflege | Ja (INDEX-Routing, Docs-Struktur) | Später |
 | git-commit-helper | Ja (Repo-Pfade, Versionsregeln) | Später |
 | chatgpt-review | Ja (CGR-Pfad, Themen-Enum) | Später |

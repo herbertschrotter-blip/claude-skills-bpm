@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.27.0] — 2026-09-16
+
+- **skills/code-erstellen/SKILL.md, Feature:** projektneutral über ein **Code-Profil** (Abschnitt `## Code-Profil` in der CLAUDE.md des Repos: Stack, Pflicht-Docs, Aufgabenquelle, Schichten/Kopplung, Tests, Auslieferung, Mockup-Pflicht, Notiz-Ort, Pflicht-Branch); ohne Profil weiter INDEX.md (BPM-Weg). Modus-Kriterien, Impact Check, Blocking Conditions und Entry Points stack-neutral mit BPM- und Heidi-Lesart
+- Neu: Schritt 2 „Aufgabenquelle laden“ (Akzeptanz → Testfälle), Schritt 7b **Tests** (Befehl aus dem Profil, rot = Blocking, Claude Code führt aus), Schritt 9b **Auslieferung**, **Mockup-Hook** bei Deep + UI; Tests-Spalte in der Modus-Übersicht; Doku-Zeilen = Doku-Checkliste des Commit-Profils
+- Werkzeugneutral: Auswahlfrage statt `ask_user_input_v0`, Branch aus der Shell (`git branch --show-current`, Pflicht-Branch aus dem Profil), Arbeitsverzeichnis in Claude Code = Repo-Wurzel, Ausgabeformat nur Cowork, Auto-Anker nur Cowork (Claude Code: Auswahlfrage tracker neu / Notiz-Ort), Anker-Präfix aus der Tracker-Config
+- Heidi-Repo: Abschnitt `## Code-Profil` in CLAUDE.md angelegt; INDEX.md und docs/project-architecture.md nachgezogen
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.26.0] — 2026-09-16
 
 - **skills/tracker, Feature:** Präfix wird pro Projekt festgelegt – Titel `<PRÄFIX>-NNN | KÜRZEL | Kurztitel` und Anker `[<PRÄFIX>-ANCHOR-…]` als Platzhalter in SKILL.md und allen Abläufen (create/start/complete/issue/update/split/anti-patterns), Präfix aus `projects/<[PROJECT]>/clickup-lists.md` (BPM `BPM`, Heidi `DX`); Zähler `Next` je Umgebung (Cowork Memory `[CLICKUP]`, Claude Code Tracker-Profil in CLAUDE.md)
