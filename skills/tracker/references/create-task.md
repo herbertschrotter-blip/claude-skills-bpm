@@ -45,6 +45,11 @@ Die konkreten Typ/Aufwand-Options sind projekt-spezifisch — siehe
 
 Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 
+**Projekte ohne Custom Fields** (`projects/<[PROJECT]>/clickup-fields.md` sagt
+„Keine“): Fragen nach Modul, Meilenstein, Typ, Aufwand und Zielversion entfallen.
+Gefragt wird nur, was in Titel oder Beschreibung landet (Bauplan-Nummer, Ziel,
+Akzeptanz). Priorität nur, wenn nicht `normal`.
+
 **Prosa-Fragen für Freitext:**
 - "Welche Komponente/Datei ist betroffen?" (falls Code-Bezug)
 - "Welche Docs sind relevant?" (falls Doc-Bezug)
@@ -88,6 +93,21 @@ Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
    - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
 10. Memory: Next +1
 11. Bestätigung an User inkl. Task-ID als Anker-Referenz
+
+### Ablauf ohne Zähler, Felder und Anker (z.B. Heidi)
+
+Gilt, wenn `projects/<[PROJECT]>/clickup-lists.md` „Nummernschema: kein Zähler“
+und „Chat-Anker: nicht verwendet“ sagt und `clickup-fields.md` „Keine“:
+
+1. Nummer = Projekt-Nummer aus dem Kontext (Heidi: Bauplan-Nummer wie `4.3e`,
+   sonst Präfix `Post-2.0:`) — nichts hochzählen, kein `[CLICKUP]`-Eintrag
+2. Liste = die eine Liste aus `clickup-lists.md`
+3. Dedup wie oben (Schritt 3)
+4. Beschreibung nach dem Muster in `clickup-fields.md` Abschnitt „Was stattdessen
+   in die Beschreibung gehört“ (statt Description-Template unten)
+5. `clickup_create_task(list_id, name, priority, status, markdown_description)`
+6. Quittung: `✅ <Titel> — erstellt — <ClickUp-Link>` (kein Anker)
+7. Schritte 5, 8, 9, 10 oben entfallen (kein TEMP, keine Felder, kein Memory)
 
 ---
 

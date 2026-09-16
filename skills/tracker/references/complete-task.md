@@ -69,6 +69,23 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
        Erledigt: <YYYY-MM-DD>
        Anker: [BPM-ANCHOR-<task-id>] (erstellt + erledigt)
     ```
+
+### Ablauf ohne Custom Fields und Anker (z.B. Heidi)
+
+Gilt, wenn `projects/<[PROJECT]>/clickup-fields.md` „Keine“ sagt:
+
+1. Task finden, Review-Check, Commit-Hash ermitteln wie in Schritten 1–5
+   (Hash in der Shell der Umgebung: `git log -1 --format='%h %s'`)
+2. Schritte 7, 8, 10 entfallen (keine Nachpflege-Felder, keine Feld-Liste,
+   kein `[ANKER-LIVE]`)
+3. Status-Wert aus `clickup-lists.md` Abschnitt „Übergänge“ (Heidi:
+   `tracker done` → `testing`, **nicht** `shipped` — die Abnahme macht der User)
+4. `clickup_update_task(task_id, status)` + `clickup_create_task_comment` mit
+   dem Kommentar-Muster aus `clickup-fields.md` (Version, Commit-Hash, was
+   der User prüfen soll)
+5. Quittung: `✅ <Titel> — erledigt: Commit <hash> — <ClickUp-Link>` (kein Anker)
+6. Nachlauf unten gilt unverändert (Zwischenstand-Tabelle, Folgeoptionen
+   als Auswahlfrage); Schritt 2 des Nachlaufs entfällt
 ---
 
 ## Automatischer Nachlauf nach tracker done
@@ -79,14 +96,16 @@ User-Input warten nach `tracker done`.**
 
 ### 4-Schritt-Nachlauf
 
-1. **Commit-Hash selbst via DC holen** (falls nicht schon aus vorhergehendem
+1. **Commit-Hash selbst in der Shell der Umgebung holen** (Cowork: DC,
+   Claude Code: Bash/PowerShell; falls nicht schon aus vorhergehendem
    `git commit`-Call bekannt):
    ```
    cd "<Repo-Pfad>"
    git log -1 --format='%h %s'
    ```
-   Baut auf cc-steuerung-003 auf (DC ist Default-Ausführungsmodus). Den Hash
-   nicht vom User anfordern wenn DC verfügbar ist.
+   Im Cowork-Chat baut das auf cc-steuerung-003 auf (DC ist dort
+   Default-Ausführungsmodus). Den Hash nicht vom User anfordern wenn eine
+   Shell verfügbar ist.
 
 2. **Custom Fields in ClickUp setzen** — passiert typischerweise schon im
    Haupt-Ablauf-Schritt 9 (Commit ID, Commit Text, Erledigt-Datum,
@@ -133,8 +152,8 @@ User-Input warten nach `tracker done`.**
    Bei mehreren parallelen Items (z.B. Skill-Issues-Session): vollständige
    Session-Tabelle mit allen abgeschlossenen und offenen Punkten.
 
-4. **Folgeoptionen via `ask_user_input_v0`** — 2-4 Optionen mit konkreten
-   nächsten Schritten:
+4. **Folgeoptionen als Auswahlfrage** (Cowork `ask_user_input_v0`, Claude
+   Code `AskUserQuestion`) — 2-4 Optionen mit konkreten nächsten Schritten:
    ```
    ask_user_input_v0:
      question: "Was als nächstes?"
@@ -155,13 +174,13 @@ User-Input warten nach `tracker done`.**
   Task durchlaufen, Schritt 3 einmal am Batch-Ende mit Gesamt-Übersicht,
   Schritt 4 **nur einmal** nach dem letzten Task.
 
-- **DC nicht verfügbar:** Schritt 1 entfällt automatisch. Dann Prosa-Frage
+- **Keine Shell verfügbar (weder DC noch Bash):** Schritt 1 entfällt automatisch. Dann Prosa-Frage
   an den User: "Commit-Hash?" (offene Frage, nicht `ask_user_input_v0`).
 
 ### VERBOTEN
 
 - Nach `tracker done` passiv auf User-Input warten ohne `ask_user_input_v0`
-- Commit-Hash vom User anfordern wenn DC verfügbar ist
+- Commit-Hash vom User anfordern wenn eine Shell (DC oder Bash) verfügbar ist
 - Zwischenstand-Tabelle nach Task-Abschluss weglassen
 - Folgeoptionen als Prosa-Frage statt `ask_user_input_v0`
 - Folgeoptionen bereits nach dem ersten Task eines Batches zeigen — erst am Batch-Ende
@@ -234,7 +253,8 @@ Commit. Kein Sammeln am Session-Ende.
 
 - **Zero-Change-Tasks:** Tasks ohne Git-Änderung (Task-Description-Updates,
   Memory-Edits, reine ClickUp-Pflege) brauchen keinen Commit. Custom Field
-  `Commit ID` und `Commit Text` bleiben leer. Im Quittungstext mit
+  `Commit ID` und `Commit Text` bleiben leer (bzw. Kommentar ohne Hash, wenn
+  das Projekt keine Felder hat). Im Quittungstext mit
   `(Zero-Change)` markieren, damit das leere Feld nachvollziehbar ist.
 
 ### Versionierung
@@ -264,7 +284,7 @@ API ist case-sensitive. Grossgeschrieben kann Fehler werfen.
 
 ---
 
-## DC nicht verfügbar?
+## Keine Shell verfügbar? (weder DC noch Bash)
 
 1. User nach Commit-Hash fragen (Prosa, offene Frage)
 2. User nach Commit-Message fragen (Prosa)

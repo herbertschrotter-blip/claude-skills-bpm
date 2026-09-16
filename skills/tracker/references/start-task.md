@@ -117,6 +117,14 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 9. **Erst DANN inhaltliche Arbeit beginnen.**
 
+### Ohne Anker und mit eigenem Status-Wert (z.B. Heidi)
+
+- Status-Wert für „gestartet“ aus `projects/<[PROJECT]>/clickup-lists.md`
+  Abschnitt „Übergänge“ nehmen (Heidi: `in development` statt `in progress`).
+- Parent-Regel (Schritte 5–6) gilt unverändert.
+- Quittung ohne Anker: `✅ <Titel> — start: <Status> — <ClickUp-Link>`;
+  Batch-Audit ohne den Teil „Custom Fields“.
+
 ---
 
 ## Status-Werte pro Listen-Typ
@@ -126,7 +134,8 @@ Nicht alle Listen nutzen die gleichen Status-Werte. Die konkrete Matrix
 `projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Status-Werte pro Listen-Typ".
 
 Bei `tracker start` ist nur `in progress` relevant — der Wert ist
-listen-übergreifend gleich.
+listen-übergreifend gleich. Ausnahme: Projekte mit eigenem Übergang in
+`clickup-lists.md` (Heidi: `in development`).
 
 Bei `tracker done`: Fallback-Reihenfolge gemäß Projekt-Matrix. Bei Fehler
 `ask_user_input_v0` mit Alternativen.

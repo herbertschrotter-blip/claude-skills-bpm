@@ -2,6 +2,11 @@
 
 Referenz für tracker-Operationen die Chat-URLs in Custom Fields setzen.
 
+**Entfällt komplett**, wenn das Projekt keine Felder „Chat erstellt“/„Chat
+erledigt“ hat (`projects/<[PROJECT]>/clickup-fields.md`) oder die Umgebung
+keine Chat-Suche bietet (Claude Code: kein `recent_chats`, kein
+`conversation_search`). Dann nicht nach der Chat-URL fragen.
+
 ---
 
 ## Grundsatz

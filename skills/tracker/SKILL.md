@@ -332,6 +332,10 @@ Format:
 
 Details zu Listen-IDs + Modul-Kürzeln in `references/clickup-fields.md`.
 
+Entfällt für Projekte ohne Zähler (`clickup-lists.md`: „kein Zähler“) — dort
+reicht die Projektkennung (Claude Code: Tracker-Profil in CLAUDE.md), Listen-ID
+und Status kommen direkt aus `projects/<[PROJECT]>/clickup-lists.md`.
+
 ---
 
 ## Chat-Start: Automatischer Kontext
@@ -342,7 +346,9 @@ Bei `[CLICKUP]` in Memory → kompakte Zusammenfassung:
    Höchste Prio: BPM-001 | PM | DB-Anbindung Orchestrator [high] [v1] [M]
 ```
 
-**Zusätzlich:** Proaktiv nach aktueller Chat-URL fragen (Prosa, weil offene Frage).
+**Zusätzlich:** Proaktiv nach aktueller Chat-URL fragen (Prosa, weil offene Frage) —
+nur bei Projekten mit Chat-Feldern und in Umgebungen mit Chat-Suche (siehe
+`references/chat-url-handling.md`).
 Wenn User ignoriert: Nicht nerven, aber bei erstem tracker-Call fragen.
 
 **Stale-Check für `[ANKER-LIVE]`:** Einmal am Chat-Start prüfen ob Anker älter als 24h sind.

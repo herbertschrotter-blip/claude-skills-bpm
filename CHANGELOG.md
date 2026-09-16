@@ -6,6 +6,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.25.1] — 2026-09-16
+
+- **skills/tracker/references, Change:** Abläufe für Projekte ohne Zähler, Custom Fields und Chat-Anker ergänzt (additiv, Original bleibt) – create-task: Nummer aus Kontext (Bauplan-Nummer), eine Liste, Beschreibung nach Projektmuster, Quittung ohne Anker; start-task: Status-Wert aus `clickup-lists.md` Übergänge (Heidi `in development`); complete-task: Status `testing` statt `shipped`, Kommentar mit Version und Hash statt Felder, Hash in der Shell der Umgebung (DC oder Bash), Folgeoptionen als Auswahlfrage; chat-url-handling: entfällt ohne Chat-Felder oder ohne Chat-Suche (Claude Code); search-and-status: Anzeige und `tracker next` ohne Felder (Bauplan-Reihenfolge, `testing` zuerst)
+- SKILL.md: Memory-Abschnitt `[CLICKUP]` und Chat-URL-Frage nur für Projekte mit Zähler bzw. Chat-Feldern
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.25.0] — 2026-09-16
 
 - **skills/tracker/SKILL.md, Feature:** projektneutral – Nummernschema, Anker-Präfix und Custom-Field-IDs sind Profilwerte aus `projects/<[PROJECT]>/` (BPM: BPM-NNN + `[BPM-ANCHOR-…]` + 10 Felder; Heidi: Bauplan-Nummer im Titel, keine Anker, keine Felder → Quittung ohne Anker, Commit-Hash als Kommentar); Referenz-Anker-Regel gilt nur für Projekte mit Ankern
