@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.25.4] — 2026-09-16
+
+- **projects/heidi, Chore:** Feld-IDs und Option-IDs der 11 Custom Fields (von Herbert angelegt) in `clickup-fields.md` eingetragen, Feld-Regeln (Zielversion, Komponente, Docs, Commit-Felder, Anker); alle 55 DX-Aufgaben in ClickUp befüllt
+
 ## [v0.25.3] — 2026-09-16
 
 - **projects/heidi, Fix:** Herbert: Skill-Schema gilt vollständig – Nummernschema `DX-NNN | KÜRZEL | Kurztitel` (Kürzel KARTE/BACKEND/DOKU/TOOLS, Phasen als Parents ohne Nummer), alle 10 Custom Fields wie BPM (IDs folgen, sobald Herbert sie in ClickUp angelegt hat), Chat-Anker `[DX-ANCHOR-…]`; 55 Aufgaben umbenannt (DX-001…DX-055), Next DX-056. Ersetzt die Fassung „keine Felder, keine Nummern“ aus v0.25.0
