@@ -45,7 +45,7 @@ Skill-Schema wie BPM, Präfix **DX**:
 DX-<NNN> | <KÜRZEL> | <Kurztitel>
 ```
 
-- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-063**
+- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-064**
   (steht auch im Tracker-Profil der CLAUDE.md des Projekt-Repos; nach jedem `tracker neu` dort +1).
 - Kürzel = Modul aus dem Commit-Profil: `KARTE` (dreame_x60/card), `BACKEND` (ha/: Paket,
   Automationen, Skripte, Prognose, Dashboard-YAML), `DOKU` (docs/, Bauplan-Pflege, Abnahmen),

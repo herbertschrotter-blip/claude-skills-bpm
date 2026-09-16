@@ -15,7 +15,7 @@ Kein Memory-Eintrag. Die Kennung steht in der `CLAUDE.md` des Projekt-Repos:
 - Skill-Repo (OneDrive-relativ): Dokumente\02 Arbeit\05 Vorlagen - Scripte\00_claude-skills-bpm
 - Projekt-Config: projects/heidi/
 - ClickUp: Space Smart Home 1200660000001609, Liste dreame_x60 – Bauplan 1200660000004100
-- Nummernschema: DX-NNN | KÜRZEL | Titel, Next: DX-063
+- Nummernschema: DX-NNN | KÜRZEL | Titel, Next: DX-064
 ```
 
 Claude Code liest die CLAUDE.md automatisch beim Start; damit ist das Projekt bekannt, ohne
