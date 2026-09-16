@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.25.3] — 2026-09-16
+
+- **projects/heidi, Fix:** Herbert: Skill-Schema gilt vollständig – Nummernschema `DX-NNN | KÜRZEL | Kurztitel` (Kürzel KARTE/BACKEND/DOKU/TOOLS, Phasen als Parents ohne Nummer), alle 10 Custom Fields wie BPM (IDs folgen, sobald Herbert sie in ClickUp angelegt hat), Chat-Anker `[DX-ANCHOR-…]`; 55 Aufgaben umbenannt (DX-001…DX-055), Next DX-056. Ersetzt die Fassung „keine Felder, keine Nummern“ aus v0.25.0
+
 ## [v0.25.2] — 2026-09-16
 
 - **projects/heidi, Chore:** Beschreibungs-Muster = Skill-Template mit Heidi-DoD (Herberts Entscheidung), Checkbox-Regeln je Status, Meta-Kurzform für Phasen; Nummernschema um `Backend:`, `[PC]` und Befund-Nummern ergänzt. Alle 62 Aufgaben der Liste „dreame_x60 – Bauplan“ am 16.09. auf dieses Muster umgeschrieben (Titel vereinheitlicht, Struktur und Status unverändert)

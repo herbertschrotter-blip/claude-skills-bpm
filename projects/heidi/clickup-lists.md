@@ -37,21 +37,34 @@ Eine Liste (kein Ordner, keine Modul-Listen):
 
 ---
 
-## Nummernschema
+## Nummernschema (Entscheidung Herbert, 16.09.2026)
 
-Kein BPM-Zähler. Aufgaben tragen die **Bauplan-Nummer** am Anfang des Titels
-(`4.3e Einrichtungsprüfung …`), das Präfix `Post-2.0:` für Wünsche ohne Bauplan-Schritt oder
-`Backend:` für Paket/Automationen ohne Kartenbezug. Befunde und Helfer-Aufgaben zu einem Schritt
-tragen dessen Nummer (`0.2 GPS-Koordinaten …`, `2.7 [PC] Python …`); `[PC]` markiert Schritte,
-die Herbert selbst am PC ausführt. Phasen heißen `Phase N – …` und sind die Parents der Schritte.
-Unteraufgaben ohne eigene Nummer. Titel kurz halten (Details in die Beschreibung).
+Skill-Schema wie BPM, Präfix **DX**:
+
+```
+DX-<NNN> | <KÜRZEL> | <Kurztitel>
+```
+
+- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-056**
+  (steht auch im Tracker-Profil der CLAUDE.md des Projekt-Repos; nach jedem `tracker neu` dort +1).
+- Kürzel = Modul aus dem Commit-Profil: `KARTE` (dreame_x60/card), `BACKEND` (ha/: Paket,
+  Automationen, Skripte, Prognose, Dashboard-YAML), `DOKU` (docs/, Bauplan-Pflege, Abnahmen),
+  `TOOLS` (tools/, setup.ps1).
+- Kurztitel beginnt mit der **Bauplan-Nummer** (`4.4 dx-planer …`), bei Wünschen ohne Schritt mit
+  `Post-2.0:`; Befunde/Helfer zu einem Schritt tragen dessen Nummer (`0.2 GPS-Koordinaten …`,
+  `2.7 [PC] Python …`). `[PC]` = Herbert führt selbst am PC aus.
+- **Phasen** (`Phase N – …`) sind Parents ohne DX-Nummer und ohne Felder (Meta-Kurzform).
+  Die Bauplan-Schritte sind Hauptaufgaben mit DX-Nummer, auch wenn sie unter einer Phase hängen.
+- Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM.
+
+Vergeben am 16.09.2026: DX-001 … DX-055 in Bauplan-Reihenfolge (0.1 → 6.5, dann Backend, dann Post-2.0).
 
 ---
 
 ## Chat-Anker
 
-Nicht verwendet. Keine Anker-Felder, keine `[…-ANCHOR-…]`-Zeilen. Die Quittung nach einer
-Task-Operation lautet nur `✅ <Titel> — <Aktion>` mit dem ClickUp-Link.
+Wie BPM (`[DX-ANCHOR-<task-id>]`), sobald die Felder `Chat-Anker temp/erstellt/erledigt` auf der
+Liste existieren (siehe `clickup-fields.md`). Bis dahin Quittung ohne Anker: `✅ DX-NNN — <Aktion> — <Link>`.
 
 ---
 

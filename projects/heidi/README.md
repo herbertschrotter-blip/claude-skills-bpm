@@ -6,8 +6,8 @@ dieses Projekt anders ist.
 
 | Datei | Inhalt |
 |---|---|
-| `clickup-lists.md` | Space, Liste, Status-Werte, Nummernschema, Anker |
-| `clickup-fields.md` | Custom Fields (keine), Quittungsformat ohne Fields |
+| `clickup-lists.md` | Space, Liste, Status-Werte, Nummernschema `DX-NNN | KÜRZEL | Titel`, nächste freie Nummer, Anker |
+| `clickup-fields.md` | 10 Custom Fields wie BPM (IDs nach dem Anlegen), Titel-Format, Description-Template mit Heidi-DoD |
 | `memory-format.md` | Wie Claude das aktive Projekt erkennt (Claude Code: CLAUDE.md-Abschnitt statt Memory-Eintrag) |
 
 **Projekt-Repo:** https://github.com/herbertschrotter-blip/herbert-smarthome (Arbeit auf Branch `dreame_x60`,
