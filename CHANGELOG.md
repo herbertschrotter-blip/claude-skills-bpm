@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.34.0] — 2026-09-16
+
+- **skills/chat-wechsel/SKILL.md, Feature:** zwei Wege – Cowork wie bisher Handover-Prompt; **Claude Code: doc-pflege Modus 8 (Sitzungsabschluss ins Repo) + kurzer Startprompt** aus dem Feld „Startprompt“ des Doku-Profils (Heidi: Bauplan Abschnitt 0), keine Kopie des Stands im Prompt
+- Neu: **Link-Prüfung** vor der Ausgabe (Dateien, Abschnitte, Task-IDs, Version) mit Auswahlfrage bei toten Verweisen; **Regeln-Block aus den Profilen** (Commit, Tracker, Doku, Code) statt fester BPM-Liste
+- Neutral: ClickUp über Tracker-Profil/tracker mit Projekt-Präfix, Gruppierung nach Status bei Ein-Listen-Projekten, Anker-Präfix als Platzhalter, Memory-Scan und Chat-Anker/Chat-URL als Cowork gekennzeichnet (Claude Code: Memory-Ordner, kein Kopieren), Branch aus der Shell, Auswahlfrage statt `ask_user_input_v0`; REGELN 18–20, VERBOTEN erweitert
+- Heidi CLAUDE.md: Feld „Startprompt“ im Doku-Profil
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.33.0] — 2026-09-16
 
 - **skills/skill-neu/SKILL.md, Feature:** neue Skills entstehen von Anfang an neutral – **Schritt 3a Neutralitäts-Checkliste** (10 Punkte: Handlung statt Werkzeug, Umgebungsweiche, keine Projektwerte, keine Sprache, gekennzeichnete Beispiele, Profil-Fallback, Lieferung je Umgebung, description ≤ 1024, Split-Regel, Memory je Umgebung); **fünfte Capture-Intent-Frage** „projekt-/sprachspezifisch?“ → Profil-Sektion in CLAUDE.md, `projects/<name>/` oder `references/<gruppe>/<key>.md`; empfohlene Struktur mit Profil-Abschnitt
