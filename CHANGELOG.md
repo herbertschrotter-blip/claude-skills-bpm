@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.28.1] — 2026-09-16
+
+- **skills/code-erstellen/SKILL.md, Fix:** Frontmatter-description auf unter 1024 Zeichen gekürzt (claude.ai lehnte den Upload ab: „field description must be at most 1024 characters“)
+
 ## [v0.28.0] — 2026-09-16
 
 - **skills/code-erstellen, Feature:** Stack-Referenzen `references/stacks/<key>.md` (Herberts Vorschlag): sprachspezifische Schichten/Kopplung, Modus-Beispiele, Impact-Check-Lesart, Blocking-Dateien, Tests, Ausgabe, typische Fehler – je Sprache eine Datei, erweiterbar ohne Skill-Änderung. Start: `csharp-wpf` (BPM), `typescript-lit`, `home-assistant-yaml`, `python` (Heidi)

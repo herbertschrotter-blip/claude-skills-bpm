@@ -1,19 +1,17 @@
 ---
 name: code-erstellen
 description: >
-  Plant und erzeugt Codeänderungen im aktiven Projekt auf Basis des
-  Code-Profils (Pflicht-Docs, Aufgabenquelle, Schichten, Tests, Auslieferung) –
-  projektneutral: BPM (C#/WPF, INDEX.md + Quickloads), Heidi (TypeScript/Lit,
-  HA-YAML, Python; Bauplan + HANDOFF) oder jedes andere Repo mit Profil. Use
-  when users want to schreiben, erstellen, bauen, implementieren, fixen,
-  refaktorieren, ändern, ergänzen, korrigieren, or erweitern application code —
-  including views, dialogs, components, services, view models, repositories,
-  handlers, validators, models, controllers, validation, persistence logic,
-  data flows, schemas, migrations, automations, or any source file
-  (.cs/.xaml/.ts/.js/.py/.yaml/.json). Triggers also on bug fixes, UI fixes in
-  existing dialogs/screens/views/components, and implementing logic regardless
-  of domain (e.g., recovery logic, business logic, parsing logic).
-  Do not trigger for UI mockups (HTML-Entwürfe), git commit commands, explicit
+  Plant und erzeugt Codeänderungen im aktiven Projekt nach dessen Code-Profil
+  (Pflicht-Docs, Aufgabenquelle, Stack-Referenzen, Tests, Auslieferung) –
+  projektneutral für BPM (C#/WPF), Heidi (TypeScript/Lit, HA-YAML, Python) oder
+  jedes Repo mit Profil. Use when users want to schreiben, erstellen, bauen,
+  implementieren, fixen, refaktorieren, ändern, ergänzen, korrigieren, or
+  erweitern application code — views, dialogs, components, services, view
+  models, repositories, handlers, validators, models, validation, persistence,
+  data flows, schemas, migrations, automations, or any source file (.cs, .xaml,
+  .ts, .js, .py, .yaml, .json). Triggers also on bug fixes, UI fixes in existing
+  screens/components, and implementing logic regardless of domain. Do not
+  trigger for UI mockups (HTML-Entwürfe), git commit commands, explicit
   documentation authoring (ADR / Konzept-Doc / Frontmatter / Quickload),
   ClickUp task actions, or read-only audits.
 ---
