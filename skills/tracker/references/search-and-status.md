@@ -32,9 +32,9 @@ weitere Kurz-Indikatoren enthalten. Ohne Custom Fields: nur
 3. Aufwand berücksichtigen: "heute nur S-Tasks" per User-Wunsch möglich
 4. Abhängigkeiten prüfen (blocked_by!)
 5. Vorschlag: `"Nächster Schritt: <Task-ID> | <Kürzel> | ..."`
-   (ohne Felder: Reihenfolge der Projekt-Nummer, Heidi = Bauplan-Reihenfolge;
+   (ohne Felder: Reihenfolge der Projekt-Nummer, z.B. Bauplan-Reihenfolge;
    `testing`-Tasks zuerst nennen, weil dort die Abnahme des Users fehlt)
-6. Per `ask_user_input_v0`: "Diesen Task angehen?" → Ja / Nächsten vorschlagen / Eigener Task-Name
+6. Per Auswahlfrage: "Diesen Task angehen?" → Ja / Nächsten vorschlagen / Eigener Task-Name
 
 ---
 

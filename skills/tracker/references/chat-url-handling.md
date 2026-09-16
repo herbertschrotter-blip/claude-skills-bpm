@@ -46,7 +46,7 @@ Ablauf:
 3. Durch Ergebnisse gehen und prüfen ob der Chat inhaltlich zum Commit passt
    (Feature-Name, Dateinamen, Diskussionsthema im Chat-Content)
 4. Besten Match auswählen
-5. Bei Unsicherheit: ask_user_input_v0 mit Kandidaten als Optionen
+5. Bei Unsicherheit: Auswahlfrage mit Kandidaten als Optionen
 ```
 
 ---
@@ -61,14 +61,14 @@ Ablauf:
 2. Sortieren nach updated_at aufsteigend (ältester zuerst)
 3. Durchgehen und den Chat finden wo das Feature zum ersten Mal KONKRET geplant/ausgearbeitet wurde
    - Nicht nur erwähnt, sondern als Implementierungsschritt, ADR, Backlog-Eintrag, Konzept-Diskussion
-4. Bei mehreren Kandidaten: ask_user_input_v0 mit Chat-Titeln als Optionen
+4. Bei mehreren Kandidaten: Auswahlfrage mit Chat-Titeln als Optionen
 ```
 
 ---
 
 ## Fallback
 
-Wenn der Chat nicht ermittelbar ist: `ask_user_input_v0`
+Wenn der Chat nicht ermittelbar ist: Auswahlfrage
 Optionen: Manuell URL eingeben, Feld leer lassen, Abbrechen
 
 ---

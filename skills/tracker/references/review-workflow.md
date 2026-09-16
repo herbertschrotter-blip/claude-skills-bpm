@@ -125,7 +125,7 @@ clickup_search(
 **Entscheidung:**
 - Keine Betroffenheit → Check abgeschlossen
 - Verweisender Task muss angepasst werden → Description update oder neue Dependency
-- Verweisender Task wird jetzt unnötig → mit User besprechen (ask_user_input_v0)
+- Verweisender Task wird jetzt unnötig → mit User besprechen (Auswahlfrage)
 
 ---
 
@@ -135,7 +135,7 @@ Wenn der Check Änderungen ergeben hat die die Abarbeitungs-Reihenfolge
 beeinflussen:
 
 ```
-ask_user_input_v0:
+Auswahlfrage:
   question: "Nach dem Scope-Check hat sich die Reihenfolge geändert. Wie weitermachen?"
   options:
     - "Mit geplantem Task weitermachen"
@@ -194,6 +194,6 @@ MIT Review-Workflow (bevor 7.1 auf done gesetzt wird):
            → keine Scope-Änderung für diese, aber sie werden später von 7.6
              abhängig sein → Dependency setzen.
 
-  Danach ask_user_input_v0: "Siblings sind jetzt konsistent. Direkt mit 7.6
+  Danach Auswahlfrage: "Siblings sind jetzt konsistent. Direkt mit 7.6
   weitermachen oder die ursprünglich geplante Reihenfolge 7.2 → 7.3 einhalten?"
 ```

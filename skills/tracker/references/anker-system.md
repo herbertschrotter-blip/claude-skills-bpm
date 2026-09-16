@@ -14,6 +14,7 @@
 [BPM-ANCHOR-<id>] — <typ>: <kurzbeschreibung max 80 Zeichen>
 ```
 
+- `BPM` ist der Anker-Präfix des BPM-Projekts. **Der Präfix wird pro Projekt festgelegt** (`projects/<[PROJECT]>/clickup-lists.md`, z.B. Heidi `[DX-ANCHOR-…]`); alle Beispiele in dieser Datei zeigen BPM.
 - `<id>` = `TEMP-<10-char-base32>` (Phase 1, vor Task-Erstellung) **oder** ClickUp-Task-ID (Phase 2/3)
 - `<typ>` = `erstellt` | `erledigt`
 

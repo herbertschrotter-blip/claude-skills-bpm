@@ -6,14 +6,14 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 
 ## Kommando
 
-`tracker done: <Stichwort oder BPM-NNN>`
+`tracker done: <Stichwort oder <PRÄFIX>-NNN>`
 
 ---
 
 ## Ablauf
 
-1. **Task finden** via `clickup_search` (falls BPM-NNN nicht explizit)
-2. **Mehrere Treffer** → mit `ask_user_input_v0` User wählen lassen
+1. **Task finden** via `clickup_search` (falls `<PRÄFIX>-NNN` nicht explizit)
+2. **Mehrere Treffer** → mit Auswahlfrage User wählen lassen
 3. **Review-Workflow-Check** (Pflicht vor jedem Task-Abschluss): Wurden im
    Chat neue Regeln/Entscheidungen besprochen die andere Tasks betreffen?
    4-Punkte-Check (aktueller Task, Parent, Siblings, verweisende offene
@@ -22,7 +22,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 4. **Commit-Infos ermitteln** (Pflicht):
    - Wenn Task Code-Bezug hat (Modul mit Code-Scope — siehe `projects/<[PROJECT]>/clickup-fields.md` Modul-Kürzel):
      - Claude fragt User: "Welche Datei(en) sind betroffen?" (Prosa, offene Frage!)
-     - Per DC: `git log -1 --format="%h|%ad|%s" --date=short -- <Datei>`
+     - In der Shell (Cowork: DC, Claude Code: Bash): `git log -1 --format="%h|%ad|%s" --date=short -- <Datei>`
      - Oder: `git log --all --diff-filter=A --format="%h %ad %s" --date=short -- <Datei>` (erste Erwähnung)
      - Oder: `git log --grep="vX.Y.Z" --format="%h %ad %s" --date=short` (Version bekannt)
    - Wenn Task reiner Doc-Bezug:
@@ -30,23 +30,23 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    - Wenn Task keinen Code-Bezug hat (z.B. Meta-Task):
      - Commit ID + Commit Text leer lassen
      - Erledigt-Datum = heute (YYYY-MM-DD)
-5. **Bei mehreren Commits:** `ask_user_input_v0` mit allen Kandidaten (Hash + erste Zeile)
+5. **Bei mehreren Commits:** Auswahlfrage mit allen Kandidaten (Hash + erste Zeile)
 6. **Pro-Task-Quittung im Chat schreiben** (direkt vor `clickup_update_task`):
    ```
-   ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
+   ✅ <PRÄFIX>-NNN oder Issue-ID — [<PRÄFIX>-ANCHOR-<task-id>] — erledigt: Commit <hash> <kurzbeschreibung>
    ```
    Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
    **Bei ≥2 Tasks in einer Antwort:** Vollständiges Batch-Protokoll greift — siehe `references/batch-protocol.md` (Batch-Ansage, Pro-Task-Zyklus, Batch-Audit).
 7. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
-   - Falls alle leer: `ask_user_input_v0` mit fehlenden Feldern
+   - Falls alle leer: Auswahlfrage mit fehlenden Feldern
 8. **Custom Fields vorbereiten** (konkrete Field-IDs siehe `projects/<[PROJECT]>/clickup-fields.md`):
    ```
    custom_fields = [
      {"id": "<Commit-ID-Field>",         "value": "<7-char-hash>"},
      {"id": "<Commit-Text-Field>",       "value": "<erste Zeile der Commit-Message>"},
      {"id": "<Erledigt-Field>",          "value": "<YYYY-MM-DD>"},
-     {"id": "<Chat-Anker-erledigt-Field>", "value": "[BPM-ANCHOR-<task-id>] - erledigt: ..."},
+     {"id": "<Chat-Anker-erledigt-Field>", "value": "[<PRÄFIX>-ANCHOR-<task-id>] - erledigt: ..."},
      // + Nachpflege-Felder falls gesetzt
    ]
    ```
@@ -54,7 +54,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    ```
    clickup_update_task(
      task_id: "<TaskID>",
-     status: "<done-oder-complete-je-nach-Listen-Typ>",   ← KLEINGESCHRIEBEN, Wert aus projects/<[PROJECT]>/clickup-fields.md Status-Matrix
+     status: "<Status laut Übergängen der Projekt-Config>",   ← KLEINGESCHRIEBEN; BPM done/complete, Heidi testing (Abnahme → shipped macht der User); Quelle projects/<[PROJECT]>/clickup-lists.md bzw. clickup-fields.md
      custom_fields: custom_fields
    )
    ```
@@ -64,26 +64,27 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
     - Nach diesem Schritt existiert im Memory nichts mehr zu diesem Task
 11. **Bestätigung** an User:
     ```
-    ✅ BPM-XXX auf Done gesetzt
+    ✅ <PRÄFIX>-NNN auf <Status> gesetzt
        Commit: <hash> — <Erste Zeile der Message>
        Erledigt: <YYYY-MM-DD>
-       Anker: [BPM-ANCHOR-<task-id>] (erstellt + erledigt)
+       Anker: [<PRÄFIX>-ANCHOR-<task-id>] (erstellt + erledigt)
     ```
 
-### Ablauf ohne Custom Fields und Anker (z.B. Heidi)
+### Ablauf für Projekte ohne Custom Fields oder Anker (Ausnahme)
 
-Gilt, wenn `projects/<[PROJECT]>/clickup-fields.md` „Keine“ sagt:
+Gilt nur, wenn `projects/<[PROJECT]>/clickup-fields.md` ausdrücklich „Keine“ sagt.
+Standard ist das volle Schema (BPM und Heidi haben alle Felder):
 
 1. Task finden, Review-Check, Commit-Hash ermitteln wie in Schritten 1–5
    (Hash in der Shell der Umgebung: `git log -1 --format='%h %s'`)
 2. Schritte 7, 8, 10 entfallen (keine Nachpflege-Felder, keine Feld-Liste,
    kein `[ANKER-LIVE]`)
-3. Status-Wert aus `clickup-lists.md` Abschnitt „Übergänge“ (Heidi:
-   `tracker done` → `testing`, **nicht** `shipped` — die Abnahme macht der User)
+3. Status-Wert aus `clickup-lists.md` Abschnitt „Übergänge“ (z.B. `testing`
+   statt `done`, wenn die Abnahme der User macht)
 4. `clickup_update_task(task_id, status)` + `clickup_create_task_comment` mit
    dem Kommentar-Muster aus `clickup-fields.md` (Version, Commit-Hash, was
    der User prüfen soll)
-5. Quittung: `✅ <Titel> — erledigt: Commit <hash> — <ClickUp-Link>` (kein Anker)
+5. Quittung: `✅ <PRÄFIX>-NNN — erledigt: Commit <hash> — <ClickUp-Link>` (kein Anker)
 6. Nachlauf unten gilt unverändert (Zwischenstand-Tabelle, Folgeoptionen
    als Auswahlfrage); Schritt 2 des Nachlaufs entfällt
 ---
@@ -132,6 +133,10 @@ User-Input warten nach `tracker done`.**
    Regelwerk: siehe skill-pflege SKILL.md Regel 14b (Artifact-Pflicht) und
    Regel 14 (Tool-Call-Paar, skill-pflege-006).
 
+   **Claude Code:** kein `create_file`/`present_files` – die neue SKILL.md (bei
+   geänderten references eine Zip mit SKILL.md + references/) per `SendUserFile`
+   an den Nutzer schicken; er speichert sie bei claude.ai.
+
    **Ausnahmen (kein Artifact):**
    - Zero-Change-Tasks
    - Commits die ausschliesslich `references/`-Dateien ändern
@@ -152,10 +157,10 @@ User-Input warten nach `tracker done`.**
    Bei mehreren parallelen Items (z.B. Skill-Issues-Session): vollständige
    Session-Tabelle mit allen abgeschlossenen und offenen Punkten.
 
-4. **Folgeoptionen als Auswahlfrage** (Cowork `ask_user_input_v0`, Claude
+4. **Folgeoptionen als Auswahlfrage** (Cowork Auswahlfrage, Claude
    Code `AskUserQuestion`) — 2-4 Optionen mit konkreten nächsten Schritten:
    ```
-   ask_user_input_v0:
+   Auswahlfrage:
      question: "Was als nächstes?"
      options:
        - "<Nächster geplanter Issue/Task mit Kurzbeschreibung>"
@@ -175,14 +180,14 @@ User-Input warten nach `tracker done`.**
   Schritt 4 **nur einmal** nach dem letzten Task.
 
 - **Keine Shell verfügbar (weder DC noch Bash):** Schritt 1 entfällt automatisch. Dann Prosa-Frage
-  an den User: "Commit-Hash?" (offene Frage, nicht `ask_user_input_v0`).
+  an den User: "Commit-Hash?" (offene Frage, nicht Auswahlfrage).
 
 ### VERBOTEN
 
-- Nach `tracker done` passiv auf User-Input warten ohne `ask_user_input_v0`
+- Nach `tracker done` passiv auf User-Input warten ohne Auswahlfrage
 - Commit-Hash vom User anfordern wenn eine Shell (DC oder Bash) verfügbar ist
 - Zwischenstand-Tabelle nach Task-Abschluss weglassen
-- Folgeoptionen als Prosa-Frage statt `ask_user_input_v0`
+- Folgeoptionen als Prosa-Frage statt Auswahlfrage
 - Folgeoptionen bereits nach dem ersten Task eines Batches zeigen — erst am Batch-Ende
 - Skill-Issue auf done setzen ohne Artifact-Lieferung im nachfolgenden Antwort-Block (skill-pflege-005)
 
@@ -194,14 +199,14 @@ tracker done auf BPM-082 (Code-Task)
   ✓ Status auf done gesetzt, Custom Fields gefüllt
 
 Automatischer Nachlauf:
-  1. DC: git log -1 --format='%h %s' → hash bereits bekannt aus Commit-Session
+  1. Shell (hier DC): git log -1 --format='%h %s' → hash bereits bekannt aus Commit-Session
   2. Custom Fields schon in Schritt 9 mit drin → übersprungen
   3. Zwischenstand-Tabelle:
      | Item | Status |
      |------|--------|
      | BPM-082 done (ee4476d, v0.26.0) | ✅ |
      | Push nach origin/main | ⏳ User |
-  4. ask_user_input_v0:
+  4. Auswahlfrage:
      "Was als nächstes?"
      - "BPM-083 (Folgefeature laut Prio)"
      - "BPM-084 (Bugfix, geplant)"
@@ -217,14 +222,14 @@ tracker done auf skill-pflege-005 (Skill-Issue)
   ✓ Status auf complete gesetzt, Commit-Hash 09c120b in Custom Field
 
 Automatischer Nachlauf:
-  1. DC: git log -1 → 09c120b bereits bekannt
+  1. Shell (hier DC): git log -1 → 09c120b bereits bekannt
   2. Custom Fields schon gesetzt
   2a. SKILL.md-Änderung erkannt → Artifact-Block folgt:
       - create_file path=/home/claude/SKILL.md file_text=<v0.15.5 Inhalt>
       - present_files filepaths=["/home/claude/SKILL.md"]
       - User klickt "Skill speichern"
   3. Zwischenstand-Tabelle (nach "gespeichert"-Bestätigung)
-  4. ask_user_input_v0 für Folgeoptionen
+  4. Auswahlfrage für Folgeoptionen
 ```
 
 ---
@@ -295,7 +300,7 @@ API ist case-sensitive. Grossgeschrieben kann Fehler werfen.
 
 ## Keine Commit-Info ermittelbar?
 
-Per `ask_user_input_v0`: Manuell eingeben, Feld leer lassen, Abbrechen.
+Per Auswahlfrage: Manuell eingeben, Feld leer lassen, Abbrechen.
 
 ---
 
@@ -307,7 +312,7 @@ Chat erledigt = aktueller Chat.
 
 ### Szenario B: Task ist früher erledigt worden (Nachtrag)
 
-Per DC:
+In der Shell (Cowork: DC, Claude Code: Bash/PowerShell):
 ```powershell
 cd "<Repo-Pfad>"
 # Suche nach erster Datei-Erstellung
@@ -326,14 +331,14 @@ Der Pipe-Separator `|` erleichtert das Parsen: `<hash>|<datum>|<message>`.
 
 ### Szenario C: Mehrere relevante Commits
 
-`ask_user_input_v0` mit allen Kandidaten als Optionen (Hash + erste Zeile Message).
+Auswahlfrage mit allen Kandidaten als Optionen (Hash + erste Zeile Message).
 In der Regel: Erster Commit der die Funktionalität eingeführt hat (diff-filter=A).
 
 ### Datumsformat
 
-- DC liefert: `YYYY-MM-DD` (mit `--date=short`) oder ISO (`%aI`)
+- git liefert: `YYYY-MM-DD` (mit `--date=short`) oder ISO (`%aI`)
 - ClickUp erwartet: `YYYY-MM-DD` (direkt)
-- Für Chat-Suche: ISO-Zeitstempel mit Stunde/Minute (für recent_chats Zeitfilter)
+- Für Chat-Suche (nur Cowork): ISO-Zeitstempel mit Stunde/Minute (für recent_chats Zeitfilter)
 ---
 
 ## Beispiel-Workflow (BPM-Projekt, `tracker done` mit Commit-Ermittlung)
@@ -348,7 +353,7 @@ Claude intern:
   1. clickup_get_task("86c9cg8u5") → BPM-007 PlanTyp-Erkennung
   2. Prosa-Frage: "Welche Datei(en) sind betroffen?"
      User: "DocumentTypeRecognizer.cs"
-  3. DC: git log --all --diff-filter=A --format="%h|%aI|%s" -- "src/.../DocumentTypeRecognizer.cs"
+  3. Shell (hier DC): git log --all --diff-filter=A --format="%h|%aI|%s" -- "src/.../DocumentTypeRecognizer.cs"
      → "cb46a48|2026-04-15T11:34:52+02:00|[v0.25.5] PlanManager, Feature: PatternTemplates..."
   4. Nur 1 Kandidat → direkt verwenden
   5. Chat erledigt:
@@ -358,7 +363,7 @@ Claude intern:
      → conversation_search("Plantyp-Erkennung DocumentTypeRecognizer prefix contains")
      → Teil 10 (d546b50b-...) als ältester konkreter Treffer
   7. Nachpflege: Typ fehlt noch
-     → ask_user_input_v0: Typ → Feature
+     → Auswahlfrage: Typ → Feature
   8. Pro-Task-Quittung im Chat:
      ✅ BPM-007 — [BPM-ANCHOR-<task-id>] — erledigt: Commit cb46a48 PlanTyp-Erkennung
   9. clickup_update_task(

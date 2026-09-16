@@ -159,3 +159,12 @@ diese Datei ist Fallback und ausführlichere Dokumentation.
   Skill-Issues: `complete`)
 - Skill-Issue-Nummerierung neu starten oder Lücken füllen — Lücken sind
   absichtlich wegen Chat-Anker-Referenzen
+
+---
+
+## Präfix (Nummern und Anker)
+
+**Task-Präfix:** `BPM` → Titel `BPM-NNN | <KÜRZEL> | <Kurztitel>`
+**Anker-Präfix:** `BPM-ANCHOR` → `[BPM-ANCHOR-<task-id>]`
+Der Präfix wird pro Projekt festgelegt; andere Projekte haben einen eigenen (Heidi: `DX`).
+**Workspace-ID:** `90152410319` (aus references/clickup-tools.md hierher verschoben, 16.09.2026)

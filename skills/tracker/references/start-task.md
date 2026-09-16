@@ -9,22 +9,22 @@ Fixt `tracker-002` (Start-Kommando setzte Status nicht).
 
 ## Kommando
 
-`tracker start: <BPM-ID oder Issue-ID>`
+`tracker start: <PRÄFIX>-NNN oder Issue-ID`
 
 ### Implizite Trigger (nur mit Task-ID im Satz!)
 
 Folgende Natural-Language-Phrasen lösen eine **Rückfrage** aus (nicht
 automatisch ausführen):
 
-- `"starte BPM-NNN"` / `"starte tracker-002"`
-- `"BPM-NNN starten"` / `"Issue-XXX starten"`
-- `"fangen wir mit BPM-NNN an"`
-- `"los mit BPM-NNN"`
-- `"wir machen jetzt BPM-NNN"`
+- `"starte <PRÄFIX>-NNN"` / `"starte tracker-002"`
+- `"<PRÄFIX>-NNN starten"` / `"Issue-XXX starten"`
+- `"fangen wir mit <PRÄFIX>-NNN an"`
+- `"los mit <PRÄFIX>-NNN"`
+- `"wir machen jetzt <PRÄFIX>-NNN"`
 
-Bei Treffer: `ask_user_input_v0`:
+Bei Treffer: Auswahlfrage:
 ```
-Frage: "BPM-NNN + Parent auf 'in progress' setzen?"
+Frage: "<PRÄFIX>-NNN + Parent auf 'in progress' setzen?"
 Optionen:
 - "Ja — beide"
 - "Nur Subtask"
@@ -32,7 +32,7 @@ Optionen:
 ```
 
 **VERBOTEN:** Implizite Erkennung OHNE Task-ID im Satz.
-Phrasen wie `"los geht's"`, `"fangen wir an"`, `"starten wir"` OHNE BPM-Nummer
+Phrasen wie `"los geht's"`, `"fangen wir an"`, `"starten wir"` OHNE Projekt-Nummer
 werden ignoriert. Keine rate-basierte Task-Erkennung.
 
 ### Fokus-Entscheidung im Dialog (dritte Trigger-Art)
@@ -50,7 +50,7 @@ ausführen bevor mit inhaltlicher Arbeit begonnen wird.
 - → **In der darauffolgenden Antwort ZUERST `tracker start`**, dann Analyse/Code
 
 **Voraussetzung:** Der zu fokussierende Task muss **eindeutig aus dem vorigen
-Turn hervorgehen**. Wenn mehrere Tasks im Raum stehen: `ask_user_input_v0`
+Turn hervorgehen**. Wenn mehrere Tasks im Raum stehen: Auswahlfrage
 welcher gestartet werden soll.
 
 **Beispiel:**
@@ -74,9 +74,9 @@ gesetzt — obwohl der Fokus eindeutig war.
 ## Ablauf
 
 1. **Task-ID auflösen:**
-   - Explizite ID (`BPM-082`, `tracker-003`) → direkt nutzen
+   - Explizite ID (`<PRÄFIX>-NNN` wie `BPM-082` oder `DX-031`, Issue `tracker-003`) → direkt nutzen
    - Kurzform (`4.1`, `3.5`): via `clickup_search` den passenden Task finden
-   - Bei mehreren Treffern: `ask_user_input_v0`
+   - Bei mehreren Treffern: Auswahlfrage
 
 2. **Aktuellen Status prüfen:** `clickup_get_task(task_id)` → wenn schon
    `in progress` oder `done`/`complete`: keine Aktion, Hinweis an User
@@ -106,8 +106,8 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 7. **Pro-Task-Quittung im Chat** (pro geändertem Task):
    ```
-   ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — start: in progress
-   ✅ <Parent-ID> — [BPM-ANCHOR-<parent-task-id>] — start: in progress (als Parent)
+   ✅ <PRÄFIX>-NNN oder Issue-ID — [<PRÄFIX>-ANCHOR-<task-id>] — start: in progress
+   ✅ <Parent-ID> — [<PRÄFIX>-ANCHOR-<parent-task-id>] — start: in progress (als Parent)
    ```
 
 8. **Batch-Audit** (wenn Parent mit geändert wurde):
@@ -117,12 +117,12 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 9. **Erst DANN inhaltliche Arbeit beginnen.**
 
-### Ohne Anker und mit eigenem Status-Wert (z.B. Heidi)
+### Projekte mit eigenem Status-Wert (oder ohne Anker)
 
 - Status-Wert für „gestartet“ aus `projects/<[PROJECT]>/clickup-lists.md`
-  Abschnitt „Übergänge“ nehmen (Heidi: `in development` statt `in progress`).
+  Abschnitt „Übergänge“ nehmen (z.B. `in development` statt `in progress`).
 - Parent-Regel (Schritte 5–6) gilt unverändert.
-- Quittung ohne Anker: `✅ <Titel> — start: <Status> — <ClickUp-Link>`;
+- Nur falls das Projekt keine Anker führt: Quittung `✅ <PRÄFIX>-NNN — start: <Status> — <ClickUp-Link>`,
   Batch-Audit ohne den Teil „Custom Fields“.
 
 ---
@@ -135,10 +135,10 @@ Nicht alle Listen nutzen die gleichen Status-Werte. Die konkrete Matrix
 
 Bei `tracker start` ist nur `in progress` relevant — der Wert ist
 listen-übergreifend gleich. Ausnahme: Projekte mit eigenem Übergang in
-`clickup-lists.md` (Heidi: `in development`).
+`clickup-lists.md` (z.B. `in development`).
 
 Bei `tracker done`: Fallback-Reihenfolge gemäß Projekt-Matrix. Bei Fehler
-`ask_user_input_v0` mit Alternativen.
+Auswahlfrage mit Alternativen.
 
 ---
 
@@ -150,7 +150,7 @@ Bei `tracker done`: Fallback-Reihenfolge gemäß Projekt-Matrix. Bei Fehler
 - Parent ohne Check auf aktuellen Status automatisch überschreiben
   (wenn Parent schon `in progress` oder `done`: nichts tun)
 - Inhaltliche Arbeit beginnen BEVOR `tracker start` ausgeführt wurde
-- Raten welche Task-ID gemeint ist wenn unklar — `ask_user_input_v0`
+- Raten welche Task-ID gemeint ist wenn unklar — Auswahlfrage
 
 ---
 
@@ -177,7 +177,7 @@ Claude intern:
 User: fangen wir mit tracker-002 an
 
 Claude:
-  [ask_user_input_v0]
+  [Auswahlfrage]
   Frage: "tracker-002 auf 'in progress' setzen? (Kein Parent vorhanden.)"
   Optionen: Ja / Nein
 
@@ -192,7 +192,7 @@ User: starte 4.1
 
 Claude intern:
   1. clickup_search "4.1" → Task 86c9xyz (Parent: 86c9parent)
-  2. ask_user_input_v0:
+  2. Auswahlfrage:
      "4.1 + Parent (Phase 4) auf 'in progress' setzen?"
      Optionen: Ja - beide / Nur Subtask / Nein
   3. User: Ja - beide

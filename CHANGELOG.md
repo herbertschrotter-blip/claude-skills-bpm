@@ -6,6 +6,15 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.26.0] — 2026-09-16
+
+- **skills/tracker, Feature:** Präfix wird pro Projekt festgelegt – Titel `<PRÄFIX>-NNN | KÜRZEL | Kurztitel` und Anker `[<PRÄFIX>-ANCHOR-…]` als Platzhalter in SKILL.md und allen Abläufen (create/start/complete/issue/update/split/anti-patterns), Präfix aus `projects/<[PROJECT]>/clickup-lists.md` (BPM `BPM`, Heidi `DX`); Zähler `Next` je Umgebung (Cowork Memory `[CLICKUP]`, Claude Code Tracker-Profil in CLAUDE.md)
+- Falsche Heidi-Beispiele („Bauplan-Nummer, keine Anker, keine Felder“) korrigiert; die Sonderabläufe ohne Zähler/Felder/Anker sind jetzt als Ausnahme gekennzeichnet, Standard ist das volle Schema
+- Werkzeugneutral: `ask_user_input_v0` → „Auswahlfrage“ in allen references (Kernregel nennt beide Werkzeuge), Memory-Entfernen und Skill-Artefakt mit Claude-Code-Weg (Memory-Ordner, SendUserFile), „Per DC“ → Shell der Umgebung, `ToolSearch`-Variante in clickup-tools.md
+- clickup-tools.md: Abschnitt mit festen Workspace-/Space-/Listen-IDs entfernt → Verweis auf `projects/<[PROJECT]>/clickup-lists.md`; anker-system.md: Präfix-Hinweis
+- projects/bpm/clickup-lists.md: Abschnitt „Präfix (Nummern und Anker)“ ergänzt
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026 (Herbert: „das Präfix sollte pro Projekt festgelegt werden“)
+
 ## [v0.25.4] — 2026-09-16
 
 - **projects/heidi, Chore:** Feld-IDs und Option-IDs der 11 Custom Fields (von Herbert angelegt) in `clickup-fields.md` eingetragen, Feld-Regeln (Zielversion, Komponente, Docs, Commit-Felder, Anker); alle 55 DX-Aufgaben in ClickUp befüllt

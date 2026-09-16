@@ -21,7 +21,7 @@ Nummerierungslogik.
 
 ### Fragemodus (Infos fehlen)
 
-Per `ask_user_input_v0` (nicht Prosa!). Gültige Werte für Modul-Auswahl
+Per Auswahlfrage (nicht Prosa!). Gültige Werte für Modul-Auswahl
 und Meilensteine stehen in `projects/<[PROJECT]>/clickup-fields.md`
 (Modul-Kürzel-Tabelle + Meilenstein-Tags). Konkrete Zielversion-Optionen
 ergeben sich aus Memory `[CLICKUP]` und dem aktuellen Release-Stand.
@@ -33,7 +33,7 @@ Frage 2 — Meilenstein: v1, v1-nice, post-v1, backlog
 Frage 3 — Priorität: urgent, high, normal, low
 ```
 
-Nach Basics fragen per `ask_user_input_v0`:
+Nach Basics fragen per Auswahlfrage:
 ```
 Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
 Frage 2 — Aufwand: S (<1h), M (1-4h), L (halber Tag), XL (>1 Tag), Später
@@ -58,9 +58,9 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
 
 ## Ablauf
 
-1. Nächste freie Haupt-Nummer aus Memory `[CLICKUP]` (z.B. `BPM-<Next>`) — Prefix aus `projects/<[PROJECT]>/clickup-fields.md`
+1. Nächste freie Haupt-Nummer `<PRÄFIX>-<Next>` — Präfix aus `projects/<[PROJECT]>/clickup-lists.md`; `Next` im Cowork-Chat aus Memory `[CLICKUP]`, in Claude Code aus dem Tracker-Profil der CLAUDE.md
 2. Kürzel + Liste-ID aus `projects/<[PROJECT]>/clickup-fields.md` (Modul-Kürzel-Tabelle) bzw. `projects/<[PROJECT]>/clickup-lists.md`
-3. Dedup: `clickup_search` → wenn Treffer, mit `ask_user_input_v0` fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen. Bei ähnlichen Treffern zusätzlich Review-Workflow-Check gemäß `references/review-workflow.md` — besprochene Änderungen könnten bestehende Tasks im Scope verschieben.
+3. Dedup: `clickup_search` → wenn Treffer, per Auswahlfrage fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen. Bei ähnlichen Treffern zusätzlich Review-Workflow-Check gemäß `references/review-workflow.md` — besprochene Änderungen könnten bestehende Tasks im Scope verschieben.
 4. **Description**: Template aus Abschnitt "Description-Template" unten generieren
 5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe `anker-system.md`):
    - `[ANKER-LIVE]` aus Memory lesen
@@ -69,7 +69,7 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
 6. `clickup_create_task(list_id, name, priority, tags, markdown_description)` → Task-ID erhalten
 7. **Pro-Task-Quittung im Chat schreiben** (direkt nach `clickup_create_task`):
    ```
-   ✅ <BPM-ID oder Issue-ID> — [BPM-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung>
+   ✅ <PRÄFIX>-NNN oder Issue-ID — [<PRÄFIX>-ANCHOR-<task-id>] — erstellt: <kurzbeschreibung>
    ```
    Die Quittung ist Bestätigung + Body-Anker + Audit-Zeile in einem Format.
    Bei TEMP-Brücke: ` (war TEMP-<id>)` anhängen.
@@ -82,7 +82,7 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
      {"id": "<Zielversion-Field-ID>", "value": "<Version>"},
      {"id": "<Komponente-Field-ID>",  "value": "<Datei/Modul>"},
      {"id": "<Docs-Field-ID>",        "value": "<Doc-Pfad>"},
-     {"id": "<Chat-Anker-erstellt-ID>", "value": "[BPM-ANCHOR-<task-id>] ..."},
+     {"id": "<Chat-Anker-erstellt-ID>", "value": "[<PRÄFIX>-ANCHOR-<task-id>] ..."},
      // Falls TEMP existierte:
      {"id": "<Chat-Anker-temp-ID>",   "value": "TEMP-<id>"}
    ]
@@ -91,16 +91,17 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
 9. **Memory `[ANKER-LIVE]` aktualisieren**:
    - Falls TEMP existierte: Eintrag **ersetzen** (TEMP-... → Task-ID-Eintrag mit Typ `erstellt`)
    - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
-10. Memory: Next +1
+10. `Next` +1 (Cowork: Memory `[CLICKUP]`; Claude Code: Tracker-Profil in CLAUDE.md, mit committen)
 11. Bestätigung an User inkl. Task-ID als Anker-Referenz
 
-### Ablauf ohne Zähler, Felder und Anker (z.B. Heidi)
+### Ablauf für Projekte ohne Zähler, Felder oder Anker (Ausnahme)
 
-Gilt, wenn `projects/<[PROJECT]>/clickup-lists.md` „Nummernschema: kein Zähler“
-und „Chat-Anker: nicht verwendet“ sagt und `clickup-fields.md` „Keine“:
+Gilt nur, wenn `projects/<[PROJECT]>/clickup-lists.md` ausdrücklich „kein Zähler“
+oder „Chat-Anker: nicht verwendet“ sagt bzw. `clickup-fields.md` „Keine“. Standard
+ist das volle Schema (Präfix, Felder, Anker) — BPM und Heidi nutzen es.
 
-1. Nummer = Projekt-Nummer aus dem Kontext (Heidi: Bauplan-Nummer wie `4.3e`,
-   sonst Präfix `Post-2.0:`) — nichts hochzählen, kein `[CLICKUP]`-Eintrag
+1. Nummer = Nummer aus dem Kontext (z.B. Nummer eines Bauplan-Schritts) — nichts
+   hochzählen, kein `[CLICKUP]`-Eintrag
 2. Liste = die eine Liste aus `clickup-lists.md`
 3. Dedup wie oben (Schritt 3)
 4. Beschreibung nach dem Muster in `clickup-fields.md` Abschnitt „Was stattdessen
@@ -175,7 +176,7 @@ Claude intern:
   1. BPM-<Next> aus Memory: BPM-082
   2. Kürzel PM → Liste-ID aus projects/bpm/clickup-fields.md (PlanManager-Zeile)
   3. Dedup: clickup_search "Regex DocumentTypeRecognizer" → kein Treffer
-  4. ask_user_input_v0:
+  4. Auswahlfrage:
      Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta
      Frage 2 — Aufwand: S, M, L, XL, Später
      User antwortet: Feature, M

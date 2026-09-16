@@ -20,6 +20,8 @@ ClickUp-Tools sind **deferred** — sie sind zu Sessionbeginn NICHT im Tool-Inve
 
 Nach erfolgreichem `tool_search` ist das Tool für den Rest der Session aufrufbar.
 
+**Claude Code:** dieselbe Regel mit `ToolSearch("select:mcp__<server>__clickup_get_task")` – der Servername steht in der Liste der deferred tools.
+
 ---
 
 ## Tool-Inventar (relevant für tracker)
@@ -104,7 +106,7 @@ Nach erfolgreichem `tool_search` ist das Tool für den Rest der Session aufrufba
 |---|---|---|
 | `tracker neu` | `clickup_create_task` + `clickup_update_task` (für Anker-Felder) | Custom-Field-IDs aus `clickup-fields.md` |
 | `tracker update` | `clickup_update_task` | Pro Task-Quittung im Chat (Anker-System) |
-| `tracker done` | `clickup_update_task` (Status `done` + Erledigt + Commit ID + Commit Text + Anker erledigt) | DC liest Commit-Hash, dann Update |
+| `tracker done` | `clickup_update_task` (Status `done` + Erledigt + Commit ID + Commit Text + Anker erledigt) | Shell (Cowork: DC, Claude Code: Bash) liest Commit-Hash, dann Update |
 | `tracker status` | `clickup_get_task` mit `subtasks=true` | Für Roadmap-Abgleich Repo↔ClickUp |
 | `tracker suche` | `clickup_search` mit Filtern | `location.subcategories` = List-IDs, `task_statuses` = `["unstarted"\|"active"\|"done"\|"closed"\|"archived"]` |
 | `tracker next` | `clickup_search` mit Sort `created_at desc`, count=1 | Letzten erstellten Task in Liste finden für Auto-Nummerierung |
@@ -114,20 +116,11 @@ Nach erfolgreichem `tool_search` ist das Tool für den Rest der Session aufrufba
 
 ---
 
-## Häufige Workspace-IDs (BPM-Kontext)
+## Workspace-, Space- und Listen-IDs
 
-Workspace: `90152410319`
-
-### BPM Entwicklung Space (`901510792907`)
-
-Alle BPM-Listen siehe `projects/bpm/clickup-lists.md` (laufend gepflegt). Beispiele: PM, DOC, KON, SET, etc.
-
-### Claude Skills Entwicklung Space (`901510833068`)
-
-- ClaudeSkills (Roadmap, P0-P4): `901522935159`
-- Skill-Issues Folder: `901515724728`
-  - tracker: `901522952249`
-  - cc-steuerung, skill-pflege, skill-neu, code-erstellen, doc-pflege, audit, mockup-erstellen, chat-wechsel, chatgpt-review, git-commit-helper (je eigene Liste)
+Stehen **nur** in `projects/<[PROJECT]>/clickup-lists.md` (BPM: Spaces „BPM Entwicklung“ und
+„Claude Skills Entwicklung“ mit dem Ordner „Skill Issues“; Heidi: Space „Smart Home“). Nichts davon
+im Skill führen.
 
 ---
 

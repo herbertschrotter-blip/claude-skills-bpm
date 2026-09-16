@@ -7,9 +7,9 @@ Ablauf für gezielte Task-Änderungen.
 ## Kommando `tracker update: <Task-ID> → <Änderung>`
 
 Task aktualisieren (Priority, Meilenstein, Description, Status, Custom Fields).
-Task-ID im projekt-üblichen Format (z.B. `BPM-NNN`, `tracker-NNN`).
+Task-ID im Format `<PRÄFIX>-NNN` des Projekts (z.B. `BPM-NNN`, `DX-NNN`) oder Issue-ID (`tracker-NNN`).
 
-Bei ambiger Änderung: `ask_user_input_v0` mit Optionen.
+Bei ambiger Änderung: Auswahlfrage mit Optionen.
 
 ---
 

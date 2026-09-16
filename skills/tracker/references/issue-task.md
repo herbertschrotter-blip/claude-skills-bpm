@@ -25,7 +25,7 @@ Abgrenzung zu `create-task.md`: Dort geht es um Haupttasks im Projekt-Scope
 Die Liste gültiger Skill-Namen steht in
 `projects/<[PROJECT]>/clickup-lists.md` (Abschnitt "Gültige Skill-Namen für `tracker issue`").
 
-Bei unbekanntem Skill-Name: `ask_user_input_v0` mit den vorhandenen Skills
+Bei unbekanntem Skill-Name: Auswahlfrage mit den vorhandenen Skills
 als Optionen. **Nie raten.**
 
 ---
@@ -36,7 +36,7 @@ als Optionen. **Nie raten.**
 
 - Aus Kommando-Text extrahieren (zwischen `tracker issue ` und `:`)
 - Gegen Liste aus `projects/<[PROJECT]>/clickup-lists.md` abgleichen
-- Bei Unstimmigkeit: `ask_user_input_v0` mit gültigen Werten
+- Bei Unstimmigkeit: Auswahlfrage mit gültigen Werten
 
 ### 2. Ziel-Listen-ID ermitteln
 
@@ -47,7 +47,7 @@ als Optionen. **Nie raten.**
 
 - `clickup_filter_tasks(list_ids: ["<ziel-listen-id>"])`
 - In Ergebnissen Titel und Description auf Ähnlichkeit zum Kurztitel prüfen
-- Bei Treffer: `ask_user_input_v0`:
+- Bei Treffer: Auswahlfrage:
   - "Neu anlegen"
   - "Bestehenden nutzen" (liefert Task-ID zurück, kein Create)
   - "Abbrechen"
@@ -145,7 +145,10 @@ Field-IDs und Option-IDs: `projects/<[PROJECT]>/clickup-fields.md` Abschnitt 2.
 
 Direkt nach `clickup_create_task`:
 ```
-✅ <skill>-NNN — [BPM-ANCHOR-<task-id>] — erstellt: <kurztitel>
+✅ <skill>-NNN — [<PRÄFIX>-ANCHOR-<task-id>] — erstellt: <kurztitel>
+```
+Präfix = der des Projekts, in dem die Skill-Issues-Listen liegen (heute BPM → `[BPM-ANCHOR-…]`).
+```
 ```
 
 ### 8. Chat-Anker mit echter Task-ID nachtragen
@@ -155,7 +158,7 @@ clickup_update_task(
   task_id: "<neue-task-id>",
   custom_fields: [
     {"id": "<Chat-Anker-erstellt-Field>",
-     "value": "[BPM-ANCHOR-<neue-task-id>] - erstellt: <kurztitel>"}
+     "value": "[<PRÄFIX>-ANCHOR-<neue-task-id>] - erstellt: <kurztitel>"}
   ]
 )
 ```
@@ -169,7 +172,7 @@ Siehe universelle Spec in `anker-system.md` — Typ `erstellt`, Format:
 
 ## Typ-Dropdown (Skill-Issues-Scope)
 
-Wenn User keinen Typ angibt: `ask_user_input_v0` mit:
+Wenn User keinen Typ angibt: Auswahlfrage mit:
 - Bug
 - Trigger-Fehler
 - Doku-Fehler
@@ -212,7 +215,7 @@ Claude intern:
      - Höchste Nummer: 008 (aus tracker-008)
      - Neue Issue-ID: tracker-009
      - Chat-Output: "Ermittelt: tracker-009 (höchste vorhandene: tracker-008)"
-  5. Typ-Frage: ask_user_input_v0 → User: "Bug"
+  5. Typ-Frage: Auswahlfrage → User: "Bug"
   6. Beobachtungs-Chat: "Bauprojektmanager Teil 28"
   7. Description-Template mit Bug-Anpassung generieren
   8. clickup_create_task(
@@ -236,7 +239,7 @@ Claude intern:
 
 ## VERBOTEN
 
-- Skill-Name raten wenn unklar → `ask_user_input_v0`
+- Skill-Name raten wenn unklar → Auswahlfrage
 - Issue-ID manuell vom User bestätigen lassen — Auto-Nummerierung ist Pflicht gemäß tracker-003
 - `clickup_filter_tasks` ohne `include_closed: true` für Nummerierungs-Scan — höchste Nummer könnte done/complete sein und würde übersprungen
 - Höchste Nummer aus Memory rekonstruieren statt live abzufragen — Memory kann veraltet sein
