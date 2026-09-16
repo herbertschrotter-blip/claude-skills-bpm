@@ -243,7 +243,8 @@ liest sie automatisch; im Cowork-Chat per DC lesen). Felder:
 
 | Feld | Bedeutung | BPM | Heidi |
 |------|-----------|-----|-------|
-| Stack | Sprachen/Frameworks, Build- und Lint-Befehle | C#/WPF, .NET | TypeScript/Lit (esbuild), HA-YAML, Python |
+| **Stacks** | Schlüssel der Stack-Referenzen in `references/stacks/<key>.md` (Schichten, Kopplung, Impact-Zeilen, Tests, typische Fehler je Sprache); mehrere erlaubt | `csharp-wpf` | `typescript-lit, home-assistant-yaml, python` |
+| Build/Lint | Befehle des Projekts | laut INDEX.md | `npm run check`, `npm run lint`, `npm run build` |
 | Pflicht-Docs | Ladereihenfolge vor dem Code | INDEX.md → Quickload → Invarianten → Pflichtlesen (DOC-STANDARD Kap. 8) | CLAUDE.md, docs/HANDOFF.md, BAUPLAN.md Abschnitt 2 (Regeln) + 4 (Vertrag) |
 | Aufgabenquelle | Wo Ziel + Akzeptanz stehen | ClickUp-Task (Description-Template) | BAUPLAN.md Abschnitt 8 Karte + ClickUp DX-Task |
 | Schichten / Kopplung | Wer darf wen kennen, wo wird verdrahtet | View→ViewModel, Service→Interface+DI, DB→Schema | contract → device/profile → selectors → Komponenten; Schreiben nur über DxApi |
@@ -252,7 +253,15 @@ liest sie automatisch; im Cowork-Chat per DC lesen). Felder:
 | Mockup-Pflicht | Deep + UI zuerst als Mockup? | nein | ja (Herbert: große Umbauten zuerst als Mockup) |
 | Notiz-Ort | Wo Befunde/Ideen ohne Task landen | Memory / Backlog | BAUPLAN.md Abschnitt 10 |
 
-**Fehlt das Profil:** `INDEX.md` im Repo als Profil nehmen (BPM-Weg, optional DOC-STANDARD.md).
+**Stack-Referenzen laden:** Für jeden Schlüssel in `Stacks:` die Datei `references/stacks/<key>.md`
+lesen, **bevor** Modus, Impact Check oder Blocking beurteilt werden. Sie liefern die
+sprachspezifische Lesart der neutralen Regeln unten. Fehlt eine Datei → Auswahlfrage
+„Stack-Referenz aus dem Repo ableiten und anlegen“ / „Ohne Stack-Referenz weiter“; nie stumm
+raten. Neue Sprache = neue Datei, der Skill selbst bleibt unverändert.
+Vorhanden: `csharp-wpf`, `typescript-lit`, `home-assistant-yaml`, `python`.
+
+**Fehlt das Profil:** `INDEX.md` im Repo als Profil nehmen (BPM-Weg, optional DOC-STANDARD.md;
+Stack `csharp-wpf`).
 Fehlt auch das: Auswahlfrage „Profil jetzt anlegen (ich schlage Werte aus dem Repo vor)“ /
 „Ohne Profil, ich nenne die Dateien“. Nie ohne Docs coden.
 
@@ -262,27 +271,28 @@ Fehlt auch das: Auswahlfrage „Profil jetzt anlegen (ich schlage Werte aus dem 
 
 ### 1. Anfrage klassifizieren → Modus
 
-Kriterien sind stack-neutral; in Klammern die BPM- bzw. Heidi-Lesart.
+Kriterien sind stack-neutral; die konkreten Beispiele je Sprache stehen in
+`references/stacks/<key>.md` (Abschnitt „Modus-Eskalation“).
 
 ```
 mode = Lite
 
 Eskalation auf Standard:
-- neue öffentliche Funktion in einem bestehenden Baustein (Service/ViewModel · Selector/Komponente)
+- neue öffentliche Funktion in einem bestehenden Baustein
 - neuer Dialog / View / Komponente / Command
-- Persistenz- oder Backend-Logik ohne neues Schema (Tabelle · HA-Helfer/Automation)
+- Persistenz- oder Backend-Logik ohne neues Schema
 - mehrere Dateien in einem Modul
 - neue Validierungs-/Statuslogik
 
 Eskalation auf Deep:
-- neue Schnittstelle / Implementierung (Interface+Service · Vertrag contract.ts, DxApi)
-- Schema-Änderung (Tabelle · Entitäts-Vertrag, Paket-Helfer)
-- externe Kommunikation / Import / Export (API · HA-Dienste, Integration)
-- mehrere Schichten / Projekte (Karte + Backend)
+- neue Schnittstelle / Implementierung (Vertrag)
+- Schema-Änderung
+- externe Kommunikation / Import / Export
+- mehrere Schichten / Projekte
 - neuer Benutzerfluss / neue Seite
-- Datenschutz (DSGVO/DataClassification · GPS, Tokens in Abzügen)
-- Verdrahtung betroffen und nicht rein lokal (DI · Shell/Selektoren-Registrierung)
-- Profil kann eigene Kriterien ergänzen
+- Datenschutz
+- Verdrahtung betroffen und nicht rein lokal
+- Profil oder Stack-Referenz können eigene Kriterien ergänzen
 ```
 
 **Bei Unsicherheit (Anfrage passt zu mehreren Modi):** Auswahlfrage mit Optionen Lite, Standard, Deep.
@@ -328,39 +338,31 @@ Ausnahme nur per Auswahlfrage („Ohne Mockup weiter“).
 
 ### 4. Code Entry Points laden
 
-Kopplungsregeln aus dem Profil („Schichten / Kopplung“). Beispiele:
-
-BPM:
-- View → ViewModel prüfen
-- Neuer Service → Interface + DI (App.xaml.cs)
-- Neuer Dialog → Theme-/Dialog-Referenz
-- DB-Änderung → ProjectDatabase.cs + DB-SCHEMA.md
-
-Heidi:
-- Neue Entität/Dienst → `contract.ts` (+ Bauplan Abschnitt 4), dann Selector, dann Komponente
-- Schreiben nach HA nur über `DxApi`; Komponenten lesen nur Views aus Selektoren
-- Backend-Änderung (Paket/Automation) → deployen, `check_config`, reload/restart
-- Nichts fest verdrahten, was Roboter oder HA liefern (Räume, Optionen, Namen)
+Kopplungsregeln aus den Stack-Referenzen (Abschnitt „Schichten und Kopplungsregeln“ in
+`references/stacks/<key>.md`) plus die projektspezifische Zeile „Schichten / Kopplung“ im
+Code-Profil. Bei mehreren Stacks (z.B. Karte + Backend) die Schnittstelle dazwischen – der
+Vertrag – zuerst laden.
 
 ### 5. Impact Check
 
-Zeilen stack-neutral; in Klammern die BPM- bzw. Heidi-Lesart.
+Zeilen stack-neutral; die Lesart je Sprache (was „Verdrahtung“ oder „Persistenz“ konkret
+heißt) steht in `references/stacks/<key>.md`, Abschnitt „Impact-Check-Zeilen“.
 
 ```
 📋 Impact Check:
-- UI / Styles / Design-Tokens (XAML/Theme · Lit-Templates/--dx-*): [Ja/Nein]
-- Zustand / Bindings / Commands (ViewModel · Selektoren/Views): [Ja/Nein]
-- Domäne / Schnittstelle (Interface · contract.ts, domain/*): [Ja/Nein]
-- Persistenz / Backend (SQLite/Dateisystem · HA-Paket, Automationen, Skripte): [Ja/Nein]
-- Verdrahtung (DI · Shell, ALL_SELECTORS, Registrierung): [Ja/Nein]
-- Externe Kommunikation (API · HA-Dienste, Integration, WebSocket): [Ja/Nein]
-- Datenschutz (DSGVO · GPS/Tokens in Abzügen, secrets): [Ja/Nein]
+- UI / Styles / Design-Tokens: [Ja/Nein]
+- Zustand / Bindings / Commands: [Ja/Nein]
+- Domäne / Schnittstelle (Vertrag): [Ja/Nein]
+- Persistenz / Backend: [Ja/Nein]
+- Verdrahtung / Registrierung: [Ja/Nein]
+- Externe Kommunikation: [Ja/Nein]
+- Datenschutz: [Ja/Nein]
 - Settings / Konfiguration: [Ja/Nein]
-- Lebenszyklus (App-Start · Karten-Init, hass-Ticks/Render): [Ja/Nein]
-- Logging / Fehlerbehandlung (· Toast, Teilfehler): [Ja/Nein]
-- Bestehende Daten/Configs betroffen?: [Ja/Nein] (Frühphasen-Prinzip, BPM: INDEX.md)
+- Lebenszyklus / Render-Verhalten: [Ja/Nein]
+- Logging / Fehlerbehandlung: [Ja/Nein]
+- Bestehende Daten/Configs betroffen?: [Ja/Nein] (Frühphasen-Prinzip)
 - Referenzimplementierung: [Name oder Nein]
-- Fachliche Invarianten verletzt?: [Liste oder Nein] (Heidi: Bauplan Regeln Abschnitt 2, „Nicht ändern“ der Karte)
+- Fachliche Invarianten verletzt?: [Liste oder Nein] (Regeln des Projekts, „Nicht ändern“ der Aufgabe)
 - Akzeptanzkriterien der Aufgabenquelle: [Liste → werden Testfälle]
 - Tests betroffen (Profil-Befehl): [welche Dateien]
 - Auslieferung nötig (Profil): [Ja/Nein, welcher Schritt]
@@ -369,12 +371,13 @@ Zeilen stack-neutral; in Klammern die BPM- bzw. Heidi-Lesart.
 ### 6. Blocking Conditions
 
 Blockiere Code-Erstellung wenn:
-- Zielschicht unklar → Auswahlfrage (Domain / Application / Infrastructure / UI · Heidi: domain / ha / components / Backend)
+- Zielschicht unklar → Auswahlfrage mit den Schichten der Stack-Referenz
 - Referenzdatei nicht gefunden → Auswahlfrage mit Kandidaten oder "Ohne Referenz"
-- Verdrahtung betroffen aber nicht geladen → erst laden (BPM: App.xaml.cs · Heidi: Shell/selectors.ts)
-- Externe Kommunikation ohne Datenschutz-Doc → erst laden (BPM: DSGVO-Architektur.md · Heidi: CLAUDE.md „Nie ins Repo“)
-- UI ohne Design-Doc → erst laden (BPM: UI-Doc/Theme · Heidi: Mockup bento.html, tokens.ts)
-- Schema/Vertrag ohne Doc → erst laden (BPM: DB-SCHEMA.md · Heidi: Bauplan Abschnitt 4)
+- Verdrahtung betroffen aber nicht geladen → erst laden (Datei laut Stack-Referenz „Blocking“)
+- Externe Kommunikation ohne Datenschutz-Doc → erst laden (laut Stack-Referenz/Profil)
+- UI ohne Design-Doc bzw. Mockup → erst laden
+- Schema/Vertrag ohne Doc → erst laden (Vertrags-Doku des Profils)
+- **Stack-Referenz für einen Schlüssel aus `Stacks:` nicht gelesen** → erst lesen
 - **Pflichtlesen-Kapitel nicht geladen obwohl Modul betroffen** → laden
 - **Akzeptanzkriterien der Aufgabenquelle nicht gelesen** → erst lesen
 - **Mockup-Pflicht greift und kein abgenommenes Mockup** → mockup-erstellen (siehe Schritt 1)
@@ -391,9 +394,9 @@ verdrahten, was das Profil als dynamisch nennt.
 ### 7b. Tests (Pflicht, Befehl aus dem Profil)
 
 1. Für jede Akzeptanz-Zeile aus Schritt 2 einen Test schreiben oder erweitern
-   (Unit für Domäne/Selektoren, E2E für Bedienung; Heidi: `tests/unit/*.test.ts`, `tests/e2e/*.js`)
-2. **Claude Code:** Testbefehl des Profils ausführen (Heidi: `npm test` in `dreame_x60/card`,
-   zusätzlich `npm run lint`). Exit-Code 0 ist Bedingung für Schritt 9.
+   (Unit für Domäne/Selektoren, E2E für Bedienung; Muster und Orte laut Stack-Referenz „Tests“)
+2. **Claude Code:** Testbefehl des Profils ausführen (plus Build/Lint-Befehle des Profils).
+   Exit-Code 0 ist Bedingung für Schritt 9.
    **Cowork:** Testbefehl im Commit-Block mitliefern; der User führt aus und meldet das Ergebnis.
 3. **Tests rot** → Auswahlfrage: „Fix jetzt“ / „Test anpassen (Begründung in Aufgabenquelle)“ /
    „Abbrechen“. Nie einen roten Test still löschen oder überspringen.
@@ -408,7 +411,7 @@ die Zusammenfassung (Dateien, Tests, Commit), nicht der Code.
 - Neue Datei → komplett
 - < 600 Zeilen UND > 30% geändert → komplett
 - ≥ 600 Zeilen → SUCHE/ERSETZE
-- XAML → Download
+- Stack-Besonderheiten (z.B. XAML → Download) laut Stack-Referenz „Ausgabe“
 
 **Bei Mehrdeutigkeit:** Auswahlfrage mit den möglichen Formaten.
 
@@ -446,10 +449,9 @@ Abschnitt 4 + contract.ts bei neuen Entitäten.
 ### 9b. Auslieferung (Schritte aus dem Profil)
 
 Nur wenn das Profil eine Auslieferung nennt. **Claude Code** führt sie aus und prüft das
-Ergebnis; **Cowork** liefert die Befehle. Heidi: `.\tools\deploy.ps1 -OnlyCard`, danach
-Ressourcen-Version über `tools/ha-ws.js lovelace/resources/update`; Backend-Änderung:
-`check_config`, dann reload bzw. restart. Zum Schluss dem User sagen, was er wie
-sichtprüfen soll (Strg+F5, welche Seite, welches Verhalten).
+Ergebnis; **Cowork** liefert die Befehle. Die Schritte stehen im Profil („Auslieferung“), die
+Prüfreihenfolge je Stack in der Stack-Referenz (z.B. home-assistant-yaml: Deploy → check_config →
+reload/restart → Zustand prüfen). Zum Schluss dem User sagen, was er wie sichtprüfen soll.
 
 ### 10. ClickUp Tracker-Abgleich (optional)
 
@@ -494,7 +496,7 @@ Beispiel-Ausgabe nach Commit:
 
 ## VERBOTEN
 
-- Code ohne Pflicht-Docs des Profils (BPM: INDEX.md; Heidi: Bauplan-Karte + Abschnitt 2/4)
+- Code ohne Pflicht-Docs des Profils und ohne die Stack-Referenzen aus `Stacks:`
 - Quickload-First-Pass überspringen
 - Pflichtlesen-Kapitel ignorieren
 - Fachliche Invarianten ignorieren
@@ -514,7 +516,8 @@ Beispiel-Ausgabe nach Commit:
 - **Akzeptanzkriterien der Aufgabenquelle ignorieren** — sie sind die Testliste
 - **Deep-UI-Umbau ohne Mockup**, wenn das Profil Mockup-Pflicht sagt — außer der User entscheidet es per Auswahlfrage
 - **Auslieferung vergessen**, wenn das Profil eine nennt — nach dem Commit ist die Änderung erst fertig, wenn sie läuft
-- **Stack-Begriffe eines Projekts (WPF, DI, SQLite, XAML) für ein anderes annehmen** — Schichten und Kopplung aus dem Profil
+- **Stack-Begriffe eines Projekts (WPF, DI, SQLite, XAML) für ein anderes annehmen** — Schichten und Kopplung aus der Stack-Referenz des Profils
+- **Sprachspezifisches in die SKILL.md schreiben** — gehört nach `references/stacks/<key>.md`; die SKILL.md bleibt neutral
 - Optionen im Chat aufzählen und auf getippte Antwort warten
 - Migration / Backward-Compatibility automatisch bauen ohne User-Freigabe (siehe Frühphasen-Prinzip in INDEX.md)
 - **Auto-Anker bei vagen Themen setzen** — lieber keinen Anker als einen unscharfen

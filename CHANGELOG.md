@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.28.0] — 2026-09-16
+
+- **skills/code-erstellen, Feature:** Stack-Referenzen `references/stacks/<key>.md` (Herberts Vorschlag): sprachspezifische Schichten/Kopplung, Modus-Beispiele, Impact-Check-Lesart, Blocking-Dateien, Tests, Ausgabe, typische Fehler – je Sprache eine Datei, erweiterbar ohne Skill-Änderung. Start: `csharp-wpf` (BPM), `typescript-lit`, `home-assistant-yaml`, `python` (Heidi)
+- Code-Profil bekommt das Feld **Stacks** (Schlüsselliste, mehrere erlaubt) + Build/Lint; der Skill lädt die Referenzen vor Modus/Impact/Blocking; fehlende Referenz → Auswahlfrage statt raten
+- SKILL.md: BPM-/Heidi-Klammern aus Modus, Entry Points, Impact Check, Blocking, Tests, Auslieferung entfernt → jetzt wirklich neutral; VERBOTEN „Sprachspezifisches in die SKILL.md“
+- Heidi CLAUDE.md: Zeile `Stacks: typescript-lit, home-assistant-yaml, python`
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.27.1] — 2026-09-16
 
 - **skills/code-erstellen/SKILL.md, Fix:** letzte wörtliche `ask_user_input_v0`-Stelle im Tracker-Abgleich → Auswahlfrage
