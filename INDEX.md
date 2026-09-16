@@ -14,7 +14,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **audit** | Konsistenz zwischen Code und Docs prüfen (read-only) nach Doku-/Code-Profil; Befunde → tracker oder Fix-Skill | "audit", "prüfe alles", "konsistenzcheck" |
 | **cc-steuerung** | Desktop Commander (DC) MCP-Server steuern (Modalität) | "cc mach", "dc lies", "claude code soll" |
 | **chat-wechsel** | Übergabe an die nächste Sitzung: Cowork Handover-Prompt, Claude Code doc-pflege Modus 8 + Startprompt; Regeln aus Profilen, Link-Prüfung | "neuer chat", "übergabe", "chat wechsel" |
-| **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |
+| **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung nach Review-Profil (Ablage, Themen, Pflicht-Block, Kontextquelle); Push-Prüfung, Ergebnisse → Repo/Tasks | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |
 | **code-erstellen** | Master-Orchestrator für Code-Erstellung, projektneutral (Code-Profil in CLAUDE.md: Docs, Aufgabenquelle, Tests, Auslieferung) | Jede Anfrage die Code-Erstellung impliziert |
 | **doc-pflege** | Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD/INDEX; Heidi: Bauplan/HANDOFF), 8 Modi inkl. Validierung nach Profil und Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept" |
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |

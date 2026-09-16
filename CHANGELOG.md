@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.35.0] — 2026-09-16
+
+- **skills/chatgpt-review/SKILL.md, Feature:** projektneutral über ein **Review-Profil** (Review-Ablage, Themen, GitHub-Repo, Pflicht-Block, Kontextquelle, Reviewer-Rolle, Ergebnis-Ort); BPM-Ablage/-Themen/-Frühphase als Beispiel, Heidi-Pflicht-Block „Regeln des Neubaus“ und Kontext aus Bauplan-Abschnitten; Archiv-Schreiben und Prompt-Lieferung je Umgebung (Cowork DC/Dateikarte, Claude Code Write/SendUserFile)
+- Neu: **Push-Prüfung** vor jedem Prompt mit Repo-Zugriff (`git log origin/<branch>..HEAD`, Auswahlfrage pushen/vermerken/abbrechen); **Rundenstand aus dem Archiv** (README + r<N>-Ordner statt Chat-Zählung); **Phase 3 „Ergebnisse zurück ins Repo“** (Entscheidungen an den Ergebnis-Ort via doc-pflege, offene Punkte als Tasks via tracker, Verweise in beide Richtungen); Commit der Archivdateien beim Serie-Abschluss
+- Auswahlfrage statt `ask_user_input_v0`, Branch aus der Shell, Repo-Pfad aus Repo-Wurzel/Tracker-Profil; VERBOTEN erweitert
+- Heidi CLAUDE.md: Abschnitt `## Review-Profil`
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.34.0] — 2026-09-16
 
 - **skills/chat-wechsel/SKILL.md, Feature:** zwei Wege – Cowork wie bisher Handover-Prompt; **Claude Code: doc-pflege Modus 8 (Sitzungsabschluss ins Repo) + kurzer Startprompt** aus dem Feld „Startprompt“ des Doku-Profils (Heidi: Bauplan Abschnitt 0), keine Kopie des Stands im Prompt
