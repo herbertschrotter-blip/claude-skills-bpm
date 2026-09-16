@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.35.1] — 2026-09-16
+
+- **skills/chatgpt-review/SKILL.md, Fix:** letzte wörtliche `ask_user_input_v0`-Stelle (Typ-Klärung chat-wechsel/chatgpt-review) → Auswahlfrage
+
 ## [v0.35.0] — 2026-09-16
 
 - **skills/chatgpt-review/SKILL.md, Feature:** projektneutral über ein **Review-Profil** (Review-Ablage, Themen, GitHub-Repo, Pflicht-Block, Kontextquelle, Reviewer-Rolle, Ergebnis-Ort); BPM-Ablage/-Themen/-Frühphase als Beispiel, Heidi-Pflicht-Block „Regeln des Neubaus“ und Kontext aus Bauplan-Abschnitten; Archiv-Schreiben und Prompt-Lieferung je Umgebung (Cowork DC/Dateikarte, Claude Code Write/SendUserFile)

@@ -41,7 +41,7 @@ ist ("Review-Prompt für GPT", "zweite Meinung", "ChatGPT fragen",
 
 **Wichtig:** Generische "mach mir den Prompt"-Aufforderungen ohne ChatGPT-
 oder Claude-Kontext triggern KEINEN der beiden Skills automatisch — per
-`ask_user_input_v0` den Typ klären: "Claude-Handover (chat-wechsel) oder
+Auswahlfrage den Typ klären: "Claude-Handover (chat-wechsel) oder
 ChatGPT-Review (chatgpt-review)?"
 
 ---
