@@ -6,6 +6,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.33.0] — 2026-09-16
+
+- **skills/skill-neu/SKILL.md, Feature:** neue Skills entstehen von Anfang an neutral – **Schritt 3a Neutralitäts-Checkliste** (10 Punkte: Handlung statt Werkzeug, Umgebungsweiche, keine Projektwerte, keine Sprache, gekennzeichnete Beispiele, Profil-Fallback, Lieferung je Umgebung, description ≤ 1024, Split-Regel, Memory je Umgebung); **fünfte Capture-Intent-Frage** „projekt-/sprachspezifisch?“ → Profil-Sektion in CLAUDE.md, `projects/<name>/` oder `references/<gruppe>/<key>.md`; empfohlene Struktur mit Profil-Abschnitt
+- Two-Place mit Claude-Code-Weg (Write ins Skills-Repo, SendUserFile/Zip) und CHANGELOG/INDEX/Commit im Repo-Schritt; Schritt 10: Claude Code committet selbst; Test-Prompts und Test-Log **je Umgebung**; Live-Test in neuer Sitzung beider Umgebungen
+- Description-Beispiele auf die heutigen neutralen Fassungen von tracker, code-erstellen, mockup-erstellen aktualisiert; Regel: Projekte in der Description nur als Beispiel; Auswahlfrage statt `ask_user_input_v0`; VERBOTEN erweitert
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.32.0] — 2026-09-16
 
 - **skills/mockup-erstellen/SKILL.md, Feature:** projektneutral über ein **Mockup-Profil** (Ablage, Namensschema, Design-Quelle, Referenz-Mockup, Token-Form, Ansichten, Sitemap ja/nein, Vorschau, Abnahme-Ort, Commit-Modul); Kapitel 1 und 5–8 (NN-Ordner, Sitemap, Klick-Navigation, Fenster-Workflows) gelten nur bei „Sitemap: ja“ (BPM); Docs laden aus Design-Quelle + Referenz-Mockup statt fester GitHub-Liste
