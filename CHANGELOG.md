@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.27.1] — 2026-09-16
+
+- **skills/code-erstellen/SKILL.md, Fix:** letzte wörtliche `ask_user_input_v0`-Stelle im Tracker-Abgleich → Auswahlfrage
+
 ## [v0.27.0] — 2026-09-16
 
 - **skills/code-erstellen/SKILL.md, Feature:** projektneutral über ein **Code-Profil** (Abschnitt `## Code-Profil` in der CLAUDE.md des Repos: Stack, Pflicht-Docs, Aufgabenquelle, Schichten/Kopplung, Tests, Auslieferung, Mockup-Pflicht, Notiz-Ort, Pflicht-Branch); ohne Profil weiter INDEX.md (BPM-Weg). Modus-Kriterien, Impact Check, Blocking Conditions und Entry Points stack-neutral mit BPM- und Heidi-Lesart

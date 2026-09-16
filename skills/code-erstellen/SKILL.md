@@ -456,7 +456,7 @@ sichtprüfen soll (Strg+F5, welche Seite, welches Verhalten).
 Nach erfolgreichem Commit prüfen:
 1. Gibt es einen offenen ClickUp-Task der zu dieser Änderung passt?
    - `clickup_search` mit Schlüsselwörtern aus dem Commit-Titel
-2. **Wenn Kandidaten gefunden → `ask_user_input_v0`:**
+2. **Wenn Kandidaten gefunden → Auswahlfrage:**
    ```
    Frage: "Commit passt zu folgenden Tasks. Welcher soll auf Done?"
    Optionen:
