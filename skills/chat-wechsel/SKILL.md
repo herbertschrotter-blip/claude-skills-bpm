@@ -1,10 +1,10 @@
 ---
 name: chat-wechsel
 description: >
-  Erstellt die Übergabe an die nächste Claude-Sitzung: im Cowork-Chat einen
-  Handover-Prompt mit Stand, offenen Punkten und Next Steps; in Claude Code den
-  Sitzungsabschluss im Repo (doc-pflege Modus 8) plus kurzen Startprompt aus dem
-  Doku-Profil. Use when users want to continue in a new chat or session, ask for
+  Erstellt die Übergabe an die nächste Claude-Sitzung: einen vollständigen
+  Handover-Prompt mit Stand, Erledigtem, offenen Punkten, nächsten Schritten,
+  Entscheidungen und Regeln (aus den Profilen); in Claude Code zusätzlich vorher
+  den Sitzungsabschluss im Repo (doc-pflege Modus 8). Use when users want to continue in a new chat or session, ask for
   a session handover, a continuation prompt, or a next-chat summary. Do not trigger for ChatGPT review prompts,
   generic prompt requests, or casual goodbyes like "tschüss" or "gute Nacht".
 ---
@@ -17,10 +17,12 @@ description: >
 
 - **Cowork-Chat:** Ein Handover-Prompt im Chat (PROMPT-STRUKTUR unten). Der Chat hat kein Repo-Gedächtnis,
   also trägt der Prompt den Stand.
-- **Claude Code:** Der Stand lebt im Repo. chat-wechsel führt **doc-pflege Modus 8 (Sitzungsabschluss)**
-  aus – Statusliste/Aufgabenquelle, Befunde, Stand-Abschnitt, offene Punkte, Commit + Push – und gibt danach
-  nur einen **kurzen Startprompt** aus, der auf die Docs zeigt (Feld „Startprompt“ im Doku-Profil; Heidi:
-  Bauplan Abschnitt 0). Keine Kopie des Stands im Prompt – das wäre Doppelpflege.
+- **Claude Code:** Erst **doc-pflege Modus 8 (Sitzungsabschluss)** – Statusliste/Aufgabenquelle, Befunde,
+  Stand-Abschnitt, offene Punkte, Commit + Push –, dann **derselbe vollständige Handover-Prompt** nach
+  PROMPT-STRUKTUR (Herbert, 16.09.2026: „der war in BPM immer viel umfangreicher“). Der Prompt darf den
+  Repo-Stand zusammenfassen, verweist aber für Details auf HANDOFF/Bauplan statt sie zu kopieren. Der
+  Startprompt des Doku-Profils (Heidi: Bauplan Abschnitt 0) steht als Einstiegszeile **im** Prompt.
+  Eine Kurzform (nur Startprompt) gibt es nur, wenn der User sie ausdrücklich verlangt („kurzer Prompt“).
 
 Projektwerte (Präfix, Listen, Commit-Format, Doc-Namen, Testbefehl) kommen aus den Profilen der CLAUDE.md
 (Commit-, Tracker-, Code-, Doku-Profil); ohne Profil gilt der BPM-Weg (Memory `[CLICKUP]`, INDEX.md).
@@ -387,14 +389,15 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
 
 ---
 
-## ABLAUF IN CLAUDE CODE (statt langem Prompt)
+## ABLAUF IN CLAUDE CODE (Sitzungsabschluss + vollständiger Prompt)
 
 1. **doc-pflege Modus 8 (Sitzungsabschluss)** ausführen: Statusliste/Aufgabenquelle ↔ Tracker, Befunde und
    Entscheidungen, Stand-Abschnitt (Heidi: HANDOFF 3e), offene Punkte als Checkliste (HANDOFF 4), Doku-Checkliste
    des Commit-Profils, Commit + Push. Uncommittete Änderungen → Auswahlfrage.
 2. **ClickUp-Abgleich** wie oben (Batch-Abschluss über tracker), **Memory**: erledigte Merker mit Bestätigung entfernen.
 3. **Link-Prüfung** auf den Stand-Abschnitt und den Startprompt.
-4. **Startprompt ausgeben** – kurz, kopierfähig, nur Verweise:
+4. **Handover-Prompt nach PROMPT-STRUKTUR ausgeben** (vollständig, als Markdown-Codeblock). Erste Zeile darin ist
+   der Startprompt des Doku-Profils, z.B.:
 
 ```
 > Lies CLAUDE.md, docs/HANDOFF.md (Abschnitt 3e + 4) und docs/dreame_x60/BAUPLAN.md. Nimm die nächste offene
@@ -403,13 +406,15 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
 > Regeln: Abschnitt 2. Widerspruch Code ↔ Bauplan → Befund in Abschnitt 10, Aufgabe blockiert, stoppen.
 ```
 
-   Quelle des Musters: Feld „Startprompt“ im Doku-Profil (Heidi: Bauplan Abschnitt 0). Ergänzt um:
-   nächste Aufgabe, letzte Version, Branch, 1–3 Warnungen aus dieser Sitzung (nur was nicht schon im HANDOFF steht).
-5. Fertig. Kein Handover-Prompt nach PROMPT-STRUKTUR – der Stand steht im Repo.
+   Quelle des Musters: Feld „Startprompt“ im Doku-Profil (Heidi: Bauplan Abschnitt 0). Danach folgen die
+   Abschnitte der PROMPT-STRUKTUR: Aktueller Stand, Erledigt in dieser Sitzung, Offene Punkte (ClickUp nach
+   Status, Chat, Sonstiges), Nächste Schritte, Aktive Entscheidungen, Kontext/Warnungen, Regeln aus den Profilen.
+   Memory-Sektion: in Claude Code die relevanten Memory-Dateien nennen (Titel), nicht kopieren.
+5. Fertig. Kurzform (nur Startprompt) nur auf ausdrücklichen Wunsch.
 
 ---
 
-## PROMPT-STRUKTUR (Cowork-Chat)
+## PROMPT-STRUKTUR (beide Umgebungen)
 
 ```
 # [Projektname] Teil [N+1]
@@ -520,7 +525,7 @@ Ermittlung der aktuellen Chat-URL:
 4. Kompakt aber vollständig
 5. Kopierfähig als Markdown-Codeblock
 6. Version prüfen
-7. Keine Datei — direkt im Chat (Cowork); Claude Code: Stand ins Repo (Modus 8), Startprompt im Chat
+7. Keine Datei — direkt im Chat; Claude Code: zusätzlich vorher Stand ins Repo (Modus 8)
 8. Pending Quickload-Änderungen explizit nennen
 9. **ClickUp-Abgleich VOR Übergabeprompt** — offene Tasks laden + Chat scannen
 10. **Batch-Abschluss per Auswahlfrage** (nicht Prosa-Liste)
@@ -533,7 +538,7 @@ Ermittlung der aktuellen Chat-URL:
 17. **Memory-Cleanup nur mit Bestätigung** — bei Einträgen die in diesem Chat bearbeitet wurden per Auswahlfrage fragen, nie stillschweigend entfernen
 18. **Link-Prüfung vor der Ausgabe** — Dateien, Abschnitte, Task-IDs, Version (Abschnitt „Link-Prüfung“)
 19. **Regeln-Block aus den Profilen** erzeugen, nicht aus einer festen Liste
-20. **Claude Code: erst doc-pflege Modus 8, dann Startprompt** — kein Handover-Prompt mit Kopie des Repo-Stands
+20. **Claude Code: erst doc-pflege Modus 8, dann vollständiger Handover-Prompt** — Kurzform nur auf Wunsch; Details verweisen auf HANDOFF/Bauplan statt sie zu kopieren
 
 ---
 
@@ -560,5 +565,6 @@ Ermittlung der aktuellen Chat-URL:
 - **Memory-Einträge stillschweigend entfernen nach Abschluss** — Herbert muss explizit bestätigen
 - **Prompt mit toten Verweisen ausgeben** (umbenannte Dateien, fehlende Abschnitte, falsche Task-IDs oder Version)
 - **BPM-Regeln oder BPM-NNN in den Prompt eines anderen Projekts schreiben** — Regeln und Präfix aus den Profilen
-- **In Claude Code den Stand in den Prompt kopieren statt ins Repo** (HANDOFF/Bauplan) — Doppelpflege
+- **In Claude Code den Stand nur in den Prompt schreiben statt ins Repo** (HANDOFF/Bauplan) — Modus 8 kommt immer zuerst
+- **In Claude Code ungefragt nur den kurzen Startprompt liefern** — der User erwartet den vollständigen Handover-Prompt
 - **Sitzung mit uncommitteten Änderungen übergeben** ohne Auswahlfrage
