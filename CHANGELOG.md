@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.29.0] — 2026-09-16
+
+- **skills/skill-pflege/SKILL.md, Feature:** umgebungsneutral – Cowork (view/DC/Artifact-Paar) und Claude Code (Read/Edit, Lieferung per SendUserFile, Zip bei references) im selben Ablauf; Skill-Liste aus `skills/` des Repos; Memory-Cleanup mit Claude-Code-Weg; Auswahlfrage statt `ask_user_input_v0`
+- Neu: Regel 6 description ≤ 1024 Zeichen (Upload-Limit claude.ai) mit Messung vor jeder Lieferung; Regel 12a CHANGELOG/INDEX/Commit/Push als Teil jeder Skill-Änderung (Schritt 5a); Regel 13 Zip-Lieferung bei references; 14b: references-Änderungen brauchen wieder eine Lieferung (alte Ausnahme gestrichen); Diff-Report um description-Länge, Dateiliste, Version/Hash erweitert
+- Neu: **Regel 21 Split-Prüfung** (Herberts Vorschlag) – Kriterien, wann Teile eines Skills nach `references/` gehören (Größe, nur ein Kommando/eine Umgebung/ein Stack, Projektwerte, Wiederholungen), Muster SKILL.md = Routing + Kernregeln, Ablauf nur mit Freigabe und durch Verschieben statt Neuschreiben; Auto-Issue-Erkennung um Werkzeug-/Projektbindung und Split-Kandidat ergänzt
+- Regel 4: zweite Ausnahme „Neutralisieren“ (wesentliche Teile umbauen, Rest Original)
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.28.1] — 2026-09-16
 
 - **skills/code-erstellen/SKILL.md, Fix:** Frontmatter-description auf unter 1024 Zeichen gekürzt (claude.ai lehnte den Upload ab: „field description must be at most 1024 characters“)

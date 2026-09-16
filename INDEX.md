@@ -20,7 +20,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-UI-Mockups für BPM-Screens erstellen | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue BPM-Skills von Grund auf erstellen | "neuer Skill für X", "erstelle einen Skill" |
-| **skill-pflege** | Bestehende Skills additiv ändern | "Skill updaten", "Skill ändern", "Skill erweitern" |
+| **skill-pflege** | Bestehende Skills additiv ändern – aus Cowork oder Claude Code; Lieferung als Datei/Zip, description-Limit, Split-Prüfung | "Skill updaten", "Skill ändern", "Skill erweitern" |
 | **tracker** | ClickUp-Schreibschnittstelle für Projekt-Tasks, projektneutral (Nummernschema, Anker, Felder aus `projects/<name>/`) | "tracker neu", "tracker done", "tracker suche" |
 
 
