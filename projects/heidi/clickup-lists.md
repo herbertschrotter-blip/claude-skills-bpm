@@ -45,7 +45,7 @@ Skill-Schema wie BPM, Präfix **DX**:
 DX-<NNN> | <KÜRZEL> | <Kurztitel>
 ```
 
-- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-056**
+- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-063**
   (steht auch im Tracker-Profil der CLAUDE.md des Projekt-Repos; nach jedem `tracker neu` dort +1).
 - Kürzel = Modul aus dem Commit-Profil: `KARTE` (dreame_x60/card), `BACKEND` (ha/: Paket,
   Automationen, Skripte, Prognose, Dashboard-YAML), `DOKU` (docs/, Bauplan-Pflege, Abnahmen),
@@ -57,7 +57,7 @@ DX-<NNN> | <KÜRZEL> | <Kurztitel>
   Die Bauplan-Schritte sind Hauptaufgaben mit DX-Nummer, auch wenn sie unter einer Phase hängen.
 - Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM.
 
-Vergeben am 16.09.2026: DX-001 … DX-055 in Bauplan-Reihenfolge (0.1 → 6.5, dann Backend, dann Post-2.0).
+Vergeben am 16.09.2026: DX-001 … DX-055 in Bauplan-Reihenfolge (0.1 → 6.5, dann Backend, dann Post-2.0); DX-056 … DX-062 Modul-Aufgaben (Meta, Bauplan Abschnitt 1a).
 
 ---
 
