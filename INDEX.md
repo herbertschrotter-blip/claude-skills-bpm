@@ -18,7 +18,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **code-erstellen** | Master-Orchestrator für Code-Erstellung, projektneutral (Code-Profil in CLAUDE.md: Docs, Aufgabenquelle, Tests, Auslieferung) | Jede Anfrage die Code-Erstellung impliziert |
 | **doc-pflege** | Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD/INDEX; Heidi: Bauplan/HANDOFF), 8 Modi inkl. Validierung nach Profil und Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept" |
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
-| **mockup-erstellen** | HTML-UI-Mockups für BPM-Screens erstellen | "Mockup für", "Screen-Design", "UI-Mockup" |
+| **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil (BPM: Docs/Mockups + Sitemap; Heidi: dreame_x60/mockups, --dx-Tokens), Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue BPM-Skills von Grund auf erstellen | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills additiv ändern – aus Cowork oder Claude Code; Lieferung als Datei/Zip, description-Limit, Split-Prüfung | "Skill updaten", "Skill ändern", "Skill erweitern" |
 | **tracker** | ClickUp-Schreibschnittstelle für Projekt-Tasks, projektneutral (Nummernschema, Anker, Felder aus `projects/<name>/`) | "tracker neu", "tracker done", "tracker suche" |

@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.32.0] — 2026-09-16
+
+- **skills/mockup-erstellen/SKILL.md, Feature:** projektneutral über ein **Mockup-Profil** (Ablage, Namensschema, Design-Quelle, Referenz-Mockup, Token-Form, Ansichten, Sitemap ja/nein, Vorschau, Abnahme-Ort, Commit-Modul); Kapitel 1 und 5–8 (NN-Ordner, Sitemap, Klick-Navigation, Fenster-Workflows) gelten nur bei „Sitemap: ja“ (BPM); Docs laden aus Design-Quelle + Referenz-Mockup statt fester GitHub-Liste
+- Neu: Schritt 3b **Token-Abgleich** gegen die Design-Quelle (Heidi tokens.ts, BPM Colors.xaml) mit Auswahlfrage; Schritt 3c **Ansichten** aus dem Profil (Heidi Desktop + 390 px); Schritt 4b **Abnahme festhalten** am Abnahme-Ort (Heidi Bauplan Abschnitt 7 + Notiz 10, ggf. PD; BPM Sitemap ✅) – ohne Eintrag gilt das Mockup für den Mockup-Hook von code-erstellen als nicht abgenommen
+- Vorschau je Umgebung (Cowork Visualizer; Claude Code Browser-Bereich + SendUserFile), Speichern in Claude Code ohne DC-Trigger, Auswahlfrage statt `ask_user_input_v0`, Commit-Modul und Bump aus dem Commit-Profil; VERBOTEN erweitert
+- Heidi CLAUDE.md: Abschnitt `## Mockup-Profil`
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.31.0] — 2026-09-16
 
 - **skills/audit/SKILL.md, Feature:** projektneutral ohne eigenes Profil – audit liest Doku-Profil (Validierung, Router), Code-Profil (Schichten, Aufgabenquelle, Stacks) und die Stack-Referenzen von code-erstellen; sechs Module mit neutraler Leitfrage, BPM-Prüfpunkte als Beispiel, **Heidi-Prüfpunkte** je Modul (Vertrag ↔ contract.ts in beide Richtungen, Statusliste ↔ Code/Tests ↔ ClickUp, Regeln Abschnitt 2 im Code, Komponenten ohne Karte, Selektoren, Version, PD-Register, HANDOFF, Plan-Docs, Notizformat, verbotene Inhalte im Repo)

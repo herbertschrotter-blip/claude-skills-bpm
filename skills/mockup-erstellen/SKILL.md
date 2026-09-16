@@ -1,27 +1,33 @@
 ---
 name: mockup-erstellen
 description: >
-  Erstellt BPM-UI-Mockups als HTML-Entwürfe für neue Screens, Dialoge und
-  Layoutvarianten. Use when users want to mocken, entwerfen, skizzieren,
+  Erstellt UI-Mockups als HTML-Entwürfe für neue Screens, Dialoge und
+  Layoutvarianten – nach dem Mockup-Profil des Projekts (BPM: Docs/Mockups mit
+  Sitemap; Heidi: dreame_x60/mockups im Bento-Design mit --dx-Tokens). Use when users want to mocken, entwerfen, skizzieren,
   zeigen, visualisieren, layouten, or want to clarify how a screen should
   look before coding — including mockups, screen designs, UI proposals,
   layout drafts, dialog sketches, and tab/panel arrangements. For
   sequential intents like "mock and then implement": triggers as the first
   step (mockup), then defers to code-erstellen. Do not trigger for direct
-  XAML implementation, small UI fixes in existing code, or non-UI design
-  topics like database design.
+  XAML or Lit component implementation, small UI fixes in existing code, or
+  non-UI design topics like database design.
 ---
 
-# Mockup-Erstellen — UI-Entwürfe für BPM
+# Mockup-Erstellen — UI-Entwürfe als HTML
 
 ## Zweck
 
-Erstellt HTML-Mockups für BPM-Screens. Stellt sicher dass:
-- Die Namenskonvention eingehalten wird
-- Die richtigen Docs für Design-Infos geladen werden
-- Der Workflow (Preview → Bestätigung → Speichern) befolgt wird
+Erstellt HTML-Mockups für die Screens des aktiven Projekts. Stellt sicher dass:
+- Die Namenskonvention und Ablage des Projekts eingehalten wird (Mockup-Profil)
+- Die richtigen Docs und Design-Tokens des Projekts geladen werden
+- Der Workflow (Preview → Bestätigung → Speichern → Abnahme festhalten) befolgt wird
 - Bestehende Mockups nicht überschrieben werden
-- Der Stil konsistent über alle Screens bleibt
+- Der Stil konsistent über alle Screens bleibt (Token-Abgleich mit der Design-Quelle)
+
+Was projektspezifisch ist, steht im **Mockup-Profil** (Abschnitt „Voraussetzung: Mockup-Profil“).
+BPM: `Docs/Mockups/<Modul>/NN_Fenster/`, Sitemap, Klick-Navigation, Tokens aus Colors.xaml.
+Heidi: `dreame_x60/mockups/*.html`, alle Seiten in einer Datei mit Tabs, Tokens `--dx-*` aus
+`tokens.ts`, Referenz `bento.html`, Abnahme im Bauplan.
 
 ---
 
@@ -32,8 +38,8 @@ echte Code-Implementierung ist, NICHT hier weiterarbeiten, sondern delegieren.**
 
 | Hauptabsicht | Zuständiger Skill |
 |--------------|-------------------|
-| XAML-Datei schreiben oder ändern (View, UserControl, Dialog) | **code-erstellen** |
-| ViewModel, Commands, Bindings implementieren | **code-erstellen** |
+| View/Komponente schreiben oder ändern (XAML, Lit-Komponente, Dialog) | **code-erstellen** |
+| ViewModel, Commands, Bindings, Selektoren implementieren | **code-erstellen** |
 | Kleiner UI-Fix in bestehendem Code (Farbe, Größe, Binding) | **code-erstellen** |
 | Code-Struktur oder Logik der UI | **code-erstellen** |
 
@@ -41,21 +47,27 @@ Nur wenn die Hauptabsicht **ein neuer UI-Entwurf als HTML-Mockup** ist
 (Screen-Vorschlag, Layout-Klärung vor dem Code, Dialog-Skizze),
 bleibt mockup-erstellen zuständig.
 
-**Wichtig:** Mockup-erstellen liefert HTML für `Docs/Mockups/`. Sobald es um
-echten XAML-Code oder C# geht, gehört die Arbeit in code-erstellen.
+**Wichtig:** Mockup-erstellen liefert HTML in die Mockup-Ablage des Profils. Sobald es um
+echten Code (XAML/C#, TypeScript/Lit) geht, gehört die Arbeit in code-erstellen. Umgekehrt
+ruft code-erstellen diesen Skill über den **Mockup-Hook** (Deep + UI + Profil „Mockup-Pflicht: ja“)
+auf und wartet auf die festgehaltene Abnahme (Kapitel 3, Schritt 4b).
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
+## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
-verwendet werden — KEINE Prosa-Fragen.**
+**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
+gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
+mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
 
-### Diese Fragen IMMER mit ask_user_input_v0:
+### Diese Fragen IMMER als Auswahlfrage:
 
 | Situation | Optionen |
 |-----------|----------|
-| Branch-Ermittlung (unbekannt) | Branch-Namen aus `git branch -a` |
+| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Branch-Namen aus `git branch -a` |
+| Token-Abgleich zeigt Abweichungen | Mockup an Tokens anpassen, Tokens-Datei ändern (→ code-erstellen), Abweichung begründet lassen |
+| Pflichtansicht fehlt (Profil „Ansichten“) | Ansicht ergänzen, Ohne speichern (Begründung), Abbrechen |
+| Abnahme | Abgenommen, Änderungen nötig, Später |
 | Bestehendes Mockup gefunden: Archiv vs. Überschreiben | Archivieren (_ARCHIV suffix), Überschreiben, Abbrechen |
 | NN-Nummer belegt | Nächste freie Nummer, Andere Nummer wählen, Abbrechen |
 | Mehrere Stil-Referenzen möglich | Referenz-Dateinamen als Optionen |
@@ -72,19 +84,43 @@ verwendet werden — KEINE Prosa-Fragen.**
 
 ## Branch-Ermittlung
 
-Branch aus Chat-Kontext verwenden.
-Wenn Branch in dieser Session noch nicht bekannt: Per ask_user_input_v0 fragen.
-NIE automatisch einen Branch annehmen.
+Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork: DC):
+`git branch --show-current`; Pflicht-Branch aus dem Code-Profil beachten. Ohne Shell und
+unbekannt: Auswahlfrage. NIE automatisch einen Branch annehmen.
 
 ---
 
-## Arbeitsverzeichnis (PFLICHT bei DC-Zugriff)
+## Arbeitsverzeichnis (PFLICHT bei Dateizugriff)
 
-Für Schreiboperationen: Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln.
+Claude Code: Repo-Wurzel der Sitzung (`git rev-parse --show-toplevel`).
+Cowork: für Schreiboperationen Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln.
 
 ---
 
-## 1. NAMENSKONVENTION (VERBINDLICH)
+## Voraussetzung: Mockup-Profil
+
+Abschnitt `## Mockup-Profil` in der `CLAUDE.md` des Repos (Claude Code liest sie automatisch;
+Cowork per DC). Felder:
+
+| Feld | Bedeutung | BPM | Heidi |
+|------|-----------|-----|-------|
+| Ablage | Ordner für Mockups | `Docs/Mockups/<Modul>/NN_Fenster/` | `dreame_x60/mockups/` (flach) |
+| Namensschema | Datei- und Ordnernamen | `NN_Fenster/NN_Variante.html` (Kapitel 1) | `<thema>.html`, klein, ohne Umlaute; ein Mockup = alle betroffenen Seiten mit Tabs |
+| Design-Quelle | Datei mit den gültigen Tokens | `Colors.xaml`, `UI_UX_Guidelines.md`, `WPF_UI_Architecture.md`, `Icons.xaml` | `dreame_x60/card/src/styles/tokens.ts` (`--dx-*`), Designvorgabe „Automotive Dark Bento“ |
+| Referenz-Mockup | Stilvorlage für neue Mockups | letztes Mockup im selben Modul | `dreame_x60/mockups/bento.html` |
+| Token-Form im HTML | wie Tokens im Mockup stehen | Hex-Werte aus Colors.xaml | CSS-Variablen `--dx-*` mit denselben Werten wie tokens.ts (`:root`-Block) |
+| Ansichten | Pflichtansichten je Mockup | Desktop | Desktop **und** 390 px (Smartphone) nebeneinander, Tablet wenn Container-Regeln betroffen |
+| Sitemap / Klick-Navigation | Kapitel 1 und 5–8 anwenden? | ja | nein (Tabs in der Datei, keine Kanten) |
+| Vorschau | wie der User das Mockup sieht | Visualizer (Cowork) | Claude Code: Browser-Bereich (Datei öffnen) oder Datei per SendUserFile; Cowork: Visualizer |
+| Abnahme-Ort | wo die Abnahme festgehalten wird | `_SITEMAP.md` (Status ✅) | Bauplan Abschnitt 7 (Seitentabelle: „Abgenommen von Herbert am <Datum> (Mockup <Datei>)“) und Notiz in Abschnitt 10; Abweichung zu v1 → PD-Eintrag 10a |
+| Commit-Modul | Modulname für den Commit | `Docs` | `Doku` |
+
+**Fehlt das Profil:** BPM-Werte aus diesem Skill annehmen (Kapitel 1–8) – nur wenn das Repo
+tatsächlich `Docs/Mockups/` hat; sonst Auswahlfrage „Profil anlegen (Vorschlag aus dem Repo)“.
+
+---
+
+## 1. NAMENSKONVENTION (VERBINDLICH bei Profil „Sitemap: ja“ – BPM)
 
 ### Ordnerstruktur (ab 2026-05)
 
@@ -171,9 +207,15 @@ Settings/02_DevTools/02_Reset.html
 ## 2. DOCS LADEN (PFLICHT vor Mockup-Erstellung)
 
 Der Skill speichert KEINE Farbwerte, Spacing, Token-Namen.
-Stattdessen werden die relevanten Docs gelesen.
+Stattdessen werden die **Design-Quelle** und das **Referenz-Mockup** aus dem Profil gelesen
+(Claude Code: Read; Cowork: DC `read_file` oder `github:get_file_contents`).
 
-### Quickload-First-Pass
+Heidi: `tokens.ts` komplett (alle `--dx-*`), `bento.html` Kopf (`:root`-Block, Layout-Regeln
+Bento 12/6/1 Spalten, `dx-nav`-Formen), Bauplan Abschnitt 7 (Seitentabelle) und die
+Aufgabenkarte des Schritts, für den das Mockup entsteht. Regel 14 des Bauplans: System-Schriftstapel,
+keine externen Ressourcen – gilt auch im Mockup.
+
+### Quickload-First-Pass (BPM)
 
 Folgende Docs laden (Quickload reicht, kein Langform):
 
@@ -186,14 +228,16 @@ Folgende Docs laden (Quickload reicht, kein Langform):
 
 ### Bestehende Mockups prüfen
 
-Vor Erstellung eines neuen Mockups:
+Vor Erstellung eines neuen Mockups die Ablage des Profils listen:
 ```
-list_directory → Docs/Mockups/<Modul>/
+Cowork:      list_directory → Docs/Mockups/<Modul>/
+Claude Code: Glob → <Ablage>/*.html   (Heidi: dreame_x60/mockups/)
 ```
 - Prüfe ob `NN_Fenster/`-Ordner schon existiert (dann ist es eine neue Variante, kein neues Fenster — siehe Kapitel 7)
-- Bei Update einer bestehenden Mockup-Datei: Per ask_user_input_v0 fragen (Archivieren, Überschreiben, Abbrechen)
+- Bei Update einer bestehenden Mockup-Datei: Per Auswahlfrage fragen (Archivieren, Überschreiben, Abbrechen).
+  Heidi: abgelöste Mockups bleiben liegen und werden im Bauplan als „abgelöst durch <Datei>“ vermerkt (wie `seiten.html` → `bento.html`)
 
-### Sitemap laden (zusätzlich, ab 2026-05)
+### Sitemap laden (zusätzlich, ab 2026-05 – nur bei Profil „Sitemap: ja“)
 
 Vor jedem neuen Mockup:
 ```
@@ -205,7 +249,7 @@ read_file → Docs/Mockups/<Modul>/_SITEMAP.md
 ### Design-Referenz aus bestehenden Screens
 
 Wenn ein neuer Screen im gleichen Modul/Stil wie ein bestehender sein soll:
-- Bestehenden XAML-Code laden (via GitHub oder DC) als Stil-Referenz
+- Bestehenden UI-Code laden (BPM: XAML via GitHub/DC; Heidi: Komponente `src/components/dx-*.ts` + `styles/controls.ts`) als Stil-Referenz
 - ODER Screenshot vom User anfragen
 - Ziel: Konsistenz über alle Screens
 
@@ -220,30 +264,53 @@ Wenn ein neuer Screen im gleichen Modul/Stil wie ein bestehender sein soll:
 - Gibt es einen bestehenden Screen als Stil-Referenz?
 
 ### Schritt 2 — Docs laden
-- Quickload-First-Pass (siehe Kapitel 2)
-- Colors.xaml für aktuelle Farbwerte
-- `_SITEMAP.md` des betroffenen Moduls
-- Memory prüfen auf Design-Entscheidungen (z.B. Karten-Design-Regeln)
+- Design-Quelle und Referenz-Mockup des Profils (Kapitel 2); BPM zusätzlich Quickload-First-Pass, Colors.xaml
+- `_SITEMAP.md` des betroffenen Moduls (nur BPM)
+- Aufgabenquelle des Schritts (Heidi: Bauplan-Karte, Akzeptanz = was das Mockup zeigen muss)
+- Memory prüfen auf Design-Entscheidungen (z.B. Karten-Design-Regeln; Heidi: Bauplan Abschnitt 10, PD-Register)
 
-### Schritt 3 — Preview im Chat
-- Mockup als **Visualizer** (show_widget) im Chat anzeigen
+### Schritt 3 — Preview
+- **Cowork:** Mockup als **Visualizer** (show_widget) im Chat anzeigen
+- **Claude Code:** Datei in die Ablage schreiben (Schritt 4 ist hier dieselbe Datei) und im
+  **Browser-Bereich** öffnen (`file://`-Pfad bzw. `preview_start`), Screenshot prüfen, zusätzlich
+  per `SendUserFile` (render) an den User; Ansichten aus dem Profil im Browser nachstellen
+  (`resize_window` 390 px)
 - User bestätigt oder gibt Änderungswünsche
 - Iterieren bis User zufrieden ist
 
+### Schritt 3b — Token-Abgleich (Pflicht vor dem Speichern)
+- Alle Token-Werte im Mockup (`:root`-Block bzw. Hex-Werte) gegen die **Design-Quelle** des Profils
+  vergleichen (Heidi: `tokens.ts`; BPM: Colors.xaml)
+- Abweichungen als Liste (Token, Mockup-Wert, Quell-Wert) → Auswahlfrage: Mockup anpassen /
+  Tokens-Datei ändern (Aufgabe für code-erstellen) / begründet lassen (Begründung ins Mockup als Kommentar)
+- Neue Tokens, die es in der Quelle nicht gibt, gelten als Abweichung
+- Mockup darf keine Werte enthalten, die später „aus Versehen“ Karten-Standard werden
+
+### Schritt 3c — Ansichten prüfen (Profil „Ansichten“)
+- Jede Pflichtansicht ist im Mockup vorhanden (Heidi: Desktop + 390 px; Tablet bei Container-Regeln)
+- Fehlt eine → Auswahlfrage: ergänzen / ohne speichern (Begründung) / abbrechen
+
 ### Schritt 4 — Auf Platte speichern
 - Erst nach User-Bestätigung
-- Via DC `write_file` in `<workFolder>/Docs/Mockups/<Modul>/<NN_Fenster>/`
-- Dateiname nach Namenskonvention (Kapitel 1)
-- User muss DC explizit triggern ("dc", "cc", "auf platte", "speichern")
-- Sitemap (`_SITEMAP.md`) im selben Schritt aktualisieren (Kapitel 6)
-- Aufrufer-HTMLs patchen mit `onclick`-Verweisen (Kapitel 5 + 7)
-- Tote Pfade nach diesem Mockup scannen und ersetzen (Kapitel 7)
+- **Claude Code:** Write in die Ablage des Profils (Repo-Wurzel + Ablage); kein zusätzlicher Trigger nötig
+- **Cowork:** via DC `write_file` in `<workFolder>/<Ablage>/…`; User muss DC explizit triggern ("dc", "cc", "auf platte", "speichern")
+- Dateiname nach Namensschema des Profils (BPM: Kapitel 1)
+- Nur bei Profil „Sitemap: ja“: Sitemap aktualisieren (Kapitel 6), Aufrufer-HTMLs patchen (Kapitel 5 + 7), tote Pfade scannen (Kapitel 7)
+
+### Schritt 4b — Abnahme festhalten (Pflicht, sobald der User abnimmt)
+- Auswahlfrage „Abgenommen / Änderungen nötig / Später“ – erst nach der Vorschau der finalen Datei
+- Bei „Abgenommen“ an den **Abnahme-Ort des Profils** schreiben: Datum, Datei, Umfang (welche Seiten/Zustände),
+  bewusst weggelassene Extras. Heidi: Bauplan Abschnitt 7 (Zeile der Seite: „Abgenommen von Herbert am <Datum>
+  (Mockup <Datei>)“) + Notiz in Abschnitt 10 (Art `Befund · Info`); Abweichung zum bisherigen Verhalten →
+  PD-Eintrag 10a mit Status `freigegeben`. BPM: Sitemap-Status ✅.
+- Ohne festgehaltene Abnahme gilt das Mockup für code-erstellen (Mockup-Hook) als **nicht** abgenommen.
+- Bei „Später“: Hinweis, dass der Bau des Schritts blockiert bleibt.
 
 ### Schritt 5 — Commit-Vorschlag
-- Format: `[vX.Y.Z] Docs, Docs: Mockup <Modul>/<NN_Fenster>/<Dateiname>`
-- Version: PATCH-Bump
-- Falls Sitemap mitgeändert: in Commit-Message erwähnen
-- Falls Aufrufer-Mockups gepatcht: in Commit-Message erwähnen
+- Format: `[vX.Y.Z] <Commit-Modul des Profils>, Docs: Mockup <Datei> – <Kurztitel>` (BPM: `Docs`, Heidi: `Doku`)
+- Version: Bump-Regel des Commit-Profils (BPM: PATCH; Heidi: reine Doku-Commits behalten die Kartenversion)
+- Abnahme-Eintrag (Schritt 4b) im selben Commit
+- Falls Sitemap mitgeändert oder Aufrufer-Mockups gepatcht: in Commit-Message erwähnen
 
 ---
 
@@ -251,13 +318,14 @@ Wenn ein neuer Screen im gleichen Modul/Stil wie ein bestehender sein soll:
 
 ### Standalone-fähig
 - Mockup-HTML muss im Browser allein öffenbar sein
-- Eigenes `<style>` Block mit BPM-Farben (aus Colors.xaml geladen, nicht im Skill gespeichert)
-- Kein Framework, keine externen Dependencies
+- Eigenes `<style>` Block mit den Tokens der Design-Quelle des Profils (geladen, nicht im Skill gespeichert)
+- Kein Framework, keine externen Dependencies (keine Web-Fonts, keine CDN-Skripte – Heidi Regel 14)
 
-### Keine CSS-Variablen aus dem Visualizer
-- Der Visualizer nutzt CSS-Variablen (--color-background-primary etc.)
-- Mockup-HTML für Platte muss BPM-Tokens als Hex-Werte verwenden
-- Werte aus Colors.xaml/UI_UX_Guidelines.md laden, nicht hardcoden im Skill
+### Tokens in der Form des Profils, keine Visualizer-Variablen
+- Der Visualizer (Cowork) nutzt eigene CSS-Variablen (--color-background-primary etc.) – die dürfen nie ins gespeicherte Mockup
+- BPM: Tokens als Hex-Werte aus Colors.xaml
+- Heidi: Tokens als CSS-Variablen `--dx-*` in einem `:root`-Block mit **denselben Werten wie tokens.ts** (Token-Abgleich, Schritt 3b); Komponenten-Klassen wie in `bento.html`
+- Werte aus der Design-Quelle laden, nicht hardcoden im Skill
 
 ### Struktur
 ```html
@@ -265,9 +333,9 @@ Wenn ein neuer Screen im gleichen Modul/Stil wie ein bestehender sein soll:
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>BPM <Modul> — <Blatt></title>
+<title><Projekt> <Modul/Seite> — <Blatt></title>
 <style>
-/* BPM Dark Theme Tokens — aus Colors.xaml geladen */
+/* Tokens aus der Design-Quelle des Profils (BPM: Colors.xaml als Hex; Heidi: :root { --dx-* } wie tokens.ts) */
 </style>
 </head>
 <body>
@@ -279,12 +347,12 @@ Wenn ein neuer Screen im gleichen Modul/Stil wie ein bestehender sein soll:
 ### Interaktivität
 - Hover-Effekte über `onmouseover`/`onmouseout` erlaubt
 - Tab-Wechsel via einfaches JS erlaubt
-- **Klick-Navigation zwischen Mockups: PFLICHT** — siehe Kapitel 5
+- **Klick-Navigation zwischen Mockups: PFLICHT bei Profil „Sitemap: ja“** — siehe Kapitel 5; Heidi: Tabs innerhalb der Datei, Zustände (Leerlauf/Lauf/Fehler) als umschaltbare Varianten
 - Keine komplexe Logik — es ist ein Mockup, kein Prototyp
 
 ---
 
-## 5. INTERAKTIVITÄT & KLICK-NAVIGATION (PFLICHT, ab 2026-05)
+## 5. INTERAKTIVITÄT & KLICK-NAVIGATION (PFLICHT bei Profil „Sitemap: ja“, ab 2026-05)
 
 Alle Mockups werden als **durchklickbarer Prototyp** ausgelegt. Buttons, Tabs, Karten,
 Sidebar-Einträge, Wizard-Weiter/Zurück: alles bekommt ein Klick-Ziel.
@@ -355,7 +423,7 @@ Tote Pfade werden in der Sitemap mit Status `🟡 tot` markiert (Kapitel 6).
 
 ---
 
-## 6. SITEMAP & SELBSTCHECK (ab 2026-05)
+## 6. SITEMAP & SELBSTCHECK (ab 2026-05, nur bei Profil „Sitemap: ja“)
 
 ### `_SITEMAP.md` pro Modul-Ordner
 
@@ -415,14 +483,14 @@ Vor Commit:
 
 ---
 
-## 7. WORKFLOW: NEUES FENSTER ANLEGEN (A+B kombiniert)
+## 7. WORKFLOW: NEUES FENSTER ANLEGEN (A+B kombiniert, nur bei Profil „Sitemap: ja“)
 
 Wenn ein komplett neues Fenster (Screen, Wizard, Dialog) angelegt wird, läuft der
 Skill folgenden Sub-Workflow ab:
 
 ### Schritt 1 — User fragen (B-Mechanik)
 
-Per `ask_user_input_v0` oder Prosa (bei freiem Text-Input):
+Per Auswahlfrage oder Prosa (bei freiem Text-Input):
 
 - **Eingehende Links:** Aus welchen bestehenden Fenstern wird das neue aufgerufen?
   - Liste der vorhandenen Fenster aus Sitemap als Optionen
@@ -467,7 +535,7 @@ Kapitel 6 — Sitemap-Kanten vs HTML-onclick-Refs vergleichen, Datei-Existenz pr
 
 ---
 
-## 8. WORKFLOW: NACHTRÄGLICH FENSTER HINZUFÜGEN
+## 8. WORKFLOW: NACHTRÄGLICH FENSTER HINZUFÜGEN (nur bei Profil „Sitemap: ja“)
 
 Wenn ein Fenster nachträglich (nach mehreren bereits gebauten Mockups) hinzugefügt
 wird, gilt der gleiche Workflow wie Kapitel 7, plus:
@@ -480,7 +548,7 @@ Beim nachträglichen Einfügen verändern sich oft auch **bestehende Navigations
 - Bestehendes Fenster B verlinkt evtl. auf N statt auf altes Fenster C
 - Sitemap-Reorganisation möglich (NN-Vergabe)
 
-**Aktion:** Per `ask_user_input_v0` fragen ob bestehende Flüsse angepasst werden müssen.
+**Aktion:** Per Auswahlfrage fragen ob bestehende Flüsse angepasst werden müssen.
 
 ### NN-Reorganisation (Vorsicht)
 
@@ -507,16 +575,21 @@ Sitemap-Status nachziehen.
 - Farbwerte, Spacing-Werte, Token-Namen im Skill hardcoden
 - Mockup erstellen ohne Docs zu laden
 - Mockup auf Platte schreiben ohne User-Bestätigung im Chat
-- Mockup auf Platte schreiben ohne expliziten DC-Trigger vom User
-- NN-Nummer doppelt vergeben
+- Mockup auf Platte schreiben ohne expliziten DC-Trigger vom User (Cowork)
+- NN-Nummer doppelt vergeben (BPM)
 - Umlaute oder Leerzeichen in Dateinamen oder Ordnernamen
 - Mockup im Visualizer anzeigen und direkt das Visualizer-HTML speichern
-  (Visualizer nutzt andere CSS-Variablen als BPM)
-- Branch automatisch annehmen ohne ask_user_input_v0
-- Archiv-vs-Überschreiben-Entscheidung als Prosa — IMMER ask_user_input_v0
+  (Visualizer nutzt andere CSS-Variablen als das Projekt)
+- Branch automatisch annehmen (Shell fragen oder Auswahlfrage)
+- Archiv-vs-Überschreiben-Entscheidung als Prosa — IMMER Auswahlfrage
+- **Speichern ohne Token-Abgleich** gegen die Design-Quelle (Schritt 3b) oder mit Tokens, die es dort nicht gibt
+- **Speichern ohne die Pflichtansichten des Profils** (Heidi: Desktop + 390 px) ohne Auswahlfrage
+- **Abnahme nur im Chat** – ohne Eintrag am Abnahme-Ort gilt das Mockup als nicht abgenommen (Schritt 4b)
+- **BPM-Ablage oder -Namensschema für ein anderes Projekt annehmen** – alles aus dem Mockup-Profil
+- **Externe Ressourcen im Mockup** (Web-Fonts, CDN), wenn das Projekt sie verbietet
 - Prosa-Fragen bei festen Entscheidungsoptionen
-- **Mockup ohne Klick-Navigation auf interaktive Elemente speichern** — alle Buttons/Tabs/Karten brauchen `onclick` (Kapitel 5)
-- **Sitemap-Update vergessen nach Mockup-Erstellung** — `_SITEMAP.md` ist Single Source of Truth (Kapitel 6)
+- **Mockup ohne Klick-Navigation auf interaktive Elemente speichern** (Profil „Sitemap: ja“) — alle Buttons/Tabs/Karten brauchen `onclick` (Kapitel 5)
+- **Sitemap-Update vergessen nach Mockup-Erstellung** (Profil „Sitemap: ja“) — `_SITEMAP.md` ist Single Source of Truth (Kapitel 6)
 - **Tote Pfade nicht prüfen vor Mockup-Erstellung** — `alert('Mockup folgt: X')` muss ersetzt werden wenn X jetzt existiert
 - **Aufrufer-HTMLs nicht patchen** beim Anlegen eines neuen Fensters — Workflow Kapitel 7 Schritt 2 ist Pflicht
 - **Pfade in onclick ohne Selbstcheck speichern** — Datei-Existenz und Sitemap-Konsistenz prüfen (Kapitel 6)
