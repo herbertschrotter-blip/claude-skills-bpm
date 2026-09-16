@@ -6,6 +6,10 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.29.1] — 2026-09-16
+
+- **skills/skill-pflege/SKILL.md, Fix:** drei Werkzeugnamen in Regel 13b/14a → Auswahlfrage/Repo-Edits
+
 ## [v0.29.0] — 2026-09-16
 
 - **skills/skill-pflege/SKILL.md, Feature:** umgebungsneutral – Cowork (view/DC/Artifact-Paar) und Claude Code (Read/Edit, Lieferung per SendUserFile, Zip bei references) im selben Ablauf; Skill-Liste aus `skills/` des Repos; Memory-Cleanup mit Claude-Code-Weg; Auswahlfrage statt `ask_user_input_v0`

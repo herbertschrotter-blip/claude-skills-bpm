@@ -210,7 +210,7 @@ create_file(path="/home/claude/skill.md", ...)   ← klein, auch falsch
 
 **Ablauf bei Mehrfach-Updates:**
 
-1. DC-Edits für ALLE betroffenen Skills in einer Antwort sind OK (Repo-Seite, weil Skills dort eigene Pfade haben)
+1. Repo-Edits für ALLE betroffenen Skills in einer Antwort sind OK (Repo-Seite, weil Skills dort eigene Pfade haben)
 2. Artifacts werden SEQUENTIELL über mehrere Antworten hinweg erzeugt
 3. Nach jedem Artifact: User-Bestätigung ("gespeichert" / "ok") abwarten
 4. Erst dann nächstes Artifact erstellen
@@ -253,10 +253,10 @@ Antwort N (Artifact-Block):
 2. DC-Verifikation (Zeilenzahl, Diff-Stat)
 3. Artifact mit vollständiger SKILL.md (`create_file /home/claude/SKILL.md`)
 4. Kurzer Status-Text ("Zum Copy-Paste ins Claude.ai-Projekt via Skill speichern-Button")
-5. **Antwort abschließen** — KEIN `ask_user_input_v0` hier
+5. **Antwort abschließen** — KEINE Auswahlfrage hier
 
 Antwort N+1 (nach User-Bestätigung "gespeichert"):
-- Erst jetzt `ask_user_input_v0` für nächste Schritte (z.B. "Nächsten Skill updaten?")
+- Erst jetzt Auswahlfrage für nächste Schritte (z.B. "Nächsten Skill updaten?")
 
 **Gilt für:** jede Kombination aus Artifact + Folgefrage. Nicht nur bei SKILL.md-Artifacts, sondern bei allen Artifacts, bei denen der User noch eine Aktion (Kopieren, Speichern, Ansehen) ausführen muss.
 
