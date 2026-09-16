@@ -6,6 +6,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.30.0] — 2026-09-16
+
+- **skills/doc-pflege/SKILL.md, Feature:** projektneutral über ein **Doku-Profil** (Abschnitt `## Doku-Profil` in der CLAUDE.md: Doc-Standard, Router, Pflicht-Docs, Doc-Typen/Vorlagen, Validierung, Frühphasen-Regel, Advisory, Sitzungsabschluss, Commit-Modul); BPM-Pfadtabelle als Beispiel; Ladereihenfolge BPM und Heidi; Frühphasen-Regel nur bei Profil „ja“, Heidi-Paritätsregel (PD-Eintrag) daneben
+- Modus 6 → „Validierung nach Profil“ mit Heidi-Prüfliste (Statusliste ↔ ClickUp ↔ Code, PD-Register, Abschnitt 4 ↔ contract.ts, HANDOFF 3e, Notizformat) neben der BPM-Frontmatter-Prüfung; Modus 0/1/2/5/7 lesen Vorlagen und Router aus dem Profil
+- Advisory-Checkliste = Doku-Checkliste des Commit-Profils (keine eigene Liste mehr)
+- Neu **Modus 8 Sitzungsabschluss**: Statusliste/Aufgabenquelle, Befunde, Stand-Abschnitt, offene Punkte, Doku-Checkliste, Commit + Push, Abschlussbericht
+- Werkzeugneutral: Auswahlfrage, Branch aus der Shell, Arbeitsverzeichnis Repo-Wurzel, Ausgabe Claude Code direkt; VERBOTEN um Paritätsregel, Statusliste ohne Tests, BPM-Pfade für andere Projekte, Sitzung ohne Modus 8 ergänzt
+- Heidi CLAUDE.md: Abschnitt `## Doku-Profil`
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.29.1] — 2026-09-16
 
 - **skills/skill-pflege/SKILL.md, Fix:** drei Werkzeugnamen in Regel 13b/14a → Auswahlfrage/Repo-Edits
