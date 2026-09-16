@@ -11,7 +11,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 
 | Skill | Zweck | Haupt-Trigger |
 |-------|-------|---------------|
-| **audit** | Konsistenz zwischen Code und Docs prüfen (read-only) | "audit", "prüfe alles", "konsistenzcheck" |
+| **audit** | Konsistenz zwischen Code und Docs prüfen (read-only) nach Doku-/Code-Profil; Befunde → tracker oder Fix-Skill | "audit", "prüfe alles", "konsistenzcheck" |
 | **cc-steuerung** | Desktop Commander (DC) MCP-Server steuern (Modalität) | "cc mach", "dc lies", "claude code soll" |
 | **chat-wechsel** | Handover-Prompt für nächsten Chat erstellen | "neuer chat", "übergabe", "chat wechsel" |
 | **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |

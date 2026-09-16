@@ -6,6 +6,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.31.0] — 2026-09-16
+
+- **skills/audit/SKILL.md, Feature:** projektneutral ohne eigenes Profil – audit liest Doku-Profil (Validierung, Router), Code-Profil (Schichten, Aufgabenquelle, Stacks) und die Stack-Referenzen von code-erstellen; sechs Module mit neutraler Leitfrage, BPM-Prüfpunkte als Beispiel, **Heidi-Prüfpunkte** je Modul (Vertrag ↔ contract.ts in beide Richtungen, Statusliste ↔ Code/Tests ↔ ClickUp, Regeln Abschnitt 2 im Code, Komponenten ohne Karte, Selektoren, Version, PD-Register, HANDOFF, Plan-Docs, Notizformat, verbotene Inhalte im Repo)
+- Neu **„Nach dem Report: Befunde weitergeben“**: Auswahlfrage Tasks über tracker (Sammel-Task je Modul, Präfix des Projekts) / Fix-Skill / Nur Report; Heidi: Entscheidungsbefunde als Notiz-Vorschlag für Abschnitt 10
+- Werkzeugneutral: Auswahlfrage, Branch aus der Shell, Repo-Wurzel, Glob/Grep statt list_directory/start_search, ClickUp read-only über tracker; Report mit Datei + Stelle; VERBOTEN erweitert
+- Quelle: Heidi-Sitzung Claude Code 16.09.2026
+
 ## [v0.30.0] — 2026-09-16
 
 - **skills/doc-pflege/SKILL.md, Feature:** projektneutral über ein **Doku-Profil** (Abschnitt `## Doku-Profil` in der CLAUDE.md: Doc-Standard, Router, Pflicht-Docs, Doc-Typen/Vorlagen, Validierung, Frühphasen-Regel, Advisory, Sitzungsabschluss, Commit-Modul); BPM-Pfadtabelle als Beispiel; Ladereihenfolge BPM und Heidi; Frühphasen-Regel nur bei Profil „ja“, Heidi-Paritätsregel (PD-Eintrag) daneben
