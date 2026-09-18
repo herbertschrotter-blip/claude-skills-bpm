@@ -21,6 +21,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil (BPM: Docs/Mockups + Sitemap; Heidi: dreame_x60/mockups, --dx-Tokens), Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue Skills von Grund auf erstellen – neutral (Neutralitäts-Checkliste, Profil-/references-Aufteilung), für Cowork und Claude Code | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills additiv ändern – aus Cowork oder Claude Code; Lieferung als Datei/Zip, description-Limit, Split-Prüfung | "Skill updaten", "Skill ändern", "Skill erweitern" |
+| **ticket** | Fehler-Tickets eines Projekts (Meldungen + automatisch erkannte Auffälligkeiten, z. B. Heidi `HT-NNNN`) einzeln und immer gleich bearbeiten – acht Schritte, jeder Übergang mit Auswahlfrage, nichts automatisch; Werte aus dem Ticket-Profil (CLAUDE.md) | "ticket HT-0007", "ticket liste", "nimm das nächste ticket" |
 | **tracker** | ClickUp-Schreibschnittstelle für Projekt-Tasks, projektneutral (Nummernschema, Anker, Felder aus `projects/<name>/`) | "tracker neu", "tracker done", "tracker suche" |
 
 
@@ -66,6 +67,7 @@ Die Paar-Konflikte wurden durch Delegations-Tabellen im Body der jeweiligen Skil
 | code-erstellen ↔ git-commit-helper | Code-Änderung inkl. Inline-Commit-Vorschlag → code-erstellen; expliziter Commit-Request → git-commit-helper |
 | code-erstellen ↔ doc-pflege | Advisory-Hinweise aus code-erstellen → KEIN Trigger für doc-pflege; expliziter Doc-Auftrag → doc-pflege |
 | code-erstellen ↔ tracker | Code (auch mit Task-Bezug) → code-erstellen; expliziter Tracker-Befehl → tracker |
+| ticket ↔ tracker / code-erstellen | Ticketnummer oder Ticket-Befehl → ticket (ruft tracker und code-erstellen selbst auf); Aufgabe ohne Ticket → tracker; Bugfix ohne Ticket → code-erstellen |
 | audit ↔ code-erstellen | Read-only Prüfung → audit; Fixes → code-erstellen (Delegation per ask_user_input_v0) |
 | chat-wechsel ↔ chatgpt-review | Claude-Handover → chat-wechsel; ChatGPT-Review-Prompt → chatgpt-review; generisch → ask_user_input_v0 |
 | cc-steuerung ↔ Fachskills | asymmetrisch: cc-steuerung ist Modalität (WIE), Fachskills bleiben für WAS zuständig. Beide können gleichzeitig aktiv sein. |

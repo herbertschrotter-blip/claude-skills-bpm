@@ -6,6 +6,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.36.0] — 2026-09-18
+
+- **skills/ticket/SKILL.md, Feature:** neuer projektneutraler Skill **ticket** – Fehler-Tickets eines Projekts (Meldungen des Users und automatisch erkannte Auffälligkeiten) einzeln und immer im selben Ablauf bearbeiten: 1 Ticket holen und einfach erklären · 2 echter Fehler? · 3 Ursache belegen · 4 Aufgabe über tracker · 5 Fix mit Test über code-erstellen · 6 einspielen · 7 Ticket gelöst + tracker done + Doku · 8 Prüfung durch den User → geschlossen. Kernregeln: ein Ticket zur Zeit, nichts automatisch (jeder Übergang Auswahlfrage), Ticket ist die Quelle, einziger Schreibweg, Schließen macht der User. Kommandos: `ticket liste`, `ticket <Nr>`, `ticket notiz`, `ticket verwerfen`, `ticket schließen`, `ticket auswertung`.
+- Projektwerte im **Ticket-Profil** der CLAUDE.md (Präfix, Befehle, Status, Pflichtangaben, Aufgaben, Beweise, Regeln, Doku); Fallback-Auswahlfrage ohne Profil; description 863 Zeichen; `test-prompts.md` mit Cowork- und Claude-Code-Fällen
+- INDEX.md: Skill-Zeile und Konflikt-Paar ticket ↔ tracker / code-erstellen
+- Heidi CLAUDE.md: Abschnitt `## Ticket-Profil` (HT-NNNN, `tools/ticket.ps1`)
+- Quelle: Heidi-Sitzung Claude Code 18.09.2026 (Bauplan F.2c, DX-069)
+
 ## [v0.35.1] — 2026-09-16
 
 - **skills/chatgpt-review/SKILL.md, Fix:** letzte wörtliche `ask_user_input_v0`-Stelle (Typ-Klärung chat-wechsel/chatgpt-review) → Auswahlfrage
