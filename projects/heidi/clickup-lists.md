@@ -8,13 +8,14 @@
 
 **Space-ID:** `1200660000001609`
 
-Eine Liste (kein Ordner, keine Modul-Listen):
+Zwei Listen (kein Ordner, keine Modul-Listen):
 
 | Liste | Listen-ID | Zweck |
 |-------|-----------|-------|
-| dreame_x60 – Bauplan | `1200660000004100` | Alle Aufgaben des Neubaus der Heidi-Karte (v2): eine Aufgabe je Bauplan-Schritt oder Post-2.0-Wunsch |
+| dreame_x60 – Bauplan | `1200660000004100` | Alle Aufgaben des Neubaus der Heidi-Karte (v2): eine Aufgabe je Bauplan-Schritt oder Post-2.0-Wunsch (`DX-NNN`) |
+| dreame_x60 – Tickets | `1200660000004800` | Fehler-Tickets (`HT-NNNN`) aus „Fehler melden“ und der Auswertung – eine Aufgabe je Ticket (Entscheidung Herbert 19.09.2026: Bugs fluten die DX-Liste nicht) |
 
-**Routing:** Jedes `tracker`-Kommando in diesem Projekt geht in diese eine Liste. Kein Modul-Routing.
+**Routing:** `tracker`-Kommandos gehen in die Bauplan-Liste. **Ausnahme:** Aufgaben aus dem Skill `ticket` (Titel beginnt mit `HT-`) gehen in die Liste Tickets – Titel `HT-NNNN | <KÜRZEL> | <Kurztitel>`, die Ticketnummer ist die Aufgabennummer (kein DX-Zähler, `Next` bleibt unverändert), Tag `bug` (Aufgabentyp „Bug“, sobald er im Workspace existiert). Die Custom Fields der Bauplan-Liste gibt es in der Liste Tickets noch nicht: Commit, Version und Anker dort als Kommentar, Quittung `✅ HT-NNNN — <Aktion> — <ClickUp-Link>`. Status-Werte sind gleich (Space-Status).
 
 ---
 
