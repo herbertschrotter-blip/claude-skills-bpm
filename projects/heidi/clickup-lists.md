@@ -46,17 +46,22 @@ Skill-Schema wie BPM, Präfix **DX**:
 DX-<NNN> | <KÜRZEL> | <Kurztitel>
 ```
 
-- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: DX-064**
-  (steht auch im Tracker-Profil der CLAUDE.md des Projekt-Repos; nach jedem `tracker neu` dort +1).
+- `DX-NNN` dreistellig, global über die Liste, nie wiederverwendet. **Nächste freie Nummer: steht im
+  Tracker-Profil der CLAUDE.md des Projekt-Repos** (dort führend, nach jedem `tracker neu` +1; Stand 20.09.2026: DX-078).
 - Kürzel = Modul aus dem Commit-Profil: `KARTE` (dreame_x60/card), `BACKEND` (ha/: Paket,
   Automationen, Skripte, Prognose, Dashboard-YAML), `DOKU` (docs/, Bauplan-Pflege, Abnahmen),
   `TOOLS` (tools/, setup.ps1).
 - Kurztitel beginnt mit der **Bauplan-Nummer** (`4.4 dx-planer …`), bei Wünschen ohne Schritt mit
   `Post-2.0:`; Befunde/Helfer zu einem Schritt tragen dessen Nummer (`0.2 GPS-Koordinaten …`,
   `2.7 [PC] Python …`). `[PC]` = Herbert führt selbst am PC aus.
-- **Phasen** (`Phase N – …`) sind Parents ohne DX-Nummer und ohne Felder (Meta-Kurzform).
-  Die Bauplan-Schritte sind Hauptaufgaben mit DX-Nummer, auch wenn sie unter einer Phase hängen.
-- Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM.
+- **Keine Phasen-Parents mehr (Entscheidung Herbert 20.09.2026):** alle DX-Aufgaben stehen einzeln
+  (flach) in der Liste; die Phase steht im Feld **Bauplan-Phase** (siehe `clickup-fields.md`), nach dem
+  sich die Liste gruppieren lässt. Die sieben früheren Aufgaben `Phase 0 … Phase 6` sind archiviert
+  (nicht gelöscht). `tracker neu` sucht deshalb **keinen Parent**, sondern setzt das Feld.
+- Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM (Beispiel: F.2a/b/c unter DX-069).
+- Unteraufgaben herauslösen oder Feld-Optionen ändern kann die ClickUp-Anbindung nicht (kein `parent`
+  in `update_task`, `move_task` nur für Hauptaufgaben) – das geht nur in der ClickUp-Oberfläche
+  (markieren → Mehr → „In Aufgaben umwandeln“; gestrichene Aufgaben einzeln über ihr Menü „Konvertieren zu“).
 
 Vergeben am 16.09.2026: DX-001 … DX-055 in Bauplan-Reihenfolge (0.1 → 6.5, dann Backend, dann Post-2.0); DX-056 … DX-062 Modul-Aufgaben (Meta, Bauplan Abschnitt 1a).
 

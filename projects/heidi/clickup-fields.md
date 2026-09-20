@@ -25,6 +25,25 @@ Von Herbert am 16.09.2026 auf der Liste angelegt; IDs per `clickup_get_custom_fi
 | **Chat-Anker temp** | `a83995c0-dc54-4edc-b295-eed8093cbe3b` | short_text | neu | TEMP-ID aus Ausarbeitungsphase |
 | **Chat-Anker erstellt** | `192dfca6-2202-4854-ad16-526d5d17ce22` | short_text | neu | `[DX-ANCHOR-<task-id>] - erstellt: …` |
 | **Chat-Anker erledigt** | `77be78d2-5e47-4d8a-bab2-aed601e83c92` | short_text | done | `[DX-ANCHOR-<task-id>] - erledigt: …` |
+| **Bauplan-Phase** | `99d1d38e-4a82-402b-8327-7496ddd84569` | drop_down | neu | Phase 0 … Phase 6 / Modul F / Post-2.0 / Modul – **Heidi-eigenes Feld (nicht BPM), Pflicht bei `tracker neu`**; ersetzt seit 20.09.2026 die Phasen-Parents |
+
+### Bauplan-Phase-Dropdown (Option-IDs, von Herbert am 20.09.2026 angelegt; KI-Ausfüllen ist aus)
+
+| Option | Option-ID | Wann |
+|--------|-----------|------|
+| Phase 0 | `caa5552c-6b5e-44ae-a7f7-c768ff472dc1` | Bauplan-Nummer `0.x` |
+| Phase 1 | `9cda207b-497a-4e4f-a1a3-9cd00e10767e` | `1.x` |
+| Phase 2 | `005f4c00-3b1e-4526-b4a1-0b8e47032975` | `2.x` |
+| Phase 3 | `88376675-a19d-48d1-bebb-dcc87341fc29` | `3.x` |
+| Phase 4 | `aa556f75-cbb9-485e-bcc6-71672a809d73` | `4.x` (auch 4.1b, 4.3g …) |
+| Phase 5 | `70d66db1-bd78-4e8f-bac5-03a92c2df4e2` | `5.x` |
+| Phase 6 | `1b4cde62-0ffe-4e2b-9865-36ece8d019db` | `6.x` |
+| Modul F | `4d9d038c-a87d-426c-b9de-2118b6d1538a` | `F.x` und Backend-Aufgaben ohne Phasen-Nummer (z. B. DX-048, DX-063) |
+| Post-2.0 | `394d15d8-126c-4535-9b77-c21864d330a8` | Kurztitel beginnt mit `Post-2.0:` |
+| Modul | `e6bb4712-6ca1-4bd8-9b7a-27ed484f5adf` | Sammel-Aufgaben der Module (Typ Meta, DX-056 … DX-062, DX-064) |
+
+Regel: die Phase ergibt sich aus der Bauplan-Nummer am Anfang des Kurztitels; ohne Nummer gilt die
+Spalte „Wann“. Die Liste „dreame_x60 – Tickets“ hat dieses Feld nicht.
 
 ### Typ-Dropdown (Option-IDs)
 
@@ -53,7 +72,8 @@ Von Herbert am 16.09.2026 auf der Liste angelegt; IDs per `clickup_get_custom_fi
 - **Komponente:** Hauptdatei relativ zu `dreame_x60/card/` (Karte) bzw. Repo-Pfad (Backend/Doku/Tools).
 - **Zugehörige Docs:** `docs/dreame_x60/BAUPLAN.md Abschnitt 8, Karte <n>` plus weitere Docs.
 - **Commit ID/Text/Erledigt:** beim Übergang nach `testing` (Heidi-„done“) setzen; Erledigt = Datum des Commits.
-- **Chat-Anker:** `[DX-ANCHOR-<task-id>] - erstellt: <kurz>` / `- erledigt: Commit <hash>`. Alle 55 nummerierten Aufgaben wurden am 16.09.2026 befüllt; Phasen bleiben ohne Felder.
+- **Chat-Anker:** `[DX-ANCHOR-<task-id>] - erstellt: <kurz>` / `- erledigt: Commit <hash>`. Alle 55 nummerierten Aufgaben wurden am 16.09.2026 befüllt.
+- **Bauplan-Phase:** bei jeder neuen DX-Aufgabe setzen (Option-ID aus der Tabelle oben); am 20.09.2026 für alle 75 DX-Aufgaben und F.2a/b/c gesetzt.
 
 ---
 
@@ -99,7 +119,7 @@ Voraussetzung: <Karten> · Bauplan Abschnitt 8, Karte <n> · <verwandte Aufgaben
 ```
 
 Regeln:
-- Phasen-Aufgaben (Parent „Phase N – …“) nur Problem + Lösungsansatz + Abhängigkeiten (Meta-Kurzform).
+- Modul-Aufgaben (Typ Meta, „Modul X …“) in Meta-Kurzform: Problem + Lösungsansatz mit Checkliste + Abhängigkeiten. Phasen-Aufgaben gibt es seit 20.09.2026 nicht mehr (archiviert, Feld „Bauplan-Phase“).
 - Aufgaben mit `[PC]` im Titel: DoD „Herbert führt aus“ + „Ergebnis im Bauplan vermerkt“.
 - Checkboxen nach Status: shipped alle [x]; testing alles [x] außer Sichtprüfung; backlog alle [ ].
 - Was gebaut wurde, kommt als **Gebaut (Version …)** in die Technischen Notizen.
