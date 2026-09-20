@@ -58,7 +58,12 @@ DX-<NNN> | <KÜRZEL> | <Kurztitel>
   (flach) in der Liste; die Phase steht im Feld **Bauplan-Phase** (siehe `clickup-fields.md`), nach dem
   sich die Liste gruppieren lässt. Die sieben früheren Aufgaben `Phase 0 … Phase 6` sind archiviert
   (nicht gelöscht). `tracker neu` sucht deshalb **keinen Parent**, sondern setzt das Feld.
-- Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM (Beispiel: F.2a/b/c unter DX-069).
+- Echte Unteraufgaben (falls je nötig): `<NNN>.<SS> — <Kurzbeschreibung>` wie BPM (Beispiele: 048.01–048.04 unter DX-048;
+  älter und abweichend benannt: F.2a/b/c unter DX-069).
+- **Modul-Sammelaufgaben mitpflegen (Pflicht, Hinweis Herbert 21.09.2026):** je Modul gibt es eine Meta-Aufgabe mit der
+  Schrittliste – R = DX-064, A = DX-056, B = DX-057, C = DX-058, D = DX-059, E = DX-060, F = DX-061, G = DX-062. Bei jedem
+  `tracker neu` (neue DX-Aufgabe → Zeile ergänzen), `tracker done` (→ „testing“ vermerken) und nach Herberts Abnahme
+  (→ abhaken) die Schrittliste der passenden Sammelaufgabe im selben Arbeitsgang aktualisieren (Scope-Check Punkt 4).
 - Unteraufgaben herauslösen oder Feld-Optionen ändern kann die ClickUp-Anbindung nicht (kein `parent`
   in `update_task`, `move_task` nur für Hauptaufgaben) – das geht nur in der ClickUp-Oberfläche
   (markieren → Mehr → „In Aufgaben umwandeln“; gestrichene Aufgaben einzeln über ihr Menü „Konvertieren zu“).
