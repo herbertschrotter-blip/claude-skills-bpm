@@ -8,13 +8,18 @@
 
 **Space-ID:** `1200660000001609`
 
-Drei Listen (kein Ordner, keine Modul-Listen):
+Drei Listen für Heidi (kein Ordner, keine Modul-Listen) – Repo `HA_Dash_DreameX60` (bis 23.09.2026 `Dreame_Dash`),
+lokal `C:\Users\herbe\source\HA_Dash_DreameX60`:
 
 | Liste | Listen-ID | Zweck |
 |-------|-----------|-------|
 | dreame_x60 – Bauplan | `1200660000004100` | Alle Aufgaben des Neubaus der Heidi-Karte (v2): eine Aufgabe je Bauplan-Schritt oder Post-2.0-Wunsch (`DX-NNN`) |
 | dreame_x60 – Tickets | `1200660000004800` | Fehler-Tickets (`HT-NNNN`) aus „Fehler melden“ und der Auswertung – eine Aufgabe je Ticket (Entscheidung Herbert 19.09.2026: Bugs fluten die DX-Liste nicht) |
-| dreame_x60 - Audit | `1200660000005341` | Punkte aus dem Audit vom 22.09.2026 (`Audit_NNNN`, 0001–0090, Pakete 1–12). Arbeitsliste und Belege im Repo `Dreame_Dash`: `docs/AUDIT.md`, `docs/AUDIT-BERICHT.md` |
+| dreame_x60 - Audit | `1200660000005341` | Punkte aus dem Audit vom 22.09.2026 (`Audit_NNNN`, 0001–0090, Pakete 1–12) und Nachträge ab `Audit_0091` (auf Herberts Anweisung). Arbeitsliste und Belege im Repo: `docs/AUDIT.md`, `docs/AUDIT-BERICHT.md` |
+
+Nicht Heidi: Liste **HA_Dash_Netzwerk** (`1200660000005358`) im selben Space gehört zum eigenen Repo
+`HA_Dash_Netzwerk` (Netzdiagnose, seit 23.09.2026). Ein eigenes Projekt-Profil dafür fehlt noch (Audit_0092) –
+bis dahin keine `tracker`-Kommandos dorthin; die zwei verschobenen Aufgaben (Audit_0006, Audit_0014) behalten ihre Nummern.
 
 **Routing:** `tracker`-Kommandos gehen in die Bauplan-Liste. **Ausnahme:** Aufgaben aus dem Skill `ticket` (Titel beginnt mit `HT-`) gehen in die Liste Tickets – Titel `HT-NNNN | <KÜRZEL> | <Kurztitel>`, die Ticketnummer ist die Aufgabennummer (kein DX-Zähler, `Next` bleibt unverändert), Tag `bug` (Aufgabentyp „Bug“, sobald er im Workspace existiert). Die Custom Fields der Bauplan-Liste gibt es in der Liste Tickets noch nicht: Commit, Version und Anker dort als Kommentar, Quittung `✅ HT-NNNN — <Aktion> — <ClickUp-Link>`. Status-Werte sind gleich (Space-Status).
 
