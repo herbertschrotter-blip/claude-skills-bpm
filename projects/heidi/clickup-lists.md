@@ -8,14 +8,22 @@
 
 **Space-ID:** `1200660000001609`
 
-Zwei Listen (kein Ordner, keine Modul-Listen):
+Drei Listen (kein Ordner, keine Modul-Listen):
 
 | Liste | Listen-ID | Zweck |
 |-------|-----------|-------|
 | dreame_x60 – Bauplan | `1200660000004100` | Alle Aufgaben des Neubaus der Heidi-Karte (v2): eine Aufgabe je Bauplan-Schritt oder Post-2.0-Wunsch (`DX-NNN`) |
 | dreame_x60 – Tickets | `1200660000004800` | Fehler-Tickets (`HT-NNNN`) aus „Fehler melden“ und der Auswertung – eine Aufgabe je Ticket (Entscheidung Herbert 19.09.2026: Bugs fluten die DX-Liste nicht) |
+| dreame_x60 - Audit | `1200660000005341` | Punkte aus dem Audit vom 22.09.2026 (`Audit_NNNN`, 0001–0090, Pakete 1–12). Arbeitsliste und Belege im Repo `Dreame_Dash`: `docs/AUDIT.md`, `docs/AUDIT-BERICHT.md` |
 
 **Routing:** `tracker`-Kommandos gehen in die Bauplan-Liste. **Ausnahme:** Aufgaben aus dem Skill `ticket` (Titel beginnt mit `HT-`) gehen in die Liste Tickets – Titel `HT-NNNN | <KÜRZEL> | <Kurztitel>`, die Ticketnummer ist die Aufgabennummer (kein DX-Zähler, `Next` bleibt unverändert), Tag `bug` (Aufgabentyp „Bug“, sobald er im Workspace existiert). Die Custom Fields der Bauplan-Liste gibt es in der Liste Tickets noch nicht: Commit, Version und Anker dort als Kommentar, Quittung `✅ HT-NNNN — <Aktion> — <ClickUp-Link>`. Status-Werte sind gleich (Space-Status).
+
+**Ausnahme Audit:** Aufgaben mit Titel `Audit_NNNN | <KÜRZEL> | <Kurztitel>` liegen in der Liste Audit
+(`1200660000005341`). Die Nummer ist vierstellig mit Unterstrich, kein DX-Zähler (`Next` bleibt
+unverändert); neue Audit-Punkte nur auf Anweisung von Herbert, dann auch in `docs/AUDIT.md` eintragen.
+Kürzel wie unten plus `HA` (HA-Oberfläche/Konfiguration) und `HERBERT` (macht Herbert selbst). Die
+Liste hat die Custom Fields der Bauplan-Liste **ohne** „Bauplan-Phase“ (siehe `clickup-fields.md`).
+Quittung ohne Anker: `✅ Audit_NNNN — <Aktion> — <ClickUp-Link>`. Status und Übergänge wie beim Bauplan.
 
 ---
 

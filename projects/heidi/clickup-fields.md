@@ -77,6 +77,30 @@ Spalte „Wann“. Die Liste „dreame_x60 – Tickets“ hat dieses Feld nicht.
 
 ---
 
+## Custom Fields (Liste `dreame_x60 - Audit`, 1200660000005341)
+
+Von Herbert am 23.09.2026 angelegt, IDs per `clickup_get_custom_fields` gelesen. Dieselben Felder
+(gleiche IDs und Option-IDs) wie beim Bauplan, **mit zwei Unterschieden:**
+
+- **Zielversion** ist hier ein eigenes Feld: `1fcc0b5a-082c-4c2a-8238-f7ff31b560d4` (short_text) –
+  nicht die ID der Bauplan-Liste.
+- **Bauplan-Phase** gibt es nicht. Die Reihenfolge ergibt sich aus der Nummer (Pakete 1–12 in `docs/AUDIT.md`).
+
+Alle anderen Felder (Typ, Aufwand, Komponente, Zugehörige Docs, Commit ID, Commit Text, Erledigt,
+Chat-Anker temp/erstellt/erledigt) mit den IDs aus der Tabelle oben.
+
+Befüllt am 23.09.2026 für Audit_0001–0090 aus `docs/AUDIT.md`:
+- **Aufwand** aus der Zeile „Aufwand“.
+- **Typ:** Bereich Herbert/ClickUp → Meta; Entscheidungsaufgaben (0018, 0032, 0083) → Konzept; Doku → Docs;
+  Aufräumen/Umbau → Refactor; Leistung/Protokollmenge → Perf; Testlücken (0089) → Meta; sonst Fix.
+- **Komponente:** erste Datei aus der Zeile „Beleg“ (leer bei Herbert/ClickUp). Achtung: Die Belege nennen
+  teils noch Pfade des alten Repos (`heidi/…`, `docs/dreame_x60/BAUPLAN.md`).
+- **Zugehörige Docs:** `docs/AUDIT.md Audit_NNNN; docs/AUDIT-BERICHT.md <Abschnitt>`.
+- Priorität war beim Anlegen gesetzt und blieb unverändert. Zielversion und Chat-Anker bleiben leer,
+  bis die Aufgabe angefasst wird.
+
+---
+
 ## Titel-Format
 
 Siehe `clickup-lists.md` Abschnitt „Nummernschema“: `DX-<NNN> | <KÜRZEL> | <Kurztitel>`.
