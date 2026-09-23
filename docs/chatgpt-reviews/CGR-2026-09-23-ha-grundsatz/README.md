@@ -4,7 +4,7 @@
 fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_DreameX60`), die danach neu gebaut wird
 **Zeitraum:** 2026-09-23
 **Branch:** `main` (beide Repos)
-**Status:** Runde 2 offen
+**Status:** Runde 3 offen (Schlussrunde)
 
 ---
 
@@ -26,4 +26,15 @@ fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_Dr
 - **Fokus:** Heidis Einstellungen durchgespielt (Ort je Einstellung, eigene Automatik je Plan, Speichern und Prüfen,
   Nachteile, Einstellungen des Haus-Moduls); Grundsatzregeln G-01 … G-16 in Version 2; kurzer Weg (Stufe 0–1) und voller Weg
   (ab Stufe 2); Vorlage Modul-Steckbrief und `module.yaml` Schema v1
+- **Kernergebnis:** Entscheidungsmatrix für Einstellungen (Einrichtung, Optionsdialog, Einstellungs-Entität, Fachobjekt,
+  Darstellung, Befehl, fremdes Modul); global + nur die Abweichung je Plan; Einstellungen im Speicher der Integration statt
+  `RestoreEntity`, SQLite nur für Fachdaten; `haus` liefert Fakten samt Anwesenheitsprognose und üblicher Rückkehr, jedes Gerät
+  wählt seine Personen; „Heidi“ ist der Roboter – kein eigenes Planer-Gerät, die Entitäten hängen am Roboter-Gerät; eine
+  Integration heißt nach ihrer Aufgabe (Name beim Neubau). Offen: Listen, die die eigene Oberfläche bearbeitet → Runde 3.
+
+### Runde 3 — Schlussrunde: Listen in der eigenen Oberfläche, Korrekturen, Endfassung
+- **Artefakte:** [r3/](./r3/)
+- **Fokus:** Listen wie die Personenauswahl im Einstellungsmenü der Karte (Aktion oder WebSocket, ein Speicherort); sieben
+  Korrekturen von Claude (Neustart nach Code-Änderung, Vertrag der Karte ohne `unique_id`, G-01, Eigentümer-Regel in
+  `module.yaml`, Darstellung je Benutzer, „Lernen ab“, fehlende Regeln); Endfassung von Matrix, Regeln und `module.yaml`
 - **Kernergebnis:** –
