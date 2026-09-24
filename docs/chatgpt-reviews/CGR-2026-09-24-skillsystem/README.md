@@ -6,7 +6,7 @@
 **Branch:** `main`
 **Vorgänger:** CGR-2026-04-skillsystem (r1–r6, Refactor-Phasen 1–5; damals im BPM-Repo archiviert, dort auf `main` nicht
 mehr auffindbar)
-**Status:** Runde 2 offen
+**Status:** Runde 3 offen
 
 ---
 
@@ -29,4 +29,22 @@ mehr auffindbar)
   Pflichtfeldern je Skill und drei Beispielen (Heidi, BPM, Skill-Repo); Spezifikation skill-pflege mit Regel-Inventar;
   Eval mit `claude plugin eval` und `skill-creator`; wie die Skills künftig geprüft werden (Herberts Frage nach einem
   Skill-Analyse-Skill). Runde 3 folgt mit cc-steuerung-Adapter, Liste Phase 1 und INDEX neu.
+- **Kernergebnis:** ChatGPT übernimmt S1–S8. Einigkeit:
+  - MCP-Werkzeuge voll qualifiziert nur in Integrationsabschnitten; MUSS/NIE nur, wo es heikel ist; keine Historie in
+    Skills; skill-neu wird Governance-Ablauf.
+  - Skill-Profil v1 mit Checks und den Werten `none`/`fehlt`/`ref:`; `projects/` zieht in die Projekt-Repos.
+  - skill-pflege mit Safe Patch und Refactor, Inventar unter `docs/skill-refactors/`.
+  - `claude plugin eval` misst das Auslösen, echte Sitzungen die Konflikte mit Anthropic-Skills, `skill-creator` die
+    Qualität.
+  - Kein Skill-Analyse-Skill: Prüfskript, audit und skill-pflege teilen sich die Prüfung.
+
+  Claudes Korrekturen: Stack-Referenzen bleiben; Review braucht eine eigene Config; Checks mit Pfaden; Python fehlt auf
+  dem Büro-PC. Herbert entscheidet für das Skill-Repo: **Push nach jedem Commit**, **neue Nummer nur bei
+  Skill-Änderungen**, **Tests zuerst als Pilot**.
+
+### Runde 3 — Umbau-Plan
+- **Artefakte:** [r3/](./r3/)
+- **Fokus:** Skill-Profil v1 letzte Fassung und fertiges Profil des Skill-Repos; Orte der Projekt-Configs und Umzug von
+  `projects/`; cc-steuerung als Cowork-Adapter; INDEX neu mit Verbleib der Invarianten; Prüfskript; Eval-Pilot als
+  Dateien; Dateiliste Phase 1; Gesamtplan mit Abnahme je Phase
 - **Kernergebnis:** –
