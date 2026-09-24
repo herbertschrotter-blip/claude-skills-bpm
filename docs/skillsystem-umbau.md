@@ -72,6 +72,8 @@ Begründungen stehen dort, vor allem in `r3/02-chatgpt-response.md` (Umbau-Plan)
   - ein gemeinsamer Nachtrag für v0.36.1–v0.36.9 (alte Regel)
   - die doppelte v0.36.0 vermerken
 - [ ] README und INDEX: nur Fakten (12 Skills, Inventar, Modus-Zahl); der INDEX-Umbau folgt in Phase 5
+- [ ] tracker bei claude.ai neu hochladen (Herbert): In der hochgeladenen Fassung enthält `references/create-task.md` den
+      Inhalt von `clickup-tools.md`; die Fassung im Repo ist richtig
 
 **Abnahme:** `claude plugin validate .` ist grün; das Prüfskript läuft; die Pilotfälle werden gefunden; keine SKILL.md
 geändert.
@@ -150,5 +152,14 @@ Je Skill:
 
 ## ClickUp
 
-Je Phase eine Aufgabe in der Liste ClaudeSkills (Space Claude Skills Entwicklung). Die IDs stehen in der README der
-Review-Serie.
+Je Phase eine Aufgabe in der Liste ClaudeSkills (Space Claude Skills Entwicklung):
+
+| Phase | Aufgabe |
+|---|---|
+| 1 | [Infrastruktur und Skill-Repo](https://app.clickup.com/t/123ztrcxedg) |
+| 2 | [Profile der Projekte](https://app.clickup.com/t/123ztrcxedj) |
+| 3 | [Grundmessung](https://app.clickup.com/t/123ztrcxedk) |
+| 4 | [skill-pflege und skill-neu](https://app.clickup.com/t/123ztrcxedm) |
+| 5 | [Querschnitt](https://app.clickup.com/t/123ztrcxedp) |
+| 6 | [Skill für Skill verkleinern](https://app.clickup.com/t/123ztrcxedq) |
+| 7 | [Gesamtabnahme](https://app.clickup.com/t/123ztrcxedr) |

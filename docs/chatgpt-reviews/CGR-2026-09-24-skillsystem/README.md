@@ -60,4 +60,14 @@ mehr auffindbar)
 
 - **Plan:** [docs/skillsystem-umbau.md](../../skillsystem-umbau.md) – Entscheidungen, neue Regeln, Tests, Phasen 1–7
 - **Ausgangsbefund ChatGPT:** [00-ausgangsbefund-chatgpt.md](./00-ausgangsbefund-chatgpt.md)
-- **ClickUp (Liste ClaudeSkills):** je Phase eine Aufgabe – IDs folgen nach dem Anlegen
+- **ClickUp (Liste ClaudeSkills, Space Claude Skills Entwicklung):**
+
+  | Phase | Aufgabe |
+  |---|---|
+  | 1 | [📦 Umbau 2026-09 · Phase 1 — Infrastruktur und Skill-Repo](https://app.clickup.com/t/123ztrcxedg) (in Arbeit) |
+  | 2 | [📦 Umbau 2026-09 · Phase 2 — Profile der Projekte](https://app.clickup.com/t/123ztrcxedj) |
+  | 3 | [📦 Umbau 2026-09 · Phase 3 — Grundmessung](https://app.clickup.com/t/123ztrcxedk) |
+  | 4 | [📦 Umbau 2026-09 · Phase 4 — skill-pflege und skill-neu](https://app.clickup.com/t/123ztrcxedm) |
+  | 5 | [📦 Umbau 2026-09 · Phase 5 — Querschnitt](https://app.clickup.com/t/123ztrcxedp) |
+  | 6 | [📦 Umbau 2026-09 · Phase 6 — Skill für Skill verkleinern](https://app.clickup.com/t/123ztrcxedq) |
+  | 7 | [📦 Umbau 2026-09 · Phase 7 — Gesamtabnahme](https://app.clickup.com/t/123ztrcxedr) |
