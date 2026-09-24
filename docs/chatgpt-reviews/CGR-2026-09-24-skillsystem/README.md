@@ -6,7 +6,9 @@
 **Branch:** `main`
 **Vorgänger:** CGR-2026-04-skillsystem (r1–r6, Refactor-Phasen 1–5; damals im BPM-Repo archiviert, dort auf `main` nicht
 mehr auffindbar)
-**Status:** Runde 3 offen
+**Status:** Abgeschlossen (24.09.2026)
+**Ergebnis:** [Umbau-Plan `docs/skillsystem-umbau.md`](../../skillsystem-umbau.md), dazu je Phase eine Aufgabe in ClickUp
+(Liste ClaudeSkills, siehe unten)
 
 ---
 
@@ -47,4 +49,15 @@ mehr auffindbar)
 - **Fokus:** Skill-Profil v1 letzte Fassung und fertiges Profil des Skill-Repos; Orte der Projekt-Configs und Umzug von
   `projects/`; cc-steuerung als Cowork-Adapter; INDEX neu mit Verbleib der Invarianten; Prüfskript; Eval-Pilot als
   Dateien; Dateiliste Phase 1; Gesamtplan mit Abnahme je Phase
-- **Kernergebnis:** –
+- **Kernergebnis:** ChatGPT übernimmt K1–K9 und liefert den Umbau-Plan: Skill-Profil v1 mit Checks und Pfaden, Configs
+  unter `.claude/skill-config/`, cc-steuerung-Adapter mit fertiger Description, INDEX als Verzeichnis für das Auslösen,
+  Prüfskript in PowerShell 7, Test-Manifest und fünf Pilotfälle, Phasen 1–7 mit Abnahme – „Serie abschließbar“. Claudes
+  Schärfungen: `routing-eval` ist kein Pre-Commit-Check; Versionsquelle ist der CHANGELOG; der INDEX beeinflusst die
+  Grundmessung nicht; Phase 2 läuft in drei Repos auf zwei PCs. Herbert schließt die Serie ab: Plan-Datei plus
+  ClickUp-Aufgaben, Phase 1 startet sofort.
+
+## Ergebnisse
+
+- **Plan:** [docs/skillsystem-umbau.md](../../skillsystem-umbau.md) – Entscheidungen, neue Regeln, Tests, Phasen 1–7
+- **Ausgangsbefund ChatGPT:** [00-ausgangsbefund-chatgpt.md](./00-ausgangsbefund-chatgpt.md)
+- **ClickUp (Liste ClaudeSkills):** je Phase eine Aufgabe – IDs folgen nach dem Anlegen
