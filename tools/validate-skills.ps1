@@ -63,6 +63,14 @@ function Measure-Characters([string]$Text) {
     return @($Text.EnumerateRunes()).Count
 }
 
+# Entfernt nur ein umschließendes Paar gleicher Anführungszeichen (YAML), nicht alle an den Enden.
+function Remove-OuterQuotes([string]$Value) {
+    if ($Value.Length -ge 2 -and ($Value[0] -eq '"' -or $Value[0] -eq "'") -and $Value[-1] -eq $Value[0]) {
+        return $Value.Substring(1, $Value.Length - 2)
+    }
+    return $Value
+}
+
 function Read-Frontmatter([string[]]$Lines) {
     if ($Lines.Count -lt 2 -or $Lines[0].Trim() -ne '---') { return $null }
     $end = -1
@@ -88,7 +96,7 @@ function Read-Frontmatter([string[]]$Lines) {
                 $values[$key] = ($block -join ' ')
                 continue
             }
-            $values[$key] = $value.Trim('"', "'")
+            $values[$key] = Remove-OuterQuotes $value
         }
         $i++
     }
