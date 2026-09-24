@@ -103,8 +103,24 @@ in doc-pflege (`references/projekt-init.md`) und wird mit der ersten Änderung a
 
 ### Phase 3 – Grundmessung
 
-- [ ] Pilot: `claude plugin eval . --tag pilot --runs 3 --ablation none --no-publish`
+- [x] Pilot: `claude plugin eval . --tag pilot --runs 3 --ablation none --no-publish` – gelaufen am 24.09.2026
+      (Ergebnis unten)
 - [ ] Herbert entscheidet über die volle Grundmessung (60 Fälle nach Risiko, 3 Läufe)
+
+Ergebnis des Pilots (unveränderte Skills, 5 Fälle × 3 Läufe):
+
+| Fall | Ergebnis | Bewertung |
+|---|---|---|
+| audit-readonly (kritisch) | 0/3 | audit löst nie aus; der Auftrag (INDEX gegen Skill-Beschreibungen prüfen) liegt außerhalb der heutigen audit-Description (Code ↔ Doku). Dazu fehlen die genannten Dateien in der Sandbox, zwei Läufe liefen bis zur Grenze von 8 Schritten. Der Fall misst den Zielzustand nach Phase 5, nicht den heutigen Vertrag. |
+| cc-not-in-claude-code (kritisch) | 2/3 | echter Fehler: cc-steuerung löst einmal aus; die Description nennt „Claude Code“ als Auslöser (Behebung Phase 5) |
+| code-implement | 3/3 | – |
+| doc-write (kritisch) | 3/3 | audit löst nicht aus |
+| skill-update (kritisch) | 3/3 | skill-neu löst nicht aus |
+
+Gesamt 11/15 Läufe (3 von 5 Fällen). Dauer 14 Minuten (rund 55 Sekunden je Lauf), Gegenwert zum Listenpreis 5,66 USD
+(rund 0,38 USD je Lauf; keine Rechnung, zählt gegen das Max-Kontingent). Hochgerechnet: 60 Fälle × 3 Läufe sind rund
+180 Läufe, knapp 3 Stunden nacheinander, Gegenwert rund 70 USD. `plugin eval` löscht die Protokolle der Läufe; zur
+Fehlersuche einen Fall einzeln mit `--keep-temp` laufen lassen (behält laut Hilfe die Temp-Ordner).
 - [ ] echte Sitzungen EXT-01 bis EXT-05
 - [ ] Grundmessung einfrieren
 
