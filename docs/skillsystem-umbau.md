@@ -88,8 +88,8 @@ geändert.
 Stand 24.09.2026: `claude plugin validate .` bestanden mit einer erwarteten Warnung (CLAUDE.md im Plugin-Wurzelordner wird
 nicht als Kontext geladen). Das Prüfskript läuft: 12 Skills, 1 Fehler, 120 Warnungen – der Fehler ist ein toter Verweis
 in doc-pflege (`references/projekt-init.md`) und wird mit der ersten Änderung an doc-pflege behoben. `plugin eval` liest
-`quality/evals/` aus dem Manifest; ob alle fünf Fälle laufen, zeigt der Pilot (Phase 3). Seit dem Plan-Commit ist unter
-`skills/` nichts geändert.
+`quality/evals/` aus dem Manifest; der Pilot am 24.09. hat alle fünf Fälle gefunden und bewertet. Seit dem Plan-Commit ist
+unter `skills/` nichts geändert. **Phase 1 abgeschlossen am 24.09.2026.**
 
 ### Phase 2 – Profile der Projekte (je eine Sitzung im Projekt-Repo)
 
