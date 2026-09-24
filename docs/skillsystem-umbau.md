@@ -106,10 +106,10 @@ unter `skills/` nichts geändert. **Phase 1 abgeschlossen am 24.09.2026.**
 - [x] Pilot: `claude plugin eval . --tag pilot --runs 3 --ablation none --no-publish` – gelaufen am 24.09.2026
       (Ergebnis unten)
 - [x] Herbert entscheidet über die volle Grundmessung (60 Fälle nach Risiko, 3 Läufe) – 24.09.: voll, 60 Fälle × 3 Läufe
-- [ ] 60 Fälle nach Risiko unter `quality/evals/` schreiben: ohne Abhängigkeit von Repo-Dateien (die Sandbox hat keine);
+- [x] 60 Fälle nach Risiko unter `quality/evals/` schreiben: ohne Abhängigkeit von Repo-Dateien (die Sandbox hat keine);
       den audit-Fall teilen in den heutigen Vertrag (Code ↔ Doku) und einen Ziel-Fall Skill-Prüfung, der bis Phase 5
-      scheitern darf
-- [ ] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI)
+      scheitern darf – 24.09., von Herbert freigegeben; Katalog und Regeln in `quality/README.md`
+- [ ] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI) – gestartet am 24.09. um 20:59, nacheinander
 
 Ergebnis des Pilots (unveränderte Skills, 5 Fälle × 3 Läufe):
 
