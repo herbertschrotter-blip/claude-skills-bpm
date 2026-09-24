@@ -59,24 +59,33 @@ Begründungen stehen dort, vor allem in `r3/02-chatgpt-response.md` (Umbau-Plan)
 
 ### Phase 1 – Infrastruktur und Skill-Repo (dieses Repo, keine Skill-Änderung)
 
-- [ ] `.claude-plugin/plugin.json` nur für Tests (`experimental.evals: quality/evals`)
-- [ ] fünf Pilotfälle unter `quality/evals/` (audit-readonly, doc-write, code-implement, skill-update, cc-not-in-claude-code)
-- [ ] `.gitignore`: `quality/evals/results/`, `quality/results/`
-- [ ] `tools/validate-skills.ps1` (PowerShell 7, JSON-Bericht, Exit 0/1/2)
-- [ ] `docs/skill-quality.md`
-- [ ] `docs/project-architecture.md` → `docs/skill-profile-v1.md` (Spezifikation Skill-Profil v1)
-- [ ] CLAUDE.md: `## Skill-Profil`; `.claude/skill-config/review.md` (aus dem Review-Profil); `.claude/skill-config/tracker.md`
-      (Space Claude Skills Entwicklung, Liste ClaudeSkills, Skill-Issue-Listen); altes `## Review-Profil` entfernen
-- [ ] CHANGELOG nachziehen:
+- [x] `.claude-plugin/plugin.json` nur für Tests (`experimental.evals: quality/evals`)
+- [x] fünf Pilotfälle unter `quality/evals/` (audit-readonly, doc-write, code-implement, skill-update, cc-not-in-claude-code)
+- [x] `.gitignore`: `quality/evals/results/`, `quality/results/`
+- [x] `tools/validate-skills.ps1` (PowerShell 7, JSON-Bericht, Exit 0/1/2)
+- [x] `docs/skill-quality.md`
+- [x] `docs/project-architecture.md` → `docs/skill-profile-v1.md` (Spezifikation Skill-Profil v1); `project-architecture.md`
+      bleibt als Verweis, solange tracker, README und `projects/bpm` darauf zeigen
+- [x] CLAUDE.md: `## Skill-Profil`; `.claude/skill-config/review.md` (aus dem Review-Profil); `.claude/skill-config/tracker.md`
+      (Space Claude Skills Entwicklung, Liste ClaudeSkills, Skill-Issue-Listen); altes `## Review-Profil` entfernen –
+      abweichend nur auf einen Verweis gekürzt: chatgpt-review liest den Abschnitt noch, er entfällt in Phase 5/6
+- [x] CHANGELOG nachziehen:
   - Einträge für v0.35.2–v0.35.4
   - ein gemeinsamer Nachtrag für v0.36.1–v0.36.9 (alte Regel)
   - die doppelte v0.36.0 vermerken
-- [ ] README und INDEX: nur Fakten (12 Skills, Inventar, Modus-Zahl); der INDEX-Umbau folgt in Phase 5
+  - zusätzlich gefunden und nachgetragen: v0.23.0, v0.20.0
+- [x] README und INDEX: nur Fakten (12 Skills, Inventar, Modus-Zahl); der INDEX-Umbau folgt in Phase 5
 - [ ] tracker bei claude.ai neu hochladen (Herbert): In der hochgeladenen Fassung enthält `references/create-task.md` den
-      Inhalt von `clickup-tools.md`; die Fassung im Repo ist richtig
+      Inhalt von `clickup-tools.md`; die Fassung im Repo ist richtig – Zip aus dem Repo-Stand am 24.09. geliefert
 
 **Abnahme:** `claude plugin validate .` ist grün; das Prüfskript läuft; die Pilotfälle werden gefunden; keine SKILL.md
 geändert.
+
+Stand 24.09.2026: `claude plugin validate .` bestanden mit einer erwarteten Warnung (CLAUDE.md im Plugin-Wurzelordner wird
+nicht als Kontext geladen). Das Prüfskript läuft: 12 Skills, 1 Fehler, 120 Warnungen – der Fehler ist ein toter Verweis
+in doc-pflege (`references/projekt-init.md`) und wird mit der ersten Änderung an doc-pflege behoben. `plugin eval` liest
+`quality/evals/` aus dem Manifest; ob alle fünf Fälle laufen, zeigt der Pilot (Phase 3). Seit dem Plan-Commit ist unter
+`skills/` nichts geändert.
 
 ### Phase 2 – Profile der Projekte (je eine Sitzung im Projekt-Repo)
 
