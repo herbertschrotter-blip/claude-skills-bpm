@@ -9,4 +9,4 @@ Je Serie ein Ordner `CGR-<JJJJ-MM-TT>-<thema>/` mit `README.md` und je Runde `r<
 | Serie | Thema | Start | Status | Kernergebnis |
 |---|---|---|---|---|
 | [CGR-2026-09-23-ha-grundsatz](./CGR-2026-09-23-ha-grundsatz/README.md) | ha-grundsatz | 2026-09-23 | Runde 3 offen (Schlussrunde) | – |
-| [CGR-2026-09-24-skillsystem](./CGR-2026-09-24-skillsystem/README.md) | skillsystem | 2026-09-24 | Runde 1 offen | – |
+| [CGR-2026-09-24-skillsystem](./CGR-2026-09-24-skillsystem/README.md) | skillsystem | 2026-09-24 | Runde 2 offen | – |
