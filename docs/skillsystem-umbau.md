@@ -51,6 +51,9 @@ Begründungen stehen dort, vor allem in `r3/02-chatgpt-response.md` (Umbau-Plan)
   - neue Konflikte sind erklärt
   - das Prüfskript meldet keine neuen Fehler
 - Jeder Lauf ist eine echte Claude-Sitzung und zählt gegen Herberts claude.ai-Kontingent (Abo, keine Rechnung).
+- Voraussetzung: `plugin eval` startet für jeden Lauf ein eigenes `claude`-Programm. Das braucht ein angemeldetes CLI
+  (`claude auth login`, einmal je PC; prüfen mit `claude auth status`). Die Anmeldung der Desktop-App reicht nicht – der
+  erste Pilotversuch am 24.09. brach deshalb nach einem Lauf ab („Not logged in“, ohne Kosten).
 - Konflikte mit Anthropic-Skills (`skill-creator` ↔ skill-neu/skill-pflege, `code-review` ↔ audit, cc-steuerung in Claude
   Code) misst `plugin eval` nicht, weil die Sitzung dort abgeschottet ist. Diese Fälle laufen als echte Sitzungen,
   Protokoll unter `quality/real-environment/`.
@@ -75,8 +78,9 @@ Begründungen stehen dort, vor allem in `r3/02-chatgpt-response.md` (Umbau-Plan)
   - die doppelte v0.36.0 vermerken
   - zusätzlich gefunden und nachgetragen: v0.23.0, v0.20.0
 - [x] README und INDEX: nur Fakten (12 Skills, Inventar, Modus-Zahl); der INDEX-Umbau folgt in Phase 5
-- [ ] tracker bei claude.ai neu hochladen (Herbert): In der hochgeladenen Fassung enthält `references/create-task.md` den
-      Inhalt von `clickup-tools.md`; die Fassung im Repo ist richtig – Zip aus dem Repo-Stand am 24.09. geliefert
+- [x] tracker bei claude.ai neu hochladen (Herbert): In der hochgeladenen Fassung enthält `references/create-task.md` den
+      Inhalt von `clickup-tools.md`; die Fassung im Repo ist richtig – am 24.09. hochgeladen und geprüft: die von der
+      Desktop-App synchronisierte Fassung ist in allen 15 Dateien gleich wie im Repo
 
 **Abnahme:** `claude plugin validate .` ist grün; das Prüfskript läuft; die Pilotfälle werden gefunden; keine SKILL.md
 geändert.
