@@ -4,7 +4,17 @@ Alle relevanten Änderungen an den Skills werden hier dokumentiert.
 
 Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic Versioning (`[vMAJOR.MINOR.PATCH]`). Phasen-Tags beziehen sich auf den Skill-System-Refactor aus dem ChatGPT-Review `CGR-2026-04-skillsystem`.
 
+**Versionsregel (seit 24.09.2026, Skill-Profil in `CLAUDE.md`):** Eine neue Nummer und ein Eintrag hier gibt es nur bei einer Änderung an einem Skill (`skills/**`; Feature → MINOR, sonst PATCH). Commits an Doku, Reviews, Config, Evals und Tools behalten die aktuelle Nummer. Der oberste Eintrag ist die aktuelle Version.
+
 ---
+
+## [v0.36.9] — 2026-09-24 (Nachtrag v0.36.1–v0.36.9)
+
+Nachtrag für neun Versionen, die nach der alten Regel (jeder Commit eine Nummer) ohne Eintrag geblieben sind. Keine davon ändert einen Skill.
+- **v0.36.1–v0.36.4 (20.–23.09.), tracker, Docs:** `projects/heidi` – Phasen-Parents abgeschafft (Feld „Bauplan-Phase“), Pflicht „Modul-Sammelaufgaben mitpflegen“, dritte ClickUp-Liste „dreame_x60 - Audit“, Repo heißt `HA_Dash_DreameX60`
+- **v0.36.5–v0.36.7 (23.09.), ha-grundsatz, Docs:** Review-Serie CGR-2026-09-23-ha-grundsatz, Runden 1–3 (Review-Profil, Recherche-Brief, Prompts, Antworten, Entscheidungen)
+- **v0.36.8–v0.36.9 (24.09.), skillsystem, Docs:** Review-Serie CGR-2026-09-24-skillsystem (Runden 1–3, abgeschlossen) mit Umbau-Plan `docs/skillsystem-umbau.md` und ClickUp-Aufgaben je Phase; danach Umbau Phase 1 unter der neuen Regel (Nummer bleibt v0.36.9): Test-Manifest `.claude-plugin/plugin.json`, fünf Pilotfälle unter `quality/evals/`, Prüfskript `tools/validate-skills.ps1`, `docs/skill-quality.md`, `docs/skill-profile-v1.md`, Skill-Profil in `CLAUDE.md`, Configs `.claude/skill-config/review.md` und `tracker.md`
+- Die Nummer v0.36.9 wurde von mehreren Commits getragen: ab 24.09. Absicht (neue Regel), davor kam es einmal versehentlich vor (siehe v0.36.0).
 
 ## [v0.36.0] — 2026-09-18
 
@@ -13,6 +23,19 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 - INDEX.md: Skill-Zeile und Konflikt-Paar ticket ↔ tracker / code-erstellen
 - Heidi CLAUDE.md: Abschnitt `## Ticket-Profil` (HT-NNNN, `tools/ticket.ps1`)
 - Quelle: Heidi-Sitzung Claude Code 18.09.2026 (Bauplan F.2c, DX-069)
+- Nachtrag: v0.36.0 wurde zweimal vergeben – auch Commit `3a34d48` trägt sie (tracker, Docs: `projects/heidi` – zweite ClickUp-Liste „dreame_x60 – Tickets“ für Fehler-Tickets `HT-NNNN | KÜRZEL | Kurztitel`, Tag `bug`, kein DX-Zähler)
+
+## [v0.35.4] — 2026-09-16 (Nachtrag)
+
+- **skills/chat-wechsel/SKILL.md, Fix:** Claude Code liefert nach doc-pflege Modus 8 den vollständigen Handover-Prompt; die Kurzform (nur Startprompt) nur auf ausdrücklichen Wunsch
+
+## [v0.35.3] — 2026-09-16 (Nachtrag)
+
+- **tracker, Chore:** `projects/heidi` – nächste freie Nummer DX-064 (DX-063 angelegt)
+
+## [v0.35.2] — 2026-09-16 (Nachtrag)
+
+- **tracker, Chore:** `projects/heidi` – nächste freie Nummer DX-063, Modul-Aufgaben DX-056…DX-062 vermerkt
 
 ## [v0.35.1] — 2026-09-16
 
@@ -155,6 +178,11 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 - Zwei neue Verbote: Versionsquelle/Doku raten, Werkzeugnamen fest verdrahten; Regel 10 Projektprofil lesen
 - Erster Einsatz außerhalb BPM: herbert-smarthome-v2 (Heidi) mit Commit-Profil in CLAUDE.md
 - Quelle: Heidi-Sitzung Claude Code 16.09.2026 (Herbert: „kann ich diese Skills nicht neutral machen?“)
+
+## [v0.23.0] — 2026-05-12 (Nachtrag)
+
+- **skills/mockup-erstellen/SKILL.md, Feature:** Ordner je Fenster (`<Modul>/NN_Fenster/NN_Variante.html` statt flach), Klick-Navigation als Pflicht (onclick, tote Pfade), `_SITEMAP.md` je Modul mit Status-Symbolen und Selbstcheck, Abläufe „neues Fenster anlegen“ und „Fenster nachträglich hinzufügen“ (beidseitige Verweise); `_SITEMAP.md` als Pflicht-Lektüre beim Doku-Laden; VERBOTEN-Liste +5 Punkte (254 → 416 Zeilen)
+- Nachgetragen am 24.09.2026 (Commit `bd43b47`)
 
 ## [v0.22.3] — 2026-04-29
 
@@ -311,6 +339,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 - SKILL.md erweitert um neuen Block "ClickUp-Tools (Lade-Pattern)" + VERBOTEN-Eintrag
 - Schließt: ClickUp `86c9ht3xn` (tracker-010)
 - Quelle: BauProjektManager Teil 32 (CGR-Kontext, Roadmap-Status-Abgleich)
+
+## [v0.20.0] — 2026-04-26 (Nachtrag)
+
+- **evals, Feature:** Smoke-Eval-Katalog `evals/smoke-all-skills.md` für alle 11 Skills (P1.1 + P1.4 aus CGR r6 Kapitel 3): 88 Fälle – 26 aus der bestehenden Baseline (git-commit-helper, chatgpt-review, tracker, code-erstellen), 62 neue für die übrigen 7 Skills; 6 Mehrfach-Auslöse-Fälle für cc-steuerung (CC-06 bis CC-11) prüfen INDEX-Invariante 9; Top-30-Liste für den manuellen Lauf (P1.2); Lauf-Snapshots unter `evals/runs/`
+- Nachgetragen am 24.09.2026 (Commit `9a0bca8`)
+- Quelle: BauProjektManager Teil 32
 
 ## [v0.19.1] — 2026-04-25
 
