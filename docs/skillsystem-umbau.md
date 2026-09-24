@@ -109,7 +109,10 @@ unter `skills/` nichts geändert. **Phase 1 abgeschlossen am 24.09.2026.**
 - [x] 60 Fälle nach Risiko unter `quality/evals/` schreiben: ohne Abhängigkeit von Repo-Dateien (die Sandbox hat keine);
       den audit-Fall teilen in den heutigen Vertrag (Code ↔ Doku) und einen Ziel-Fall Skill-Prüfung, der bis Phase 5
       scheitern darf – 24.09., von Herbert freigegeben; Katalog und Regeln in `quality/README.md`
-- [ ] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI) – gestartet am 24.09. um 20:59, nacheinander
+- [ ] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI) – Teil 1 am 24.09. (20:59–21:58, auf Wunsch
+      abgebrochen): 30 Fälle vollständig, 25 bestanden, 81/91 Läufe; Ergebnis in `quality/baseline/teil-1-2026-09-24.md`.
+      Offen: Teil 2 mit den übrigen 30 Fällen (ab `doc-changelog`) bei unveränderten Skills; `audit-findings-fix` vorher
+      ohne Verweis auf fehlenden Kontext neu formulieren
 
 Ergebnis des Pilots (unveränderte Skills, 5 Fälle × 3 Läufe):
 
