@@ -1,37 +1,69 @@
 # claude-skills-bpm
 
-Skills für Claude (Cowork-Chat und Claude Code) und ihre Projekt-Konfigurationen. Aufbau und Regeln: `README.md`,
-`INDEX.md`, `docs/project-architecture.md`. Antworten auf Deutsch.
+Skills für Claude (Hauptumgebung Claude Code, dazu der Cowork-Chat) mit ihrer Prüf- und Test-Infrastruktur. Aufbau und
+Regeln: `README.md`, `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1.md`; laufender Umbau:
+`docs/skillsystem-umbau.md`. Antworten auf Deutsch.
+
+## Skill-Profil
+
+- Profil-Version: 1
+- Projekt-ID: claude-skills-bpm
+- Repo: herbertschrotter-blip/claude-skills-bpm
+- Branch-Policy: fixed:main
+
+### Checks
+- skill-validation: pwsh -NoProfile -File tools/validate-skills.ps1 [skills/**; quality/evals/**; .claude-plugin/**; docs/skill-quality.md; docs/skill-profile-v1.md]
+- routing-eval: claude plugin eval . --runs 3 --ablation none --no-publish --trust-plugin [skills/**]
+
+### Commit
+- Format: [vX.Y.Z] <Modul>, <Typ>: <Kurztitel>
+- Module: <skill>=skills/<skill>/**; skillsystem=docs/**, INDEX.md, README.md, CLAUDE.md, .claude/**; ha-grundsatz=docs/ha-grundsatz/**; Tools=tools/**; Eval=quality/**, .claude-plugin/**
+- Versionsquelle: changelog:CHANGELOG.md
+- Versionsregel: Skill-Änderung unter skills/** → neue Nummer (Feature → MINOR, sonst PATCH) und CHANGELOG-Eintrag; Commits an Doku, Reviews, Config, Evals und Tools behalten die aktuelle Nummer
+- Push-Policy: required-after-commit
+- Pre-Commit-Checks: skill-validation
+- Doku-Check: Zuständigkeit oder Auslöser eines Skills geändert → INDEX.md; Aufbau des Repos geändert → README.md; Skill geändert → CHANGELOG.md und Lieferung an Herbert für den Upload bei claude.ai
+
+### Code
+- Stacks: none
+- Pflichtkontext: INDEX.md; docs/skill-quality.md; docs/skill-profile-v1.md; die betroffenen skills/<skill>/SKILL.md
+- Aufgabenquelle: Tracker.Config (Liste ClaudeSkills, Skill-Issue-Listen); docs/skillsystem-umbau.md
+- Architekturregeln: ref:docs/skill-quality.md#verbindliche-qualitätsregeln
+- Tests: skill-validation; routing-eval
+- Auslieferung: Upload bei claude.ai durch Herbert (SKILL.md oder Zip mit references/); vorher routing-eval für die betroffenen Fälle
+- Mockup-Policy: none
+- Befund-Ort: docs/chatgpt-reviews/; Skill-Issues im Tracker
+
+### Doku
+- Router: INDEX.md
+- Standard: ref:docs/skill-quality.md#dokumentationsregeln
+- Pflichtdokumente: INDEX.md; README.md; CHANGELOG.md
+- Validierungsregeln: ref:docs/skill-quality.md#skill-prüfung
+- Sitzungsabschluss: none
+- Entscheidungs-Ort: docs/chatgpt-reviews/
+
+### Tracker
+- Provider: clickup
+- Config: .claude/skill-config/tracker.md
+
+### Ticket
+- Config: none
+
+### Mockup
+- Ablage: none
+- Designquelle: none
+- Ansichten: none
+- Abnahme-Ort: none
+
+### Review
+- Config: .claude/skill-config/review.md
+
+### Modul
+- Manifest: none
+- Grundsatzregeln: none
 
 ## Review-Profil
 
-Gilt für den Skill `chatgpt-review` in diesem Repo.
-
-| Feld | Wert |
-|---|---|
-| Review-Ablage | `docs/chatgpt-reviews/` – je Serie ein Ordner `CGR-<JJJJ-MM-TT>-<thema>/`, Übersicht `docs/chatgpt-reviews/INDEX.md` |
-| Themen | `ha-grundsatz` – Grundsatzregeln für Home-Assistant-Projekte und Skill `modul-bauplan` · `skillsystem` – Aufbau, Trigger und Neutralität der Skills |
-| GitHub-Repo | `herbertschrotter-blip/claude-skills-bpm`; beim Thema `ha-grundsatz` zusätzlich der Referenzfall `herbertschrotter-blip/HA_Dash_DreameX60` |
-| Pflicht-Block | `ha-grundsatz`: „Rahmen“ (unten) · `skillsystem`: Neutralitäts-Checkliste aus `skills/skill-neu/SKILL.md` Schritt 3a |
-| Kontextquelle | `ha-grundsatz`: im Referenzfall `docs/ARCHITEKTUR.md`, `docs/DATEN.md`, `docs/HAUSREGELN.md`, `docs/ENTSCHEIDUNGEN.md`; hier `docs/ha-grundsatz/` · `skillsystem`: `INDEX.md`, `docs/project-architecture.md`, die betroffenen `SKILL.md`; höchstens 3–5 Blöcke |
-| Reviewer-Rolle | `ha-grundsatz`: erfahrener Home-Assistant-Architekt (Core- und eigene Integrationen, eigene Karten und Panels, HACS) und Architekt für modulare Systeme · `skillsystem`: erfahrener Architekt für Prompts und Skills |
-| Ergebnis-Ort | `ha-grundsatz`: `docs/ha-grundsatz/` (Grundsatzregeln) und `skills/modul-bauplan/` (Skill) · `skillsystem`: betroffene Skills und `CHANGELOG.md` |
-
-### Pflicht-Block „Rahmen“ (Thema `ha-grundsatz`)
-
-```
-## Rahmen (PFLICHT-Hinweis)
-
-- Herbert ist Home-Assistant-Einsteiger; gebaut wird mit Claude Code. Regeln müssen für ihn verständlich und für
-  Claude eindeutig prüfbar sein.
-- Ergebnis: (1) eine Doku „HA-Grundsatzregeln“ (Skill-Repo, docs/ha-grundsatz/), (2) der Skill „modul-bauplan“, der
-  vom Konzept bis zum fertigen Dashboard führt und die Reihenfolge vorschlägt (Modi: Planen, Prüfen, Nachschlagen).
-- Skills sind projektneutral: Projektwerte (Pfade, Präfixe, IDs) stehen in einem Profil der CLAUDE.md des jeweiligen
-  Repos; Plattform-Spezifisches (Home Assistant) in einer eigenen Referenzdatei des Skills.
-- Bestehende Apps (Referenzfall Heidi) werden nach den Grundsatzregeln von Grund auf neu gebaut – ohne Migration:
-  kein Übergangscode, keine Rückwärtskompatibilität. Ihr heutiger Stand ist Referenzfall und Lernquelle.
-- Umgebung: Home Assistant OS auf Raspberry Pi 5, HA 2026.9; Entwicklung auf Windows 11 mit Claude Code, Konfiguration
-  über ein Samba-Laufwerk, Einspielen per Skript.
-- Keine externen Ressourcen in Karten; nichts Geheimes ins Repo (Tokens, Koordinaten, Gerätekennungen).
-- Sprache: Deutsch.
-```
+Steht in `.claude/skill-config/review.md` (Skill-Profil → Review): Ablage, Themen, Repos, Kontextquelle, Pflicht-Blöcke,
+Reviewer-Rollen und Ergebnis-Orte je Thema. Dieser Abschnitt bleibt als Verweis, bis chatgpt-review die Config direkt liest
+(Umbau Phase 5/6).

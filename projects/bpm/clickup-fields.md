@@ -14,8 +14,8 @@ Es gibt **zwei verschiedene Field-Scopes** in diesem Projekt:
 
 | Scope | Gilt für | Anzahl Fields | Dokumentiert in |
 |---|---|---|---|
-| **BPM-Scope** | BPM-Listen (PM, DOC, …) + ClaudeSkills-Liste | 10 Custom Fields | Abschnitt 1 unten |
-| **Skill-Issues-Scope** | Alle 11 Listen im Ordner "Skill Issues" | 6 Custom Fields | Abschnitt 2 unten |
+| **BPM-Scope** | BPM-Listen (PM, DOC, …) | 10 Custom Fields | Abschnitt 1 unten |
+| **ClaudeSkills und Skill-Issues** | Space „Claude Skills Entwicklung“ | 10 bzw. 6 Custom Fields | `.claude/skill-config/tracker.md` im Skill-Repo |
 
 Bei jedem `tracker`-Kommando: Scope aus Ziel-Liste ableiten
 (siehe `clickup-lists.md`).
@@ -63,28 +63,10 @@ Gilt für alle 17 BPM-Listen + die ClaudeSkills-Refactor-Plan-Liste.
 
 ---
 
-## 2. Skill-Issues-Scope — 6 Custom Fields
+## 2. Skill-Issues-Scope
 
-Gilt für alle 11 Listen im Ordner "Skill Issues" (Ordner-ID `901515724728`).
-
-| Feld | ID | Typ | Inhalt |
-|------|----|----|----|
-| **Issue-ID** | `e286a04a-d79b-481a-8ee4-9c9401a87bfc` | short_text | `<skill>-NNN` (z.B. `tracker-005`) |
-| **Typ** | `5b45b13a-a866-4a5a-83e2-eea2ea1128b8` | drop_down | Bug/Trigger-Fehler/Doku-Fehler/Verbesserung/Refactor-Idee |
-| **Commit-Hash** | `8e8879f7-5741-4af9-9a4a-708eff59ca87` | short_text | Git-Hash nach Fix |
-| **Beobachtungs-Chat** | `eb1f6eb6-8fcf-4b73-b7aa-ffd81f2db0fe` | short_text | Chat in dem Issue erkannt wurde |
-| **Chat-Anker erstellt** | `512b8920-e958-4e43-826e-110e3bccdfc2` | short_text | Identisch zu BPM-Scope |
-| **Chat-Anker erledigt** | `0c72a2ea-630e-4320-9cdb-80a19bc5ebb6` | short_text | Identisch zu BPM-Scope |
-
-### Skill-Issues-Typ-Dropdown (Option-IDs)
-
-| Option | Option-ID |
-|--------|-----------|
-| Bug | `2519a0e3-5ef4-4913-96b9-6a297343326d` |
-| Trigger-Fehler | `9e98787e-8956-4212-86ed-789276f4aa3e` |
-| Doku-Fehler | `d1116505-fd85-4283-bab8-9e657e6ea833` |
-| Verbesserung | `6fcb6a19-d22e-4a36-b3f2-047523e41ad6` |
-| Refactor-Idee | `3dfdb7a5-39b1-433d-b550-dc05a371de47` |
+Umgezogen: Felder, Option-IDs, Listen und Nummernschema der Skill-Issues stehen in `.claude/skill-config/tracker.md` des
+Skill-Repos. Ebenso die Felder der Liste ClaudeSkills (gleiche IDs wie Abschnitt 1).
 
 ---
 
@@ -144,14 +126,7 @@ Beispiel: `016.01 — GetPendingImports() Detail-Infos`
 
 ## 5. Skill-Issue-Nummerierung
 
-**Format:** `<skill-name>-NNN` — 3-stellig, pro Skill eigener Zähler ab 001.
-
-**Titel-Format:** `<skill>-NNN: <Kurzbeschreibung>`
-
-Beispiel: `tracker-005: Anker-Persistenz in Folge-Antworten`
-
-Issue-ID wird **zusätzlich** im Custom Field `Issue-ID` (`e286a04a-…`)
-gespeichert. Lücken werden nicht gefüllt.
+Umgezogen nach `.claude/skill-config/tracker.md` des Skill-Repos.
 
 ---
 
@@ -176,8 +151,8 @@ Tags kleingeschrieben. Nur an Hauptaufgaben, nicht an Unteraufgaben.
 | Listen-Typ | "offen" | "in Arbeit" | "erledigt" |
 |---|---|---|---|
 | BPM-Listen (PM, DOC, SET, etc.) | `open` | `in progress` | `done` |
-| ClaudeSkills-Liste (Refactor-Plan) | `open` | `in progress` | `done` |
-| Skill-Issue-Listen (tracker, cc-steuerung, …) | `to do` | `in progress` | `complete` |
+
+ClaudeSkills und Skill-Issues: `.claude/skill-config/tracker.md` im Skill-Repo.
 
 **Alle Werte kleingeschrieben** — ClickUp-API ist case-sensitive.
 

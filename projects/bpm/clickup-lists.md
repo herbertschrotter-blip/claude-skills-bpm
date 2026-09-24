@@ -48,51 +48,9 @@ Nächste freie Nummer im Memory: `Next:<NNN>`.
 
 ## Space 2 — Claude Skills Entwicklung
 
-**Space-ID:** `901510833068`
-
-### 2a. Liste direkt im Space: ClaudeSkills (Refactor-Plan)
-
-**Listen-ID:** `901522935159`
-
-**Zweck:** Refactor-Plan-Tasks (Phasen 1-7), Meta-Tasks zum Skill-System.
-
-**Custom-Field-Scope:** 10 Fields (identisch zu BPM). Feld-IDs siehe
-`clickup-fields.md`.
-
-**Status-Werte:** `open` / `in progress` / `done`
-
-### 2b. Ordner "Skill Issues" mit 11 Issue-Listen
-
-**Ordner-ID:** `901515724728`
-
-Eine Liste pro Skill, für Issue-Tracking (Bugs, Trigger-Fehler, Doku-Fehler,
-Verbesserungs-Ideen, Refactor-Ideen).
-
-| Skill | Listen-ID |
-|-------|-----------|
-| audit | 901522952203 |
-| cc-steuerung | 901522952208 |
-| chat-wechsel | 901522952212 |
-| chatgpt-review | 901522952221 |
-| code-erstellen | 901522952225 |
-| doc-pflege | 901522952230 |
-| git-commit-helper | 901522952231 |
-| mockup-erstellen | 901522952236 |
-| skill-neu | 901522952243 |
-| skill-pflege | 901522952246 |
-| tracker | 901522952249 |
-
-**Custom-Field-Scope:** 6 Skill-Issue-Fields — Issue-ID, Typ, Commit-Hash,
-Beobachtungs-Chat, Chat-Anker erstellt/erledigt. IDs in `clickup-fields.md`.
-
-**Status-Werte:** `to do` / `in progress` / `complete`
-⚠️ **Unterschied zu BPM/ClaudeSkills!** Skill-Issues-Listen nutzen
-`complete`, nicht `done`.
-
-**Nummerierung:** Pro Skill `<skill-name>-NNN`, dreistellig, ab 001 pro
-Skill. Lücken werden bewusst nicht gefüllt (wegen Chat-Anker-Referenzen).
-Höchste vergebene Nummer ermitteln über Scan aller Tasks der Liste
-(Custom Field `Issue-ID`). Siehe tracker-003 für Auto-Nummerierung.
+**Umgezogen** in die Config des Skill-Repos: `.claude/skill-config/tracker.md` (Liste ClaudeSkills, Ordner „Skill Issues“
+mit den Issue-Listen, Felder, Status, Nummernschema). Diese Datei behält nur den BPM-Space und zieht in Umbau Phase 2 ins
+BPM-Repo (`docs/skillsystem-umbau.md`).
 
 ---
 
@@ -103,27 +61,10 @@ Bei jedem `tracker`-Kommando Ziel-Scope aus der Syntax ableiten:
 | Kommando-Syntax | Ziel-Scope | Ziel-Liste |
 |---|---|---|
 | `tracker neu: <Modul-Kürzel> — ...` | **BPM** | Space 1, passende Modul-Liste |
-| `tracker neu: <ClaudeSkills-Phase-Titel>` | **ClaudeSkills** | Space 2, Liste 901522935159 |
-| `tracker issue <skill-name>: ...` | **Skill-Issues** | Space 2, passende Skill-Issues-Liste |
+| `tracker neu: <ClaudeSkills-Phase-Titel>` | **ClaudeSkills** | siehe `.claude/skill-config/tracker.md` im Skill-Repo |
+| `tracker issue <skill-name>: ...` | **Skill-Issues** | siehe `.claude/skill-config/tracker.md` im Skill-Repo |
 
-### Gültige Skill-Namen für `tracker issue`
-
-Eindeutige Werte für `<skill-name>`:
-
-- `audit`
-- `cc-steuerung`
-- `chat-wechsel`
-- `chatgpt-review`
-- `code-erstellen`
-- `doc-pflege`
-- `git-commit-helper`
-- `mockup-erstellen`
-- `skill-neu`
-- `skill-pflege`
-- `tracker`
-
-Bei unbekanntem Skill-Namen: `ask_user_input_v0` mit diesen 11 Werten als
-Optionen. **Nie raten.**
+Gültige Skill-Namen für `tracker issue` und ihre Listen: `.claude/skill-config/tracker.md` im Skill-Repo.
 
 ### Gültige Modul-Kürzel für `tracker neu`
 
