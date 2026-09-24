@@ -1,6 +1,6 @@
 ---
-description: Normale Repo-Arbeit in Claude Code – cc-steuerung darf nicht auslösen (vor dem Umbau erwarteter Fehlfall).
-tags: [pilot, critical, routing]
+description: "Normale Repo-Arbeit in Claude Code – cc-steuerung darf nicht auslösen (vor dem Umbau erwarteter Fehlfall)."
+tags: [baseline, routing, pilot, critical, cc-steuerung]
 runs: 3
 max_turns: 8
 timeout_seconds: 180

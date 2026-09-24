@@ -1,6 +1,6 @@
 ---
-description: Doku ändern – doc-pflege soll auslösen, audit nicht.
-tags: [pilot, critical, routing]
+description: "Doku ändern – doc-pflege soll auslösen, audit nicht."
+tags: [baseline, routing, pilot, critical, audit, doc-pflege]
 runs: 3
 max_turns: 8
 timeout_seconds: 180

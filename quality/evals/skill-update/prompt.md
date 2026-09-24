@@ -1,6 +1,6 @@
 ---
-description: Bestehenden Skill ändern – skill-pflege soll auslösen, skill-neu nicht.
-tags: [pilot, critical, routing]
+description: "Bestehenden Skill ändern – skill-pflege soll auslösen, skill-neu nicht."
+tags: [baseline, routing, pilot, critical, skill-neu, skill-pflege]
 runs: 3
 max_turns: 8
 timeout_seconds: 180
