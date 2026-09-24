@@ -1,0 +1,6 @@
+# Ergebnisse der Test-Läufe (claude plugin eval, Prüfskript)
+quality/evals/results/
+quality/results/
+
+# Liefer-Zips für den Upload bei claude.ai gehören nicht ins Repo
+skills/*.zip

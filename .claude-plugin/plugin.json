@@ -1,0 +1,10 @@
+{
+  "name": "herbert-skills-eval",
+  "description": "Lokaler Test-Rahmen für Herberts Skill-Sammlung – nur für claude plugin eval, nicht zur Verteilung (die Skills kommen per Upload über claude.ai).",
+  "author": {
+    "name": "Herbert Schrotter"
+  },
+  "experimental": {
+    "evals": "quality/evals"
+  }
+}
