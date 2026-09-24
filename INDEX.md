@@ -1,9 +1,14 @@
 # INDEX — Skill-Übersicht
 
-Routing-Matrix für die 11 Skills im `claude-skills-bpm` Projekt.
+Routing-Matrix für die 12 Skills im `claude-skills-bpm` Projekt.
 
 Für tiefe Erklärungen aller Ordner und Dateien siehe [README.md](./README.md).
 Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
+
+> **Stand 24.09.2026:** Die Skill-Tabelle ist aktuell. Hierarchie, Invarianten und Abgrenzung beschreiben großteils den
+> Stand vor dem Neutral-Umbau (v0.24–v0.36) und werden in Umbau Phase 5 neu gefasst
+> ([docs/skillsystem-umbau.md](./docs/skillsystem-umbau.md)). Verbindliche Qualitätsregeln für Skills:
+> [docs/skill-quality.md](./docs/skill-quality.md); Profile der Projekte: [docs/skill-profile-v1.md](./docs/skill-profile-v1.md).
 
 ---
 
@@ -16,7 +21,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **chat-wechsel** | Übergabe an die nächste Sitzung: Cowork Handover-Prompt, Claude Code doc-pflege Modus 8 + Startprompt; Regeln aus Profilen, Link-Prüfung | "neuer chat", "übergabe", "chat wechsel" |
 | **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung nach Review-Profil (Ablage, Themen, Pflicht-Block, Kontextquelle); Push-Prüfung, Ergebnisse → Repo/Tasks | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |
 | **code-erstellen** | Master-Orchestrator für Code-Erstellung, projektneutral (Code-Profil in CLAUDE.md: Docs, Aufgabenquelle, Tests, Auslieferung) | Jede Anfrage die Code-Erstellung impliziert |
-| **doc-pflege** | Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD/INDEX; Heidi: Bauplan/HANDOFF), 8 Modi inkl. Validierung nach Profil und Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept" |
+| **doc-pflege** | Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD/INDEX; Heidi: Bauplan/HANDOFF), 9 Modi (0–8) inkl. Validierung nach Profil und Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept" |
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil (BPM: Docs/Mockups + Sitemap; Heidi: dreame_x60/mockups, --dx-Tokens), Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue Skills von Grund auf erstellen – neutral (Neutralitäts-Checkliste, Profil-/references-Aufteilung), für Cowork und Claude Code | "neuer Skill für X", "erstelle einen Skill" |
@@ -44,6 +49,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 - **chat-wechsel** — Session-Ende, Handover
 - **chatgpt-review** — Cross-LLM-Review, CGR-Archivierung
 - **audit** — Read-only Konsistenzprüfung
+- **ticket** — Fehler-Tickets einzeln bearbeiten; ruft tracker und code-erstellen selbst auf
 
 ### Tool-Wrapper (Integration mit externen Systemen)
 
@@ -168,6 +174,9 @@ Das Skill-System ist projekt-agnostisch gebaut — projekt-spezifische Daten lie
 | `projects/`-Ordner leer | Vollständiger Universell-Modus mit Hinweis aufs Anlegen |
 
 Für BPM: siehe `projects/bpm/` mit ClickUp-Listen-IDs, Custom-Field-IDs, Modul-Kürzeln und Memory-Eintragsformaten.
+Für Heidi: `projects/heidi/`. In Claude Code kommt das aktive Projekt aus den Profilen der CLAUDE.md des Repos
+(Tracker-Profil, Commit-Profil …), nicht aus dem Memory. Die Werte des Space „Claude Skills Entwicklung“ stehen in
+`.claude/skill-config/tracker.md`.
 
 ---
 
