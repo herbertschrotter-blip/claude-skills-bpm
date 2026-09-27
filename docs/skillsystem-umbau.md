@@ -109,11 +109,10 @@ unter `skills/` nichts geändert. **Phase 1 abgeschlossen am 24.09.2026.**
 - [x] 60 Fälle nach Risiko unter `quality/evals/` schreiben: ohne Abhängigkeit von Repo-Dateien (die Sandbox hat keine);
       den audit-Fall teilen in den heutigen Vertrag (Code ↔ Doku) und einen Ziel-Fall Skill-Prüfung, der bis Phase 5
       scheitern darf – 24.09., von Herbert freigegeben; Katalog und Regeln in `quality/README.md`
-- [ ] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI) – Teil 1 am 24.09. (20:59–21:58, auf Wunsch
-      abgebrochen): 30 Fälle vollständig, 25 bestanden, 81/91 Läufe; Ergebnis in `quality/baseline/teil-1-2026-09-24.md`.
-      Teil 2 am 27.09. ab 22:34: die übrigen 30 Fälle (ab `doc-changelog`) und das neu formulierte `audit-findings-fix`
-      (f67de05), Skills unverändert seit 12f90b8. ClickUp-Kommentar zu Teil 1 am 27.09. nachgetragen (am 24.09. war das
-      Tageslimit der ClickUp-Zugriffe erreicht)
+- [x] Grundmessung laufen lassen (rund 180 Läufe; angemeldetes CLI) – in zwei Teilen: Teil 1 am 24.09. (30 Fälle, auf
+      Wunsch abgebrochen, aus den Protokollen nachgerechnet), Teil 2 am 27./28.09. (übrige 30 Fälle und das neu
+      formulierte `audit-findings-fix`), Skills unverändert seit 12f90b8. **Ergebnis: 55 von 60 Fällen, 172 von 180
+      Läufen, kritische Fälle 20 von 23** – `quality/baseline/grundmessung-2026-09.md`
 
 Ergebnis des Pilots (unveränderte Skills, 5 Fälle × 3 Läufe):
 
@@ -130,7 +129,7 @@ Gesamt 11/15 Läufe (3 von 5 Fällen). Dauer 14 Minuten (rund 55 Sekunden je Lau
 180 Läufe, knapp 3 Stunden nacheinander, Gegenwert rund 70 USD. `plugin eval` löscht die Protokolle der Läufe; zur
 Fehlersuche einen Fall einzeln mit `--keep-temp` laufen lassen (behält laut Hilfe die Temp-Ordner).
 - [ ] echte Sitzungen EXT-01 bis EXT-05
-- [ ] Grundmessung einfrieren
+- [x] Grundmessung einfrieren – `quality/baseline/grundmessung-2026-09.md` ist die Vergleichsbasis (28.09.2026)
 
 **Abnahme:** Die unveränderten Skills sind vermessen.
 
