@@ -7,4 +7,5 @@ timeout_seconds: 180
 allowed_tools: [Skill, Read, Glob, Grep]
 ---
 
-Die Befunde aus dem Audit von gestern bitte jetzt beheben: Die veralteten Kapitel in der Architektur-Doku aktualisieren.
+Das Audit hat ergeben, dass die Kapitel 3 und 5 der Architektur-Doku noch den alten Import-Ablauf beschreiben. Bring die
+beiden Kapitel auf den neuen Stand.

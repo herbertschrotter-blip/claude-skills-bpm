@@ -99,7 +99,7 @@ Stand 24.09.2026, 60 Fälle.
 | `audit-bauplan` | audit | Mach einen Bauplan-Check: Stimmen Statusliste und Entitäts-Vertrag noch mit dem Code überein? Nur prüfen. | audit | doc-pflege | kritisch |
 | `audit-generic-check` | audit | Prüf mal alles durch, ob im Projekt noch alles zusammenpasst. | audit | doc-pflege, code-erstellen | kritisch |
 | `audit-no-trigger-code-review` | audit | Schau dir diese Funktion an und sag mir, ob sie einen Fehler hat: (dazu eine kurze Python-Funktion) | – | audit | normal |
-| `audit-findings-fix` | audit | Die Befunde aus dem Audit von gestern bitte jetzt beheben: Die veralteten Kapitel in der Architektur-Doku aktualisieren. | doc-pflege | audit | kritisch |
+| `audit-findings-fix` | audit | Das Audit hat ergeben, dass die Kapitel 3 und 5 der Architektur-Doku noch den alten Import-Ablauf beschreiben. Bring die beiden Kapitel auf den neuen Stand. | doc-pflege | audit | kritisch |
 | `mockup-new-dialog` | mockup-erstellen | Mach mir ein Mockup für den neuen Einstellungen-Dialog, am besten zwei Varianten. | mockup-erstellen | code-erstellen | normal |
 | `mockup-sketch-dashboard` | mockup-erstellen | Wie könnte das Dashboard für den Saugroboter aussehen? Skizzier es mir als HTML-Entwurf, bevor wir etwas bauen. | mockup-erstellen | code-erstellen | normal |
 | `mockup-then-implement` | mockup-erstellen | Entwirf zuerst ein Mockup für die Projektliste, danach bauen wir sie ein. | mockup-erstellen | – | normal |
