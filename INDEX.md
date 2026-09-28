@@ -1,6 +1,6 @@
 # INDEX — Skill-Übersicht
 
-Routing-Matrix für die 12 Skills im `claude-skills-bpm` Projekt.
+Routing-Matrix für die 13 Skills im `claude-skills-bpm` Projekt.
 
 Für tiefe Erklärungen aller Ordner und Dateien siehe [README.md](./README.md).
 Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
@@ -24,6 +24,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **doc-pflege** | Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD/INDEX; Heidi: Bauplan/HANDOFF), 9 Modi (0–8) inkl. Validierung nach Profil und Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept" |
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil (BPM: Docs/Mockups + Sitemap; Heidi: dreame_x60/mockups, --dx-Tokens), Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
+| **projekt-anlegen** | Neue Projekte anlegen und einrichten, projektneutral nach Stack: klären, was es werden soll (auch bei unscharfer Idee), Bestand und Quelle der Wahrheit prüfen, Plan zeigen, Ordner/Grunddateien/Git/CLAUDE.md mit Skill-Profil anlegen, GitHub nach Rückfrage, in die Übersicht eintragen; HA-Grundsatzregeln in `references/stacks/home-assistant.md` | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
 | **skill-neu** | Neue Skills von Grund auf anlegen – Absicht, Kollisionsprüfung (auch gegen Skills von Anthropic), Neutralität, mindestens drei Eval-Fälle, Prüfung, Lieferung | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills ändern: Safe Patch (gezielt, Rest bleibt wörtlich) oder Refactor mit Regel-Inventar (`docs/skill-refactors/`); Abschluss mit Prüfskript und Routing-Eval, Lieferung als Datei/Zip | "Skill updaten", "Skill ändern", "Skill erweitern" |
 | **ticket** | Fehler-Tickets eines Projekts (Meldungen + automatisch erkannte Auffälligkeiten, z. B. Heidi `HT-NNNN`) einzeln und immer gleich bearbeiten – acht Schritte, jeder Übergang mit Auswahlfrage, nichts automatisch; Werte aus dem Ticket-Profil (CLAUDE.md) | "ticket HT-0007", "ticket liste", "nimm das nächste ticket" |
@@ -50,6 +51,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 - **chatgpt-review** — Cross-LLM-Review, CGR-Archivierung
 - **audit** — Read-only Konsistenzprüfung
 - **ticket** — Fehler-Tickets einzeln bearbeiten; ruft tracker und code-erstellen selbst auf
+- **projekt-anlegen** — Neue Projekte anlegen und einrichten; übergibt danach an mockup-erstellen, code-erstellen oder tracker
 
 ### Tool-Wrapper (Integration mit externen Systemen)
 
@@ -76,6 +78,9 @@ Die Paar-Konflikte wurden durch Delegations-Tabellen im Body der jeweiligen Skil
 | ticket ↔ tracker / code-erstellen | Ticketnummer oder Ticket-Befehl → ticket (ruft tracker und code-erstellen selbst auf); Aufgabe ohne Ticket → tracker; Bugfix ohne Ticket → code-erstellen |
 | audit ↔ code-erstellen | Read-only Prüfung → audit; Fixes → code-erstellen (Delegation per ask_user_input_v0) |
 | chat-wechsel ↔ chatgpt-review | Claude-Handover → chat-wechsel; ChatGPT-Review-Prompt → chatgpt-review; generisch → ask_user_input_v0 |
+| projekt-anlegen ↔ code-erstellen | neues Projekt anlegen oder Repo holen und einrichten → projekt-anlegen; Änderung in einem bestehenden Projekt → code-erstellen |
+| projekt-anlegen ↔ mockup-erstellen | neues Projekt aufsetzen, auch bei offener Art → projekt-anlegen (bietet mockup-erstellen an); nur Aussehen entwerfen → mockup-erstellen |
+| projekt-anlegen ↔ skill-neu | neues Projekt → projekt-anlegen; neuer Skill → skill-neu |
 | cc-steuerung ↔ Fachskills | asymmetrisch: cc-steuerung ist Modalität (WIE), Fachskills bleiben für WAS zuständig. Beide können gleichzeitig aktiv sein. |
 
 

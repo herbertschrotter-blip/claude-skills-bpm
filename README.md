@@ -2,7 +2,7 @@
 
 Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
 
-Dieses Repo enthält die Skill-Definitionen für 12 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
+Dieses Repo enthält die Skill-Definitionen für 13 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
 > **Umbau läuft (seit 24.09.2026):** [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md) – Skill-Profil v1,
 > Qualitätsregeln, Prüfskript und Routing-Tests; Ergebnis der Review-Serie `CGR-2026-09-24-skillsystem`.
@@ -54,7 +54,7 @@ claude-skills-bpm/
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
-├── skills/                ← 12 Skills, je ein Ordner mit SKILL.md
+├── skills/                ← 13 Skills, je ein Ordner mit SKILL.md
 └── tools/                 ← Prüfskript validate-skills.ps1
 ```
 
@@ -62,7 +62,7 @@ Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Date
 
 ---
 
-## Kapitel 1 — Die 12 Skills im Überblick
+## Kapitel 1 — Die 13 Skills im Überblick
 
 Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Meta-Skills** und **Modalitäts-Skills**.
 
@@ -77,6 +77,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 | **code-erstellen** | Master-Orchestrator für Code-Änderungen (Code-Profil in der CLAUDE.md des Projekts). | "implementiere das Feature", "erstelle DocumentTypeRecognizer.cs", "baue Recovery-Logik ein" |
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil. | "Mockup für ProfileWizard", "Screen-Design", "UI-Mockup" |
 | **doc-pflege** | Erstellt und pflegt Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD.md). | "pflege die docs", "schreib ein ADR", "neues Konzept für X" |
+| **projekt-anlegen** | Neue Projekte anlegen und einrichten: klären, Plan zeigen, Ordner, Git, Skill-Profil, GitHub nach Rückfrage. | "neues Projekt", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
 | **ticket** | Fehler-Tickets eines Projekts einzeln und immer im selben Ablauf bearbeiten (acht Schritte). | "ticket liste", "ticket HT-0007", "nimm das nächste ticket" |
 | **chatgpt-review** | Strukturierte Cross-LLM-Review-Prompts zwischen Claude und ChatGPT. | "besprich das mit ChatGPT", "zweite Meinung", "Folgeprompt für Runde 3" |
 | **audit** | Strikt read-only Konsistenzprüfung zwischen Code, Docs, Frontmatter und Quickload. | "audit", "prüfe alles", "konsistenzcheck" |
@@ -221,7 +222,7 @@ klärt Phase 6 beim Skill tracker, entfernt wird der Ordner in Phase 7.
 | `chat-anker-konzept.md` | Draft v2 des Chat-Anker-Systems |
 | `chatgpt-reviews/` | CGR-Archiv dieses Repos (Serien `CGR-2026-09-23-ha-grundsatz`, `CGR-2026-09-24-skillsystem`) mit `INDEX.md` |
 | `fragilitaeten-und-fruehwarn.md` | 4 Fragilitäten mit Frühwarn-Indikatoren (INDEX-Invariante 10) |
-| `ha-grundsatz/` | HA-Grundsatzregeln für Home-Assistant-Projekte (im Aufbau, Grundlage für den Skill `modul-bauplan`) |
+| `ha-grundsatz/` | HA-Grundsatzregeln für Home-Assistant-Projekte (im Aufbau, genutzt von `projekt-anlegen`) |
 | `project-architecture.md` | Verweis auf `skill-profile-v1.md` (bleibt, bis tracker umgestellt ist) |
 | `skill-profile-v1.md` | Spezifikation Skill-Profil v1 (Abschnitt `## Skill-Profil` in der CLAUDE.md, Configs unter `.claude/skill-config/`) |
 | `skill-quality.md` | Verbindliche Qualitätsregeln für Skills |
@@ -419,6 +420,7 @@ claude-skills-bpm/
 │   ├── doc-pflege/SKILL.md
 │   ├── git-commit-helper/SKILL.md
 │   ├── mockup-erstellen/SKILL.md
+│   ├── projekt-anlegen/                   ← SKILL.md + references/ (github, stacks/home-assistant)
 │   ├── skill-neu/                         ← SKILL.md + references/ (cowork)
 │   ├── skill-pflege/                      ← SKILL.md + references/ (rule-inventory, delivery)
 │   ├── ticket/                            ← SKILL.md + test-prompts.md

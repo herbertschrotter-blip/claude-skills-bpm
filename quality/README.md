@@ -62,11 +62,13 @@ Grenze sie prüfen.
 | git-commit-helper | 3 | 2 |
 | ticket | 3 | 2 |
 | cc-steuerung | 3 | 2 |
-| **gesamt** | **60** | **23** |
+| projekt-anlegen | 6 | 3 |
+| **gesamt** | **66** | **26** |
 
 ## Nicht abgedeckt
 
-- audit ↔ modul-bauplan: folgt, sobald es modul-bauplan gibt (echte Sitzung EXT-04).
+- projekt-anlegen ↔ cowork-plugin (Anthropic, legt Plugins an): `plugin eval` lädt den fremden Skill nicht; bei
+  Fehlrouting im Betrieb eine echte Sitzung ergänzen.
 - Konflikte mit Anthropic-Skills (skill-creator, code-review): `plugin eval` lädt keine fremden Skills; dafür gibt es
   echte Sitzungen EXT-01 bis EXT-05 (`quality/real-environment/`).
 - cc-steuerung hat keinen Fall, in dem es auslösen soll: In Claude Code soll es nie auslösen. Das Prüfskript meldet dafür
@@ -74,7 +76,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 24.09.2026, 60 Fälle.
+Stand 28.09.2026, 66 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -138,3 +140,9 @@ Stand 24.09.2026, 60 Fälle.
 | `cc-not-in-claude-code` | cc-steuerung | Ich arbeite in Claude Code. Zeig mir bitte den Git-Status des Repos. | – | cc-steuerung | kritisch, Pilot |
 | `cc-prefix-code` | cc-steuerung | cc: implementiere im ImportService eine Wiederholung bei Netzwerkfehlern. | code-erstellen | – | normal |
 | `cc-no-trigger-file-read` | cc-steuerung | Lies die README.md und sag mir kurz, worum es in dem Projekt geht. | – | cc-steuerung | kritisch |
+| `projekt-anlegen-ha-new` | projekt-anlegen | Ich will ein neues Home-Assistant-Projekt für die Fensterüberwachung mit Reedkontakten anfangen. Leg mir dafür alles an, was dazugehört: Ordner, Git-Repo und die Grunddateien. | projekt-anlegen | code-erstellen | kritisch |
+| `projekt-anlegen-unklar` | projekt-anlegen | Ich hätte gern etwas, das mir im Smart Home anzeigt, wann der Müll abgeholt wird. Ich weiß aber nicht, ob das eine eigene Karte, eine Integration oder nur eine Automation wird. Hilf mir, das als neues Projekt aufzusetzen. | projekt-anlegen | mockup-erstellen | normal |
+| `projekt-anlegen-clone` | projekt-anlegen | Hol mein bestehendes Repo mit der Staubsauger-Karte von GitHub hierher und richte es als Projekt ein, damit ich ab jetzt hier damit weiterarbeiten kann. | projekt-anlegen | – | normal |
+| `projekt-anlegen-no-trigger-code` | projekt-anlegen | Füge im bestehenden Netzwerk-Paket von Home Assistant einen Sensor hinzu, der die Ping-Zeit zum Router misst. | code-erstellen | projekt-anlegen | kritisch |
+| `projekt-anlegen-no-trigger-mockup` | projekt-anlegen | Wie könnte die Dashboard-Karte für die Fensterüberwachung aussehen? Skizzier sie mir als HTML-Entwurf mit zwei Varianten. | mockup-erstellen | projekt-anlegen | normal |
+| `projekt-anlegen-no-trigger-skill` | projekt-anlegen | Ich brauche einen neuen Skill, der beim Start eines Projekts die passenden Ordner und Dateien anlegt. Entwirf mir dafür die SKILL.md. | skill-neu | projekt-anlegen | kritisch |

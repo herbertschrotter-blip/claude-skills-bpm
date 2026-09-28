@@ -8,6 +8,23 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.39.0] — 2026-09-28
+
+- **skills/projekt-anlegen, Feature:** neuer Skill – neue Projekte anlegen und einrichten, projektneutral nach Stack:
+  klären, was entstehen soll (auch bei unscharfer Idee), Bestand und Quelle der Wahrheit prüfen, Plan zeigen, Ordner,
+  Grunddateien, Git, `.gitignore`, `CLAUDE.md` mit Skill-Profil anlegen, GitHub-Repo nach Rückfrage erstellen oder
+  klonen, in die Übersicht eintragen, an mockup-erstellen/code-erstellen/tracker übergeben
+  - `references/github.md` (Anmeldung, erstellen, klonen, keine Tokens) und `references/stacks/home-assistant.md`
+    (Arten und Orte, Grunddateien, geschützte Bereiche, `.gitignore` für den Konfigurationsordner, Neu laden/Neustart)
+  - ersetzt den geplanten Skill `modul-bauplan`; die HA-Grundsatzregeln (`docs/ha-grundsatz/`) nutzt er über
+    `Modul.Grundsatzregeln`, Prüfen bleibt bei audit
+- `docs/skill-profile-v1.md`: neuer Bereich `### Projekte` (Ablage, Übersicht, GitHub-Owner, Geschützt), Pflichtfelder
+  für projekt-anlegen statt modul-bauplan
+- Evals: sechs Fälle `projekt-anlegen-*` (drei kritisch); `quality/README.md` (Verteilung, Fälle, Nicht abgedeckt),
+  `quality/real-environment/README.md` (EXT-04 entfallen)
+- INDEX.md: Skill-Zeile, Workflow-Skills, drei Konfliktpaare; README.md: 13 Skills, Skill-Tabelle, Baum, ha-grundsatz;
+  `docs/ha-grundsatz/README.md`: Verweis auf projekt-anlegen
+
 ## [v0.38.2] — 2026-09-28
 
 - **skills/audit, skills/doc-pflege, skills/mockup-erstellen, Fix:** Umbau Phase 5 – Cowork-Pfadermittlung: Verweis

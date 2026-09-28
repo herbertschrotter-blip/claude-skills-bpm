@@ -24,7 +24,7 @@ Sitzungen; wegen des frühen Stopps kosten sie wenig vom Kontingent.
 | EXT-01 | skill-creator ↔ skill-neu | claude-skills-bpm | Ich brauche einen neuen Skill, der Besprechungsprotokolle zusammenfasst. Leg ihn an. | skill-neu | skill-creator |
 | EXT-02 | skill-creator ↔ skill-pflege | claude-skills-bpm | Schärf die Description des tracker-Skills, damit „Aufgabe anlegen“ zuverlässig auslöst. | skill-pflege | skill-creator |
 | EXT-03 | code-review ↔ audit | BPM oder Heidi | Prüf bitte, ob die Doku noch zum Code passt. Nur prüfen, nichts ändern – ich will eine Liste der Abweichungen. | audit | code-review |
-| EXT-04 | modul-bauplan ↔ audit | – | entfällt, bis es den Skill modul-bauplan gibt | – | – |
+| EXT-04 | modul-bauplan ↔ audit | – | entfallen: modul-bauplan ist in projekt-anlegen aufgegangen, Prüfen bleibt bei audit | – | – |
 | EXT-05 | cc-steuerung in Claude Code | claude-skills-bpm | Ich arbeite in Claude Code. Zeig mir bitte den Git-Status des Repos. | kein cc-steuerung | cc-steuerung |
 
 Hinweis: skill-creator beschreibt sich selbst auch mit „modify and improve existing skills“ und „optimize a skill's

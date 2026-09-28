@@ -92,6 +92,12 @@ Review-Serie [CGR-2026-09-24-skillsystem](./chatgpt-reviews/CGR-2026-09-24-skill
 ### Modul
 - Manifest: none | <pfad/muster>
 - Grundsatzregeln: none | ref:<pfad>#<überschrift>
+
+### Projekte
+- Ablage: none | <pfad>
+- Übersicht: none | <pfad>
+- GitHub-Owner: none | <owner>
+- Geschützt: none | <pfad-glob>; <pfad-glob>
 ```
 
 Bedeutung einzelner Felder:
@@ -103,6 +109,9 @@ Bedeutung einzelner Felder:
   - `allowed` – Claude pusht auf Anweisung.
   - `required-after-commit` – Claude pusht nach jedem Commit ohne Rückfrage.
   - `required-at-session-end` – Claude pusht am Ende der Sitzung.
+- **Projekte:** gilt für das Repo, in dem neue Projekte angelegt werden (z. B. den Konfigurationsordner von Home
+  Assistant). `Ablage` ist der Ordner für neue Projekt-Repos, `Übersicht` die Datei mit einer Zeile je Projekt,
+  `Geschützt` die Bereiche, die Claude dort nie ändert.
 - **Versionsquelle:** eine Datei mit Feld (z. B. `card/package.json#version`) oder `changelog:CHANGELOG.md`. Im
   zweiten Fall ist die Version die Nummer des obersten Eintrags. Die Nummer steht nie zusätzlich im Profil.
 
@@ -137,7 +146,7 @@ Grundfelder für alle: `Profil-Version`, `Projekt-ID`, `Repo`, `Branch-Policy`.
 | skill-neu, skill-pflege | das Profil des Skill-Repos (Commit, Doku, Checks) |
 | ticket | Ticket.Config |
 | tracker | Tracker.Provider, Tracker.Config |
-| modul-bauplan (geplant) | Modul.Manifest, Modul.Grundsatzregeln, dazu die Code- und Doku-Felder |
+| projekt-anlegen | Projekte.Ablage; Projekte.GitHub-Owner, wenn GitHub gewählt wird; Code.Stacks; Modul.Grundsatzregeln, wenn der Stack welche hat (`none` gültig) |
 
 ## Fehlende Werte
 
