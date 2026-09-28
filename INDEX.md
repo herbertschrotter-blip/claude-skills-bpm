@@ -25,7 +25,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | **git-commit-helper** | Commit-Befehle im einheitlichen Format generieren, projektneutral (Projektprofil in CLAUDE.md) | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil (BPM: Docs/Mockups + Sitemap; Heidi: dreame_x60/mockups, --dx-Tokens), Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **skill-neu** | Neue Skills von Grund auf erstellen – neutral (Neutralitäts-Checkliste, Profil-/references-Aufteilung), für Cowork und Claude Code | "neuer Skill für X", "erstelle einen Skill" |
-| **skill-pflege** | Bestehende Skills additiv ändern – aus Cowork oder Claude Code; Lieferung als Datei/Zip, description-Limit, Split-Prüfung | "Skill updaten", "Skill ändern", "Skill erweitern" |
+| **skill-pflege** | Bestehende Skills ändern: Safe Patch (gezielt, Rest bleibt wörtlich) oder Refactor mit Regel-Inventar (`docs/skill-refactors/`); Abschluss mit Prüfskript und Routing-Eval, Lieferung als Datei/Zip | "Skill updaten", "Skill ändern", "Skill erweitern" |
 | **ticket** | Fehler-Tickets eines Projekts (Meldungen + automatisch erkannte Auffälligkeiten, z. B. Heidi `HT-NNNN`) einzeln und immer gleich bearbeiten – acht Schritte, jeder Übergang mit Auswahlfrage, nichts automatisch; Werte aus dem Ticket-Profil (CLAUDE.md) | "ticket HT-0007", "ticket liste", "nimm das nächste ticket" |
 | **tracker** | ClickUp-Schreibschnittstelle für Projekt-Tasks, projektneutral (Nummernschema, Anker, Felder aus `projects/<name>/`) | "tracker neu", "tracker done", "tracker suche" |
 
@@ -41,7 +41,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 ### Meta-Skills (ändern andere Dinge)
 
 - **skill-neu** — Erstellt neue Skills von Grund auf
-- **skill-pflege** — Ändert bestehende Skills additiv
+- **skill-pflege** — Ändert bestehende Skills (Safe Patch oder Refactor mit Regel-Inventar)
 - **doc-pflege** — Ändert Docs
 
 ### Workflow-Skills
@@ -101,9 +101,12 @@ Keine hartkodierten Pfade. Auto-Discovery via `hostname` + `[System.Environment]
 
 Keine Migrations-Logik ohne explizite User-Freigabe. Schema-/DB-/Config-Änderungen werden als "Datei löschen, neu anlegen lassen" dokumentiert, nicht als Migration. Gilt in `doc-pflege`, `code-erstellen`, `chatgpt-review` (PFLICHT-Block im Initialprompt).
 
-### 5. Additive Skill-Änderungen (skill-pflege-001)
+### 5. Skill-Änderungen ohne stillen Regelverlust
 
-Bestehende Skill-Inhalte werden **nie gelöscht oder gekürzt** — nur ergänzt. Ein Skill pro Bearbeitungszyklus, `ask_user_input_v0` vor Wechsel zum nächsten.
+Bestehende Skills ändert skill-pflege: **Safe Patch** für gezielte Änderungen (alles außerhalb bleibt wörtlich) oder
+**Refactor** mit Regel-Inventar unter `docs/skill-refactors/` (jede alte Regel mit Zustand, DROP nur mit Freigabe,
+Prüfung in beide Richtungen). Ein Skill pro Bearbeitungszyklus, Auswahlfrage vor dem Wechsel zum nächsten. Regelquelle:
+[`skills/skill-pflege/SKILL.md`](./skills/skill-pflege/SKILL.md).
 
 ### 6. Pro-Task-Quittung (tracker-001)
 
@@ -113,9 +116,11 @@ Nach jedem ClickUp-`create`/`status-change`-Update MUSS eine Quittungszeile im s
 
 Offene Punkte im Memory werden nach 4 Rubriken strukturiert: `[VERIFY]`, `[ARCH-OPEN]`, `[INFRA-TODO]`, `[REVIEW-PENDING]`. Details in [MEMORY-RUBRIKEN.md](./MEMORY-RUBRIKEN.md). Der `chat-wechsel`-Skill scannt diese Rubriken bei jedem Handover und übernimmt sie in den Prompt. Einträge werden NIE stillschweigend entfernt.
 
-### 8. Two-Place-Skill-Pflege (skill-pflege-001)
+### 8. Two-Place-Skill-Pflege
 
-Skills werden an zwei Orten gepflegt: `claude-skills-bpm/skills/<n>/SKILL.md` (Repo via DC) und `/mnt/skills/user/<n>/SKILL.md` (Claude.ai via Artifact). Artifact-Dateiname MUSS exakt `SKILL.md` heißen, sonst fehlt der "Skill speichern"-Button. Nach jedem Skill-Commit ist der Artifact-Block Pflicht.
+Skills werden an zwei Orten gepflegt: im Repo (`skills/<n>/`, die Wahrheit) und bei claude.ai. Nach jedem Skill-Commit
+folgt die Lieferung (SKILL.md bzw. Zip mit references/, Datei exakt `SKILL.md`), Herbert lädt sie hoch. Regelquelle:
+[`skills/skill-pflege/references/delivery.md`](./skills/skill-pflege/references/delivery.md).
 
 ### 9. Modalitäts-Skill `cc-steuerung` läuft parallel zu Fachskills (Phase 5.7)
 

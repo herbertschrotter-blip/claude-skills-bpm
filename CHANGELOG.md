@@ -8,6 +8,22 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.37.0] — 2026-09-28
+
+- **skills/skill-pflege, Feature:** Umbau Phase 4 – zwei Modi statt „nur anbauen“:
+  - **Safe Patch** für gezielte Änderungen; alles außerhalb des Umfangs bleibt wörtlich
+  - **Refactor** zum Kürzen, Zusammenführen und Verschieben mit Regel-Inventar unter `docs/skill-refactors/`:
+    Zustände KEEP/MOVE/MERGE/REWRITE/DROP/NEW, DROP als Sammelfreigabe je Gruppe, Prüfung Alt→Neu und Neu→Alt
+  - gemeinsamer Abschluss: Prüfskript, Routing-Eval der betroffenen Fälle, Diff-Bericht, CHANGELOG/INDEX, Commit und
+    Push nach Skill-Profil, Lieferung
+  - neue References: `references/rule-inventory.md` (Format und Ablauf des Inventars) und `references/delivery.md`
+    (Lieferung, ein Skill je Antwort, Cowork-Werkzeuge)
+  - „Fragen nur bei offener Entscheidung“ statt fester Fragenliste; Verweise über Datei und Überschrift
+  - SKILL.md 628 → 195 Zeilen; Description unverändert
+  - Inventar: `docs/skill-refactors/2026-09-28-skill-pflege.md` (102 alte Regeln, 8 DROP in drei freigegebenen Gruppen)
+- INDEX.md: Skill-Zeile, Meta-Skills und Invarianten 5 und 8 an die Modi angepasst; README.md: Regelquellen,
+  `docs/skill-refactors/`
+
 ## [v0.36.9] — 2026-09-24 (Nachtrag v0.36.1–v0.36.9)
 
 Nachtrag für neun Versionen, die nach der alten Regel (jeder Commit eine Nummer) ohne Eintrag geblieben sind. Keine davon ändert einen Skill.

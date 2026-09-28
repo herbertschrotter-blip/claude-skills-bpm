@@ -138,7 +138,7 @@ Der `tracker`-Skill nutzt Progressive Disclosure: Die `SKILL.md` enthält nur Ke
 
 Skills werden an zwei Orten gepflegt: `claude-skills-bpm/skills/<n>/SKILL.md` (Repo) und `/mnt/skills/user/<n>/SKILL.md` (Claude.ai).
 
-> **Operative Regelquelle:** [`skills/skill-pflege/SKILL.md`](./skills/skill-pflege/SKILL.md) und [`INDEX.md`](./INDEX.md).
+> **Operative Regelquelle:** [`skills/skill-pflege/references/delivery.md`](./skills/skill-pflege/references/delivery.md) und [`INDEX.md`](./INDEX.md).
 
 ---
 
@@ -224,6 +224,7 @@ Repos (Phase 2); `projects/` wird in Phase 7 entfernt.
 | `skill-profile-v1.md` | Spezifikation Skill-Profil v1 (Abschnitt `## Skill-Profil` in der CLAUDE.md, Configs unter `.claude/skill-config/`) |
 | `skill-quality.md` | Verbindliche Qualitätsregeln für Skills |
 | `skill-refactor-phases.md` | Arbeitsnahe Referenz der 5 Refactor-Phasen (April 2026) |
+| `skill-refactors/` | Regel-Inventare der Skill-Refactors (`<Datum>-<skill>.md`, skill-pflege Modus Refactor) |
 | `skillsystem-umbau.md` | Umbau-Plan Phasen 1–7 (seit 24.09.2026) |
 
 ---
@@ -314,7 +315,7 @@ Für **generische** Skills (TDD, Debugging, Refactoring, allgemeine Code-Pattern
 
 ### Skills ändern
 
-Über den `skill-pflege`-Skill — Two-Place-Pflege (Repo + Claude.ai-Artifact).
+Über den `skill-pflege`-Skill – Safe Patch für gezielte Änderungen oder Refactor mit Regel-Inventar unter `docs/skill-refactors/`; danach Prüfskript, Routing-Eval und Lieferung zum Upload bei claude.ai (Two-Place-Pflege).
 
 > **Operative Regelquelle:** [`skills/skill-pflege/SKILL.md`](./skills/skill-pflege/SKILL.md).
 
@@ -375,6 +376,7 @@ claude-skills-bpm/
 │   ├── skill-profile-v1.md
 │   ├── skill-quality.md
 │   ├── skill-refactor-phases.md
+│   ├── skill-refactors/                   ← Regel-Inventare der Refactors
 │   └── skillsystem-umbau.md
 │
 ├── evals/
@@ -414,7 +416,7 @@ claude-skills-bpm/
 │   ├── git-commit-helper/SKILL.md
 │   ├── mockup-erstellen/SKILL.md
 │   ├── skill-neu/                         ← SKILL.md + test-prompts.md
-│   ├── skill-pflege/SKILL.md
+│   ├── skill-pflege/                      ← SKILL.md + references/ (rule-inventory, delivery)
 │   ├── ticket/                            ← SKILL.md + test-prompts.md
 │   └── tracker/
 │       ├── SKILL.md
