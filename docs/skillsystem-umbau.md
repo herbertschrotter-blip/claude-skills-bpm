@@ -128,7 +128,9 @@ Gesamt 11/15 Läufe (3 von 5 Fällen). Dauer 14 Minuten (rund 55 Sekunden je Lau
 (rund 0,38 USD je Lauf; keine Rechnung, zählt gegen das Max-Kontingent). Hochgerechnet: 60 Fälle × 3 Läufe sind rund
 180 Läufe, knapp 3 Stunden nacheinander, Gegenwert rund 70 USD. `plugin eval` löscht die Protokolle der Läufe; zur
 Fehlersuche einen Fall einzeln mit `--keep-temp` laufen lassen (behält laut Hilfe die Temp-Ordner).
-- [ ] echte Sitzungen EXT-01 bis EXT-05
+- [ ] echte Sitzungen EXT-01 bis EXT-05 – Anleitung `quality/real-environment/README.md`; Protokoll
+      `quality/real-environment/2026-09-28.md`: EXT-01 3/3 (skill-neu), EXT-02, EXT-03 und EXT-05 offen, EXT-04 entfällt
+      bis modul-bauplan
 - [x] Grundmessung einfrieren – `quality/baseline/grundmessung-2026-09.md` ist die Vergleichsbasis (28.09.2026)
 
 **Abnahme:** Die unveränderten Skills sind vermessen.
