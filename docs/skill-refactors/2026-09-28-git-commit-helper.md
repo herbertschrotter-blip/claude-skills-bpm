@@ -108,4 +108,10 @@ Keine.
 
 ## Prüfung
 
-Wird nach dem Umbau eingetragen.
+- **Freigabe:** Zielstruktur von Herbert am 28.09.2026 freigegeben (Auswahlfrage vor dem Schreiben), dazu die Entscheidung
+  zum Push-Rückfall und in der Sammelfreigabe N004 (Profil ohne Shell); keine DROP-Zeile.
+- **Alt→Neu:** 65 alte IDs mit Zustand (KEEP 33, MOVE 3, MERGE 5, REWRITE 24) und N001–N004; jeder Neu-Ort im neuen Text
+  gelesen.
+- **Neu→Alt:** Der Diff zeigt nur die Stellen der Inventar-Zeilen; neue Aussagen sind N001–N004.
+- **Größe:** SKILL.md 273 → 275 Zeilen. Prüfskript 0 Fehler, Warnungen des Skills 2.
+- **Routing-Eval:** am 28.09.2026 auf a0fb0a5, `--tag chat-wechsel --tag chatgpt-review --tag git-commit-helper --tag tracker` (22 Fälle, 66 Läufe, `-j 3`, 17 min, 23,06 USD): 64/66 (Grundmessung derselben Fälle 66/66). Alle Fälle von chat-wechsel, chatgpt-review, git-commit-helper und tracker 3/3, alle kritischen Fälle 3/3, kein Negativfall gekippt. Die zwei Abweichungen sind mitgetaggte Fälle anderer Skills (`code-with-task-ref`, `doc-changelog` je 2/3) mit einem Lauf ohne jeden Skill-Aufruf (Sandbox-Muster der Grundmessung). Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten: erfüllt. Description unverändert, daher keine echte Sitzung.

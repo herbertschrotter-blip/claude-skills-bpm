@@ -89,4 +89,4 @@ Bei „behalten“: hinter „mit dem Frage-Werkzeug der Umgebung“ die Klammer
   Z. 458–460. Sonst keine Unterschiede. Frontmatter Z. 1–16 byte-identisch (`cmp`).
 - **Zeilen:** 465 vorher → 463 nachher.
 - **Prüfskript:** nicht gelaufen (laut Auftrag nicht nötig); läuft als Check skill-validation vor dem Commit.
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval:** keine eigene Messung nach v0.39.1 (Entscheidung Herbert: v0.39.1 ändert nur Regeltext nach dem Auslösen, die Description ist unverändert). Maßgeblich ist die Messung von v0.38.2 am 28.09.2026 auf 17ec20d (36 Fälle `audit`/`code-erstellen`/`doc-pflege`/`mockup-erstellen`, 100/108 Läufe, Einzelheiten in `docs/skill-refactors/2026-09-28-code-erstellen.md`, Abschnitt Prüfung); mitgetaggte Fälle liefen zusätzlich auf a0fb0a5 (`code-with-task-ref`, `doc-changelog` je 2/3, Sandbox-Muster).

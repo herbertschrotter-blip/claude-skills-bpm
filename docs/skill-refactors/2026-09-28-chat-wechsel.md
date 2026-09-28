@@ -98,4 +98,4 @@ Von Herbert am 28.09.2026 freigegeben (Auswahlfrage vor dem Schreiben):
   Description zeichengleich.
 - **Zeilen:** 570 → 529.
 - **Prüfskript:** nicht gelaufen (Entwurf im Scratchpad); läuft vor dem Commit.
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval:** am 28.09.2026 auf a0fb0a5, `--tag chat-wechsel --tag chatgpt-review --tag git-commit-helper --tag tracker` (22 Fälle, 66 Läufe, `-j 3`, 17 min, 23,06 USD): 64/66 (Grundmessung derselben Fälle 66/66). Alle Fälle von chat-wechsel, chatgpt-review, git-commit-helper und tracker 3/3, alle kritischen Fälle 3/3, kein Negativfall gekippt. Die zwei Abweichungen sind mitgetaggte Fälle anderer Skills (`code-with-task-ref`, `doc-changelog` je 2/3) mit einem Lauf ohne jeden Skill-Aufruf (Sandbox-Muster der Grundmessung). Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten: erfüllt. Description unverändert, daher keine echte Sitzung.

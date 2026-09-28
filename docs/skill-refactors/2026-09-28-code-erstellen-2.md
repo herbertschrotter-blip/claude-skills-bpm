@@ -103,4 +103,4 @@ Freigabe: freigeben / einzelne behalten (IDs nennen) / abbrechen.
   Z. 485–492 → neu Z. 442–446). Frontmatter Z. 1–17 byte-gleich, Abschnitt „Arbeitsverzeichnis“ identisch.
 - **Größe:** SKILL.md 504 → 458 Zeilen.
 - **Prüfskript:** nicht gelaufen (Entwurf außerhalb des Repos).
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval:** keine eigene Messung nach v0.39.1 (Entscheidung Herbert: v0.39.1 ändert nur Regeltext nach dem Auslösen, die Description ist unverändert). Maßgeblich ist die Messung von v0.38.2 am 28.09.2026 auf 17ec20d (36 Fälle `audit`/`code-erstellen`/`doc-pflege`/`mockup-erstellen`, 100/108 Läufe, Einzelheiten in `docs/skill-refactors/2026-09-28-code-erstellen.md`, Abschnitt Prüfung); mitgetaggte Fälle liefen zusätzlich auf a0fb0a5 (`code-with-task-ref`, `doc-changelog` je 2/3, Sandbox-Muster).

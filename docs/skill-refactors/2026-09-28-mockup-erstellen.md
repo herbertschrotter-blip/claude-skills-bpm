@@ -90,4 +90,4 @@ mockup-erstellen (Suche nach `mockup-erstellen` in `skills/`, `docs/`, `INDEX.md
   (Z. 1–14) byte-gleich.
 - **Zeilen:** 595 → 586.
 - **Prüfskript:** nicht gelaufen (läuft vor dem Commit als Check skill-validation).
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval:** keine eigene Messung nach v0.39.1 (Entscheidung Herbert: v0.39.1 ändert nur Regeltext nach dem Auslösen, die Description ist unverändert). Maßgeblich ist die Messung von v0.38.2 am 28.09.2026 auf 17ec20d (36 Fälle `audit`/`code-erstellen`/`doc-pflege`/`mockup-erstellen`, 100/108 Läufe, Einzelheiten in `docs/skill-refactors/2026-09-28-code-erstellen.md`, Abschnitt Prüfung); mitgetaggte Fälle liefen zusätzlich auf a0fb0a5 (`code-with-task-ref`, `doc-changelog` je 2/3, Sandbox-Muster).
