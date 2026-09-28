@@ -167,4 +167,9 @@ Abkürzungen im Neu-Ort: `S` = `SKILL.md`, `I` = `references/rule-inventory.md`,
 - **Größe:** SKILL.md 628 → rund 195 Zeilen (Körper 614 → rund 180), dazu `references/rule-inventory.md` und
   `references/delivery.md`; Prüfskript 0 Fehler, Warnungen 6 → 2 (beide aus der unveränderten Description:
   „claude-skills-bpm“).
-- **Routing-Eval:** *(folgt vor dem Upload, gemeinsam mit skill-neu)*
+- **Routing-Eval:** am 28.09.2026 auf 3bbdbe3, `--tag skill-pflege` (11 Fälle × 3 Läufe, `-j 3`): **11 von 11 Fällen,
+  33 von 33 Läufen**; alle 7 kritischen Fälle 3/3, beide Negativfälle (`skill-neu-no-trigger-eval-run`,
+  `skill-pflege-no-trigger-other-repo`) bestanden. Grundmessung für dieselben Fälle ebenfalls 33/33, also kein
+  Rückschritt und kein neuer Konflikt. 16 Läufe endeten an der Grenze von 8 Schritten oder 180 Sekunden, jeweils nach dem
+  Skill-Aufruf. Das Ergebnis ändert sich dadurch nicht, gleich wie in der Grundmessung. Dauer 18 Minuten, Gegenwert
+  18,64 USD. Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten: erfüllt.
