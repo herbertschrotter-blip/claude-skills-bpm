@@ -170,7 +170,7 @@ Aufgaben zu Phase 5 (cc-steuerung) und Phase 6 (doc-pflege, tracker). **Phase 4 
 - [x] INDEX neu als Verzeichnis für das Auslösen; Invarianten 1–10 an ihren neuen Ort – 28.09.2026: Tabelle
       „Zuständig für / Löst aus bei“, Konfliktpaare samt Anthropic-Skills, Tabelle „Wo die gemeinsamen Regeln stehen“
       statt der Invarianten; entfallen: Smoke-Test-Pflicht (Datei gibt es nicht mehr), Frühphasen-Prinzip (Projektregel),
-      Fallback über `projects/`/Memory und die Aussage „projektspezifisch“ (212 → 118 Zeilen)
+      Fallback über `projects/`/Memory und die Aussage „projektspezifisch“ (212 → 109 Zeilen)
 - [x] Lieferung v0.38.2/v0.39.1 an Herbert: audit, chat-wechsel, chatgpt-review, code-erstellen, doc-pflege,
       git-commit-helper, mockup-erstellen, tracker (je ein Upload, 28.09.2026)
 - [ ] Grenzen audit ↔ doc-pflege ↔ modul-bauplan festziehen (doc-pflege Modus 3, 4 und 6 als öffentliche Modi entfernen)
