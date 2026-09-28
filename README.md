@@ -89,7 +89,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 | Skill | Aufgabe |
 |---|---|
 | **skill-neu** | Erstellt neue Skills von Grund auf (projektneutral). |
-| **skill-pflege** | Ändert und erweitert bestehende Skills additiv. |
+| **skill-pflege** | Ändert bestehende Skills: Safe Patch oder Refactor mit Regel-Inventar. |
 
 ### Modalitäts-Skill (beantwortet "WIE wird ausgeführt")
 
@@ -284,7 +284,7 @@ Das Skill-System wurde zwischen v0.1.0 (2026-04-21) und v0.17.7 (2026-04-24) in 
 
 ## Kapitel 9 — Workflow-Konventionen
 
-Workflow-Konventionen (Branch-Ermittlung, `ask_user_input_v0`-Disziplin, Two-Place-Pflege, Commit-Format, Frühphasen-Prinzip, additive Skill-Änderungen, DC-Pfade, Chat-Anker) sind in den verbindlichen Regelquellen definiert — nicht in dieser README.
+Workflow-Konventionen (Branch-Ermittlung, `ask_user_input_v0`-Disziplin, Two-Place-Pflege, Commit-Format, Frühphasen-Prinzip, Skill-Änderungen ohne stillen Regelverlust, DC-Pfade, Chat-Anker) sind in den verbindlichen Regelquellen definiert — nicht in dieser README.
 
 > **Verbindliche Regelquelle:** [`INDEX.md`](./INDEX.md) für globale Invarianten.
 > **Operative Skill-Regeln:** jeweilige `skills/<skill>/SKILL.md`.

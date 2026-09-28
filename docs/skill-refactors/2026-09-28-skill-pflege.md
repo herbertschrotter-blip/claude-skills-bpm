@@ -135,6 +135,9 @@ Abkürzungen im Neu-Ort: `S` = `SKILL.md`, `I` = `references/rule-inventory.md`,
 | N009 | – | Nach Description-Änderung Routing-Eval Pflicht, bei Konfliktpaar mit Anthropic-Skill echte Sitzung | NEW | S#Description ändern | `docs/skill-quality.md` | | ✅ |
 | N010 | – | Sitzung nicht im Skill-Repo → nach dem Pfad fragen | NEW | S#Zweck | ersetzt Tracker-Profil (R004) | | ✅ |
 | N011 | – | Description-Schema: was, Use when, Do not trigger for; Projekte nur als Beispiel | NEW | S#Description ändern | `docs/skill-quality.md`, Aufbau | | ✅ |
+| N012 | – | Im Repo entfernte Dateien löscht der Nutzer auch bei claude.ai | NEW | D#Was geliefert wird | ergänzt R034 | | ✅ |
+| N013 | – | Zip im Scratchpad aus dem Stand nach dem Commit bauen und ihren Inhalt vor dem Senden auflisten | NEW | D#Claude Code | ergänzt R065 | | ✅ |
+| N014 | – | Jede Reference direkt aus SKILL.md verlinkt; über 100 Zeilen mit Inhaltsverzeichnis | NEW | S#Split-Prüfung | `docs/skill-quality.md`, Aufbau | | ✅ |
 
 ## DROP-Gruppen
 
@@ -150,7 +153,7 @@ Abkürzungen im Neu-Ort: `S` = `SKILL.md`, `I` = `references/rule-inventory.md`,
 |---|---|---|
 | `skills/doc-pflege/SKILL.md` (Z. 446) | „skill-pflege Regel 21“ | Phase 6 (doc-pflege) → `skills/skill-pflege/SKILL.md#Split-Prüfung` |
 | `skills/tracker/references/complete-task.md` (Z. 133–134, 147) | „Regel 14b“, „Regel 14“, „Regel 15 + 16“ | Phase 6 (tracker) → `skills/skill-pflege/references/delivery.md` |
-| `skills/skill-neu/SKILL.md` | „Regel 21“, „Regel 14“, „13b, 14a, Regel 6, 13“, Abschnitt AUTO-ISSUE-ERKENNUNG | Phase 4 (skill-neu), gleich im Anschluss |
+| `skills/skill-neu/SKILL.md` | „Regel 21“, „Regel 14“, „13b, 14a, Regel 6, 13“, Abschnitt AUTO-ISSUE-ERKENNUNG, „additive Default-Philosophie“ (Z. 529) | Phase 4 (skill-neu), gleich im Anschluss |
 | `skills/cc-steuerung/SKILL.md` (Z. 292–297) | „`skill-pflege/SKILL.md` Abschnitt 14a/13a“ | Phase 5 (cc-steuerung wird Cowork-Adapter) → `skills/skill-pflege/references/delivery.md#Cowork` |
 | `INDEX.md` Skill-Tabelle, Meta-Skills, Invarianten 5 und 8 | additiv; Two-Place über Artifact | mit diesem Commit angepasst |
 | `README.md` Two-Place-Pflege, Kapitel 11, `docs/`-Tabelle und Baum | Regelquelle SKILL.md; „Repo + Artifact“ | mit diesem Commit angepasst |
@@ -173,3 +176,8 @@ Abkürzungen im Neu-Ort: `S` = `SKILL.md`, `I` = `references/rule-inventory.md`,
   Rückschritt und kein neuer Konflikt. 16 Läufe endeten an der Grenze von 8 Schritten oder 180 Sekunden, jeweils nach dem
   Skill-Aufruf. Das Ergebnis ändert sich dadurch nicht, gleich wie in der Grundmessung. Dauer 18 Minuten, Gegenwert
   18,64 USD. Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten: erfüllt.
+- **Gegenprüfung** (28.09.2026, zweite Sitzung): Alt→Neu ohne Verlust. Neu→Alt: N012–N014 nachgetragen; diese Sätze
+  haben kein Pflichtwort und waren deshalb keine Kandidaten. Behoben mit Safe Patch v0.37.1: Die Routing-Eval steht in
+  `SKILL.md#Abschluss` jetzt nach Commit und Push wie in `references/delivery.md#Reihenfolge`, und `SKILL.md#Refactor`
+  verlangt die Freigabe der Zielstruktur (R010). README: „additiv“ an zwei Stellen ersetzt. Eine Routing-Eval für
+  v0.37.1 entfällt, weil sich Description und Auslöser nicht geändert haben.

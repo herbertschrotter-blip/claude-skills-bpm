@@ -94,8 +94,8 @@ unter `docs/skill-refactors/<Datum>-<skill>.md`. Format, Zustände und Prüfunge
    references.
 5. Jeder Zeile einen Zustand (KEEP, MOVE, MERGE, REWRITE, DROP) und einen Neu-Ort geben. Neue Regeln werden als NEW
    geführt.
-6. Zielstruktur und DROP-Gruppen mit Begründung zeigen. Je Gruppe eine Auswahlfrage zur Freigabe, **bevor**
-   geschrieben wird.
+6. Zielstruktur und DROP-Gruppen mit Begründung zeigen. Die Zielstruktur und jede Gruppe per Auswahlfrage freigeben
+   lassen, **bevor** geschrieben wird.
 7. Umbauen.
 8. Alt→Neu prüfen: Jede alte ID hat einen Zustand, und jeder Neu-Ort ist im neuen Text zu finden.
 9. Neu→Alt prüfen: Kandidaten des neuen Stands in eine Datei im Scratchpad erzeugen. Jede normative Aussage gehört zu
@@ -103,7 +103,8 @@ unter `docs/skill-refactors/<Datum>-<skill>.md`. Format, Zustände und Prüfunge
 10. Verweise prüfen, im Skill und aus anderen Skills. Was jetzt nicht mitgeändert wird, kommt im Inventar unter
     „Verweise von außen“.
 11. Qualität prüfen nach `docs/skill-quality.md`: Größe, Historie im Regeltext, Umgebungswerkzeuge im Kern, Projektwerte.
-12. Abschluss (unten). Inventar und Umbau kommen in denselben Commit; das Eval-Ergebnis wird im Inventar eingetragen.
+12. Abschluss (unten). Inventar und Umbau kommen in denselben Commit; das Eval-Ergebnis wird danach im Inventar
+    nachgetragen.
 
 ## Description ändern
 
@@ -138,9 +139,7 @@ aufteilen / so lassen / später als Skill-Issue. Nie ohne Freigabe aufteilen. Au
 Gilt für beide Modi.
 
 1. **Prüfskript** (Check skill-validation im Skill-Profil) mit `-Skill <skill>`: keine neuen Fehler.
-2. **Routing-Eval** der betroffenen Fälle vor dem Upload (Check routing-eval im Skill-Profil, dazu `--tag <skill>`).
-   Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten.
-3. **Diff-Bericht** im Chat:
+2. **Diff-Bericht** im Chat:
    - was unverändert blieb (Kurzform)
    - was neu ist (Text)
    - was geändert ist (vorher/nachher)
@@ -148,10 +147,12 @@ Gilt für beide Modi.
    - Länge der Description
    - Dateien der Lieferung
    - Version und Commit
-4. **Version und Doku** nach dem Skill-Profil: neue Nummer mit CHANGELOG-Eintrag; INDEX, wenn sich Zuständigkeit oder
+3. **Version und Doku** nach dem Skill-Profil: neue Nummer mit CHANGELOG-Eintrag; INDEX, wenn sich Zuständigkeit oder
    Auslöser ändern.
-5. **Commit** im Format des Skill-Profils, **Push** nach dessen Push-Policy. Ohne CHANGELOG-Eintrag und Commit ist die
+4. **Commit** im Format des Skill-Profils, **Push** nach dessen Push-Policy. Ohne CHANGELOG-Eintrag und Commit ist die
    Änderung nicht fertig, auch nicht nach dem Upload.
+5. **Routing-Eval** der betroffenen Fälle nach dem Commit und vor dem Upload (Check routing-eval im Skill-Profil, dazu
+   `--tag <skill>`). Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten. Kein Pre-Commit-Check.
 6. **Lieferung** nach `references/delivery.md`: zuerst das Repo, dann SKILL.md bzw. Zip an den Nutzer zum Upload bei
    claude.ai. Ohne Lieferung arbeitet Claude weiter mit dem alten Stand.
 

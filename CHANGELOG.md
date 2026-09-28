@@ -8,6 +8,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.37.1] — 2026-09-28
+
+- **skills/skill-pflege, Fix:** Safe Patch nach der Gegenprüfung von v0.37.0:
+  - `SKILL.md#Abschluss`: Routing-Eval nach Commit und Push, vor dem Upload (wie `references/delivery.md#Reihenfolge`
+    und das Skill-Profil; kein Pre-Commit-Check)
+  - `SKILL.md#Refactor`: Die Zielstruktur wird wie jede DROP-Gruppe per Auswahlfrage freigegeben; das Eval-Ergebnis
+    wird danach im Inventar nachgetragen
+- Inventar `docs/skill-refactors/2026-09-28-skill-pflege.md`: N012–N014 und Gegenprüfung nachgetragen; README.md:
+  „additiv“ an zwei Stellen ersetzt
+
 ## [v0.37.0] — 2026-09-28
 
 - **skills/skill-pflege, Feature:** Umbau Phase 4 – zwei Modi statt „nur anbauen“:
