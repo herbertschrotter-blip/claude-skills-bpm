@@ -93,7 +93,7 @@ NIE automatisch einen Branch annehmen.
 ## Arbeitsverzeichnis (PFLICHT bei Dateizugriff)
 
 Claude Code: Repo-Wurzel der Sitzung (`git rev-parse --show-toplevel`).
-Cowork: bei DC-Operationen Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln.
+Cowork: bei DC-Operationen Arbeitsverzeichnis nach **cc-steuerung**, Abschnitt „Arbeitsverzeichnis“, ermitteln.
 
 ---
 
@@ -249,8 +249,7 @@ Der User entscheidet ob und wann die Doc-Pflege erfolgt.
 
 **Wann:** "neues Projekt", "init projekt", kein Doku-Profil und keine INDEX.md vorhanden.
 
-Für Details siehe `references/projekt-init.md` (falls vorhanden)
-oder DOC-STANDARD.md Kapitel 3 (BPM).
+Für Details siehe DOC-STANDARD.md Kapitel 3 (BPM).
 
 Kurzablauf:
 1. Grundinfos sammeln (Projektname, Tech-Stack, Repo, DB?, Aufgabenquelle, Auslieferung)
