@@ -106,11 +106,13 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 ```
 skills/<skill-name>/
 ├── SKILL.md              ← Die Skill-Definition (Frontmatter + Body)
-├── references/           ← (optional) Progressive Disclosure Details
-│   ├── <aspekt-1>.md
-│   └── ...
-└── test-prompts.md       ← (optional) Beispielqueries zum Trigger-Test
+└── references/           ← (optional) Progressive Disclosure Details
+    ├── <aspekt-1>.md
+    └── ...
 ```
+
+Die Testsätze eines Skills liegen nicht mehr im Skill-Ordner, sondern als Eval-Fälle zentral unter `quality/evals/`
+(Kapitel 3); `test-prompts.md` ist eine Altlast (noch bei ticket, entfällt in Umbau-Phase 7).
 
 ### Aufbau einer `SKILL.md`
 
