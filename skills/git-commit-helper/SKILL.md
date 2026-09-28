@@ -40,33 +40,26 @@ wenn code-erstellen an ihn delegiert hat.
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = das Frage-Werkzeug der
-jeweiligen Umgebung mit anklickbaren Optionen (im Cowork-Chat
-`ask_user_input_v0`, in Claude Code `AskUserQuestion`). Der Skill nennt
-kein Werkzeug fest; Claude nimmt das, das gerade zur Verfügung steht.
+- **Fragen nur bei offener Entscheidung**, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
+  - Typ unklar: Feature, Fix, Change, Refactor, Perf, Docs
+  - Version-Bump unklar: MAJOR (Breaking), MINOR (Feature), PATCH (Fix)
+  - ein benötigter Wert fehlt im Skill-Profil (Abschnitt „Skill-Profil“ unten)
 
-### Diese Fragen IMMER als Auswahlfrage:
+  Prosa nur bei einer offenen Frage ohne feste Optionen (z.B. Kurztitel) oder wenn der Nutzer eine Präferenz
+  signalisiert hat.
+- **Branch** nach der Branch-Policy des Skill-Profils: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle Branch muss dieser sein, sonst Auswahlfrage
+  (wechseln / abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Profil: ein in der Sitzung schon bekannter Branch, sonst die Shell; ohne Shell per
+  Auswahlfrage fragen. NIE automatisch einen Branch annehmen.
+- **Push** nach der Push-Policy des Skill-Profils:
+  - `user-only`: kein `git push` in der Sequenz; der Nutzer pusht selbst
+  - `allowed`: `git push` nur, wenn der Nutzer es ausdrücklich will
+  - `required-after-commit`: `git push origin <branch>` als Glied der Sequenz
+  - `required-at-session-end`: kein Push in der Sequenz; gepusht wird am Ende der Sitzung
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (unbekannt) | Branch-Namen aus `git branch -a` |
-| Typ unklar | Feature, Fix, Change, Refactor, Perf, Docs |
-| Version-Bump unklar | MAJOR (Breaking), MINOR (Feature), PATCH (Fix) |
-| Projektprofil fehlt | Profil anlegen, Einmalig angeben, Abbrechen |
-
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen (z.B. Kurztitel)
-- User hat Präferenz signalisiert
-
-## Branch-Ermittlung
-
-Branch aus Chat-Kontext verwenden.
-Wenn Branch in dieser Session noch nicht bekannt: per Auswahlfrage fragen.
-NIE automatisch einen Branch annehmen.
+  Ohne Push-Policy (kein Skill-Profil): `git push origin <branch>` bleibt als Glied in der Sequenz.
 
 ## Commit-Format (VERBINDLICH, in allen Projekten gleich)
 
@@ -75,13 +68,13 @@ NIE automatisch einen Branch annehmen.
 ```
 
 Das Format ist fest und projektübergreifend. Was sich je Projekt ändert
-(Versionsquelle, Bump-Regel, Doku-Checkliste), steht im Projektprofil.
+(Versionsquelle, Versionsregel, Doku-Checkliste), steht im Skill-Profil.
 
 Wenn das Projekt eine Aufgaben- oder Ticket-Nummer führt (z.B. Bauplan-
 Schritt, ClickUp-ID), gehört sie an den Anfang des Kurztitels oder in die
 zweite Zeile der Message – nie vor das `[vX.Y.Z]`.
 
-**Modul:** ein Name aus der Modul-Liste des Projektprofils. Berührt eine
+**Modul:** ein Name aus der Modul-Liste des Skill-Profils. Berührt eine
 Änderung mehrere Module, gilt das Hauptmodul (wo die Absicht liegt); die
 übrigen werden im Kurztitel genannt. Sind die Teile unabhängig, werden es
 zwei Commits.
@@ -100,21 +93,25 @@ die erste Zeile packen.
 - Test → PATCH
 - Chore (Werkzeuge, Konfiguration, Abhängigkeiten) → PATCH
 
-Diese Zuordnung ist der Standard. Die Bump-Regel im Projektprofil darf sie
+Diese Zuordnung ist der Standard. Die Versionsregel im Skill-Profil darf sie
 überschreiben (z.B. „Vorabversion: jede eingespielte Änderung zählt die
-Vorab-Nummer hoch, unabhängig vom Typ“).
+Vorab-Nummer hoch, unabhängig vom Typ“ oder „neue Nummer nur bei Änderungen unter
+`skills/**`“).
 
-Version aus der Versionsquelle des Projektprofils ermitteln (z.B.
+Version aus der Versionsquelle des Skill-Profils ermitteln (z.B.
 Directory.Build.props bei WPF, package.json bei Node/TypeScript, pom.xml
-bei Java, INDEX.md wo das Projekt sie dort führt).
+bei Java, INDEX.md wo das Projekt sie dort führt; bei `changelog:<Datei>` die
+Nummer des obersten Eintrags).
 
-## PROJEKTPROFIL (PFLICHT vor Schritt 1)
+## Skill-Profil (PFLICHT vor Schritt 1)
 
 Alles Projektspezifische steht im Repo, nicht im Skill. Quelle in dieser
 Reihenfolge:
 
-1. **`CLAUDE.md` in der Repo-Wurzel**, Abschnitt `## Commit-Profil` mit
-   genau diesen Zeilen:
+1. **`CLAUDE.md` in der Repo-Wurzel, Abschnitt `## Skill-Profil`** (Spezifikation `docs/skill-profile-v1.md` im
+   Skill-Repo): Bereich `### Commit` (Module, Versionsquelle, Versionsregel, Push-Policy, Pre-Commit-Checks,
+   Doku-Check), dazu `Branch-Policy` und `### Checks`.
+2. Fehlt der Abschnitt: der ältere Abschnitt `## Commit-Profil` mit diesen Zeilen:
    ```
    ## Commit-Profil
    - Modul-Namen: <feste Liste, z.B. Karte, Backend, Doku>
@@ -122,12 +119,13 @@ Reihenfolge:
    - Bump-Regel: <Standard | Vorabversion: jede Änderung zählt hoch | eigene Regel>
    - Doku-Checkliste: <Datei → wann anfassen, eine Zeile je Datei>
    ```
-2. Fehlt der Abschnitt: **Repo selbst durchsuchen** – `docs/`-Ordner,
+   Modul-Namen entsprechen „Module“, Bump-Regel „Versionsregel“, Doku-Checkliste „Doku-Check“.
+3. Fehlt auch der: **Repo selbst durchsuchen** – `docs/`-Ordner,
    `*.md` in der Wurzel und in `docs/`, bekannte Versionsdateien
    (Directory.Build.props, package.json, pom.xml, pyproject.toml, *.csproj).
    Das Gefundene als Vorschlag zeigen.
-3. Dann Auswahlfrage: „Projektprofil fehlt“ → *Profil anlegen* (Abschnitt
-   in CLAUDE.md schreiben, mit dem Vorschlag aus 2) / *Einmalig angeben* /
+4. Dann Auswahlfrage: „Skill-Profil fehlt“ → *Profil anlegen* (Abschnitt
+   `## Skill-Profil` in CLAUDE.md schreiben, mit dem Vorschlag aus 3) / *Einmalig angeben* /
    *Abbrechen*.
 
 Das Profil wird nie aus dem Gedächtnis angenommen. Einmal gelesen, gilt es
@@ -151,9 +149,9 @@ in der Shell der Umgebung ausführen. Kein Commit ohne vorherigen Status.
 ## SCHRITT 1a — Versionsdatei hochzählen (PFLICHT bei Version-Bump)
 
 Die neue Version steht nicht nur in der Commit-Message: Die Versionsquelle
-aus dem Projektprofil (z.B. Directory.Build.props, package.json samt
-package-lock.json, pom.xml) wird auf die neue Nummer gesetzt und gehört mit
-in denselben Commit. Ohne Änderung der Versionsdatei kein `[vX.Y.Z]` mit
+aus dem Skill-Profil (z.B. Directory.Build.props, package.json samt
+package-lock.json, pom.xml; bei `changelog:<Datei>` ein neuer oberster Eintrag) wird auf die neue Nummer gesetzt und
+gehört mit in denselben Commit. Ohne Änderung der Versionsdatei kein `[vX.Y.Z]` mit
 neuer Nummer.
 
 ## SCHRITT 1b — Doku-Checkliste VOR dem Commit
@@ -169,6 +167,9 @@ geliefert. Niemals aufgeteilt in mehrere Blöcke für `cd` / `add` / `commit`
 / `push`. Der User soll mit einem Klick kopieren und in eine Shell einfügen
 können. Führt Claude die Befehle selbst aus (Claude Code), gilt dieselbe
 Sequenz als ein Aufruf.
+
+Das Glied `git push origin <branch>` steht nur in der Sequenz, wenn die Push-Policy es verlangt oder erlaubt
+(Grundsätze); sonst entfällt es.
 
 ### PowerShell (Default, Windows)
 
@@ -191,11 +192,12 @@ cd "[Arbeitsverzeichnis]" && git add <spezifische-dateien> && git commit -m "[vX
 - Spezifische Pfade nach `git add`, nicht `git add .`
 - Ein Commit pro logische Änderung
 - `"` für Commit-Messages (Windows-kompatibel)
-- `git log -1 --format="%h %s"` am Ende, damit Herbert den Commit-Hash sofort sieht
+- `git log -1 --format="%h %s"` am Ende, damit der Nutzer den Commit-Hash sofort sieht
 - Bei Renames: `git mv` als zusätzliches Glied vor `git add`
-- Branch-Name aus Branch-Ermittlung einsetzen (nie hartkodiert "main" annehmen)
-- Verlangt das Projekt Tests vor dem Commit (steht im Profil oder in CLAUDE.md),
-  läuft der Testbefehl als erstes Glied der Sequenz; bei rotem Ergebnis kein Commit
+- Branch-Name nach den Grundsätzen einsetzen (nie hartkodiert "main" annehmen)
+- Pre-Commit-Checks des Skill-Profils, die für die geänderten Dateien gelten (Pfad-Muster des Checks), laufen als
+  erste Glieder der Sequenz; ohne Skill-Profil der Testbefehl, den das Projekt vor dem Commit verlangt (CLAUDE.md).
+  Bei rotem Ergebnis kein Commit
 
 ### Wenn ein Glied der Sequenz fehlschlägt
 
@@ -207,13 +209,13 @@ erneut liefern.
 
 ### Mehrzeilig nur wenn User explizit darum bittet
 
-Wenn Herbert eine besser lesbare, mehrzeilige Variante will, in EINEM Block
+Wenn der Nutzer eine besser lesbare, mehrzeilige Variante will, in EINEM Block
 mit Backtick-Continuation (PowerShell) oder Backslash (Bash) liefern — nie
 in mehrere Code-Blöcke aufteilen.
 
 ## SCHRITT 3 — Doc-Pflege Trigger (PFLICHT)
 
-Die Doku-Checkliste kommt aus dem Projektprofil (`Doku-Checkliste:` je Datei
+Die Doku-Checkliste kommt aus dem Skill-Profil (`Doku-Check`; im älteren Commit-Profil `Doku-Checkliste:` je Datei
 eine Zeile „Datei → wann“). Sie wird vor der Commit-Sequenz abgearbeitet
 (Schritt 1b); jede betroffene Datei wird genannt, geändert und im selben
 Commit mitgenommen.
@@ -251,23 +253,22 @@ Checkliste:
 1. Pfade in der Schreibweise der jeweiligen Shell (PowerShell: Backslash; Bash: Slash)
 2. `"` für Messages
 3. Ein Commit = eine Änderung
-4. Version korrekt hochzählen (Versionsquelle und Bump-Regel aus dem Projektprofil)
+4. Version korrekt hochzählen (Versionsquelle und Versionsregel aus dem Skill-Profil)
 5. Komplette Commit-Sequenz in EINEM Code-Block (One-Block-Regel, siehe Schritt 2)
 6. Keine Erklärungen
 7. Bei Renames: git mv
 8. Arbeitsverzeichnis IMMER automatisch (Repo-Wurzel)
-9. Doc-Pflege IMMER vor dem Commit (Checkliste aus dem Projektprofil), damit Code und Doku zusammen landen
-10. Projektprofil IMMER lesen, bevor Version oder Doku angefasst werden
+9. Doc-Pflege IMMER vor dem Commit (Checkliste aus dem Skill-Profil), damit Code und Doku zusammen landen
+10. Skill-Profil IMMER lesen, bevor Version oder Doku angefasst werden
 11. Versionsdatei gehört in denselben Commit wie die Versionsnummer in der Message
 12. Bei mehreren Commits in einer Antwort: je Commit ein eigener Block (One-Block-Regel gilt je Commit)
 
 ## VERBOTEN
 
-- Branch automatisch annehmen ohne Auswahlfrage
-- Typ-Auswahl als Prosa bei Unsicherheit — IMMER Auswahlfrage
-- Version-Bump als Prosa bei Unsicherheit — IMMER Auswahlfrage
-- Prosa-Fragen bei festen Entscheidungsoptionen
+- Branch automatisch annehmen – ohne Branch-Policy, Shell oder Auswahlfrage
+- Pushen gegen die Push-Policy des Skill-Profils
+- Prosa-Fragen bei festen Entscheidungsoptionen (Typ, Version-Bump, fehlender Profilwert)
 - **Mehrere Code-Blöcke für eine Commit-Sequenz** — alles muss in EINEM Block stehen, semikolon- oder `&&`-getrennt (siehe Schritt 2 One-Block-Regel)
 - **Erklärungen zwischen den Befehlen** die das Kopieren stören — Erklärungen kommen vor oder nach dem Block, nie hinein
-- **Versionsquelle oder Doku-Dateien raten** — beides kommt aus dem Projektprofil oder aus der Suche im Repo, nie aus dem Gedächtnis
+- **Versionsquelle oder Doku-Dateien raten** — beides kommt aus dem Skill-Profil oder aus der Suche im Repo, nie aus dem Gedächtnis
 - **Werkzeugnamen fest verdrahten** (Desktop Commander, ask_user_input_v0, AskUserQuestion) — der Skill beschreibt die Handlung, Claude wählt das Werkzeug der Umgebung
