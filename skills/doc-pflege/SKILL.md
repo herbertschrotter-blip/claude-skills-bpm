@@ -55,38 +55,36 @@ jetzt die Doku" bevor doc-pflege selbst übernimmt.
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
-mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen
+  ist –, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
 
-### Diese Fragen IMMER als Auswahlfrage:
+  | Situation | Optionen |
+  |-----------|----------|
+  | Modus-Auswahl bei Unsicherheit | Modus 0-8 als Optionen |
+  | Validierungsbefund (Modus 6) mit mehreren Lösungen | Befund je Option: Doc anpassen, Quelle anpassen, Ignorieren mit Begründung |
+  | Sitzungsabschluss (Modus 8): Aufgabe fertig oder offen? | fertig, offen (Rest im HANDOFF), blockiert (Befund) |
+  | Refactoring 7b: Inhalt passt in kein Kapitel | Eigenes Kapitel am Ende, Vorhandenes Kapitel erweitern, Abbrechen |
+  | Doc-Pflege Modus bei doc-relevanter Änderung | Jetzt pflegen, Später als Task anlegen, Ignorieren |
+  | Schema-/DB-Änderung dokumentieren | "Mit Reset-Anweisung", "Mit Migrations-Kapitel (User will explizit)", "Abbrechen" |
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Branch-Namen aus `git branch -a` |
-| Modus-Auswahl bei Unsicherheit | Modus 0-8 als Optionen |
-| Validierungsbefund (Modus 6) mit mehreren Lösungen | Befund je Option: Doc anpassen, Quelle anpassen, Ignorieren mit Begründung |
-| Sitzungsabschluss (Modus 8): Aufgabe fertig oder offen? | fertig, offen (Rest im HANDOFF), blockiert (Befund) |
-| Refactoring 7b: Inhalt passt in kein Kapitel | Eigenes Kapitel am Ende, Vorhandenes Kapitel erweitern, Abbrechen |
-| Doc-Pflege Modus bei doc-relevanter Änderung | Jetzt pflegen, Später als Task anlegen, Ignorieren |
-| Schema-/DB-Änderung dokumentieren | "Mit Reset-Anweisung", "Mit Migrations-Kapitel (User will explizit)", "Abbrechen" |
+  Prosa-Fragen nur, wenn:
+  - Offene Frage ohne feste Optionen (z.B. Projektname, Modulname, Freitext-Beschreibung)
+  - User hat Präferenz signalisiert
+  - Freitext-Input nötig
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle muss dieser sein, sonst Auswahlfrage (wechseln /
+  abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork:
+  DC): `git branch --show-current`; nennt ein älteres Profil der `CLAUDE.md` einen Pflicht-Branch und der aktuelle
+  weicht ab → Auswahlfrage. Ohne Shell und unbekannt: per Auswahlfrage fragen (Optionen: Branch-Namen aus
+  `git branch -a`). NIE automatisch einen Branch annehmen.
+- **Push** nach der Push-Policy im Skill-Profil (betrifft den Commit im Sitzungsabschluss, Modus 8):
+  - `user-only`: kein Push; der User pusht selbst
+  - `allowed`: Push nur, wenn der User es ausdrücklich will
+  - `required-after-commit` oder `required-at-session-end`: Push nach dem Commit
 
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen (z.B. Projektname, Modulname, Freitext-Beschreibung)
-- User hat Präferenz signalisiert
-- Freitext-Input nötig
-
----
-
-## Branch-Ermittlung
-
-Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork: DC):
-`git branch --show-current`; nennt das Profil einen Pflicht-Branch und der aktuelle weicht ab →
-Auswahlfrage. Ohne Shell und unbekannt: per Auswahlfrage fragen.
-NIE automatisch einen Branch annehmen.
+  Ohne Push-Policy: Commit + Push.
 
 ---
 
@@ -418,7 +416,8 @@ Ablauf (Orte aus dem Profil, Feld „Sitzungsabschluss“):
 4. **Offene Punkte** als Checkliste (Heidi: HANDOFF Abschnitt 4), erledigte abhaken, neue ergänzen,
    jede mit ClickUp-Bezug oder Begründung, warum ohne
 5. Doku-Checkliste des Commit-Profils durchgehen (nichts vergessen: Abschnitt 4, INDEX, CHANGELOG)
-6. Commit `[vX.Y.Z] <Doku-Modul>, Docs: Sitzungsabschluss <Datum> – <Kurztitel>` + Push (git-commit-helper)
+6. Commit `[vX.Y.Z] <Doku-Modul>, Docs: Sitzungsabschluss <Datum> – <Kurztitel>` (git-commit-helper); Push nach
+   der Push-Policy (Grundsätze)
 7. Kurzer Abschlussbericht im Chat: erledigt / offen / nächster Schritt – derselbe Text taugt als
    Einstieg für chat-wechsel
 
@@ -455,9 +454,8 @@ Bei jeder Änderung an diesem Skill prüfen:
 - Modus 4 als interruptive Checkliste statt Advisory ausgeben
 - Ladereihenfolge des Profils ignorieren (BPM: DOC-STANDARD Kapitel 8)
 - Invarianten-Check bei neuen Docs überspringen
-- Branch automatisch annehmen (Shell fragen oder Auswahlfrage)
-- Modus-Auswahl als Prosa bei Unsicherheit — IMMER Auswahlfrage
-- Prosa-Fragen bei festen Entscheidungsoptionen
+- Branch automatisch annehmen (Branch-Policy, Shell fragen oder Auswahlfrage)
+- Prosa-Fragen bei festen Entscheidungsoptionen (z.B. Modus-Auswahl bei Unsicherheit)
 - Migrations-Kapitel in Doc dokumentieren ohne User-Freigabe (Projekte mit Frühphasen-Regel, BPM: INDEX.md)
 - Abweichung von v1 dokumentieren ohne PD-Eintrag mit Freigabe (Heidi-Paritätsregel)
 - Statusliste auf `fertig` setzen, solange Tests oder Commit fehlen
