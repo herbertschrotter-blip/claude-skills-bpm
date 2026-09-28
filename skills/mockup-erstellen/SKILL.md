@@ -54,39 +54,31 @@ auf und wartet auf die festgehaltene Abnahme (Kapitel 3, Schritt 4b).
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
-mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen ist –,
+  dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
 
-### Diese Fragen IMMER als Auswahlfrage:
+  | Situation | Optionen |
+  |-----------|----------|
+  | Token-Abgleich zeigt Abweichungen | Mockup an Tokens anpassen, Tokens-Datei ändern (→ code-erstellen), Abweichung begründet lassen |
+  | Pflichtansicht fehlt (Profil „Ansichten“) | Ansicht ergänzen, Ohne speichern (Begründung), Abbrechen |
+  | Abnahme | Abgenommen, Änderungen nötig, Später |
+  | Bestehendes Mockup gefunden: Archiv vs. Überschreiben | Archivieren (_ARCHIV suffix), Überschreiben, Abbrechen |
+  | NN-Nummer belegt | Nächste freie Nummer, Andere Nummer wählen, Abbrechen |
+  | Mehrere Stil-Referenzen möglich | Referenz-Dateinamen als Optionen |
+  | Fenster-Ordner existiert bereits (neue Variante) | Variante hinzufügen, Bestehende ersetzen, Abbrechen |
+  | Eingehende Links unklar beim neuen Fenster | Liste vorhandener Fenster aus Sitemap als Optionen + "Keine eingehenden Links" |
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Branch-Namen aus `git branch -a` |
-| Token-Abgleich zeigt Abweichungen | Mockup an Tokens anpassen, Tokens-Datei ändern (→ code-erstellen), Abweichung begründet lassen |
-| Pflichtansicht fehlt (Profil „Ansichten“) | Ansicht ergänzen, Ohne speichern (Begründung), Abbrechen |
-| Abnahme | Abgenommen, Änderungen nötig, Später |
-| Bestehendes Mockup gefunden: Archiv vs. Überschreiben | Archivieren (_ARCHIV suffix), Überschreiben, Abbrechen |
-| NN-Nummer belegt | Nächste freie Nummer, Andere Nummer wählen, Abbrechen |
-| Mehrere Stil-Referenzen möglich | Referenz-Dateinamen als Optionen |
-| Fenster-Ordner existiert bereits (neue Variante) | Variante hinzufügen, Bestehende ersetzen, Abbrechen |
-| Eingehende Links unklar beim neuen Fenster | Liste vorhandener Fenster aus Sitemap als Optionen + "Keine eingehenden Links" |
-
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen (z.B. "Welche Daten/Felder soll der Screen zeigen?")
-- User hat Präferenz signalisiert
-- Freitext-Input nötig
-
----
-
-## Branch-Ermittlung
-
-Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork: DC):
-`git branch --show-current`; Pflicht-Branch aus dem Code-Profil beachten. Ohne Shell und
-unbekannt: Auswahlfrage. NIE automatisch einen Branch annehmen.
+  Prosa-Fragen NUR wenn:
+  - Offene Frage ohne feste Optionen (z.B. "Welche Daten/Felder soll der Screen zeigen?")
+  - User hat Präferenz signalisiert
+  - Freitext-Input nötig
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle muss dieser sein, sonst Auswahlfrage (wechseln /
+  abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: Branch aus Chat-Kontext verwenden; mit Shell (Claude Code: Bash/PowerShell, Cowork: DC)
+  `git branch --show-current`, Pflicht-Branch aus dem Code-Profil beachten; ohne Shell und unbekannt: Auswahlfrage mit
+  den Branch-Namen aus `git branch -a`. NIE automatisch einen Branch annehmen.
 
 ---
 
@@ -580,14 +572,13 @@ Sitemap-Status nachziehen.
 - Umlaute oder Leerzeichen in Dateinamen oder Ordnernamen
 - Mockup im Visualizer anzeigen und direkt das Visualizer-HTML speichern
   (Visualizer nutzt andere CSS-Variablen als das Projekt)
-- Branch automatisch annehmen (Shell fragen oder Auswahlfrage)
-- Archiv-vs-Überschreiben-Entscheidung als Prosa — IMMER Auswahlfrage
+- Branch automatisch annehmen (Branch-Policy des Skill-Profils, Shell fragen oder Auswahlfrage)
 - **Speichern ohne Token-Abgleich** gegen die Design-Quelle (Schritt 3b) oder mit Tokens, die es dort nicht gibt
 - **Speichern ohne die Pflichtansichten des Profils** (Heidi: Desktop + 390 px) ohne Auswahlfrage
 - **Abnahme nur im Chat** – ohne Eintrag am Abnahme-Ort gilt das Mockup als nicht abgenommen (Schritt 4b)
 - **BPM-Ablage oder -Namensschema für ein anderes Projekt annehmen** – alles aus dem Mockup-Profil
 - **Externe Ressourcen im Mockup** (Web-Fonts, CDN), wenn das Projekt sie verbietet
-- Prosa-Fragen bei festen Entscheidungsoptionen
+- Prosa-Fragen bei festen Entscheidungsoptionen (z.B. Archiv-vs-Überschreiben-Entscheidung)
 - **Mockup ohne Klick-Navigation auf interaktive Elemente speichern** (Profil „Sitemap: ja“) — alle Buttons/Tabs/Karten brauchen `onclick` (Kapitel 5)
 - **Sitemap-Update vergessen nach Mockup-Erstellung** (Profil „Sitemap: ja“) — `_SITEMAP.md` ist Single Source of Truth (Kapitel 6)
 - **Tote Pfade nicht prüfen vor Mockup-Erstellung** — `alert('Mockup folgt: X')` muss ersetzt werden wenn X jetzt existiert
