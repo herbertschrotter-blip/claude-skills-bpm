@@ -17,7 +17,7 @@ Für Versionsverlauf siehe [CHANGELOG.md](./CHANGELOG.md).
 | Skill | Zweck | Haupt-Trigger |
 |-------|-------|---------------|
 | **audit** | Konsistenz zwischen Code und Docs prüfen (read-only) nach Doku-/Code-Profil; Befunde → tracker oder Fix-Skill | "audit", "prüfe alles", "konsistenzcheck" |
-| **cc-steuerung** | Desktop Commander (DC) MCP-Server steuern (Modalität) | "cc mach", "dc lies", "claude code soll" |
+| **cc-steuerung** | Desktop Commander (DC) im Cowork-Chat steuern (Modalität); nie in Claude Code | im Cowork-Chat: "cc mach", "dc lies", "direkt auf den PC" |
 | **chat-wechsel** | Übergabe an die nächste Sitzung: Cowork Handover-Prompt, Claude Code doc-pflege Modus 8 + Startprompt; Regeln aus Profilen, Link-Prüfung | "neuer chat", "übergabe", "chat wechsel" |
 | **chatgpt-review** | Cross-Review-Prompts für ChatGPT + CGR-Archivierung nach Review-Profil (Ablage, Themen, Pflicht-Block, Kontextquelle); Push-Prüfung, Ergebnisse → Repo/Tasks | "besprich mit ChatGPT", "zweite Meinung", "Runde N" |
 | **code-erstellen** | Master-Orchestrator für Code-Erstellung, projektneutral (Code-Profil in CLAUDE.md: Docs, Aufgabenquelle, Tests, Auslieferung) | Jede Anfrage die Code-Erstellung impliziert |
@@ -95,7 +95,7 @@ Nie automatisch annehmen — bei jedem GitHub-Zugriff den Branch aus `git branch
 
 ### 3. DC-Pfade dynamisch ermitteln (cc-steuerung-001 + 002)
 
-Keine hartkodierten Pfade. Auto-Discovery via `hostname` + `[System.Environment]::GetEnvironmentVariable('OneDrive','User')` + PC-Lookup in INDEX.md. KEINE `$`-Variablen-Assignments in PowerShell-Command-Strings (äußere Shell-Schicht interpoliert sie zu leerem String).
+Keine hartkodierten Pfade. Auto-Discovery via `hostname` + `[System.Environment]::GetEnvironmentVariable('OneDrive','User')` + PC-Tabelle in der Doku des Projekts. KEINE `$`-Variablen-Assignments in PowerShell-Command-Strings (äußere Shell-Schicht interpoliert sie zu leerem String). Regeln: `skills/cc-steuerung/SKILL.md`, Abschnitt Arbeitsverzeichnis, und `skills/cc-steuerung/references/desktop-commander.md`.
 
 ### 4. Frühphasen-Prinzip (Phase 3.1)
 
@@ -124,12 +124,12 @@ folgt die Lieferung (SKILL.md bzw. Zip mit references/, Datei exakt `SKILL.md`),
 
 ### 9. Modalitäts-Skill `cc-steuerung` läuft parallel zu Fachskills (Phase 5.7)
 
-`cc-steuerung` ist kein konkurrierender Fachskill, sondern eine Ausführungs-Modalität für Desktop Commander / Claude Code / direkte PC-Operationen.
+`cc-steuerung` ist kein konkurrierender Fachskill, sondern eine Ausführungs-Modalität für Desktop Commander im Cowork-Chat. In Claude Code löst er nie aus; dort gelten die eigenen Werkzeuge.
 
-**Trigger für die Modalität:**
+**Trigger für die Modalität (nur im Cowork-Chat):**
 - `cc`
 - `dc`
-- `Claude Code`
+- „Claude Code soll …“ im Sinne von „auf dem PC ausführen“ (die bloße Nennung von Claude Code ist kein Auslöser)
 - `direkt auf den PC`
 - explizite Datei-/Terminal-/Build-/Git-Ausführung auf dem User-PC
 

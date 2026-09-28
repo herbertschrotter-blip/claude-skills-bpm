@@ -1,428 +1,113 @@
 ---
 name: cc-steuerung
 description: >
-  Steuert Desktop Commander für direkte Datei-, Verzeichnis- und Terminal-
-  Operationen auf Herberts PC. Use when users explicitly say "cc", "dc",
-  "Claude Code", "direkt auf den PC", or want reading, writing, editing,
-  building, or git commands executed on disk. Do not trigger for normal chat
-  answers, code blocks in chat, or requests without explicit cc/dc intent.
+  Regelt im Cowork-Chat, wie Claude über Desktop Commander direkt auf dem PC
+  des Nutzers arbeitet: Dateien lesen und schreiben, Befehle in der Shell
+  ausführen, das Arbeitsverzeichnis ermitteln. Legt nur fest, wie ausgeführt
+  wird; der Fachskill bleibt für den Inhalt zuständig. Use when users in the
+  Cowork chat say "cc" or "dc" (e.g. "cc lies", "dc: git status") or want work
+  done "direkt auf den PC" or "auf Platte". Do not trigger in Claude Code
+  sessions, which have their own file and shell tools, nor because a request
+  mentions Claude Code, nor for normal chat answers, code blocks in chat, or
+  requests without explicit cc/dc intent.
 ---
 
-# Claude Code Steuerung (Desktop Commander)
+# cc-steuerung – Desktop Commander im Cowork-Chat
 
 ## Zweck
 
-Definiert verbindlich wie Claude den `desktop-commander` MCP-Server
-nutzt um direkt auf dem PC zu arbeiten: Dateien lesen/schreiben,
-Terminal-Befehle ausführen, Projektstruktur prüfen.
-
----
-
-## Vorrang / Verhältnis zu Fachskills (Modalität, KEIN Fachvorrang)
-
-**cc-steuerung ist ein Modalitäts-Skill, kein Fachskill.** Er beantwortet
-die Frage "WIE wird ausgeführt" (Desktop Commander auf Platte vs.
-SUCHE/ERSETZE im Chat vs. Code-Block), nicht "WAS wird gemacht".
-
-**Rollentrennung:**
-
-| Ebene | Wer | Beispiele |
-|-------|-----|-----------|
-| WAS (Fachlogik) | Fachskill | code-erstellen, doc-pflege, mockup-erstellen, tracker, chatgpt-review, audit, git-commit-helper, chat-wechsel |
-| WIE (Modalität) | cc-steuerung | DC-Tool-Auswahl, Arbeitsverzeichnis-Ermittlung, Konzept-Freigabe-Pattern, PowerShell-Regeln, Artifact-Separation |
-
-**Konsequenz:**
-- cc-steuerung "übernimmt" niemals einen Fachskill. Wenn User "schreib
-  die Doku mit dc" sagt, bleibt doc-pflege für den Inhalt zuständig, und
-  cc-steuerung liefert nur das WIE-Pattern (Konzept-Freigabe, DC-Call,
-  Arbeitsverzeichnis-Check).
-- Ein Ad-hoc-Keyword-Trigger (`"cc: list_directory ..."`) ist die einzige
-  Ausnahme — hier existiert keine Fach-Aufgabe, nur eine DC-Operation.
-- Die Fachskills referenzieren cc-steuerung passiv ("Bei DC-Zugriff:
-  Arbeitsverzeichnis nach cc-steuerung Kapitel 4 ermitteln"). Das ist
-  kein Trigger-Konflikt — beide Skills sind gleichzeitig aktiv, mit
-  unterschiedlichen Zuständigkeiten.
-
-**Wichtig:** In einem Chat können cc-steuerung UND ein Fachskill
-gleichzeitig relevant sein. Das ist korrekt und erwünscht — der Konflikt
-entsteht nur wenn cc-steuerung Fachlogik übernimmt oder ein Fachskill
-DC-Regeln selbst definiert statt auf cc-steuerung zu verweisen.
-
----
-
-## 🚨 Kernregel: Umgebungs-Erkennung über Tool-Liste (cc-steuerung-001)
-
-**Claude erkennt die Verfügbarkeit von Desktop Commander AUSSCHLIESSLICH
-über die Tool-Liste, NIEMALS über `bash_tool hostname`.**
-
-### Richtig
-
-- `Desktop Commander:start_process`, `Desktop Commander:write_file`,
-  `Desktop Commander:edit_block` etc. erscheinen in der Tool-Liste
-  → DC ist aktiv → direkt verwenden
-- Am Chat-Start oder beim ersten DC-bezogenen Kommando:
-  `tool_search(query: "desktop commander")` aufrufen um die DC-Tools
-  in den Namespace zu laden falls sie noch nicht sichtbar sind
-
-### Falsch
-
-- `bash_tool hostname` liefert in der Sandbox immer `runsc` — auch wenn
-  der Chat in Claude Desktop läuft und DC vollständig verfügbar ist
-- `bash_tool` läuft im Claude-internen Container, **nicht** auf Herberts PC.
-  Hostname-Output sagt nichts über die Verfügbarkeit externer MCP-Tools aus
-
-### Konsequenz bei Verwechslung (Session Teil 28)
-
-Wenn Claude `bash_tool hostname → runsc` als "ich bin nicht in Claude
-Desktop" fehlinterpretiert, fällt er in den Modus "DC nicht verfügbar,
-liefere Code-Block zum User-Copy-Paste". Das verschenkt die komplette
-DC-Automatisierung und kostet User-Geduld am Chat-Anfang.
-
----
-
-## 🚨 VERBINDLICHE REGEL: ask_user_input_v0 bei Entscheidungen
-
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS `ask_user_input_v0`
-verwendet werden — KEINE Prosa-Fragen.**
-
-### Diese Fragen IMMER mit ask_user_input_v0:
-
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (unbekannt) | Branch-Namen aus `git branch -a` |
-| Im Zweifel: Chat vs. PC-Schreiben | SUCHE/ERSETZE im Chat, Direkt auf PC per DC, Code-Block zeigen |
-| 3+ Dateien betroffen | Erst analysieren (Plan), Direkt ausführen, Abbrechen |
-| Dateien löschen | Löschen, Abbrechen, Andere Datei |
-| Test-Path False | Pfad ist richtig, Anderer Pfad, Abbrechen |
-
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen (z.B. PC-Name bei Self-Registration)
-- User hat Präferenz signalisiert
-
----
-
-## Branch-Ermittlung (PFLICHT vor GitHub-Zugriff)
-
-1. Prüfe ob Branch bereits in dieser Session bekannt ist → verwenden
-2. Wenn nicht bekannt: Alle Branches via GitHub API oder `git branch -a` via DC auflisten
-3. User per ask_user_input_v0 den aktiven Branch wählen lassen
-4. Gewählten Branch für die gesamte Session merken
-5. NIE automatisch einen Branch annehmen (weder `main` noch einen anderen)
-
----
-
-## 1. ROLLENVERTEILUNG
-
-### Claude (das Gehirn)
-- Planung, Konzepte, Architektur-Entscheidungen
-- Code entwerfen und vorbereiten
-- Standards und Regeln kennen und durchsetzen
-- **Desktop Commander direkt aufrufen** für Datei- und Terminal-Operationen
-- User beraten, Rückfragen stellen
-- Code-Review, Commit-Vorschläge
-
-### Desktop Commander (die Hände)
-- Dateien lesen: `desktop-commander:read_file`
-- Dateien schreiben: `desktop-commander:write_file`
-- Dateien editieren: `desktop-commander:edit_block`
-- Verzeichnisse listen: `desktop-commander:list_directory`
-- Terminal-Befehle: `desktop-commander:start_process`
-- Dateien verschieben: `desktop-commander:move_file`
-
-### User (der Chef)
-- Entscheidet WIE geliefert wird (Chat, SUCHE/ERSETZE, oder dc/cc)
-- Gibt Freigabe für Schreiboperationen
-- Pusht immer selbst (git push)
-- Testet selbst
-
----
-
-## 2. WANN WAS EINSETZEN
-
-**Kernregel (cc-steuerung-003):** DC ist Default-Ausführungsmodus sobald
-der User das Konzept freigegeben hat ("code bitte", "mach", "ok",
-"ausführen"). SUCHE/ERSETZE-Blöcke im Chat NUR wenn:
-
-1. User explizit nach SUCHE/ERSETZE fragt ("liefer mir suchen-ersetzen", "zeig mir die blöcke")
-2. DC nicht verfügbar ist (Tool-Liste zeigt keine `Desktop Commander:*`-Tools)
-3. Änderung betrifft Dateien außerhalb bekannter Repos (kein `projects/<[PROJECT]>/`-Pfad)
-
-### Desktop Commander einsetzen (nach Konzept-Freigabe Default):
-- Neue Dateien erstellen → direkt auf Platte, kein Kopieren
-- XAML-Dateien → kein Encoding-Problem
-- Aktuellen Code lesen → immer aktuell, nicht letzter GitHub-Push
-- Build testen → über `start_process`
-- Multi-File-Änderungen → mehrere Dateien nacheinander
-- `git status` / `git log` / `git commit` → über `start_process`
-- Projektstruktur prüfen → `list_directory`
-- Jede Skill-Repo- oder BPM-Repo-Änderung nach Konzept-OK
-
-### Claude OHNE DC einsetzen (keine Ausführung auf Platte nötig):
-- Planung und Konzepte besprechen
-- Code erklären oder reviewen
-- Committed Code lesen → `github:get_file_contents`
-- Docs/Markdown im Chat-Fluss zeigen (wenn Output-Dokument ist)
-
-### Ad-hoc-Keyword-Trigger (ohne vorheriges Konzept)
-Für einzelne DC-Befehle ohne Konzept-Phase bleibt der Keyword-Trigger erhalten:
-- `"cc: list_directory D:\repo"`
-- `"dc: git status"`
-- `"mit cc: build ausführen"`
-
-Bei Keyword-Trigger wird DC direkt ausgeführt, ohne Konzept-Freigabe-Schritt.
-
----
-
-## 3. TRIGGER-REGELN
-
-### Default-Trigger: Konzept-Freigabe
-Nach einem Konzept-Vorschlag durch Claude signalisiert der User die Ausführung mit:
-- "code bitte", "mach", "ausführen", "ok", "passt"
-- "geht klar", "weiter", "los"
-- Jede Zustimmung die auf einen konkreten Umsetzungs-Vorschlag folgt
-
-→ DC wird direkt verwendet, keine weitere Keyword-Rückfrage.
-
-### Ad-hoc Keyword-Trigger (ohne vorheriges Konzept)
-Diese Wörter aktivieren DC sofort für Einzelbefehle:
-- "mit claude code", "über claude code"
-- "cc lies", "cc erstelle", "cc mach", "cc build"
-- "dc lies", "dc erstelle", "dc mach", "dc build"
-- "lass claude code", "claude code soll"
-- "schreib das mit cc", "schreib auf platte"
-- "direkt auf den pc"
-
-### Diese Wörter aktivieren NICHT automatisch DC:
-- "zeig mir" → Antwort im Chat (DC nur wenn Lesen auf Platte nötig)
-- "erklär mir" → Antwort im Chat
-- "wie funktioniert" → Antwort im Chat
-- "soll ich" → Klärungsfrage, noch keine Ausführung
-
-### Im Zweifel:
-Per `ask_user_input_v0` fragen: "Wie liefern?" mit Optionen "Direkt auf PC per DC", "SUCHE/ERSETZE im Chat", "Code-Block zeigen".
-
----
-
-## 4. ARBEITSVERZEICHNIS (Auto-Discovery + Self-Registration)
-
-### 4.1 Pfad-Ermittlung (erster DC-Aufruf der Session)
-
-Beim ersten DC-Aufruf einer Session diesen Befehl ausführen:
-
-```powershell
-powershell -NoProfile -Command "hostname; [System.Environment]::GetEnvironmentVariable('OneDrive','User')"
-```
-
-Claude parst zeilenweise:
-- Zeile 1 = COMPUTERNAME (aus `hostname`)
-- Zeile 2 = OneDrive-Basispfad
-
-**Wichtig:** `$env:OneDrive` funktioniert NICHT über DC `start_process`
-(Umgebungsvariablen sind im DC-Prozesskontext nicht verfügbar).
-Stattdessen IMMER `[System.Environment]::GetEnvironmentVariable('OneDrive', 'User')` verwenden.
-`hostname` funktioniert zuverlässig (statt `$env:COMPUTERNAME`).
-
-**KEINE `$`-Variablen-Assignments im Command-String** — Details siehe
-Abschnitt "PowerShell-Aufrufe via DC" weiter unten.
-
-### 4.2 PC-Lookup in INDEX.md
-
-1. INDEX.md laden (via `github:get_file_contents` oder `read_file`)
-2. Abschnitt "PCs und Arbeitsverzeichnisse" finden
-3. COMPUTERNAME (aus `hostname`) in der PC-Tabelle suchen:
-   - **GEFUNDEN** → workFolder = OneDrive-Pfad + `\` + Projekt-Suffix aus INDEX.md
-   - **NICHT GEFUNDEN** → Self-Registration (siehe 4.3)
-
-### 4.3 Self-Registration (unbekannter PC)
-
-Wenn `hostname` einen COMPUTERNAME liefert der NICHT in der INDEX.md PC-Tabelle steht:
-
-1. User fragen: "Unbekannter PC '<n>'. Wie soll er in der Tabelle heißen? (z.B. Surface, Standrechner)"
-2. User antwortet mit dem gewünschten PC-Namen
-3. Neue Zeile in der PC-Tabelle via DC `edit_block` in INDEX.md eintragen
-4. Commit-Vorschlag liefern: `[vX.Y.Z] Docs, Docs: Neuen PC registriert (<n>)`
-5. workFolder wie oben bilden und weiterarbeiten
-
-### 4.4 Verifikation
-
-Nach Ermittlung des workFolder:
-```powershell
-Test-Path "<workFolder>"
-```
-Wenn `False` → Nachfragen, NICHT raten oder alternativen Pfad probieren.
-
-### 4.5 Regeln
-
-- `[System.Environment]::GetEnvironmentVariable('OneDrive', 'User')` ist die EINZIGE Quelle für den OneDrive-Basispfad
-- `hostname` identifiziert den PC
-- **Keine hardcodierten absoluten Pfade** (kein `C:\Users\herbe\...`, kein `D:\OneDrive\...`)
-- Projekt-Suffix steht in INDEX.md, nicht im Skill
-- Unbekannte PCs werden registriert, nie geraten
-- Den ermittelten workFolder für die gesamte Session merken
-
----
-
-## 5. TOOL-ZUORDNUNG
-
-| Aufgabe | Desktop Commander Tool |
-|---------|----------------------|
-| Datei lesen | `read_file` (path) |
-| Datei schreiben (neu) | `write_file` (path, content, mode:"rewrite") |
-| Datei anhängen | `write_file` (path, content, mode:"append") |
-| Datei editieren | `edit_block` (file_path, old_string, new_string) |
-| Verzeichnis listen | `list_directory` (path, depth) |
-| Datei verschieben | `move_file` (source, destination) |
-| Terminal-Befehl | `start_process` (command, timeout_ms) |
-| Datei-Info | `get_file_info` (path) |
-| Mehrere Dateien lesen | `read_multiple_files` (paths) |
-
-### Wichtig für write_file:
-- Chunking: Max 25-30 Zeilen pro Aufruf
-- Erste Chunk: mode="rewrite"
-- Weitere Chunks: mode="append"
-- Immer absolute Pfade verwenden
-
-### Artifact-Separation bei DC + Artifact in einer Antwort
-
-Wenn Claude in einer Antwort DC-Schreib-Operation + Artifact-Erstellung
-(z.B. `create_file /home/claude/SKILL.md`) kombiniert: KEIN
-`ask_user_input_v0` im selben Antwort-Block. Die UI verdrängt sonst das
-Artifact. Antwort abschließen, User-Reaktion abwarten, erst in der
-Folge-Antwort Folgefragen stellen. Vollständige Regel: `skill-pflege/SKILL.md`
-Abschnitt "14a. Artifact-Separation".
-
-**Artifact-Dateiname bei SKILL.md-Artifacts:** MUSS exakt `SKILL.md` heißen
-(keine Prefixes/Suffixes, exakte Groß-Klein-Schreibung), sonst erscheint der
-"Skill speichern"-Button nicht. Vollständige Regel: `skill-pflege/SKILL.md`
-Abschnitt "13a. Artifact-Dateiname".
-
----
-
-## 5a. PowerShell-Aufrufe via DC (cc-steuerung-002)
-
-**Regel:** KEINE `$`-Variablen in DC-PowerShell-Command-Strings verwenden.
-
-### Problem
-
-Der Command-String wird durch eine Shell-Schicht geschickt, die `$pc`
-interpoliert **bevor** er PowerShell erreicht. Innerhalb von äußeren `"..."`
-werden alle `$`-Referenzen durch leere Strings ersetzt. Ergebnis: Syntax-Fehler.
-
-### Falsch
-
-```powershell
-powershell -Command "$pc = hostname; Write-Output $pc"
-```
-→ Fehler: `Die Benennung "=" wurde nicht als Name eines Cmdlet ... erkannt`
-
-### Richtig: Sequentielle Ausgabe ohne Variablen
-
-```powershell
-powershell -NoProfile -Command "hostname; [System.Environment]::GetEnvironmentVariable('OneDrive','User')"
-```
-
-Claude parst die Ausgabe zeilenweise. Jeder Befehl wird per Semikolon
-getrennt, seine Ausgabe landet als eigene Zeile im stdout.
-
-### Richtig: Komplexe Skripte als `.ps1`-Datei
-
-Wenn Variable-Assignments, Schleifen oder längere Logik nötig sind:
-
-1. Skript in temporäre Datei schreiben:
+Im Cowork-Chat arbeitet Claude über Desktop Commander (DC) direkt auf dem PC des Nutzers: Dateien lesen und schreiben,
+Befehle ausführen, die Struktur eines Repos prüfen. Dieser Skill legt fest, **wie** das geschieht (per DC, als
+SUCHE/ERSETZE im Chat oder als Code-Block), nicht **was** getan wird.
+
+- **Nur im Cowork-Chat.** In Claude Code gilt dieser Skill nicht: Dort liest, schreibt und startet Claude Befehle mit den
+  eigenen Werkzeugen. Dass eine Anfrage „Claude Code“ nennt, macht sie nicht zu einem Auftrag für diesen Skill.
+- **Modalität, kein Fachskill.** Den Inhalt bestimmt der Fachskill (code-erstellen, doc-pflege, mockup-erstellen,
+  tracker, audit, git-commit-helper …). „Schreib die Doku mit dc“ heißt: doc-pflege schreibt, cc-steuerung liefert den
+  Weg auf die Platte. Beide sind dann gleichzeitig aktiv, das ist gewollt. Ein Konflikt entsteht nur, wenn dieser Skill
+  Fachlogik übernimmt oder ein Fachskill DC-Regeln selbst festlegt, statt hierher zu verweisen.
+- **Einzelbefehle** wie „dc: git status“ sind der einzige Fall ohne Fachaufgabe.
+- **Fach- und Projektregeln** kommen aus dem Fachskill und dem Repo, zum Beispiel Icons nur aus den Ressourcen des
+  Projekts oder Namen und Muster nach dessen Standards.
+- **Rollen:** Claude plant, entwirft und schlägt vor. DC führt aus. Der Nutzer gibt frei und testet selbst.
+
+## Grundsätze
+
+- **Fragen nur bei offener Entscheidung**, dann als Auswahlfrage. Prosa nur bei einer offenen Frage ohne feste Optionen,
+  etwa nach dem Namen eines PCs.
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`. Ohne Profil: einen in der Sitzung schon gewählten
+  Branch verwenden; sonst mit `git branch -a` auflisten, per Auswahlfrage wählen lassen und für die Sitzung merken. Nie
+  einen Branch annehmen, auch nicht `main`.
+- **Push** nach der Push-Policy im Skill-Profil. Ohne Profil pusht der Nutzer selbst.
+- **Arbeitsstand von der Platte lesen**, nicht über GitHub: Dort liegt nur der letzte Push.
+
+## Wann ausführen
+
+- **Nach Freigabe ist DC der Standard.** Stimmt der Nutzer einem konkreten Vorschlag zu („code bitte“, „mach“, „ok“,
+  „passt“, „geht klar“, „weiter“, „los“), schreibt Claude per DC direkt auf die Platte, ohne weitere Rückfrage. Neue
+  Dateien entstehen dort, nicht als Vorlage zum Kopieren.
+- **Einzelbefehl mit cc oder dc** („dc: git status“, „cc lies …“, „mit cc: build ausführen“, „schreib das mit cc“,
+  „schreib auf Platte“, „direkt auf den PC“): sofort per DC ausführen, ohne Konzept-Schritt. Im Cowork-Chat meinen auch
+  „lass Claude Code …“, „Claude Code soll …“ und „mit/über Claude Code“ die Ausführung per DC.
+- **Kein Schreibauftrag:** „zeig mir“, „erklär mir“, „wie funktioniert“, „soll ich“. Die Antwort kommt im Chat; DC
+  höchstens zum Lesen.
+- **SUCHE/ERSETZE im Chat** nur, wenn der Nutzer es ausdrücklich will, DC nicht verfügbar ist oder die Datei außerhalb
+  eines bekannten Repos liegt. Ohne DC sonst ein Code-Block.
+- **Umfang:** 1–2 Dateien und eine klare Aufgabe → direkt ausführen. Ab 3 Dateien → Auswahlfrage: erst analysieren (Plan)
+  / direkt ausführen / abbrechen. Unklarer Umfang → erst lesen, dann den Plan zeigen. Claude schlägt vor, der Nutzer
+  entscheidet.
+- **Im Zweifel** fragen, wie geliefert wird: direkt per DC / SUCHE/ERSETZE im Chat / Code-Block.
+
+## Arbeitsverzeichnis
+
+Beim ersten DC-Aufruf der Sitzung:
+
+1. PC-Name und OneDrive-Pfad in einem Befehl holen und die Ausgabe zeilenweise lesen (Zeile 1 PC-Name, Zeile 2
+   OneDrive-Pfad). Der OneDrive-Pfad kommt nur aus dieser Benutzer-Umgebungsvariable, der PC-Name aus `hostname`:
+   ```powershell
+   powershell -NoProfile -Command "hostname; [System.Environment]::GetEnvironmentVariable('OneDrive','User')"
    ```
-   write_file(path: "C:\temp\script.ps1", content: "$pc = hostname; $od = [System.Environment]::GetEnvironmentVariable('OneDrive','User'); Write-Output "$pc|$od"", mode: "rewrite")
-   ```
-2. Skript ausführen:
-   ```
-   powershell -NoProfile -ExecutionPolicy Bypass -File "C:\temp\script.ps1"
-   ```
-3. `.ps1`-Datei nach Ausführung löschen.
+2. Den PC in der Tabelle der PCs in der Doku des Projekts suchen, meist im Router-Dokument wie `INDEX.md`. Dort steht
+   das Suffix des Repos, nicht im Skill. Arbeitsverzeichnis = OneDrive-Pfad + `\` + Suffix.
+3. Unbekannter PC: nach seinem Namen fragen, mit Zustimmung eine Zeile in die Tabelle eintragen, einen Commit nach
+   git-commit-helper vorschlagen und weiterarbeiten. Nie raten.
+4. Den Pfad prüfen (`Test-Path`). Existiert er nicht: Auswahlfrage (Pfad ist richtig / anderer Pfad / abbrechen). Keinen
+   anderen Pfad ausprobieren.
+5. Das Arbeitsverzeichnis für die Sitzung merken. Keine fest eingetragenen absoluten Pfade.
 
-Im Skript-File werden `$`-Variablen korrekt interpretiert, weil sie nicht
-mehr durch die äußere Shell-Schicht müssen.
+## Berechtigungen
 
-### Auch `$env:`-Variablen betroffen
+| Aktion | Erlaubt |
+|---|---|
+| Dateien lesen, Verzeichnisse listen | automatisch, auch ohne Auslöser |
+| `git status`, `git log`, `git diff` | automatisch |
+| Build | automatisch |
+| Dateien erstellen oder ändern | nach Freigabe eines konkreten Vorschlags |
+| `git commit` | nach Freigabe, Format nach git-commit-helper |
+| Dateien löschen | nur nach Auswahlfrage (löschen / abbrechen / andere Datei) |
+| `git push` | nach der Push-Policy des Skill-Profils; ohne Profil nie |
+| Pakete installieren | nie ohne Freigabe |
+| Dateien außerhalb des Repos | nie; einzige Ausnahme ist eine temporäre Skriptdatei (`references/desktop-commander.md`) |
 
-`$env:OneDrive`, `$env:COMPUTERNAME` etc. funktionieren aus dem gleichen
-Grund nicht zuverlässig über DC-Command-Strings. Stattdessen:
-- Für PC-Name: `hostname` (Cmdlet-Aufruf, nicht Variable)
-- Für Env-Variablen: `[System.Environment]::GetEnvironmentVariable('NAME','User')`
+## Rückmeldung
 
----
+- Nach dem Lesen: den relevanten Inhalt zeigen, bei langen Dateien gekürzt.
+- Nach dem Schreiben: was gemacht wurde (1–2 Sätze), ein Commit-Vorschlag nach git-commit-helper, der nächste Schritt.
+- Bei Fehlern: die Meldung zeigen und eine Lösung vorschlagen. Nicht automatisch wiederholen.
 
-## 6. ENTSCHEIDUNGSLOGIK: PLAN vs DIREKT
+## VERBOTEN
 
-Claude entscheidet NICHT selbst — Claude schlägt vor, User entscheidet.
-
-| Umfang | Claude Verhalten |
-|--------|-----------------|
-| 1-2 Dateien, klare Aufgabe | Direkt ausführen |
-| 3+ Dateien | Per ask_user_input_v0 fragen: "Das betrifft ~N Dateien. Erst analysieren oder direkt?" Optionen: "Erst analysieren (Plan)", "Direkt ausführen", "Abbrechen" |
-| Unklarer Umfang | Erst read_file/list_directory, dann Plan zeigen |
-
----
-
-## 7. KONTEXT-REGELN
-
-Projektspezifische Regeln kommen aus den Project Files und INDEX.md.
-Allgemeine Regeln:
-- Nie git push, nie neue Libraries ohne Freigabe
-- Icons nur über projektdefinierte Ressourcen
-- Naming und Patterns aus Projektstandards
-
----
-
-## 8. BERECHTIGUNGEN
-
-| Aktion | Erlaubt? | Bedingung |
-|--------|----------|-----------|
-| Dateien lesen | ✅ Automatisch | Bei Bedarf (auch ohne expliziten Trigger) |
-| Verzeichnis listen | ✅ Automatisch | Bei Bedarf |
-| git status / log / diff | ✅ Automatisch | Bei Bedarf |
-| Build-Befehle | ✅ Automatisch | Bei Bedarf |
-| Dateien erstellen | ✅ Nach Konzept-Freigabe | User hat "code bitte"/"ok"/"mach" auf konkreten Vorschlag gesagt |
-| Dateien editieren | ✅ Nach Konzept-Freigabe | wie oben |
-| Dateien löschen | ⚠️ Rückfrage Pflicht | Immer erst per `ask_user_input_v0` fragen |
-| git push | ❌ Nie | User pusht selbst |
-| Packages installieren | ❌ Nie | Keine Dependencies ohne Freigabe |
-| Dateien außerhalb Repo | ❌ Nie | — |
-
----
-
-## 9. RÜCKGABE AN USER
-
-### Nach Lese-Operationen:
-- Relevanten Inhalt zeigen (gekürzt wenn sehr lang)
-
-### Nach Schreib-Operationen:
-1. **Was gemacht wurde** — 1-2 Sätze
-2. **Commit-Vorschlag** — im git-commit-helper Format
-3. **Nächster Schritt** — was als nächstes kommt
-
-### Bei Fehlern:
-- Fehlermeldung zeigen
-- Lösungsvorschlag machen
-- NICHT automatisch nochmal versuchen
-
----
-
-## 10. VERBOTEN
-
-- **SUCHE/ERSETZE-Blöcke im Chat liefern wenn DC verfügbar und Konzept freigegeben wurde** — DC ist Default nach Konzept-OK (cc-steuerung-003)
-- **Schreib-Operationen auf einen unpräzisen Trigger ausführen** — User braucht klaren Umsetzungs-Auftrag (auf konkreten Vorschlag: "code bitte", "mach", "ok"). "Zeig mir" oder "wie funktioniert" sind KEIN Ausführungs-Trigger
-- Dateien schreiben wenn User "zeig mir" sagt
-- git push — unter keinen Umständen
+- Diesen Skill in Claude Code anwenden oder dort Desktop Commander benutzen
+- SUCHE/ERSETZE im Chat liefern, obwohl DC verfügbar und das Konzept freigegeben ist
+- Schreiben auf einen unpräzisen Auslöser wie „zeig mir“ oder „wie funktioniert“
+- Aus der Sandbox des Chats auf die Verfügbarkeit von DC schließen
+- `$`-Variablen, auch `$env:…`, in PowerShell-Befehlen über DC
 - Secrets, Tokens oder Passwörter in Befehlen
-- Dateien außerhalb des Projekt-Repos lesen/schreiben
-- Neue Libraries/Packages installieren ohne Freigabe
-- Desktop Commander für Konzepte/Planung/Diskussion nutzen
-- Hardcodierte absolute Pfade verwenden (immer dynamisch ermitteln)
-- Branch automatisch annehmen ohne User-Auswahl
-- Branch-Auswahl als Prosa — IMMER ask_user_input_v0
-- Liefer-Entscheidung (Chat/PC) als Prosa — IMMER ask_user_input_v0
-- Löschen ohne ask_user_input_v0-Rückfrage
-- **`bash_tool hostname` zur DC-Erkennung nutzen** — liefert immer `runsc` und sagt NICHTS über DC-Verfügbarkeit aus (cc-steuerung-001)
-- **Aus `bash_tool`-Output auf "nicht in Claude Desktop" schließen** — `bash_tool` ist die interne Container-Sandbox, nicht der User-PC. DC-Verfügbarkeit wird ausschließlich über die Tool-Liste ermittelt
-- **`$`-Variablen in DC-PowerShell-Command-Strings verwenden** — die äußere Shell-Schicht interpoliert `$pc` zu leerem String bevor PowerShell den Befehl sieht. Sequentielle Ausgabe per Semikolon oder `.ps1`-Datei verwenden (cc-steuerung-002)
-- **`$env:OneDrive` / `$env:COMPUTERNAME` in DC-Commands** — aus dem gleichen Grund nicht zuverlässig. Stattdessen `hostname` und `[System.Environment]::GetEnvironmentVariable(...)` verwenden
+- Hartkodierte absolute Pfade
+- DC für Konzepte, Planung oder Diskussion
+
+## VERWEIS
+
+- Bedienung von Desktop Commander (erkennen, Werkzeuge, schreiben, PowerShell, Auswahlfrage, Lieferung, alte Muster):
+  `references/desktop-commander.md`
+- Commit-Format: git-commit-helper. Skill-Profil: `docs/skill-profile-v1.md` im Skill-Repo.

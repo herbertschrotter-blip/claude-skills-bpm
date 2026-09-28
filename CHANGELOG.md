@@ -8,6 +8,24 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.38.1] — 2026-09-28
+
+- **skills/cc-steuerung, Refactor:** Umbau Phase 5 – Adapter für den Cowork-Chat:
+  - Description: nur im Cowork-Chat; „Claude Code“ ist kein Auslöser mehr, sondern ausgeschlossen (Claude Code hat
+    eigene Datei- und Shell-Werkzeuge); „auf Herberts PC“ → „auf dem PC des Nutzers“
+  - Kern: Zweck (WIE statt WAS, Fachskill bleibt zuständig) · Grundsätze · Wann ausführen · Arbeitsverzeichnis ·
+    Berechtigungen · Rückmeldung · VERBOTEN
+  - Branch und Push nach dem Skill-Profil (Branch-Policy, Push-Policy); ohne Profil wie bisher: Branch per Auswahlfrage,
+    Nutzer pusht selbst
+  - Arbeitsverzeichnis: PC-Tabelle in der Doku des Projekts statt fest in `INDEX.md`; neuer PC erst nach Zustimmung
+    eintragen; temporäre `.ps1` im Temp-Ordner statt festem Pfad
+  - Desktop-Commander-Werkzeuge, PowerShell ohne `$`-Variablen, Erkennung über die Tool-Liste und Lieferung
+    (Verweis auf `skills/skill-pflege/references/delivery.md` statt alter Abschnittsnummern) in der neuen
+    `references/desktop-commander.md`
+  - SKILL.md 428 → 113 Zeilen; keine Regel entfallen (DROP-Gruppen nicht freigegeben)
+  - Inventar: `docs/skill-refactors/2026-09-28-cc-steuerung.md` (105 alte Regeln)
+- INDEX.md: Skill-Zeile, Invarianten 3 und 9; README.md: Skill-Tabelle und Baum
+
 ## [v0.38.0] — 2026-09-28
 
 - **skills/skill-neu, Feature:** Umbau Phase 4 – Ablauf fürs Repo statt Lehrbuch:

@@ -95,7 +95,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 
 | Skill | Aufgabe |
 |---|---|
-| **cc-steuerung** | Steuert den Desktop Commander (DC) MCP-Server für direkte File-/Terminal-Operationen auf Herberts PC. Läuft parallel zu Fachskills. |
+| **cc-steuerung** | Regelt im Cowork-Chat, wie Claude über Desktop Commander (DC) direkt auf dem PC arbeitet (Dateien, Shell, Arbeitsverzeichnis). Läuft parallel zu Fachskills; in Claude Code nie. |
 
 ---
 
@@ -408,7 +408,9 @@ claude-skills-bpm/
 │
 ├── skills/
 │   ├── audit/SKILL.md
-│   ├── cc-steuerung/SKILL.md
+│   ├── cc-steuerung/
+│   │   ├── SKILL.md
+│   │   └── references/desktop-commander.md
 │   ├── chat-wechsel/SKILL.md
 │   ├── chatgpt-review/SKILL.md
 │   ├── code-erstellen/
