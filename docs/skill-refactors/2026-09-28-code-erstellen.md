@@ -49,4 +49,13 @@ Keine. Alle entfernten Zeilen gehen in cc-steuerung auf (MERGE).
 - **Alt→Neu:** 9 IDs mit Zustand (KEEP 2, REWRITE 2, MERGE 5); jeder Neu-Ort gelesen, in code-erstellen und cc-steuerung.
 - **Neu→Alt:** Der neue Abschnitt hat drei Aussagen, zugeordnet zu R001, R003 und R009; keine neue Regel.
 - **Größe:** SKILL.md 523 → 504 Zeilen. Prüfskript 0 Fehler, Warnungen des Skills unverändert 7.
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval (v0.38.2):** am 28.09.2026 auf 17ec20d, `--tag audit --tag code-erstellen --tag doc-pflege --tag
+  mockup-erstellen` (36 Fälle, 108 Läufe, `-j 3`, 36 min, 41,41 USD): 100/108 Läufe (Grundmessung für dieselben Fälle
+  101/108). code-erstellen: `code-generic-change` 3/3 (Grundmessung 1/3), `code-refactor` 1/3 (1/3), `code-bugfix` 2/3
+  und in der Wiederholung 2/3 (3/3); übrige 3/3. Die Abweichungen sind Läufe ohne jeden Skill-Aufruf nach 6–8
+  Schritten (bekanntes Muster der Grundmessung: Suche in der leeren Sandbox). Kritischer Fall `doc-write` 2/3 und in
+  der Wiederholung 2/3 (Grundmessung 3/3); Gegenprobe mit dem alten doc-pflege 3/6, mit neuem doc-pflege ohne den am
+  selben Abend hinzugekommenen Skill projekt-anlegen 5/6 – nicht durch diese Änderung verursacht. `audit-readonly` 0/3
+  (Ziel-Fall, Grundmessung 1/3; Behebung in Phase 5, Grenzen audit ↔ doc-pflege). Freigabe nach
+  `docs/skill-quality.md`: bis auf `doc-write` erfüllt, die Abweichung dort ist erklärt. Lieferung zusammen mit
+  v0.39.1 (Entscheidung Herbert: je Skill ein Upload).

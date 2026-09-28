@@ -54,87 +54,44 @@ code-erstellen sonst unbeabsichtigt die genannten Nachbarskills überschreibt.
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = das Frage-Werkzeug der
-jeweiligen Umgebung mit anklickbaren Optionen (Cowork-Chat `ask_user_input_v0`,
-Claude Code `AskUserQuestion`). Wo unten „Auswahlfrage“ steht, ist dieses
-Werkzeug gemeint.
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen
+  ist –, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
 
-### Diese Fragen IMMER als Auswahlfrage:
+  | Situation | Optionen |
+  |-----------|----------|
+  | Modus unklar | Lite, Standard, Deep |
+  | Zielschicht mehrdeutig | Domain, Application, Infrastructure, UI |
+  | Mehrere Referenz-Implementierungen | Dateinamen als Optionen |
+  | Fachliche Invariante würde verletzt | "Trotzdem fortsetzen", "Abbrechen", "Andere Lösung" |
+  | Ausgabeformat mehrdeutig (nur Cowork) | Komplette Datei, SUCHE/ERSETZE, Download |
+  | ClickUp-Task-Zuordnung nach Commit | Task-Kandidaten als Optionen + "Kein Task" + "Neuen Task anlegen" |
+  | Mehrere Blocking Conditions | Welche Datei zuerst laden (Kandidaten) |
+  | Commit-Version unklar (Major/Minor/Patch) | MAJOR (Breaking), MINOR (Feature), PATCH (Fix) |
+  | User muss Referenzdatei angeben | Kandidaten aus Projektstruktur |
+  | Bestehende Daten/Configs betroffen | "Daten löschen, neu anlegen lassen", "Migration bauen", "Abbrechen" |
+  | Tests rot nach dem Bau | "Fix jetzt", "Test anpassen (Begründung)", "Abbrechen" |
+  | Mockup-Pflicht greift (Deep + UI) | "Mockup zuerst", "Ohne Mockup weiter (User-Entscheid)" |
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Alle Branch-Namen aus `git branch -a` als Optionen |
-| Modus unklar | Lite, Standard, Deep |
-| Zielschicht mehrdeutig | Domain, Application, Infrastructure, UI |
-| Mehrere Referenz-Implementierungen | Dateinamen als Optionen |
-| Fachliche Invariante würde verletzt | "Trotzdem fortsetzen", "Abbrechen", "Andere Lösung" |
-| Ausgabeformat mehrdeutig (nur Cowork) | Komplette Datei, SUCHE/ERSETZE, Download |
-| ClickUp-Task-Zuordnung nach Commit | Task-Kandidaten als Optionen + "Kein Task" + "Neuen Task anlegen" |
-| Mehrere Blocking Conditions | Welche Datei zuerst laden (Kandidaten) |
-| Commit-Version unklar (Major/Minor/Patch) | MAJOR (Breaking), MINOR (Feature), PATCH (Fix) |
-| User muss Referenzdatei angeben | Kandidaten aus Projektstruktur |
-| Bestehende Daten/Configs betroffen | "Daten löschen, neu anlegen lassen", "Migration bauen", "Abbrechen" |
-| Tests rot nach dem Bau | "Fix jetzt", "Test anpassen (Begründung)", "Abbrechen" |
-| Mockup-Pflicht greift (Deep + UI) | "Mockup zuerst", "Ohne Mockup weiter (User-Entscheid)" |
+  Prosa-Fragen nur, wenn:
+  - Offene Frage ohne feste Optionen (Beispiel: "Welcher Kurztitel für den Commit?")
+  - User hat gerade eine klare Präferenz signalisiert
+  - Es ist Erklärung/Kontext, keine echte Entscheidung
+  - Freitext-Input nötig (z.B. neuer Klassenname, neue Commit-Message)
+- **Branch** (PFLICHT vor dem ersten Schreibzugriff) nach der Branch-Policy im Skill-Profil der `CLAUDE.md`:
+  `current` → der aktuelle Branch aus der Shell (`git branch --show-current`); `fixed:<branch>` → der aktuelle muss
+  dieser sein, sonst Auswahlfrage (wechseln / abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil:
+  1. Prüfe ob Branch bereits in dieser Session bekannt ist → verwenden
+  2. **Shell verfügbar** (Claude Code: Bash/PowerShell; Cowork: DC): `git branch --show-current`
+     liefert den Branch – das ist eine Tatsache, keine Frage. Nennt das Code-Profil einen
+     Pflicht-Branch (Heidi: `dreame_x60`) und der aktuelle weicht ab → Auswahlfrage
+     (wechseln / trotzdem / abbrechen), nie stumm weiterarbeiten.
+  3. **Keine Shell** (reiner Chat, GitHub API): Branches auflisten und **per Auswahlfrage**
+     den aktiven wählen lassen (Optionen = alle Branch-Namen, z.B. aus `git branch -a`)
+  4. Gewählten Branch für die gesamte Session merken
 
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen  
-  (Beispiel: "Welcher Kurztitel für den Commit?")
-- User hat gerade eine klare Präferenz signalisiert
-- Es ist Erklärung/Kontext, keine echte Entscheidung
-- Freitext-Input nötig (z.B. neuer Klassenname, neue Commit-Message)
-
-### Wie die Auswahlfrage aussieht (Cowork-Syntax; Claude Code: `AskUserQuestion` mit denselben Optionen)
-
-Einfache Auswahl:
-```
-ask_user_input_v0(
-  questions: [
-    {
-      question: "Welcher Modus für diese Aufgabe?",
-      options: ["Lite", "Standard", "Deep"]
-    }
-  ]
-)
-```
-
-Branch-Auswahl:
-```
-ask_user_input_v0(
-  questions: [
-    {
-      question: "Welcher Branch ist aktiv?",
-      options: ["main", "feature/planmanager-v1", "feature/settings-tabs"]   // Beispiel BPM
-    }
-  ]
-)
-```
-
-### VERBOTEN
-
-- Branch-Liste im Chat aufzählen und auf getippte Antwort warten
-- "Lite oder Standard oder Deep?" als Prosa
-- "Welche Datei soll noch geladen werden?" als Prosa wenn Kandidaten bekannt
-- "Passt zu <PRÄFIX>-NNN. tracker done ausführen?" als Prosa
-- Eine Optionen-Aufzählung im Chat ohne Auswahlfrage
-
----
-
-## Branch-Ermittlung (PFLICHT vor dem ersten Schreibzugriff)
-
-1. Prüfe ob Branch bereits in dieser Session bekannt ist → verwenden
-2. **Shell verfügbar** (Claude Code: Bash/PowerShell; Cowork: DC): `git branch --show-current`
-   liefert den Branch – das ist eine Tatsache, keine Frage. Nennt das Code-Profil einen
-   Pflicht-Branch (Heidi: `dreame_x60`) und der aktuelle weicht ab → Auswahlfrage
-   (wechseln / trotzdem / abbrechen), nie stumm weiterarbeiten.
-3. **Keine Shell** (reiner Chat, GitHub API): Branches auflisten und **per Auswahlfrage**
-   den aktiven wählen lassen (Optionen = Branch-Namen)
-4. Gewählten Branch für die gesamte Session merken
-5. NIE automatisch einen Branch annehmen (weder `main` noch einen anderen)
+  NIE automatisch einen Branch annehmen (weder `main` noch einen anderen).
 
 ---
 
@@ -482,14 +439,11 @@ Beispiel-Ausgabe nach Commit:
 - Annahmen ohne geladene Dateien
 - Impact Check weglassen
 - DocMaintenanceHints weglassen
-- Branch automatisch annehmen ohne User-Auswahl
-- **Branch-Auswahl als Prosa** — IMMER Auswahlfrage (wenn die Shell ihn nicht liefert)
+- Branch automatisch annehmen — ohne Branch-Policy, Shell oder Auswahlfrage
 - Hardcodierte absolute Pfade bei Dateizugriff (DC oder Claude Code)
 - ClickUp-Tasks direkt erstellen/schließen (→ immer über tracker-Skill)
 - Tasks automatisch als Done markieren ohne User-Bestätigung
-- **Task-Zuordnung nach Commit als Prosa** — IMMER Auswahlfrage
-- **Modus-Auswahl als Prosa bei Unsicherheit** — IMMER Auswahlfrage
-- **Blocking-Condition-Auflösung als Prosa** wenn Kandidaten bekannt — IMMER Auswahlfrage
+- **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER Auswahlfrage (Branch-Auswahl, wenn die Shell ihn nicht liefert; Task-Zuordnung nach Commit; Modus-Auswahl bei Unsicherheit; Blocking-Condition-Auflösung, wenn Kandidaten bekannt)
 - **Commit bei roten Tests** oder ohne den Testbefehl des Profils ausgeführt zu haben (Claude Code)
 - **Roten Test löschen oder überspringen** ohne Auswahlfrage und Begründung
 - **Akzeptanzkriterien der Aufgabenquelle ignorieren** — sie sind die Testliste
