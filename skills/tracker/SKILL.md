@@ -34,26 +34,28 @@ ist nur der Routing-Einstieg — je nach Kommando die passende Referenz laden.
 
 ---
 
-## 🚨 Kernregel: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = das Frage-Werkzeug der
-jeweiligen Umgebung mit anklickbaren Optionen (Cowork-Chat `ask_user_input_v0`,
-Claude Code `AskUserQuestion`). Wo in Skill oder references „Auswahlfrage“
-steht, ist dieses Werkzeug gemeint.
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen ist –,
+  dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung (anklickbare Optionen). Wo in Skill oder references
+  „Auswahlfrage“ steht, ist dieses Werkzeug gemeint. Mehrere Fragen in einem Aufruf sind erlaubt (max 3). Zu lange
+  Options-Listen (>4) in Multi-Aufrufe aufteilen.
 
-Mehrere Fragen in einem Aufruf sind erlaubt (max 3). Zu lange Options-Listen
-(>4) in Multi-Aufrufe aufteilen.
+  Prosa nur bei einer offenen Frage ohne feste Optionen (z.B. "Welche Datei ist betroffen?"), wenn Freitext-Input nötig
+  ist oder wenn der Nutzer gerade eine klare Präferenz signalisiert hat.
+- **Branch** (Push-Zeile im Nachlauf nach `tracker done`) nach der Branch-Policy im Skill-Profil der `CLAUDE.md`:
+  `current` → der aktuelle Branch aus der Shell (`git branch --show-current`); `fixed:<branch>` → der aktuelle muss
+  dieser sein, sonst Auswahlfrage (wechseln / abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: der aktuelle Branch aus der Shell, wie der
+  Commit-Hash; ohne Shell zusammen mit dem Commit-Hash erfragen. NIE automatisch einen Branch annehmen, auch nicht
+  `main`.
+- **Push** nach der Push-Policy im Skill-Profil der `CLAUDE.md`; danach richtet sich die Push-Zeile der
+  Zwischenstand-Tabelle im Nachlauf nach `tracker done`:
+  - `user-only`: Claude pusht nie – ⏳ Nutzer
+  - `allowed`: Claude pusht nur auf Anweisung des Nutzers – bis dahin ⏳ offen
+  - `required-after-commit`: Claude pusht nach jedem Commit ohne Rückfrage – ✅; fehlt der Push noch, jetzt pushen
+  - `required-at-session-end`: Claude pusht am Ende der Sitzung – bis dahin ⏳ Sitzungsende
 
-VERBOTEN:
-- "Welche Variante willst du? A oder B?" als Prosa
-- "Soll ich X oder Y machen?" als Prosa
-- Eine Liste von Optionen im Chat aufzählen und dann auf Tipp-Antwort warten
-
-Prosa-Fragen NUR wenn:
-- Offene Frage ohne feste Optionen (z.B. "Welche Datei ist betroffen?")
-- User hat gerade eine klare Präferenz signalisiert
-- Freitext-Input nötig
+  Ohne Push-Policy (kein Skill-Profil): wie bisher Push-Pending, der Nutzer pusht (⏳ User).
 
 ---
 
@@ -176,7 +178,7 @@ niemals passiv auf User-Input warten.**
 
 1. **Commit-Hash in der Shell der Umgebung holen** (`git log -1 --format='%h %s'`; Cowork: Desktop Commander, Claude Code: Bash/PowerShell) — nicht vom User anfordern, wenn eine Shell verfügbar ist
 2. **Custom Fields setzen** (Commit ID, Erledigt-Datum, Chat-Anker erledigt) — nur wenn das Projekt die Felder hat (`clickup-fields.md`); sonst Kommentar mit Version und Commit-Hash am Task
-3. **Zwischenstand-Tabelle im Chat** (Task / Commit-Hash / Status / Push-Pending)
+3. **Zwischenstand-Tabelle im Chat** (Task / Commit-Hash / Status / Push-Stand nach den Grundsätzen „Branch“ und „Push“)
 4. **Folgeoptionen als Auswahlfrage** — niemals Prosa-Frage, niemals still warten
 
 **Ausnahmen:** Zero-Change-Tasks (Schritt 1 entfällt), Batches (Schritte 3-4 nur einmal am Batch-Ende), keine Shell verfügbar (Schritt 1 entfällt → Prosa-Frage nach Hash).

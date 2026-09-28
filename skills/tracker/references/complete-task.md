@@ -152,8 +152,9 @@ User-Input warten nach `tracker done`.**
    | Item | Status |
    |------|--------|
    | <Task-ID> done (<hash>, <version>) | ✅ |
-   | Push nach origin/main | ⏳ User |
+   | Push nach origin/<branch> | <Push-Stand> |
    ```
+   `<branch>` und `<Push-Stand>` nach SKILL.md, Abschnitt „Grundsätze“ (Branch, Push).
    Bei mehreren parallelen Items (z.B. Skill-Issues-Session): vollständige
    Session-Tabelle mit allen abgeschlossenen und offenen Punkten.
 
