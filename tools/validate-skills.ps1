@@ -325,7 +325,7 @@ function Invoke-Validation {
         } else { $repoWarnings.Add('CLAUDE.md hat noch kein »## Skill-Profil«') }
     }
     if (Test-Path -LiteralPath (Join-Path $repoRoot 'projects')) {
-        $repoWarnings.Add('projects/ existiert noch – Projektwerte gehören in die Projekt-Repos (Umbau Phase 2)')
+        $repoWarnings.Add('projects/ existiert noch – Projektwerte gehören nicht ins Skill-Repo (Umbau Phase 6/7)')
     }
     foreach ($zip in Get-ChildItem -LiteralPath $skillsRoot -File -Filter '*.zip') {
         $repoWarnings.Add("Zip direkt unter skills/: $($zip.Name)")
