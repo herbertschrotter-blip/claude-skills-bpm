@@ -50,32 +50,24 @@ für Doc-Fixes) oder als Aufgaben über **tracker** angelegt (Abschnitt
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
-mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen
+  ist –, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
 
-### Diese Fragen IMMER als Auswahlfrage:
+  | Situation | Optionen |
+  |-----------|----------|
+  | Modus-Auswahl (A oder B) | Vollaudit, Teilaudit, Abbrechen |
+  | Teilaudit: welches Modul | Modul-Namen aus dem Router des Profils (BPM: INDEX.md; Heidi: Karte/Backend/Doku/Tools) |
+  | Vollaudit-Warnung vor Start | Starten, Als Teilaudit starten, Abbrechen |
+  | Nach dem Report: was mit den Befunden | Als Tasks anlegen (tracker), An code-erstellen/doc-pflege, Nur Report |
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Branch-Namen aus `git branch -a` |
-| Modus-Auswahl (A oder B) | Vollaudit, Teilaudit, Abbrechen |
-| Teilaudit: welches Modul | Modul-Namen aus dem Router des Profils (BPM: INDEX.md; Heidi: Karte/Backend/Doku/Tools) |
-| Vollaudit-Warnung vor Start | Starten, Als Teilaudit starten, Abbrechen |
-| Nach dem Report: was mit den Befunden | Als Tasks anlegen (tracker), An code-erstellen/doc-pflege, Nur Report |
-
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen
-- User hat Präferenz signalisiert
-
-## Branch-Ermittlung
-
-Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork: DC):
-`git branch --show-current`. Ohne Shell und unbekannt: Auswahlfrage.
-NIE automatisch einen Branch annehmen.
+  Prosa nur bei einer offenen Frage ohne feste Optionen oder wenn der Nutzer eine Präferenz signalisiert hat.
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle Branch muss dieser sein, sonst Auswahlfrage
+  (auf dem aktuellen Branch prüfen / abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: Branch aus Chat-Kontext verwenden; mit Shell (Claude Code:
+  Bash/PowerShell, Cowork: DC) `git branch --show-current`; ohne Shell und unbekannt: Auswahlfrage mit den
+  Branch-Namen aus `git branch -a`. NIE automatisch einen Branch annehmen.
 
 ## Arbeitsverzeichnis (PFLICHT bei Dateizugriff)
 
@@ -309,9 +301,8 @@ Entscheidung offen) – eintragen tut doc-pflege, nicht audit.
 - False Positives als Fehler
 - Vollaudit ohne Auswahlfrage-Vorwarnung
 - Ladereihenfolge des Profils ignorieren (BPM: Quickload-Laderegel)
-- Modus-Auswahl als Prosa — IMMER Auswahlfrage
-- Modul-Auswahl für Teilaudit als Prosa — IMMER Auswahlfrage
-- Branch automatisch annehmen (Shell fragen oder Auswahlfrage)
+- Prosa-Fragen bei festen Entscheidungsoptionen (Modus-Auswahl, Modul-Auswahl für Teilaudit)
+- Branch automatisch annehmen (Branch-Policy lesen, Shell fragen oder Auswahlfrage)
 - Eigene Prüfregeln erfinden statt Doku-/Code-Profil und Stack-Referenzen zu lesen
 - BPM-Prüfpunkte (DB-Schema, DI, Frontmatter) auf ein Projekt anwenden, das sie laut Profil nicht hat
 - Befunde ohne Datei und Stelle melden
