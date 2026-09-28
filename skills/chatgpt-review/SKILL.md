@@ -46,12 +46,6 @@ ChatGPT-Review (chatgpt-review)?"
 
 ---
 
-## Branch-Ermittlung
-
-Branch aus Chat-Kontext verwenden. Mit Shell (Claude Code: Bash/PowerShell, Cowork: DC):
-`git branch --show-current`. Ohne Shell und unbekannt: per Auswahlfrage fragen.
-NIE automatisch einen Branch annehmen.
-
 ## Voraussetzung: Review-Profil
 
 Abschnitt `## Review-Profil` in der `CLAUDE.md` des Repos (Claude Code liest sie automatisch;
@@ -71,29 +65,34 @@ Cowork per DC). Felder:
 sonst Auswahlfrage „Profil anlegen (Vorschlag aus dem Repo)“. Repo-Pfad: Tracker-Profil (Claude Code)
 bzw. Memory `[PROJECT]` (Cowork).
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
-mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen
+  ist –, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen: Tabelle unten. Prosa nur bei
+  einer offenen Frage ohne feste Optionen, wenn der User eine Präferenz signalisiert hat oder Freitext nötig ist.
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle Branch muss dieser sein, sonst Auswahlfrage
+  (wechseln / abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: Branch aus dem Chat-Kontext; mit Shell (Claude Code: Bash/PowerShell,
+  Cowork: DC) `git branch --show-current`; ist er dann noch unbekannt (keine Shell, oder die Shell liefert keinen):
+  Auswahlfrage (Optionen: Branch-Namen aus `git branch -a`). NIE automatisch einen Branch annehmen.
+- **Push** nach der Push-Policy im Skill-Profil – bei der Push-Prüfung vor jedem Prompt mit Repo-Zugriff (Abschnitt
+  „ChatGPTs Repo-Zugriff“), wenn es ungepushte Commits gibt:
+  - `user-only`: Claude pusht nie; bei „Jetzt pushen“ den Befehl liefern, der User pusht selbst
+  - `allowed` und `required-at-session-end`: Auswahlfrage; bei „Jetzt pushen“ pusht Claude
+  - `required-after-commit`: ohne Rückfrage pushen, dann den Prompt erstellen
+  - ohne Push-Policy (kein Skill-Profil): Auswahlfrage; bei „Jetzt pushen“ pusht Claude Code selbst, Cowork liefert den
+    Befehl
 
-### Diese Fragen IMMER als Auswahlfrage:
+### Typische Stellen für eine Auswahlfrage
 
 | Situation | Optionen |
 |-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Branch-Namen aus `git branch -a` |
-| Ungepushte Commits vor einem Prompt mit Repo-Zugriff | Jetzt pushen, Im Prompt vermerken, Abbrechen |
+| Ungepushte Commits vor einem Prompt mit Repo-Zugriff (nicht bei Push-Policy `required-after-commit`) | Jetzt pushen, Im Prompt vermerken, Abbrechen |
 | Phase 3: Ergebnisse übernehmen | Entscheidungen an Ergebnis-Ort, Offene Punkte als Tasks (tracker), Beides, Nur Zusammenfassung |
 | Rundenstand aus Archiv widerspricht Chat | Archiv gilt (r<N>), Chat gilt, Abbrechen |
 | Phase 2 Stufe A: Entscheidungspunkte | je nach Review-Thema + immer "ChatGPT fragen" |
 | Bei Uneinigkeit Claude/ChatGPT | Claude zustimmen, ChatGPT zustimmen, Mittelweg, Abbrechen |
 | Review-Phase wechseln | In Phase 2, In Phase 3, Weiter in aktueller Phase |
-
-### Prosa-Fragen NUR wenn:
-
-- Offene Frage ohne feste Optionen
-- User hat Präferenz signalisiert
-- Freitext-Input nötig
 
 ## Vor dem Start: ChatGPT-Modell
 
@@ -284,7 +283,7 @@ Du hast Zugriff auf das GitHub-Repo und kannst selbst Dateien lesen:
 - Owner/Repo aus dem Review-Profil (BPM: INDEX.md Projekt-Metadaten)
 - **Push-Prüfung (Pflicht vor jedem Prompt mit Repo-Zugriff):** mit Shell
   `git fetch --quiet && git log origin/<branch>..HEAD --oneline` – gibt es Commits, sieht ChatGPT alte
-  Dateien. Dann Auswahlfrage: „Jetzt pushen“ (Claude Code pusht selbst; Cowork liefert den Befehl) /
+  Dateien. Dann nach der Push-Policy (Abschnitt „Grundsätze“): ohne Rückfrage pushen oder Auswahlfrage „Jetzt pushen“ /
   „Im Prompt vermerken“ (Block ergänzen: „Stand auf GitHub ist <hash>, neuere Änderungen stehen unten im
   Prompt“) / „Abbrechen“. Ohne Shell: User fragen, ob gepusht ist.
 - Uncommittete Änderungen an Dateien, die im Prompt genannt werden, ebenfalls nennen (`git status --short`)
@@ -531,12 +530,12 @@ Prompts in der Sprache des Users.
 
 ## VERBOTEN
 
-- Branch automatisch annehmen (Shell fragen oder Auswahlfrage)
-- Multiple-Choice als Prosa statt Auswahlfrage
-- Stufe A Entscheidungspunkte als Prosa statt Auswahlfrage
+- Branch automatisch annehmen – ohne Branch-Policy, Shell oder Auswahlfrage
+- Prosa-Fragen bei festen Entscheidungsoptionen (Multiple-Choice, Stufe-A-Entscheidungspunkte)
 - Uneinigkeit ohne Auswahlfrage auflösen
 - Initialprompt ohne den Pflicht-Block des Projekts erstellen (BPM Frühphase, Heidi Regeln des Neubaus)
 - **Prompt mit Repo-Zugriff-Block ohne Push-Prüfung** – ChatGPT liest sonst alte Dateien
+- **Pushen gegen die Push-Policy des Skill-Profils**
 - **Rundennummer aus dem Chat raten** statt aus README/r<N>-Ordnern zu lesen
 - **Phase 3 ohne Auswahlfrage „Ergebnisse übernehmen“ beenden** – Entscheidungen bleiben sonst nur im Chat
 - **BPM-Ablage, -Themen oder -Frühphase für ein anderes Projekt annehmen** – alles aus dem Review-Profil
