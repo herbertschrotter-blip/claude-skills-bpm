@@ -142,31 +142,12 @@ ask_user_input_v0(
 
 **Claude Code:** Arbeitsverzeichnis = Repo-Wurzel der Sitzung
 (`git rev-parse --show-toplevel`); bei Worktrees gilt der Worktree, nie das
-Haupt-Checkout. Der Rest dieses Abschnitts betrifft nur den Cowork-Chat.
+Haupt-Checkout.
 
 **Cowork-Chat:** Wenn dieser Skill DC-Operationen auslöst (z.B. Code-Dateien lesen,
-Entry Points prüfen), das Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln.
+Entry Points prüfen), das Arbeitsverzeichnis nach **cc-steuerung**, Abschnitt
+„Arbeitsverzeichnis“, ermitteln.
 
-### Ablauf (erster DC-Aufruf der Session, Cowork)
-
-1. Pfad-Ermittlung:
-```powershell
-$pc = hostname; $od = [System.Environment]::GetEnvironmentVariable('OneDrive', 'User'); Write-Host "$pc|$od"
-```
-
-2. INDEX.md laden → Abschnitt "PCs und Arbeitsverzeichnisse" → COMPUTERNAME matchen
-   - **GEFUNDEN** → workFolder = OneDrive-Pfad + `\` + Projekt-Suffix aus INDEX.md
-   - **NICHT GEFUNDEN** → Self-Registration (cc-steuerung 4.3)
-
-3. Verifikation:
-```powershell
-Test-Path "<workFolder>"
-```
-
-4. workFolder für die gesamte Session merken
-
-**Wichtig:** `$env:OneDrive` funktioniert NICHT über DC `start_process`.
-IMMER `[System.Environment]::GetEnvironmentVariable('OneDrive', 'User')` verwenden.
 **Keine hardcodierten absoluten Pfade** – in keiner Umgebung.
 
 ---
