@@ -128,12 +128,19 @@ Gesamt 11/15 Läufe (3 von 5 Fällen). Dauer 14 Minuten (rund 55 Sekunden je Lau
 (rund 0,38 USD je Lauf; keine Rechnung, zählt gegen das Max-Kontingent). Hochgerechnet: 60 Fälle × 3 Läufe sind rund
 180 Läufe, knapp 3 Stunden nacheinander, Gegenwert rund 70 USD. `plugin eval` löscht die Protokolle der Läufe; zur
 Fehlersuche einen Fall einzeln mit `--keep-temp` laufen lassen (behält laut Hilfe die Temp-Ordner).
-- [ ] echte Sitzungen EXT-01 bis EXT-05 – Anleitung `quality/real-environment/README.md`; Protokoll
-      `quality/real-environment/2026-09-28.md`: EXT-01 3/3 (skill-neu), EXT-02, EXT-03 und EXT-05 offen, EXT-04 entfällt
-      bis modul-bauplan
+- [x] echte Sitzungen EXT-01 bis EXT-05 – Anleitung `quality/real-environment/README.md`; Protokoll
+      `quality/real-environment/2026-09-28.md`: EXT-01 (skill-neu), EXT-02 (skill-pflege), EXT-03 (audit) und EXT-05
+      (kein Skill) je 3/3, kein Skill von Anthropic kam; EXT-04 entfällt bis modul-bauplan
 - [x] Grundmessung einfrieren – `quality/baseline/grundmessung-2026-09.md` ist die Vergleichsbasis (28.09.2026)
+- [x] Abgleich mit den alten Aufgaben der Liste ClaudeSkills (28.09.2026): P4.1 (Skill-Lade-Hinweise) und P2
+      (Fresh-Model-API-Eval) als abgelöst geschlossen; P4.2 (Golden Cases) bleibt offen und legt echte Fehlrouting-Fälle
+      künftig unter `quality/evals/` bzw. `quality/real-environment/` ab
 
 **Abnahme:** Die unveränderten Skills sind vermessen.
+
+Stand 28.09.2026: Grundmessung 55 von 60 Fällen, 172 von 180 Läufen, kritische Fälle 20 von 23 (eingefroren); echte
+Sitzungen 4 von 4 Fällen, 12 von 12 Sitzungen. Unter `skills/` ist seit 12f90b8 nichts geändert. **Phase 3 abgeschlossen
+am 28.09.2026.**
 
 ### Phase 4 – skill-pflege und skill-neu
 
