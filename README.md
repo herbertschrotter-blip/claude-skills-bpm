@@ -321,7 +321,7 @@ Für **generische** Skills (TDD, Debugging, Refactoring, allgemeine Code-Pattern
 
 ### Neuen Skill anlegen
 
-Über den `skill-neu`-Skill — Capture-Intent-Interview, Description-Schema, Body-Template, optional `references/`-Aufteilung.
+Über den `skill-neu`-Skill — Absicht klären, Kollisionsprüfung, Description, Neutralität, mindestens drei Eval-Fälle unter `quality/evals/`, Prüfskript und Routing-Eval, dann Commit und Lieferung zum Upload bei claude.ai.
 
 > **Operative Regelquelle:** [`skills/skill-neu/SKILL.md`](./skills/skill-neu/SKILL.md).
 
@@ -415,7 +415,7 @@ claude-skills-bpm/
 │   ├── doc-pflege/SKILL.md
 │   ├── git-commit-helper/SKILL.md
 │   ├── mockup-erstellen/SKILL.md
-│   ├── skill-neu/                         ← SKILL.md + test-prompts.md
+│   ├── skill-neu/                         ← SKILL.md + references/ (cowork)
 │   ├── skill-pflege/                      ← SKILL.md + references/ (rule-inventory, delivery)
 │   ├── ticket/                            ← SKILL.md + test-prompts.md
 │   └── tracker/

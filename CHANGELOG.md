@@ -8,6 +8,22 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.38.0] — 2026-09-28
+
+- **skills/skill-neu, Feature:** Umbau Phase 4 – Ablauf fürs Repo statt Lehrbuch:
+  - Ablauf: Absicht klären · Kollisionsprüfung (auch gegen Skills von Anthropic; Konfliktpaar → Eval-Fall bzw. echte
+    Sitzung) · Description · Neutralität · Körper und references · Eval-Fälle · Prüfen · Doku, Commit, Lieferung
+  - mindestens drei Eval-Fälle unter `quality/evals/` statt `test-prompts.md`; Prüfskript und Routing-Eval nach dem
+    Skill-Profil; reale Fehlrouting-Fälle werden Eval-Fälle
+  - Lieferung als Kurzvertrag mit Verweis auf `skills/skill-pflege/references/delivery.md`; Cowork-Werkzeuge und
+    Memory-Rubriken in der neuen `references/cowork.md`
+  - entfallen (freigegeben): Lehrbuch-Abschnitte (Anatomie, Ladeebenen, Auslöse-Mechanik, Schreibstil-Muster),
+    `test-prompts.md` mit Test-Log, Historie und veraltete Beispiel-Descriptions
+  - SKILL.md 534 → 172 Zeilen; Description unverändert
+  - Inventar: `docs/skill-refactors/2026-09-28-skill-neu.md` (112 alte Regeln, 17 DROP in drei freigegebenen Gruppen)
+- INDEX.md: Skill-Zeile; README.md: Abschnitt „Neuen Skill anlegen“ und Baum; `docs/skillsystem-umbau.md`: Phase 4
+  abgehakt
+
 ## [v0.37.1] — 2026-09-28
 
 - **skills/skill-pflege, Fix:** Safe Patch nach der Gegenprüfung von v0.37.0:

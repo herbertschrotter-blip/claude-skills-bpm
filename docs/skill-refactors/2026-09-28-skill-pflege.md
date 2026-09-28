@@ -153,7 +153,7 @@ Abkürzungen im Neu-Ort: `S` = `SKILL.md`, `I` = `references/rule-inventory.md`,
 |---|---|---|
 | `skills/doc-pflege/SKILL.md` (Z. 446) | „skill-pflege Regel 21“ | Phase 6 (doc-pflege) → `skills/skill-pflege/SKILL.md#Split-Prüfung` |
 | `skills/tracker/references/complete-task.md` (Z. 133–134, 147) | „Regel 14b“, „Regel 14“, „Regel 15 + 16“ | Phase 6 (tracker) → `skills/skill-pflege/references/delivery.md` |
-| `skills/skill-neu/SKILL.md` | „Regel 21“, „Regel 14“, „13b, 14a, Regel 6, 13“, Abschnitt AUTO-ISSUE-ERKENNUNG, „additive Default-Philosophie“ (Z. 529) | Phase 4 (skill-neu), gleich im Anschluss |
+| `skills/skill-neu/SKILL.md` | „Regel 21“, „Regel 14“, „13b, 14a, Regel 6, 13“, Abschnitt AUTO-ISSUE-ERKENNUNG, „additive Default-Philosophie“ (Z. 529) | mit dem skill-neu-Refactor (v0.38.0) entfallen |
 | `skills/cc-steuerung/SKILL.md` (Z. 292–297) | „`skill-pflege/SKILL.md` Abschnitt 14a/13a“ | Phase 5 (cc-steuerung wird Cowork-Adapter) → `skills/skill-pflege/references/delivery.md#Cowork` |
 | `INDEX.md` Skill-Tabelle, Meta-Skills, Invarianten 5 und 8 | additiv; Two-Place über Artifact | mit diesem Commit angepasst |
 | `README.md` Two-Place-Pflege, Kapitel 11, `docs/`-Tabelle und Baum | Regelquelle SKILL.md; „Repo + Artifact“ | mit diesem Commit angepasst |

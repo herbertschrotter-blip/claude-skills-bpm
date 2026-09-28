@@ -144,9 +144,10 @@ am 28.09.2026.**
 
 ### Phase 4 – skill-pflege und skill-neu
 
-- [ ] skill-pflege: Safe Patch, Refactor, Regel-Inventar, Lieferregeln in `references/delivery.md`, Prüfskript als Abschluss
-- [ ] skill-neu: Lehrbuchteile raus, Governance-Ablauf, Qualitätsquelle, zentrale Eval-Fälle, Kollisionsprüfung inkl.
-      Anthropic-Skills
+- [x] skill-pflege: Safe Patch, Refactor, Regel-Inventar, Lieferregeln in `references/delivery.md`, Prüfskript als Abschluss
+      – v0.37.0/v0.37.1, Routing-Eval 33/33, bei claude.ai hochgeladen (28.09.2026)
+- [x] skill-neu: Lehrbuchteile raus, Governance-Ablauf, Qualitätsquelle, zentrale Eval-Fälle, Kollisionsprüfung inkl.
+      Anthropic-Skills – v0.38.0 (28.09.2026); Routing-Eval und Upload stehen im Inventar
 
 **Abnahme:** Refactors können Text entfernen und zusammenführen, ohne dass Regeln unbemerkt verloren gehen.
 
