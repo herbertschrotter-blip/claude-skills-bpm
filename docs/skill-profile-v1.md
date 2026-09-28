@@ -140,7 +140,7 @@ Grundfelder für alle: `Profil-Version`, `Projekt-ID`, `Repo`, `Branch-Policy`.
 | chat-wechsel | Doku.Sitzungsabschluss, Doku.Entscheidungs-Ort, Commit.Push-Policy; Tracker.Config, wenn Aufgaben eingebunden sind |
 | chatgpt-review | Review.Config, Commit.Push-Policy |
 | code-erstellen | Code.Stacks, Code.Pflichtkontext, Code.Architekturregeln, Code.Tests, Code.Auslieferung; Code.Aufgabenquelle, wenn das Projekt Aufgaben führt |
-| doc-pflege | Doku.Router, Doku.Standard, Doku.Entscheidungs-Ort |
+| doc-pflege | Doku.Router, Doku.Standard, Doku.Entscheidungs-Ort; Commit.Push-Policy, wenn der Sitzungsabschluss committet |
 | git-commit-helper | Commit.Format, Commit.Module, Commit.Versionsquelle, Commit.Versionsregel, Commit.Push-Policy, Commit.Pre-Commit-Checks |
 | mockup-erstellen | Mockup.Ablage, Mockup.Designquelle, Mockup.Ansichten, Mockup.Abnahme-Ort |
 | skill-neu, skill-pflege | das Profil des Skill-Repos (Commit, Doku, Checks) |

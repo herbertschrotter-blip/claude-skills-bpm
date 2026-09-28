@@ -90,13 +90,17 @@ Die Paar-Konflikte wurden durch Delegations-Tabellen im Body der jeweiligen Skil
 
 Alle Skills folgen diesen Konventionen. Sie sind die DNA des Skill-Systems und wurden in den Phasen 1–5 des Refactors systematisch durchgezogen.
 
-### 1. `ask_user_input_v0` bei Entscheidungen (Phase 1)
+### 1. Fragen nur bei offener Entscheidung
 
-KEINE Prosa-Fragen bei festen Entscheidungsoptionen. Jede "A oder B?"-Frage geht durch `ask_user_input_v0`. Gilt für: Branch-Wahl, Modus-Auswahl, Liefermodus (Chat/SUCHE-ERSETZE/DC), Commit-Typ, Version-Bump, Task-Zuordnung, Löschungen.
+Gefragt wird nur, wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen ist – dann als Auswahlfrage mit
+dem Frage-Werkzeug der Umgebung, keine Prosa-Fragen bei festen Optionen. Die typischen Stellen stehen je Skill im
+Abschnitt „Grundsätze“ (`docs/skill-quality.md`, Zusammenspiel).
 
-### 2. Branch-Ermittlung (Phase 1)
+### 2. Branch und Push aus dem Skill-Profil
 
-Nie automatisch annehmen — bei jedem GitHub-Zugriff den Branch aus `git branch -a` per `ask_user_input_v0` wählen lassen. Einmal gewählt gilt er für die ganze Session.
+Branch nach der Branch-Policy (`current` / `fixed:<branch>`), Push nach der Push-Policy des Skill-Profils
+(`docs/skill-profile-v1.md`). Ohne Skill-Profil gilt der bisherige Rückfall des jeweiligen Skills. Nie automatisch einen
+Branch annehmen.
 
 ### 3. DC-Pfade dynamisch ermitteln (cc-steuerung-001 + 002)
 

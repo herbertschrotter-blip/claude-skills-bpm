@@ -163,8 +163,10 @@ Aufgaben zu Phase 5 (cc-steuerung) und Phase 6 (doc-pflege, tracker). **Phase 4 
 - [x] Cowork-Pfadermittlung aus audit, code-erstellen, doc-pflege und mockup-erstellen entfernen – v0.38.2: Verweis auf
       cc-steuerung, Abschnitt „Arbeitsverzeichnis“; in code-erstellen der kopierte Ablauf entfernt; nebenbei der tote
       Verweis in doc-pflege behoben (Prüfskript 0 Fehler)
-- [ ] Regel „Fragen nur bei offener Entscheidung“ in alle Skills übernehmen
-- [ ] Branch und Push aus dem Profil lesen
+- [x] Regel „Fragen nur bei offener Entscheidung“ in alle Skills übernehmen – v0.39.1, Abschnitt „Grundsätze“ in acht
+      Skills (ticket bewusst unverändert, cc-steuerung, skill-neu und skill-pflege hatten sie schon)
+- [x] Branch und Push aus dem Profil lesen – v0.39.1; ohne Skill-Profil bleibt der bisherige Rückfall je Skill
+      (Entscheidung Herbert); git-commit-helper liest dafür zuerst das Skill-Profil v1
 - [ ] INDEX neu als Verzeichnis für das Auslösen; Invarianten 1–10 an ihren neuen Ort
 - [ ] Grenzen audit ↔ doc-pflege ↔ modul-bauplan festziehen (doc-pflege Modus 3, 4 und 6 als öffentliche Modi entfernen)
 - [ ] Descriptions anpassen, jeweils mit Eval

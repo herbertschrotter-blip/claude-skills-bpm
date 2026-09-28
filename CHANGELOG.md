@@ -8,6 +8,28 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.39.1] — 2026-09-28
+
+- **skills/audit, chat-wechsel, chatgpt-review, code-erstellen, doc-pflege, git-commit-helper, mockup-erstellen,
+  tracker, Refactor:** Umbau Phase 5 – Fragen, Branch und Push als gemeinsamer Abschnitt „Grundsätze“:
+  - „Fragen nur bei offener Entscheidung“ statt „VERBINDLICHE REGEL: Auswahlfrage bei jeder Entscheidung“; die
+    skillspezifischen Situationen mit ihren Optionen bleiben als typische Stellen
+  - Branch nach der Branch-Policy des Skill-Profils (`current` / `fixed:<branch>`; ohne Shell bei `fixed` dieser
+    Branch, bei `current` Auswahlfrage); ohne Skill-Profil der bisherige Rückfall des Skills; audit bietet bei
+    Abweichung „auf dem aktuellen Branch prüfen“ statt „wechseln“ (read-only)
+  - Push nach der Push-Policy, wo der Skill pusht (git-commit-helper-Sequenz, chat-wechsel- und doc-pflege-
+    Sitzungsabschluss, chatgpt-review-Push-Prüfung, tracker-Zwischenstand); ohne Push-Policy wie bisher.
+    chat-wechsel nennt ungepushte Commits im Übergabe-Prompt; chatgpt-review darf bei `required-at-session-end` per
+    Auswahlfrage vorab pushen
+  - git-commit-helper liest zuerst `## Skill-Profil` (v1: Commit, Branch-Policy, Checks), das alte `## Commit-Profil`
+    bleibt Rückfall; Pre-Commit-Checks nach Pfad-Muster; Versionsquelle auch `changelog:<Datei>`
+  - entfallen (freigegeben, Gruppe A): Werkzeugnamen und `ask_user_input_v0`-Syntaxblöcke im Regeltext von audit,
+    chat-wechsel, chatgpt-review, code-erstellen, doc-pflege, mockup-erstellen
+  - Descriptions unverändert; ticket unverändert (dort ist „jeder Schritt mit Wirkung nur nach Auswahlfrage“ der Kern)
+  - Inventare: `docs/skill-refactors/2026-09-28-<skill>.md` (code-erstellen: `…-code-erstellen-2.md`)
+- `docs/skill-profile-v1.md`: Pflichtfeld Commit.Push-Policy bei doc-pflege, wenn der Sitzungsabschluss committet;
+  INDEX.md: Invarianten 1 und 2 auf die neuen Regeln
+
 ## [v0.39.0] — 2026-09-28
 
 - **skills/projekt-anlegen, Feature:** neuer Skill – neue Projekte anlegen und einrichten, projektneutral nach Stack:
