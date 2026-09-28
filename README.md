@@ -200,8 +200,8 @@ Dieser Ordner isoliert alle Daten, die sich bei einem Projektwechsel ändern wü
 
 `projects/heidi/` ist die Config der Heidi-Karte (Home Assistant, Dreame X60, Repo `HA_Dash_DreameX60`). Die Werte des
 Space „Claude Skills Entwicklung“ (Liste ClaudeSkills, Skill-Issue-Listen) stehen seit 24.09.2026 in
-`.claude/skill-config/tracker.md`. Laut Umbau-Plan ziehen die Projektwerte in Profile der CLAUDE.md des jeweiligen
-Repos (Phase 2); `projects/` wird in Phase 7 entfernt.
+`.claude/skill-config/tracker.md`. Der Umbau ändert keine Projekt-Repos; was mit den Werten in `projects/` geschieht,
+klärt Phase 6 beim Skill tracker, entfernt wird der Ordner in Phase 7.
 
 ### Was gehört in `projects/<projekt>/` vs. `skills/`
 

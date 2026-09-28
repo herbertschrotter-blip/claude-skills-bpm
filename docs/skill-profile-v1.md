@@ -146,7 +146,8 @@ Braucht ein Skill ein Feld, das fehlt oder `fehlt` ist, meldet er genau dieses F
 > `<Skill>` braucht `<Bereich>.<Feld>`; der Wert fehlt im Skill-Profil.
 
 Dann eine Auswahlfrage mit drei Optionen: *Profil ergänzen* / *Wert einmalig nennen* / *Abbrechen*. Kein „ganzes Profil
-anlegen?“. Fehlt das Profil ganz, wird es mit dem Vorschlag aus dem Repo angelegt, bevor der Skill weiterarbeitet.
+anlegen?“. Fehlt das Profil ganz, schlägt der Skill es mit Werten aus dem Repo vor; angelegt wird es erst, wenn Herbert
+zustimmt. Ohne Zustimmung gelten *Wert einmalig nennen* und *Abbrechen*.
 
 ## Configs unter `.claude/skill-config/`
 
@@ -173,14 +174,12 @@ Die nächste freie Aufgabennummer steht nur in `tracker.md`.
 
 ## Einführung in den Repos
 
-| Repo | Stand |
-|---|---|
-| claude-skills-bpm | Profil in der `CLAUDE.md`, Configs `review.md` und `tracker.md` (Umbau Phase 1) |
-| BauProjektManager | Phase 2: Profil und `tracker.md`; Push-Policy `user-only` |
-| HA_Dash_DreameX60 | Phase 2: Profil, `tracker.md`, `ticket.md` (`review.md` nur bei Bedarf), aus dem heutigen Stand neu aufgebaut |
+Nur das Skill-Repo hat ein Profil (`CLAUDE.md`, Configs `review.md` und `tracker.md`, Umbau Phase 1). Der Umbau legt in
+anderen Repos keine Profile an; dort entsteht eines erst, wenn ein Skill es braucht und Herbert zustimmt (Abschnitt
+„Fehlende Werte“).
 
 Bis die Skills in den Umbau-Phasen 5 und 6 das Profil lesen, bleiben ihre bisherigen Quellen als Verweise erhalten:
 `docs/project-architecture.md` und der Abschnitt `## Review-Profil` in der CLAUDE.md des Skill-Repos. `projects/` wird
 erst entfernt, wenn kein Skill mehr dorthin zeigt. Entwürfe für die Profile von BPM und Heidi stehen in
-`docs/chatgpt-reviews/CGR-2026-09-24-skillsystem/r2/02-chatgpt-response.md` (Abschnitt 5) – nur als Ausgangspunkt, die
-Werte müssen im jeweiligen Repo geprüft werden.
+`docs/chatgpt-reviews/CGR-2026-09-24-skillsystem/r2/02-chatgpt-response.md` (Abschnitt 5) – nur als Ausgangspunkt, falls
+ein Projekt das Profil einführt; die Werte müssen dann im jeweiligen Repo geprüft werden.

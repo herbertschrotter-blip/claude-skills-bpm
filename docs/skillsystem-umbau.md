@@ -11,6 +11,7 @@ Begründungen stehen dort, vor allem in `r3/02-chatgpt-response.md` (Umbau-Plan)
 |---|---|
 | Projektwerte | Ein Block `## Skill-Profil` (Version 1) in der CLAUDE.md jedes Repos; Werte genau einmal, lange Regelwerke per `ref:`; `none` = bewusst leer, `fehlt` = blockiert den Skill, der das Feld braucht |
 | Große Configs | Tracker, Ticket, Review je als Datei unter `.claude/skill-config/` im Projekt-Repo; `projects/<name>/` verschwindet aus dem Skill-Repo |
+| Projekt-Repos | Der Umbau ändert keine Projekt-Repos; die Skills werden ohne Bezug zu einer App neutral. Ein Projekt-Profil entsteht erst, wenn ein Skill es braucht und Herbert zustimmt (Phase 2 entfällt, 28.09.2026) |
 | cc-steuerung | bleibt als kleiner Cowork-Adapter (rund 100 Zeilen), löst in Claude Code nie aus |
 | Verteilung | Upload über claude.ai; Two-Place-Pflege bleibt (Lieferregeln in `skill-pflege/references/delivery.md`) |
 | Umgebung | Claude Code ist die Hauptumgebung; Cowork-Teile wandern in Referenzen |
@@ -91,15 +92,12 @@ in doc-pflege (`references/projekt-init.md`) und wird mit der ersten Änderung a
 `quality/evals/` aus dem Manifest; der Pilot am 24.09. hat alle fünf Fälle gefunden und bewertet. Seit dem Plan-Commit ist
 unter `skills/` nichts geändert. **Phase 1 abgeschlossen am 24.09.2026.**
 
-### Phase 2 – Profile der Projekte (je eine Sitzung im Projekt-Repo)
+### Phase 2 – Profile der Projekte (entfällt)
 
-- [ ] BPM: `## Skill-Profil` in `CLAUDE.md`, `.claude/skill-config/tracker.md` (BPM-Space, 17 Listen, Felder, Kürzel,
-      Status, Nummern). Push-Policy `user-only`: Herbert pusht.
-- [ ] Heidi (`HA_Dash_DreameX60`, anderer PC): Profil und `tracker.md`/`ticket.md` (`review.md` nur, wenn gebraucht) aus der
-      heutigen CLAUDE.md, der Projektdoku und ClickUp neu aufbauen; `projects/heidi/` nur zum Gegenprüfen
-- [ ] `projects/` aus dem Skill-Repo entfernen, wenn alles gegengeprüft ist
-
-**Abnahme:** Alle drei Repos haben ein vollständiges Profil; nichts zeigt mehr auf `projects/<name>/`.
+**Entfällt seit 28.09.2026 (Entscheidung Herbert):** Der Umbau ändert keine Projekt-Repos. Die Skills werden im Skill-Repo
+neutral, ohne Bezug zu einer App. Ein Projekt bekommt sein Skill-Profil erst, wenn ein Skill dort ein Feld braucht und
+Herbert dem Vorschlag zustimmt ([skill-profile-v1.md](./skill-profile-v1.md), Abschnitt „Fehlende Werte“). Was mit den
+Werten in `projects/` geschieht, klärt Phase 6 beim Skill tracker.
 
 ### Phase 3 – Grundmessung
 
@@ -194,14 +192,13 @@ Je Skill:
 - [ ] `skill-creator` auf die kritischen Skills
 - [ ] Prüfskript ohne Fehler
 - [ ] `test-prompts.md`, `references.zip`, `projects/` entfernt
-- [ ] README und INDEX aktuell; alle Projekt-Repos mit Profil v1
+- [ ] README und INDEX aktuell; kein Skill mit Werten oder Beispielen einer bestimmten App
 
 ## Was Herbert selbst tut
 
 - nach jeder Skill-Änderung die SKILL.md bzw. Zip bei claude.ai hochladen
 - nach dem Pilot über die volle Grundmessung entscheiden
 - die echten Sitzungen für die Konflikte mit Anthropic-Skills starten
-- in BPM selbst pushen
 
 ## ClickUp
 
@@ -210,7 +207,7 @@ Je Phase eine Aufgabe in der Liste ClaudeSkills (Space Claude Skills Entwicklung
 | Phase | Aufgabe |
 |---|---|
 | 1 | [Infrastruktur und Skill-Repo](https://app.clickup.com/t/123ztrcxedg) |
-| 2 | [Profile der Projekte](https://app.clickup.com/t/123ztrcxedj) |
+| 2 | [Profile der Projekte](https://app.clickup.com/t/123ztrcxedj) (entfällt) |
 | 3 | [Grundmessung](https://app.clickup.com/t/123ztrcxedk) |
 | 4 | [skill-pflege und skill-neu](https://app.clickup.com/t/123ztrcxedm) |
 | 5 | [Querschnitt](https://app.clickup.com/t/123ztrcxedp) |

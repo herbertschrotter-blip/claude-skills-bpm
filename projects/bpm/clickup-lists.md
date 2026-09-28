@@ -49,8 +49,8 @@ Nächste freie Nummer im Memory: `Next:<NNN>`.
 ## Space 2 — Claude Skills Entwicklung
 
 **Umgezogen** in die Config des Skill-Repos: `.claude/skill-config/tracker.md` (Liste ClaudeSkills, Ordner „Skill Issues“
-mit den Issue-Listen, Felder, Status, Nummernschema). Diese Datei behält nur den BPM-Space und zieht in Umbau Phase 2 ins
-BPM-Repo (`docs/skillsystem-umbau.md`).
+mit den Issue-Listen, Felder, Status, Nummernschema). Diese Datei behält nur den BPM-Space; was mit ihr geschieht, klärt
+Umbau Phase 6 beim Skill tracker (`docs/skillsystem-umbau.md`).
 
 ---
 
