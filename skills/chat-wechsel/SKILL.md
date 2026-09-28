@@ -18,7 +18,7 @@ description: >
 - **Cowork-Chat:** Ein Handover-Prompt im Chat (PROMPT-STRUKTUR unten). Der Chat hat kein Repo-Gedächtnis,
   also trägt der Prompt den Stand.
 - **Claude Code:** Erst **doc-pflege Modus 8 (Sitzungsabschluss)** – Statusliste/Aufgabenquelle, Befunde,
-  Stand-Abschnitt, offene Punkte, Commit + Push –, dann **derselbe vollständige Handover-Prompt** nach
+  Stand-Abschnitt, offene Punkte, Commit + Push nach der Push-Policy –, dann **derselbe vollständige Handover-Prompt** nach
   PROMPT-STRUKTUR (Herbert, 16.09.2026: „der war in BPM immer viel umfangreicher“). Der Prompt darf den
   Repo-Stand zusammenfassen, verweist aber für Details auf HANDOFF/Bauplan statt sie zu kopieren. Der
   Startprompt des Doku-Profils (Heidi: Bauplan Abschnitt 0) steht als Einstiegszeile **im** Prompt.
@@ -53,77 +53,41 @@ welcher zuerst dran ist.
 
 ---
 
-## 🚨 VERBINDLICHE REGEL: Auswahlfrage bei Entscheidungen
+## Grundsätze
 
-**Bei JEDER Entscheidungsfrage mit festen Optionen MUSS eine Auswahlfrage
-gestellt werden — KEINE Prosa-Fragen.** Auswahlfrage = Frage-Werkzeug der Umgebung
-mit anklickbaren Optionen (Cowork `ask_user_input_v0`, Claude Code `AskUserQuestion`).
+- **Fragen nur bei offener Entscheidung** – wenn nach Auftrag, Skill-Profil, Regel und Kontext wirklich etwas offen
+  ist –, dann als Auswahlfrage mit dem Frage-Werkzeug der Umgebung. Typische Stellen:
 
-### Diese Fragen IMMER als Auswahlfrage:
+  | Situation | Optionen |
+  |-----------|----------|
+  | Link-Prüfung findet tote Verweise | "Korrigieren", "Mit Warnung übernehmen", "Weglassen" |
+  | Claude Code: uncommittete Änderungen beim Abschluss | "Jetzt committen (Modus 8)", "Als offen vermerken", "Abbrechen" |
+  | Batch-Abschluss: erledigte Tasks | "Alle als Done markieren", "Einzeln wählen", "Keine" |
+  | Batch-Abschluss: erledigte Tasks einzeln wählen | multi_select mit allen Task-Namen |
+  | Batch-Anlage: neue Tasks aus Chat | "Alle anlegen", "Einzeln wählen", "Keine" |
+  | Batch-Anlage: neue Tasks einzeln wählen | multi_select mit allen erkannten Problemen |
+  | ClickUp nicht erreichbar | "Trotzdem Prompt erstellen", "Retry", "Abbrechen" |
+  | Version-Angabe unklar | Aktuelle Versionen als Optionen |
+  | Kein Commit-Stand erkennbar | "Version vom User eingeben", "Ohne Version", "Abbrechen" |
 
-| Situation | Optionen |
-|-----------|----------|
-| Branch-Ermittlung (nur wenn die Shell ihn nicht liefert) | Alle Branch-Namen aus `git branch -a` als Optionen |
-| Link-Prüfung findet tote Verweise | "Korrigieren", "Mit Warnung übernehmen", "Weglassen" |
-| Claude Code: uncommittete Änderungen beim Abschluss | "Jetzt committen (Modus 8)", "Als offen vermerken", "Abbrechen" |
-| Batch-Abschluss: erledigte Tasks | "Alle als Done markieren", "Einzeln wählen", "Keine" |
-| Batch-Abschluss: erledigte Tasks einzeln wählen | multi_select mit allen Task-Namen |
-| Batch-Anlage: neue Tasks aus Chat | "Alle anlegen", "Einzeln wählen", "Keine" |
-| Batch-Anlage: neue Tasks einzeln wählen | multi_select mit allen erkannten Problemen |
-| ClickUp nicht erreichbar | "Trotzdem Prompt erstellen", "Retry", "Abbrechen" |
-| Version-Angabe unklar | Aktuelle Versionen als Optionen |
-| Kein Commit-Stand erkennbar | "Version vom User eingeben", "Ohne Version", "Abbrechen" |
+  Prosa nur bei einer offenen Frage ohne feste Optionen (Beispiel: "Welche Version ist aktuell?" ohne Kandidaten), wenn
+  der Nutzer gerade eine klare Präferenz signalisiert hat, oder bei Erklärung/Kontext ohne echte Entscheidung.
+- **Branch** nach der Branch-Policy im Skill-Profil der `CLAUDE.md`: `current` → der aktuelle Branch aus der Shell
+  (`git branch --show-current`); `fixed:<branch>` → der aktuelle muss dieser sein, sonst Auswahlfrage (wechseln /
+  abbrechen). Ohne Shell gilt bei `fixed:<branch>` dieser Branch, bei `current` eine Auswahlfrage. Ohne Skill-Profil: ein in dieser Sitzung schon bekannter Branch; sonst mit Shell
+  `git branch --show-current` – Tatsache, keine Frage; ohne Shell die Branches über die GitHub API auflisten und per
+  Auswahlfrage wählen lassen (Optionen = Branch-Namen). NIE automatisch einen Branch annehmen (weder `main` noch einen
+  anderen). Den Branch für die ganze Sitzung merken und im Übergabe-Prompt unter `**Branch:**` eintragen.
+- **Push** im Sitzungsabschluss (Claude Code) nach der Push-Policy des Skill-Profils:
+  - `user-only`: kein Push; der Nutzer pusht selbst
+  - `allowed`: Push nur, wenn der Nutzer es ausdrücklich will
+  - `required-after-commit`: Push direkt nach dem Commit des Sitzungsabschlusses
+  - `required-at-session-end`: alle Commits der Sitzung pushen, bevor der Handover-Prompt ausgegeben wird
 
-### Prosa-Fragen NUR wenn:
+  Ohne Push-Policy (kein Skill-Profil): Commit + Push im Sitzungsabschluss.
 
-- Offene Frage ohne feste Optionen  
-  (Beispiel: "Welche Version ist aktuell?" ohne Kandidaten)
-- User hat gerade eine klare Präferenz signalisiert
-- Es ist Erklärung/Kontext, keine echte Entscheidung
-
-### Wie die Auswahlfrage aussieht (Cowork-Syntax; Claude Code: `AskUserQuestion`, multiSelect für Listen)
-
-```
-ask_user_input_v0(
-  questions: [
-    {
-      question: "Welcher Branch ist aktiv?",
-      options: ["main", "feature/planmanager-v1", "feature/settings-tabs"]
-    }
-  ]
-)
-```
-
-Multi-Select für Listen-Auswahl:
-```
-ask_user_input_v0(
-  questions: [
-    {
-      question: "Welche Tasks als Done markieren?",
-      type: "multi_select",
-      options: ["BPM-001 | PM | DB-Anbindung", "BPM-007 | SET | CS8629 Fix", "BPM-012 | SET | Token-Migration"]
-    }
-  ]
-)
-```
-
-### VERBOTEN
-
-- "→ Alle als Done markieren? (ja / nein / einzeln wählen)" als Prosa
-- "→ Diese Tasks anlegen? (ja / nein / einzeln wählen)" als Prosa
-- Branch-Liste im Chat aufzählen und auf getippte Antwort warten
-- Eine Optionen-Aufzählung im Chat ohne Auswahlfrage
-
----
-
-## Branch-Ermittlung (PFLICHT)
-
-1. Prüfe ob Branch bereits in dieser Session bekannt ist → verwenden
-2. **Shell verfügbar** (Claude Code: Bash/PowerShell; Cowork: DC): `git branch --show-current` – Tatsache, keine Frage
-3. **Ohne Shell:** Branches via GitHub API auflisten und **per Auswahlfrage** wählen lassen (Optionen = Branch-Namen)
-4. Gewählten Branch für die gesamte Session merken
-5. NIE automatisch einen Branch annehmen (weder `main` noch einen anderen)
-6. Den ermittelten Branch im Übergabe-Prompt unter `**Branch:**` eintragen
+  Bleiben Commits ungepusht (`user-only`, `allowed`), nennt der Übergabe-Prompt sie unter „Sonstige offene Punkte“
+  (Hash und Titel, „Push durch den Nutzer“).
 
 ---
 
@@ -393,7 +357,7 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
 
 1. **doc-pflege Modus 8 (Sitzungsabschluss)** ausführen: Statusliste/Aufgabenquelle ↔ Tracker, Befunde und
    Entscheidungen, Stand-Abschnitt (Heidi: HANDOFF 3e), offene Punkte als Checkliste (HANDOFF 4), Doku-Checkliste
-   des Commit-Profils, Commit + Push. Uncommittete Änderungen → Auswahlfrage.
+   des Commit-Profils, Commit + Push nach der Push-Policy (Grundsätze). Uncommittete Änderungen → Auswahlfrage.
 2. **ClickUp-Abgleich** wie oben (Batch-Abschluss über tracker), **Memory**: erledigte Merker mit Bestätigung entfernen.
 3. **Link-Prüfung** auf den Stand-Abschnitt und den Startprompt.
 4. **Handover-Prompt nach PROMPT-STRUKTUR ausgeben** (vollständig, als Markdown-Codeblock). Erste Zeile darin ist
@@ -550,13 +514,11 @@ Ermittlung der aktuellen Chat-URL:
 - Ohne Version/Chat-Nummer
 - Nummern verwechseln
 - Pending Frontmatter/Invarianten vergessen
-- Branch automatisch annehmen ohne User-Auswahl
-- **Branch-Auswahl als Prosa** — IMMER Auswahlfrage (wenn die Shell ihn nicht liefert)
-- **Batch-Abschluss als Prosa** — IMMER Auswahlfrage
+- Branch automatisch annehmen – ohne Branch-Policy, Shell oder Auswahlfrage
+- **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER Auswahlfrage (Branch-Auswahl, Batch-Abschluss, "ja/nein/einzeln wählen")
 - **Tasks automatisch in ClickUp erstellen/schließen ohne Auswahlfrage-Bestätigung**
 - **ClickUp-Schreiboperationen direkt ausführen (→ tracker-Skill nutzen)**
 - **Pending Commits/Doc-Updates/Frontmatter-Updates vergessen nur weil ClickUp da ist**
-- **"ja/nein/einzeln wählen" Fragen als Text statt Auswahlfrage**
 - Chat-URLs raten oder erfinden — bei Unsicherheit Feld leer lassen
 - **`[ANKER-LIVE]`-Einträge im alten Chat-Memory belassen nach Übergabe** — müssen geleert werden
 - **Anker-Sektion im Prompt als leere Tabelle einfügen wenn keine Anker vorhanden** — dann Sektion komplett weglassen
