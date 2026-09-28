@@ -90,6 +90,10 @@ pwsh -NoProfile -File tools/validate-skills.ps1 -JsonPath quality/results/skill-
   Windows-Pfade, Projektbegriffe, Altlasten, fehlende Eval-Fälle.
 - **Exit 2:** Das Skript selbst ist gescheitert.
 - **Wann:** vor jedem Commit, der `skills/**` berührt, für die geänderten Skills.
+- **Regel-Inventar für einen Refactor:** `-Skill <name> -RuleInventory docs/skill-refactors/<Datum>-<name>.md` schreibt
+  einen Entwurf mit Kandidaten (Description, Sätze mit Pflichtwörtern, Listenpunkte unter VERBOTEN, Tabellenzeilen,
+  nummerierte Regel-Überschriften) statt zu prüfen. Das sind Kandidaten, kein vollständiges Regelverständnis; den Rest
+  ergänzt das Urteil nach `skills/skill-pflege/references/rule-inventory.md`.
 
 ### Urteil – audit
 

@@ -23,16 +23,24 @@
 .PARAMETER Detail
   Alle Fundstellen mit Zeile ausgeben statt höchstens drei je Befund.
 
+.PARAMETER RuleInventory
+  Statt zu prüfen: einen Entwurf für das Regel-Inventar eines Refactors in diese Datei schreiben (nur mit genau einem
+  -Skill; eine vorhandene Datei wird nicht überschrieben). Der Entwurf enthält Kandidaten – Description, Sätze mit
+  Pflichtwörtern, Listenpunkte unter VERBOTEN, Tabellenzeilen, nummerierte Regel-Überschriften –, kein vollständiges
+  Regelverständnis. Format und Ablauf: skills/skill-pflege/references/rule-inventory.md.
+
 .EXAMPLE
   pwsh -NoProfile -File tools/validate-skills.ps1
   pwsh -NoProfile -File tools/validate-skills.ps1 -Skill tracker,ticket -JsonPath quality/results/skill-validation.json
+  pwsh -NoProfile -File tools/validate-skills.ps1 -Skill audit -RuleInventory docs/skill-refactors/2026-10-01-audit.md
 #>
 [CmdletBinding()]
 param(
     [string]$Root = (Split-Path -Parent $PSScriptRoot),
     [string[]]$Skill,
     [string]$JsonPath,
-    [switch]$Detail
+    [switch]$Detail,
+    [string]$RuleInventory
 )
 
 Set-StrictMode -Version Latest
@@ -54,6 +62,11 @@ $EnvironmentToolPattern = 'ask_user_input_v0|present_files|create_file|memory_us
 $EnvironmentReferencePattern = '^references/(cowork|delivery|desktop-commander)[^/]*\.md$'
 $ProjectTermPattern = '\bBPM\b|\bHeidi\b|dreame_x60|\bHANDOFF\b|\bBauplan|\bBAUPLAN|herbert-smarthome'
 $WindowsPathPattern = '[A-Za-z]:\\|\.\\[\w-]+\\|\\[\w.-]+\.(?:ps1|md|json|js|py|ya?ml|cs|xaml)\b'
+# Regel-Kandidaten für -RuleInventory (CGR-2026-09-24-skillsystem r2, Abschnitt 7)
+$NormativeUpperPattern = '\b(MUSS|MÜSSEN|NIE|NIEMALS|IMMER|PFLICHT|VERBOTEN|KEIN|KEINE|KEINEN|NUR)\b'
+$NormativePattern = '(?i)\b(muss|müssen|darf nicht|dürfen nicht|nie|niemals|immer|pflicht\w*|verboten)\b'
+$NumberedRuleHeadingPattern = '^(\d+[a-z]?\.|Schritt\s+\d+[a-z]?\b|Regel\s+\d+)'
+$RuleCoreLength = 140
 
 function Get-FileLines([string]$Path) {
     return (Get-Content -LiteralPath $Path -Raw -Encoding utf8) -split "\r?\n"
@@ -330,6 +343,117 @@ function Invoke-Validation {
     }
 }
 
+function Get-CleanHeading([string]$Text) {
+    $clean = $Text -replace '[\p{So}\p{Cs}️‍]', '' -replace '\*\*|`', ''
+    return ($clean -replace '\s{2,}', ' ').Trim()
+}
+
+function Format-RuleCore([string]$Text) {
+    $core = ($Text -replace '(?<!\\)\|', '\|').Trim()
+    if ($core.Length -gt $RuleCoreLength) { $core = $core.Substring(0, $RuleCoreLength - 1) + '…' }
+    return $core
+}
+
+# Kandidaten einer Datei: Pflichtwörter, Listenpunkte unter VERBOTEN, Tabellenzeilen, nummerierte Regel-Überschriften
+function Get-RuleCandidates([string]$Rel, [string[]]$Lines, [int]$Start) {
+    $found = [System.Collections.Generic.List[object]]::new()
+    $heading = 'Anfang'
+    $inFence = $false
+    $inTable = $false
+    for ($i = $Start; $i -lt $Lines.Count; $i++) {
+        if ($Lines[$i] -match '^\s*(```|~~~)') { $inFence = -not $inFence; $inTable = $false; continue }
+        if ($inFence) { continue }
+        $line = $Lines[$i].Trim()
+        if ($line -eq '') { $inTable = $false; continue }
+        $text = $null
+        if ($line -match '^#{1,6}\s+(.+)$') {
+            $heading = Get-CleanHeading $Matches[1]
+            $inTable = $false
+            if ($heading -match $NumberedRuleHeadingPattern) { $text = $heading }
+        } elseif ($line.StartsWith('|')) {
+            # Die erste Zeile einer Tabelle ist der Kopf, die zweite die Trennzeile
+            $isHeader = -not $inTable
+            $inTable = $true
+            if (-not $isHeader -and $line -notmatch '^\|[\s:|-]+\|?$') {
+                $cells = @(($line.Trim('|') -split '(?<!\\)\|') | ForEach-Object { $_.Trim() } | Where-Object { $_ -ne '' })
+                $text = $cells -join ' / '
+            }
+        } else {
+            $inTable = $false
+            $isListItem = $line -match '^([-*+]|\d+\.)\s+\S'
+            if (($isListItem -and $heading -match 'VERBOTEN') -or $line -cmatch $NormativeUpperPattern -or $line -match $NormativePattern) {
+                $text = $line -replace '^([-*+]|\d+\.)\s+', ''
+            }
+        }
+        if ($text) { $found.Add(@{ Rel = $Rel; Heading = $heading; Line = $i + 1; Text = $text }) }
+    }
+    return ,$found
+}
+
+function Export-RuleInventory {
+    $repoRoot = (Resolve-Path -LiteralPath $Root).Path
+    if (-not $Skill -or @($Skill).Count -ne 1) { throw '-RuleInventory braucht genau einen Skill (-Skill <name>)' }
+    $skillName = @($Skill)[0]
+    $folder = Join-Path $repoRoot "skills/$skillName"
+    $skillFile = Join-Path $folder 'SKILL.md'
+    if (-not (Test-Path -LiteralPath $skillFile)) { throw "SKILL.md nicht gefunden: skills/$skillName" }
+    $target = if ([System.IO.Path]::IsPathRooted($RuleInventory)) { $RuleInventory } else { Join-Path (Get-Location) $RuleInventory }
+    if (Test-Path -LiteralPath $target) { throw "Datei existiert schon: $target – ein Inventar wird nicht überschrieben" }
+
+    $candidates = [System.Collections.Generic.List[object]]::new()
+    $sources = [System.Collections.Generic.List[string]]::new()
+    $lines = @(Get-FileLines $skillFile)
+    $sources.Add('SKILL.md')
+    $start = 0
+    $fm = Read-Frontmatter $lines
+    if ($null -ne $fm) {
+        $start = $fm.End + 1
+        $descriptionLine = @(Find-Lines @($lines[0..$fm.End]) '^description:')
+        $lineNumber = if ($descriptionLine.Count -gt 0) { $descriptionLine[0].Line } else { 1 }
+        $candidates.Add(@{ Rel = 'SKILL.md'; Heading = 'Frontmatter'; Line = $lineNumber; Text = "description: $($fm.Fields['description'])" })
+    }
+    foreach ($c in (Get-RuleCandidates 'SKILL.md' $lines $start)) { $candidates.Add($c) }
+    $referenceRoot = Join-Path $folder 'references'
+    if (Test-Path -LiteralPath $referenceRoot) {
+        foreach ($ref in Get-ChildItem -LiteralPath $referenceRoot -Recurse -File -Filter '*.md' | Sort-Object FullName) {
+            $rel = [System.IO.Path]::GetRelativePath($folder, $ref.FullName) -replace '\\', '/'
+            $sources.Add($rel)
+            foreach ($c in (Get-RuleCandidates $rel @(Get-FileLines $ref.FullName) 0)) { $candidates.Add($c) }
+        }
+    }
+
+    $commit = 'unbekannt'
+    $head = git -C $repoRoot rev-parse --short HEAD 2>$null
+    if ($LASTEXITCODE -eq 0 -and $head) { $commit = "$head".Trim() }
+    $today = Get-Date -Format 'yyyy-MM-dd'
+
+    $out = [System.Collections.Generic.List[string]]::new()
+    $out.Add("# Regel-Inventar – $skillName – $today")
+    $out.Add('')
+    $out.Add('Entwurf aus `tools/validate-skills.ps1 -RuleInventory`: Kandidaten, kein vollständiges Regelverständnis. Nach')
+    $out.Add('Urteil ergänzen und zusammenfassen, dann je Zeile Zustand, Neu-Ort und Prüfung eintragen')
+    $out.Add('(`skills/skill-pflege/references/rule-inventory.md`).')
+    $out.Add('')
+    $out.Add("- Skill: $skillName")
+    $out.Add("- Stand: $commit ($today)")
+    $out.Add("- Quellen: $($sources -join ', ')")
+    $out.Add("- Kandidaten: $($candidates.Count)")
+    $out.Add('')
+    $out.Add('| ID | Alt-Ort | Regelkern | Zustand | Neu-Ort | Bezug | Freigabe | Prüfung |')
+    $out.Add('|---|---|---|---|---|---|---|---|')
+    $n = 0
+    foreach ($c in $candidates) {
+        $n++
+        $place = Format-RuleCore "$($c.Rel)#$($c.Heading) (Z. $($c.Line))"
+        $out.Add(('| R{0:000} | {1} | {2} | | | | | |' -f $n, $place, (Format-RuleCore $c.Text)))
+    }
+
+    $dir = Split-Path -Parent $target
+    if ($dir -and -not (Test-Path -LiteralPath $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
+    $out | Set-Content -LiteralPath $target -Encoding utf8
+    Write-Host "Regel-Inventar: $($candidates.Count) Kandidaten aus $($sources.Count) Dateien → $target"
+}
+
 function Write-Report($Report) {
     $s = $Report.summary
     Write-Host "Skill-Prüfung: $($s.skills) Skills, $($s.errors) Fehler, $($s.warnings) Warnungen – $($Report.status)"
@@ -344,6 +468,10 @@ function Write-Report($Report) {
 }
 
 try {
+    if ($RuleInventory) {
+        Export-RuleInventory
+        exit 0
+    }
     $report = Invoke-Validation
     Write-Report $report
     if ($JsonPath) {
@@ -355,6 +483,7 @@ try {
     }
     exit $(if ($report.summary.errors -eq 0) { 0 } else { 1 })
 } catch {
-    Write-Error "Prüfskript gescheitert: $($_.Exception.Message)"
+    # Continue, sonst beendet ErrorActionPreference Stop das Skript mit Exit 1 vor dem exit 2
+    Write-Error "Prüfskript gescheitert: $($_.Exception.Message)" -ErrorAction Continue
     exit 2
 }
