@@ -171,4 +171,13 @@ Vorgeschlagen, von Herbert **nicht freigegeben** (keine Gruppe gewählt) – all
   Prüfskript 0 Fehler, Warnungen 6 → 1. Die verbleibende Warnung „kein Eval-Fall, der diesen Skill auslösen soll“ ist
   gewollt: `plugin eval` läuft in Claude Code, dort soll cc-steuerung nie auslösen.
 - **Description:** 362 → 635 Zeichen.
-- **Routing-Eval:** wird nach dem Commit eingetragen.
+- **Routing-Eval:** am 28.09.2026 auf d72524f, `--tag cc-steuerung` (3 Fälle × 3 Läufe, `-j 3`, 83 s, 1,84 USD):
+  `cc-not-in-claude-code` (kritisch) **3/3** (Grundmessung 2/3, damit behoben), `cc-no-trigger-file-read` (kritisch,
+  Negativfall) 3/3 wie in der Grundmessung, `cc-prefix-code` 2/3 (Grundmessung 3/3). Im abweichenden Lauf rief das Modell
+  keinen Skill auf und endete an der Grenze von 8 Schritten; cc-steuerung löste nicht aus, es gibt keinen Konflikt.
+  Wiederholung nur dieses Falls (`--case cc-prefix-code`, 52 s, 1,06 USD): 3/3, der Ausreißer war Zufall. Gesamt 8/9
+  Läufe wie in der Grundmessung, aber alle Fälle über ihrer Schwelle (Grundmessung: ein kritischer Fall darunter).
+  Freigabe nach `docs/skill-quality.md`, Abschnitt Verhalten: erfüllt.
+- **Lieferung:** Zip mit `SKILL.md` und `references/desktop-commander.md` aus d72524f, am 28.09.2026 an Herbert zum
+  Upload bei claude.ai.
+- **Echte Sitzung EXT-05:** nach dem Upload zu wiederholen (Vergleichswert 3/3, `quality/real-environment/README.md`).
