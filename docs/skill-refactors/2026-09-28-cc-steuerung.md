@@ -151,8 +151,8 @@ Vorgeschlagen, von Herbert **nicht freigegeben** (keine Gruppe gewählt) – all
 
 | Stelle | Verweis | Behandlung |
 |---|---|---|
-| `skills/audit/SKILL.md`, `skills/doc-pflege/SKILL.md`, `skills/mockup-erstellen/SKILL.md` | „Arbeitsverzeichnis nach cc-steuerung Kapitel 4“ | Phase 5, nächster Punkt (Cowork-Pfadermittlung entfernen): auf `skills/cc-steuerung/SKILL.md#Arbeitsverzeichnis` |
-| `skills/code-erstellen/SKILL.md` | „cc-steuerung Kapitel 4“, „Self-Registration (cc-steuerung 4.3)“ | wie oben |
+| `skills/audit/SKILL.md`, `skills/doc-pflege/SKILL.md`, `skills/mockup-erstellen/SKILL.md` | „Arbeitsverzeichnis nach cc-steuerung Kapitel 4“ | erledigt in v0.38.2 (Phase 5, Cowork-Pfadermittlung): Verweis auf den Abschnitt „Arbeitsverzeichnis“ |
+| `skills/code-erstellen/SKILL.md` | „cc-steuerung Kapitel 4“, „Self-Registration (cc-steuerung 4.3)“ | erledigt in v0.38.2: kopierter Ablauf entfernt, Verweis auf den Abschnitt (`docs/skill-refactors/2026-09-28-code-erstellen.md`) |
 | `skills/tracker/SKILL.md`, `skills/tracker/references/complete-task.md` | „baut auf cc-steuerung-003 auf (DC ist dort Default-Ausführungsmodus)“ | Phase 6 (tracker): auf `skills/cc-steuerung/SKILL.md#Wann ausführen` |
 | `skills/chat-wechsel/SKILL.md`, `INDEX.md` Invarianten | „cc-steuerung-Pfad-/Modalitätsfragilität“ | Phase 5 (INDEX neu) bzw. Phase 6 (chat-wechsel) |
 | `INDEX.md` Skill-Tabelle, Invariante 3 und 9 | Auslöser „claude code soll“, „Claude Code“; „PC-Lookup in INDEX.md“ | mit diesem Commit angepasst |

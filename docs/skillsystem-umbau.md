@@ -158,8 +158,11 @@ Aufgaben zu Phase 5 (cc-steuerung) und Phase 6 (doc-pflege, tracker). **Phase 4 
 
 ### Phase 5 – Querschnitt
 
-- [ ] cc-steuerung als Cowork-Adapter (neue Description, schließt Claude Code aus)
-- [ ] Cowork-Pfadermittlung aus audit, code-erstellen, doc-pflege und mockup-erstellen entfernen
+- [x] cc-steuerung als Cowork-Adapter (neue Description, schließt Claude Code aus) – v0.38.1, 428 → 113 Zeilen plus
+      `references/desktop-commander.md`; Routing-Eval `cc-not-in-claude-code` 3/3 (Grundmessung 2/3); EXT-05 nach dem Upload
+- [x] Cowork-Pfadermittlung aus audit, code-erstellen, doc-pflege und mockup-erstellen entfernen – v0.38.2: Verweis auf
+      cc-steuerung, Abschnitt „Arbeitsverzeichnis“; in code-erstellen der kopierte Ablauf entfernt; nebenbei der tote
+      Verweis in doc-pflege behoben (Prüfskript 0 Fehler)
 - [ ] Regel „Fragen nur bei offener Entscheidung“ in alle Skills übernehmen
 - [ ] Branch und Push aus dem Profil lesen
 - [ ] INDEX neu als Verzeichnis für das Auslösen; Invarianten 1–10 an ihren neuen Ort

@@ -8,6 +8,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.38.2] — 2026-09-28
+
+- **skills/audit, skills/doc-pflege, skills/mockup-erstellen, Fix:** Umbau Phase 5 – Cowork-Pfadermittlung: Verweis
+  „cc-steuerung Kapitel 4“ → cc-steuerung, Abschnitt „Arbeitsverzeichnis“ (die Kapitelnummer gibt es seit v0.38.1 nicht
+  mehr)
+- **skills/doc-pflege, Fix:** toter Verweis `references/projekt-init.md` in Modus 0 entfernt (Prüfskript jetzt 0 Fehler)
+- **skills/code-erstellen, Refactor:** kopierten Cowork-Ablauf der Pfadermittlung (PowerShell mit `$`-Variablen,
+  PC-Tabelle, Registrierung, `Test-Path`) entfernt; er steht in cc-steuerung. 523 → 504 Zeilen; Inventar
+  `docs/skill-refactors/2026-09-28-code-erstellen.md` (9 Regeln, keine DROP-Zeile)
+- `docs/skillsystem-umbau.md`: Phase 5, Punkte 1 und 2 abgehakt
+
 ## [v0.38.1] — 2026-09-28
 
 - **skills/cc-steuerung, Refactor:** Umbau Phase 5 – Adapter für den Cowork-Chat:
