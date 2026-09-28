@@ -80,7 +80,7 @@ NIE automatisch einen Branch annehmen.
 ## Arbeitsverzeichnis (PFLICHT bei Dateizugriff)
 
 Claude Code: Repo-Wurzel der Sitzung (`git rev-parse --show-toplevel`).
-Cowork: bei DC-Operationen Arbeitsverzeichnis nach **cc-steuerung Kapitel 4** ermitteln.
+Cowork: bei DC-Operationen Arbeitsverzeichnis nach **cc-steuerung**, Abschnitt „Arbeitsverzeichnis“, ermitteln.
 
 ---
 
