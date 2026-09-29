@@ -2,9 +2,9 @@
 
 **Thema:** `ha-grundsatz` – Grundsatzregeln (Doku `docs/ha-grundsatz/`) und der Skill `modul-bauplan`, der vom Konzept bis zum
 fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_DreameX60`), die danach neu gebaut wird
-**Zeitraum:** 2026-09-23
+**Zeitraum:** 2026-09-23 bis 2026-09-29
 **Branch:** `main` (beide Repos)
-**Status:** Runde 4 offen (Nachtrag G-21)
+**Status:** Abgeschlossen (29.09.2026)
 
 ---
 
@@ -47,4 +47,22 @@ fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_Dr
 - **Artefakte:** [r4/](./r4/)
 - **Fokus:** Ausfallverhalten als allgemeine Regel: fehlende oder nicht verfügbare Quellen, sichtbarer Grund, Erholung,
   fällige Befehle während des Ausfalls, Eintrag in `module.yaml`
-- **Kernergebnis:** –
+- **Kernergebnis:** G-21 als eigene Regel (ab Stufe 1, vollständig ab 2): ausgefallene oder zu alte Quellen nie
+  stillschweigend als aktuell verwenden; je Entität nach Bedeutung (`unavailable` / `unknown` / Vergangenheitswert bleibt /
+  `blocked` mit Grund); keine globale Ausfallzeit, `max_age` nur je Quelle; Reparatur-Hinweis nur bei benutzerlösbaren
+  Fehlern; Aufträge mit `drop` / `defer` / `retry` / `fail`, Pläne `defer` mit Neubewertung; in `module.yaml` `outage` je
+  Quelle und `failure_policy` je Modul.
+
+---
+
+## Ergebnis der Serie
+
+- **Grundsatzregeln G-01 … G-21** (Endfassung: Runde 3 Abschnitt 7, G-18 ergänzt um Koordinaten, Gerätekennungen und
+  Personennamen; G-21 aus Runde 4 Abschnitt 10), **Einstellungsmatrix** (Runde 3 Abschnitt 6), **`module.yaml` Schema v1**
+  (Runde 3 Abschnitte 8–9, Ausfallverhalten aus Runde 4 Abschnitt 7 mit den Anmerkungen aus `r4/03`), **Ablauf „Planen“**
+  (Runde 3 Abschnitt 10), kurzer und voller Weg (Runde 2).
+- **Leitsätze:** ein fachlicher Eigentümer je Wert; eine Schnittstelle ist kein Speicherort; nichts Veraltetes als aktuell
+  ausgeben.
+- **Ergebnis-Ort:** `docs/ha-grundsatz/` (Grundsatzdoku, nächster Schritt) und `skills/modul-bauplan/` (Skill).
+- **Im Referenzfall:** Entscheidungen E-137 bis E-141 im Heidi-Repo (`docs/ENTSCHEIDUNGEN.md`); die offenen Punkte zum
+  Roboter-Neubau (Runde 3 Abschnitt 11) sind Prüfliste der Bestandsanalyse DX-111.

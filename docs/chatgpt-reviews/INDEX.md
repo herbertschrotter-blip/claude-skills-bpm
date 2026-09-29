@@ -8,5 +8,5 @@ Je Serie ein Ordner `CGR-<JJJJ-MM-TT>-<thema>/` mit `README.md` und je Runde `r<
 
 | Serie | Thema | Start | Status | Kernergebnis |
 |---|---|---|---|---|
-| [CGR-2026-09-23-ha-grundsatz](./CGR-2026-09-23-ha-grundsatz/README.md) | ha-grundsatz | 2026-09-23 | Runde 4 offen (Nachtrag G-21) | – |
+| [CGR-2026-09-23-ha-grundsatz](./CGR-2026-09-23-ha-grundsatz/README.md) | ha-grundsatz | 2026-09-23 | Abgeschlossen | Grundsatzregeln G-01 … G-21, Einstellungsmatrix, `module.yaml` Schema v1; ein fachlicher Eigentümer je Wert, Schnittstelle ≠ Speicherort; Ergebnis-Ort `docs/ha-grundsatz/` und Skill `modul-bauplan` |
 | [CGR-2026-09-24-skillsystem](./CGR-2026-09-24-skillsystem/README.md) | skillsystem | 2026-09-24 | Abgeschlossen | Umbau-Plan [docs/skillsystem-umbau.md](../skillsystem-umbau.md): Skill-Profil v1 je Repo, Configs unter `.claude/skill-config/`, kein Skill-Analyse-Skill (Prüfskript + audit), Messung mit `claude plugin eval` und echten Sitzungen, cc-steuerung als Cowork-Adapter, Phasen 1–7 |

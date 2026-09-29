@@ -43,8 +43,8 @@ CLAUDE.md.
   Repos; Plattform-Spezifisches (Home Assistant) in einer eigenen Referenzdatei des Skills.
 - Bestehende Apps (Referenzfall Heidi) werden nach den Grundsatzregeln von Grund auf neu gebaut – ohne Migration:
   kein Übergangscode, keine Rückwärtskompatibilität. Ihr heutiger Stand ist Referenzfall und Lernquelle.
-- Umgebung: Home Assistant OS auf Raspberry Pi 5, HA 2026.9; Entwicklung auf Windows 11 mit Claude Code, Konfiguration
-  über ein Samba-Laufwerk, Einspielen per Skript.
+- Umgebung: Home Assistant OS auf Raspberry Pi 5, HA 2026.9; Claude Code läuft direkt auf dem Home Assistant (Add-on),
+  die Repos liegen dort; Python-Code einer Integration wird per HA-Neustart aktiv, den Herbert auslöst.
 - Keine externen Ressourcen in Karten; nichts Geheimes ins Repo (Tokens, Koordinaten, Gerätekennungen).
 - Sprache: Deutsch.
 ```
