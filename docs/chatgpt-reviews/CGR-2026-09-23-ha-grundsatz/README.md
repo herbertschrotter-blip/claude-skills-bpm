@@ -4,7 +4,7 @@
 fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_DreameX60`), die danach neu gebaut wird
 **Zeitraum:** 2026-09-23
 **Branch:** `main` (beide Repos)
-**Status:** Runde 3 offen (Schlussrunde)
+**Status:** Runde 4 offen (Nachtrag G-21)
 
 ---
 
@@ -37,4 +37,14 @@ fertigen Dashboard führt; Referenzfall Heidi (`herbertschrotter-blip/HA_Dash_Dr
 - **Fokus:** Listen wie die Personenauswahl im Einstellungsmenü der Karte (Aktion oder WebSocket, ein Speicherort); sieben
   Korrekturen von Claude (Neustart nach Code-Änderung, Vertrag der Karte ohne `unique_id`, G-01, Eigentümer-Regel in
   `module.yaml`, Darstellung je Benutzer, „Lernen ab“, fehlende Regeln); Endfassung von Matrix, Regeln und `module.yaml`
+- **Kernergebnis:** Endfassung übernommen: Einstellungsmatrix, Grundsatzregeln G-01 … G-20, `module.yaml` Schema v1 für
+  `haus` und das Roboter-Modul; „ein fachlicher Eigentümer je Wert“ ersetzt „eine Quelle je Wert“; eine Schnittstelle ist
+  kein Speicherort; automatisierbarer Befehl → Aktion, Bearbeiten in der eigenen Oberfläche → WebSocket, beides beim selben
+  Eigentümer; `null` erbt, `[]` ist bewusst leer; `translation_key` als unsere Konvention. Die 24 offenen Punkte zum
+  Roboter werden Prüfliste in DX-111. Offen: Regel G-21 „Ausfall“ → Runde 4.
+
+### Runde 4 — Nachtrag: Regel G-21 „Ausfall“
+- **Artefakte:** [r4/](./r4/)
+- **Fokus:** Ausfallverhalten als allgemeine Regel: fehlende oder nicht verfügbare Quellen, sichtbarer Grund, Erholung,
+  fällige Befehle während des Ausfalls, Eintrag in `module.yaml`
 - **Kernergebnis:** –
