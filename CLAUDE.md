@@ -4,6 +4,14 @@ Skills für Claude (Hauptumgebung Claude Code, dazu der Cowork-Chat) mit ihrer P
 Regeln: `README.md`, `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1.md`; laufender Umbau:
 `docs/skillsystem-umbau.md`. Antworten auf Deutsch.
 
+## Arbeiten auf dem HA
+
+Claude Code läuft auch direkt auf Herberts Home Assistant (Add-on). Dort liegt dieser Klon unter
+`/config/projekte/claude-skills-bpm`; ein zweiter Klon liegt am Windows-PC – vor der Arbeit `git pull`, danach committen und
+pushen. Auf dem HA gibt es kein PowerShell: Der Check `skill-validation` läuft dort nicht vor dem Commit, sondern nach jedem
+Push per GitHub Actions (`.github/workflows/validate-skills.yml`, Ergebnis mit `gh run list`); `routing-eval` läuft auf dem
+HA. Das Skill-Log dieses Rechners liegt unter `/data/home/.claude/skill-log/` (`.claude/skill-config/skill-log.md`).
+
 ## Skill-Profil
 
 - Profil-Version: 1
