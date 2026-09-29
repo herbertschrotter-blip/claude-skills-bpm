@@ -63,7 +63,8 @@ Grenze sie prüfen.
 | ticket | 3 | 2 |
 | cc-steuerung | 3 | 2 |
 | projekt-anlegen | 6 | 3 |
-| **gesamt** | **66** | **26** |
+| skill-auswertung | 5 | 3 |
+| **gesamt** | **71** | **29** |
 
 ## Nicht abgedeckt
 
@@ -76,7 +77,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 28.09.2026, 66 Fälle.
+Stand 29.09.2026, 71 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -146,3 +147,8 @@ Stand 28.09.2026, 66 Fälle.
 | `projekt-anlegen-no-trigger-code` | projekt-anlegen | Füge im bestehenden Netzwerk-Paket von Home Assistant einen Sensor hinzu, der die Ping-Zeit zum Router misst. | code-erstellen | projekt-anlegen | kritisch |
 | `projekt-anlegen-no-trigger-mockup` | projekt-anlegen | Wie könnte die Dashboard-Karte für die Fensterüberwachung aussehen? Skizzier sie mir als HTML-Entwurf mit zwei Varianten. | mockup-erstellen | projekt-anlegen | normal |
 | `projekt-anlegen-no-trigger-skill` | projekt-anlegen | Ich brauche einen neuen Skill, der beim Start eines Projekts die passenden Ordner und Dateien anlegt. Entwirf mir dafür die SKILL.md. | skill-neu | projekt-anlegen | kritisch |
+| `skill-auswertung-log` | skill-auswertung | Werte bitte das Skill-Log der letzten zwei Wochen aus: Welche Skills haben gezündet, wo hätte einer zünden müssen und hat nicht, und wo haben zwei gleichzeitig ausgelöst? | skill-auswertung | skill-pflege | kritisch |
+| `skill-auswertung-kurz` | skill-auswertung | skills auswerten | skill-auswertung | – | normal |
+| `skill-auswertung-no-trigger-pflege` | skill-auswertung | Laut Skill-Log hat der tracker-Skill bei „Aufgabe anlegen“ dreimal nicht gezündet. Schärf seine Description, damit das künftig zuverlässig auslöst. | skill-pflege | skill-auswertung | kritisch |
+| `skill-auswertung-no-trigger-hooks` | skill-auswertung | Richte auf meinem Laptop die Hooks ein, die Prompts und Skill-Aufrufe mitprotokollieren, und prüf, ob sie feuern. | – | skill-auswertung | kritisch |
+| `skill-auswertung-no-trigger-eval-run` | skill-auswertung | Lass die Routing-Tests mit claude plugin eval für den tracker-Skill laufen, drei Durchläufe je Fall. | – | skill-auswertung, skill-neu, skill-pflege | normal |

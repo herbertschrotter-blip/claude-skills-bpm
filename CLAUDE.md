@@ -58,6 +58,9 @@ Regeln: `README.md`, `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1
 ### Review
 - Config: .claude/skill-config/review.md
 
+### Skill-Log
+- Config: .claude/skill-config/skill-log.md
+
 ### Modul
 - Manifest: none
 - Grundsatzregeln: none

@@ -1,6 +1,6 @@
 # INDEX — Skill-Übersicht
 
-Verzeichnis der 13 Skills im Repo `claude-skills-bpm`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
+Verzeichnis der 14 Skills im Repo `claude-skills-bpm`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
 zwischen Skills entschieden werden. Die Regeln selbst stehen in den Skills und in den Dokumenten unten – dieser Index
 wiederholt sie nicht.
 
@@ -27,6 +27,7 @@ wiederholt sie nicht.
 | **projekt-anlegen** | Neue Projekte anlegen und einrichten, nach Stack; Übergabe an mockup-erstellen, code-erstellen oder tracker | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
 | **skill-neu** | Neue Skills für dieses Repo anlegen (Absicht, Kollisionsprüfung, Neutralität, Eval-Fälle) | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills ändern: Safe Patch oder Refactor mit Regel-Inventar; Lieferung | "Skill updaten", "Skill ändern", "Skill erweitern" |
+| **skill-auswertung** | Skill-Log auswerten (Zündungen im Alltag), Modi Schnellblick/Standard/Tiefenanalyse; Befunde → Eval-Fälle, tracker, skill-pflege | "skills auswerten", "skill-log auswerten", "wie zünden die Skills" |
 | **ticket** | Fehler-Tickets eines Projekts einzeln, immer im selben Ablauf, jeder Schritt mit Auswahlfrage | "ticket HT-0007", "ticket liste", "nimm das nächste ticket" |
 | **tracker** | Einzige Schreibschnittstelle für ClickUp-Aufgaben und Skill-Issues | "tracker neu", "tracker done", "tracker issue", "tracker suche" |
 
@@ -37,7 +38,7 @@ Abschnitt „Vorrang / Delegation“.
 
 - **Orchestrator:** code-erstellen (ruft mockup-erstellen, git-commit-helper, doc-pflege, tracker, audit auf)
 - **Ändern Dinge:** skill-neu, skill-pflege (Skills), doc-pflege (Doku), projekt-anlegen (neue Projekte)
-- **Abläufe:** chat-wechsel, chatgpt-review, audit, ticket
+- **Abläufe:** chat-wechsel, chatgpt-review, audit, ticket, skill-auswertung
 - **Schnittstellen:** tracker (ClickUp), git-commit-helper (Git), mockup-erstellen (HTML-Mockups)
 - **Modalität:** cc-steuerung (läuft parallel zum Fachskill, nur im Cowork-Chat)
 
@@ -58,6 +59,7 @@ Abschnitt „Vorrang / Delegation“.
 | projekt-anlegen ↔ mockup-erstellen | neues Projekt aufsetzen, auch bei offener Art → projekt-anlegen (bietet mockup-erstellen an); nur Aussehen entwerfen → mockup-erstellen |
 | projekt-anlegen ↔ skill-neu | neues Projekt → projekt-anlegen; neuer Skill → skill-neu |
 | skill-neu ↔ skill-pflege | Die SKILL.md gibt es schon → skill-pflege; ganz neuer Skill → skill-neu |
+| skill-auswertung ↔ skill-pflege | Log auswerten, Befunde finden → skill-auswertung; Skill-Text ändern, auch nach einem Befund → skill-pflege |
 | cc-steuerung ↔ Fachskills | cc-steuerung ist Modalität (WIE), der Fachskill bleibt für das WAS zuständig; beide dürfen gleichzeitig aktiv sein |
 
 Konflikte mit Skills von Anthropic, die `plugin eval` nicht lädt, prüfen echte Sitzungen
@@ -66,6 +68,7 @@ Konflikte mit Skills von Anthropic, die `plugin eval` nicht lädt, prüfen echte
 | Paar | Entscheidung |
 |---|---|
 | skill-neu, skill-pflege ↔ skill-creator | Skills dieses Repos anlegen oder ändern → skill-neu bzw. skill-pflege |
+| skill-auswertung ↔ skill-creator | Zündungen aus dem echten Alltag (Skill-Log) → skill-auswertung; künstliche Testläufe und Benchmarks eines Skills → skill-creator |
 | audit ↔ code-review | Doku gegen Code prüfen → audit; Code-Review eines Diffs → code-review |
 | cc-steuerung ↔ Claude Code | In Claude Code löst cc-steuerung nie aus |
 

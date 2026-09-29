@@ -8,6 +8,20 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.40.0] — 2026-09-29
+
+- **skills/skill-auswertung, Feature:** neuer Skill – wertet das Skill-Log aus (Prompts und Skill-Zündungen aus den
+  Hooks von Claude Code, `docs/skill-log-v1.md`): Überblick, dann Modus Schnellblick / Standard / Tiefenanalyse,
+  Bereich (Zeitraum, Rechner, Skills) und Folgeaktionen; bewertet Runden ohne Skill und mit mehreren Skills
+  (richtig, Fehlausfall, Fehlzündung, Konflikt, unklar); gibt Befunde als Eval-Fälle, über tracker oder an
+  skill-pflege weiter; hält „Ausgewertet bis“ fest
+  - Config `.claude/skill-config/skill-log.md` (Log-Ordner je Rechner, Ausgewertet bis, Ablage der Befunde);
+    `docs/skill-profile-v1.md` und Skill-Profil: neuer Bereich `### Skill-Log`
+  - 5 Eval-Fälle (3 kritisch), Konfliktpaare in INDEX.md (↔ skill-pflege, ↔ skill-creator)
+  - tracker.md: Skill-Issue-Listen für ticket, projekt-anlegen und skill-auswertung
+- `.github/workflows/validate-skills.yml`: Prüfskript läuft bei jedem Push auf GitHub (PowerShell fehlt auf dem Home
+  Assistant)
+
 ## [v0.39.1] — 2026-09-28
 
 - **skills/audit, chat-wechsel, chatgpt-review, code-erstellen, doc-pflege, git-commit-helper, mockup-erstellen,

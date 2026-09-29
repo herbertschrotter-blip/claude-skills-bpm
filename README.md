@@ -2,7 +2,7 @@
 
 Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
 
-Dieses Repo enthält die Skill-Definitionen für 13 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
+Dieses Repo enthält die Skill-Definitionen für 14 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
 > **Umbau läuft (seit 24.09.2026):** [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md) – Skill-Profil v1,
 > Qualitätsregeln, Prüfskript und Routing-Tests; Ergebnis der Review-Serie `CGR-2026-09-24-skillsystem`.
@@ -54,7 +54,7 @@ claude-skills-bpm/
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
-├── skills/                ← 13 Skills, je ein Ordner mit SKILL.md
+├── skills/                ← 14 Skills, je ein Ordner mit SKILL.md
 └── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/)
 ```
 
@@ -62,7 +62,7 @@ Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Date
 
 ---
 
-## Kapitel 1 — Die 13 Skills im Überblick
+## Kapitel 1 — Die 14 Skills im Überblick
 
 Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Meta-Skills** und **Modalitäts-Skills**.
 
@@ -91,6 +91,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 |---|---|
 | **skill-neu** | Erstellt neue Skills von Grund auf (projektneutral). |
 | **skill-pflege** | Ändert bestehende Skills: Safe Patch oder Refactor mit Regel-Inventar. |
+| **skill-auswertung** | Wertet das Skill-Log aus: Zündungen, Fehlausfälle, Konflikte im Alltag; gibt Befunde an Evals, tracker oder skill-pflege weiter. |
 
 ### Modalitäts-Skill (beantwortet "WIE wird ausgeführt")
 
@@ -177,7 +178,8 @@ Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tool
 
 Hooks in Claude Code schreiben auf jedem Rechner mit, welche Prompts eingegeben wurden und welche Skills darauf
 gezündet haben. `skill_log_report.py` zeigt Zündungen je Skill, Runden mit mehreren Skills und Prompts ohne Skill –
-Rohstoff für neue Fälle in `evals/`. Format und Einrichtung: [`docs/skill-log-v1.md`](./docs/skill-log-v1.md).
+Rohstoff für neue Fälle in `quality/evals/`. Ausgewertet wird mit dem Skill skill-auswertung (Config
+`.claude/skill-config/skill-log.md`). Format und Einrichtung: [`docs/skill-log-v1.md`](./docs/skill-log-v1.md).
 
 ### Eval-Methodik
 

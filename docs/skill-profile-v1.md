@@ -89,6 +89,9 @@ Review-Serie [CGR-2026-09-24-skillsystem](./chatgpt-reviews/CGR-2026-09-24-skill
 ### Review
 - Config: none | .claude/skill-config/review.md
 
+### Skill-Log
+- Config: none | .claude/skill-config/skill-log.md
+
 ### Modul
 - Manifest: none | <pfad/muster>
 - Grundsatzregeln: none | ref:<pfad>#<überschrift>
@@ -147,6 +150,7 @@ Grundfelder für alle: `Profil-Version`, `Projekt-ID`, `Repo`, `Branch-Policy`.
 | ticket | Ticket.Config |
 | tracker | Tracker.Provider, Tracker.Config |
 | projekt-anlegen | Projekte.Ablage; Projekte.GitHub-Owner, wenn GitHub gewählt wird; Code.Stacks; Modul.Grundsatzregeln, wenn der Stack welche hat (`none` gültig) |
+| skill-auswertung | Skill-Log.Config (im Skill-Repo) |
 
 ## Fehlende Werte
 
@@ -167,6 +171,7 @@ Es gibt nur die Dateien, die ein Projekt braucht.
 | `tracker.md` | Provider · Nummernschema · Nächste freie Nummer · Listen und Routing · Statusmodell · Felder und Option-IDs · Titel- und Beschreibungsformat · Quittungsformat · Sonderfälle |
 | `ticket.md` | Quelle · Lese- und Schreibweg · Statusmodell · Pflichtangaben je Status · Tracker-Kopplung · Beweisquellen · Doku-Kopplung · Schließen und Prüfen |
 | `review.md` | Allgemein (Ablage, Serienformat, Übersicht) · je Thema: Reviewer-Rolle, Repos, Kontextquelle, Pflicht-Block, Ergebnis-Ort |
+| `skill-log.md` | Log-Ordner je Rechner · Ausgewertet bis · Ablage der Befunde |
 
 Die nächste freie Aufgabennummer steht nur in `tracker.md`.
 

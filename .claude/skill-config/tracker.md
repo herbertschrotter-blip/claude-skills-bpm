@@ -48,7 +48,9 @@ Skill-Issue-Listen:
 | skill-neu | `901522952243` |
 | skill-pflege | `901522952246` |
 | tracker | `901522952249` |
-| ticket | fehlt – Liste im Ordner „Skill Issues“ anlegen, bevor das erste ticket-Issue entsteht |
+| ticket | `1200660000006177` |
+| projekt-anlegen | `1200660000006175` |
+| skill-auswertung | `1200660000006208` |
 
 Routing: `tracker issue <skill>: …` → Liste des Skills; alles zum Umbau und zum Skillsystem als Ganzes → ClaudeSkills.
 Unbekannter Skill-Name → Auswahlfrage mit den Namen oben, nie raten.
