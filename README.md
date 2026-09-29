@@ -55,7 +55,7 @@ claude-skills-bpm/
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 13 Skills, je ein Ordner mit SKILL.md
-└── tools/                 ← Prüfskript validate-skills.ps1
+└── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/)
 ```
 
 Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Dateien.
@@ -172,6 +172,12 @@ Seit Umbau Phase 1 (24.09.2026) gibt es Testfälle für `claude plugin eval` (Ma
 für Tests). Fünf Pilotfälle: audit-readonly, doc-write, code-implement, skill-update, cc-not-in-claude-code. Aufruf und
 Schwellen: Skill-Profil in [`CLAUDE.md`](./CLAUDE.md) und [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md).
 Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1).
+
+### Neu: Skill-Log aus dem Alltag (`tools/skill-log/`)
+
+Hooks in Claude Code schreiben auf jedem Rechner mit, welche Prompts eingegeben wurden und welche Skills darauf
+gezündet haben. `skill_log_report.py` zeigt Zündungen je Skill, Runden mit mehreren Skills und Prompts ohne Skill –
+Rohstoff für neue Fälle in `evals/`. Format und Einrichtung: [`docs/skill-log-v1.md`](./docs/skill-log-v1.md).
 
 ### Eval-Methodik
 
