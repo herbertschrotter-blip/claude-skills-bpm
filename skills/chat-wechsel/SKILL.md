@@ -15,8 +15,8 @@ description: >
 
 Übergabe, wenn eine Sitzung endet und in der nächsten weitergearbeitet wird. Zwei Wege, ein Ziel:
 
-- **Cowork-Chat:** Ein Handover-Prompt im Chat (PROMPT-STRUKTUR unten). Der Chat hat kein Repo-Gedächtnis,
-  also trägt der Prompt den Stand.
+- **Cowork-Chat:** Ein Handover-Prompt im Chat (PROMPT-STRUKTUR: `references/prompt-struktur.md`). Der Chat hat kein
+  Repo-Gedächtnis, also trägt der Prompt den Stand.
 - **Claude Code:** Erst **doc-pflege Modus 8 (Sitzungsabschluss)** – Statusliste/Aufgabenquelle, Befunde,
   Stand-Abschnitt, offene Punkte, Commit + Push nach der Push-Policy –, dann **derselbe vollständige Handover-Prompt** nach
   PROMPT-STRUKTUR (Herbert, 16.09.2026: „der war in BPM immer viel umfangreicher“). Der Prompt darf den
@@ -101,96 +101,14 @@ Nein: "pause", "tschüss", "gute nacht"
 
 ---
 
-## ClickUp-Integration (vor Übergabeprompt)
+## Fall → Reference
 
-### Schritt 1: Offene Tasks laden
-
-1. Space/Listen-ID und Präfix aus dem **Tracker-Profil** (Claude Code: CLAUDE.md) bzw. dem Memory-Eintrag `[CLICKUP]` (Cowork) lesen
-2. `clickup_filter_tasks(list_ids/space_ids: [...], statuses: <offene Status laut projects/<name>/clickup-lists.md>)` – read-only, über den tracker-Skill
-3. Tasks gruppieren: mehrere Listen → nach Liste (BPM); eine Liste → nach Status (Heidi: in development, testing, backlog)
-
-### Schritt 2: Chat-Verlauf scannen
-
-Chat scannen auf:
-- Tasks die bearbeitet aber nicht als Done markiert wurden
-- Neue Probleme die aufgetaucht aber nicht erfasst sind
-- NUR nach klaren Mustern: `TODO:`, `offen:`, `neuer punkt:`, `neue aufgabe:`,
-  `später:`, klare Problemformulierungen mit Handlungsbezug
-- NICHT jede Erwähnung eines Problems als neuen Task interpretieren
-
-### Schritt 3: Batch-Abschluss (Auswahlfrage!)
-
-Strukturierte Übersicht im Chat zeigen:
-
-```
-### ClickUp Tracker — Batch-Abschluss
-
-**Im Chat erledigt — als Done markieren?**
-- <PRÄFIX>-003 | DB-Anbindung Orchestrator        (Beispiel BPM; Heidi: DX-031 | KARTE | 4.4 dx-planer …)
-- <PRÄFIX>-007 | CS8629 Warning behoben
-- <PRÄFIX>-012 | Token-Migration
-
-**Im Chat neu erkannt — Task anlegen?**
-- PlanManager — <neues Problem aus diesem Chat>
-- Docs — <neuer Doc-Punkt>
-
-**Weiterhin offen laut ClickUp:**
-PlanManager (4):
-- [high] [V1] BPM-004 | 5998er Statikplaene Erkennung
-- [normal] [V1] BPM-008 | Mockup ManuellSortieren
-...
-Docs (1):
-- [normal] [V1-Nice] BPM-015 | ADR-050 schreiben
-```
-
-Dann **zwei Auswahlfragen** (multiSelect):
-
-**Erster Aufruf — Done-Markierungen:**
-```
-ask_user_input_v0(
-  questions: [{
-    question: "Welche Tasks als Done markieren?",
-    type: "multi_select",
-    options: [
-      "BPM-003 | DB-Anbindung Orchestrator",
-      "BPM-007 | CS8629 Warning behoben",
-      "BPM-012 | Token-Migration",
-      "Keine"
-    ]
-  }]
-)
-```
-
-**Zweiter Aufruf — Neue Tasks:**
-```
-ask_user_input_v0(
-  questions: [{
-    question: "Welche neuen Tasks anlegen?",
-    type: "multi_select",
-    options: [
-      "PlanManager — <neues Problem>",
-      "Docs — <neuer Doc-Punkt>",
-      "Keine"
-    ]
-  }]
-)
-```
-
-### Schritt 4: Nach Bestätigung ausführen
-
-- Done-Tasks: `tracker done` pro ausgewähltem Task (Status laut Übergängen des Projekts – Heidi `testing`, BPM `done`; Commit-Felder bzw. Kommentar)
-- Neue Tasks: `tracker neu` pro ausgewähltem Task (Fragemodus per Auswahlfrage im tracker-Skill, Präfix des Projekts)
-- Cowork: Memory `[CLICKUP]` Eintrag aktualisieren: `Letzte Sync: Teil <N>`; Claude Code: `Next` im Tracker-Profil, wenn Tasks angelegt wurden
-
-### ClickUp nicht erreichbar?
-
-Per Auswahlfrage:
-```
-Frage: "ClickUp nicht erreichbar. Wie weiter?"
-Optionen: "Trotzdem Prompt erstellen", "Retry", "Abbrechen"
-```
-
-Bei "Trotzdem Prompt erstellen": Hinweis in Prompt einfügen, Übergabe aus Chat-Verlauf.
+| Fall | Reference |
+|------|-----------|
+| Handover-Prompt aufbauen (beide Umgebungen) | [references/prompt-struktur.md](references/prompt-struktur.md) |
+| ClickUp-Abgleich vor dem Übergabeprompt: offene Tasks, Chat-Scan, Batch-Abschluss, ClickUp nicht erreichbar | [references/tracker-abgleich.md](references/tracker-abgleich.md) |
+| Cowork-Chat: Memory-Scan, Chat-Anker-Übergabe, Chat-URL im Übergabe-Prompt | [references/cowork.md](references/cowork.md) |
+| Claude Code in tmux: neues Fenster für die nächste Sitzung | [references/neues-fenster.md](references/neues-fenster.md) |
 
 ---
 
@@ -201,155 +119,8 @@ Bei "Trotzdem Prompt erstellen": Hinweis in Prompt einfügen, Übergabe aus Chat
 **Claude Code:** Das Memory ist ein Ordner mit Dateien (Typen `user`/`feedback`/`project`/`reference`) und
 bleibt über Sitzungen erhalten – es muss **nicht** in den Prompt kopiert werden. Stattdessen: offene Punkte,
 die nur im Chat entstanden sind, gehören in den Doc-Ort des Doku-Profils (Heidi: HANDOFF Abschnitt 4 /
-Bauplan Abschnitt 10), erledigte Merker werden mit Herberts Bestätigung als Datei entfernt. Die Schritte 1–6
-unten gelten für den Cowork-Chat.
-
-### Schritt 1: Memory lesen (Cowork)
-
-```
-memory_user_edits(command: "view")
-```
-
-### Schritt 2: Nach 4 Rubriken filtern
-
-Nur Einträge mit diesen Prefixen berücksichtigen:
-
-- `[VERIFY]` — ausstehende Prüfung / Verifikation
-- `[ARCH-OPEN]` — offene Architektur- oder Systementscheidung
-- `[INFRA-TODO]` — kleine Infrastruktur-/Prozessaufgabe, nicht ClickUp-würdig
-- `[REVIEW-PENDING]` — externe Rückmeldung oder Review-Antwort steht noch aus
-
-### Schritt 3: NICHT übernehmen
-
-Folgende Memory-Einträge gehören NICHT in den Handover:
-
-- `[CLICKUP]`-Einträge (sind Projekt-Konvention, bleiben dauerhaft)
-- `[SKILL-ISSUES]`-Einträge (Skill-Konvention, bleiben dauerhaft)
-- `[ANKER-LIVE]`-Einträge (werden separat in Chat-Anker-Übergabe behandelt)
-- Dauerhafte Konventions-Einträge ohne Rubrik-Prefix
-
-### Schritt 4: Eskalations-Hinweis
-
-Für jeden `[VERIFY]`- oder `[INFRA-TODO]`-Eintrag prüfen:
-
-- Ist der Eintrag in 3 aufeinanderfolgenden Handovern aufgetaucht?
-- Wenn ja: im Handover-Prompt kennzeichnen mit:
-  > "Dieser Punkt war jetzt in 3 Übergaben offen. Prüfen, ob ClickUp-Task sinnvoll ist."
-
-**Zusätzlich Fragilitäten-Check** (siehe
-[docs/fragilitaeten-und-fruehwarn.md](../../docs/fragilitaeten-und-fruehwarn.md)):
-
-Vier Fragilitäten mit dokumentierten Indikatoren werden gegen den
-Chat-Verlauf geprüft. Bei Treffern wird eine Eskalationsempfehlung in den
-Übergabeprompt aufgenommen:
-
-| Fragilität | Hauptsignal |
-|---|---|
-| 1. cc-steuerung-Pfad-/Modalitätsfragilität | Codeblöcke statt Dateioperation, hartkodierte Pfade, `$`-Variablen |
-| 2. Tracker-Anker / Task-Scope-Disziplin | Fehlender `[<PRÄFIX>-ANCHOR-…]`, `tracker done` ohne Hash, Multi-Task-Commit |
-| 3. Memory-Schatten-Backlog | 5+ offene `[VERIFY]`/`[INFRA-TODO]`, 3-Handovers-Wiederkehr |
-| 4. Frühphasen-Verstoss | Migration-/Legacy-Vorschläge, Backward-Compat-Logik ohne Auftrag |
-
-Volldoku inklusive Sofortmaßnahmen und Beispielen:
-[docs/fragilitaeten-und-fruehwarn.md](../../docs/fragilitaeten-und-fruehwarn.md).
-
-### Schritt 5: Vor Prompt-Abschluss prüfen
-
-Vor dem Finalisieren des Prompts:
-
-1. Einträge durchgehen: Wurde in diesem Chat einer erledigt?
-2. Wenn ja: Herbert fragen (per Auswahlfrage):
-   > "Folgende Memory-Punkte wurden in diesem Chat bearbeitet. Entfernen?"
-3. Bei Bestätigung: `memory_user_edits(command: "remove")` pro Eintrag
-4. **Nie stillschweigend entfernen**
-
-### Schritt 6: Sektion in Handover-Prompt erzeugen
-
-Gemeinsamer Block (NICHT pro Rubrik eigener H2-Block):
-
-```markdown
-## Offene Punkte aus Memory
-
-### VERIFY
-- [Eintragstext]
-
-### ARCH-OPEN
-- [Eintragstext]
-
-### INFRA-TODO
-- [Eintragstext]
-
-### REVIEW-PENDING
-- [Eintragstext]
-```
-
-**Leere Rubriken weglassen** — nicht als leere H3-Header einfügen.
-
-Wenn KEINE Rubrik Einträge hat: komplette Sektion `## Offene Punkte aus Memory` weglassen.
-
----
-
-## Chat-Anker-Übergabe (nur Cowork)
-
-**Zweck:** Die Live-Registry `[ANKER-LIVE]` (aus dem Chat-Anker-System, siehe tracker-Skill) muss beim Chat-Wechsel in den neuen Chat transportiert werden, weil Memory pro Session gilt. Anker-Präfix = Projekt-Präfix (`clickup-lists.md`). In Claude Code gibt es keine Anker-Registry – Abschnitt entfällt.
-
-### Schritt 1: `[ANKER-LIVE]` aus Memory lesen
-
-```
-memory_user_edits(command: "view")
-→ alle Zeilen mit Prefix "[ANKER-LIVE]" herausfiltern
-```
-
-### Schritt 2: Einträge klassifizieren
-
-- Typ `offen` → TEMP-Anker ohne Task (Phase 1 Ausarbeitung)
-- Typ `erstellt` → Task existiert, aber noch nicht erledigt
-- Typ `erledigt` → sollte eigentlich nicht auftauchen (wird bei `tracker done` entfernt)
-
-Alle Einträge werden in den Übergabeprompt übernommen — im neuen Chat stellt Claude sie wieder her.
-
-### Schritt 3: Sektion "Offene Anker" in Übergabeprompt
-
-```markdown
-## Offene Anker aus Teil N
-
-Folgende IDs wurden im Chat gesetzt und sind noch nicht abgeschlossen:
-
-| ID | Typ | Thema |
-|----|-----|-------|
-| TEMP-01JS7KABCD | offen | Wetter-Modul GS-Worker (noch kein Task) |
-| 86c9eupfk | erstellt | tracker-Skill Anker-Logik (<PRÄFIX>-NNN) |
-
-Claude im neuen Chat: Diese Einträge in `[ANKER-LIVE]` übernehmen via
-`memory_user_edits` (add pro Zeile).
-```
-
-### Schritt 4: Nach Prompt-Erstellung — Memory leeren
-
-Alle `[ANKER-LIVE]`-Einträge des alten Chats aus Memory entfernen:
-
-```
-memory_user_edits(command: "remove", line_number: <N>)
-```
-
-Pro Eintrag einen Remove-Call. Die Daten reisen per Übergabeprompt — nicht per Memory — in den neuen Chat.
-
-### Keine Anker vorhanden?
-
-Sektion komplett weglassen. Nicht als leere Tabelle in den Prompt schreiben.
-
----
-
-## Link-Prüfung (PFLICHT vor der Ausgabe)
-
-Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit falschen Annahmen
-(Beispiel: `heidi-panel-v2.js`, das seit dem Umbau `dreame_x60.js` heißt).
-
-1. **Dateien und Pfade:** jede genannte Datei existiert (Claude Code: Glob; Cowork: DC `list_directory`)
-2. **Abschnitte:** genannte Kapitel/Abschnitte existieren in der Datei (Grep auf die Überschrift)
-3. **Task-IDs:** jede `<PRÄFIX>-NNN` existiert im Tracker mit dem genannten Status (tracker read-only, `clickup_get_task`)
-4. **Versionen:** Version im Prompt = Versionsquelle des Commit-Profils (Heidi: package.json)
-5. Tote Verweise → Auswahlfrage „Korrigieren / Mit Warnung übernehmen / Weglassen“; nie stumm übernehmen
+Bauplan Abschnitt 10), erledigte Merker werden mit Herberts Bestätigung als Datei entfernt. Die Schritte für den
+Cowork-Chat stehen in [references/cowork.md](references/cowork.md), Abschnitt „Memory-Scan (PFLICHT bei Handover)“.
 
 ---
 
@@ -358,9 +129,11 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
 1. **doc-pflege Modus 8 (Sitzungsabschluss)** ausführen: Statusliste/Aufgabenquelle ↔ Tracker, Befunde und
    Entscheidungen, Stand-Abschnitt (Heidi: HANDOFF 3e), offene Punkte als Checkliste (HANDOFF 4), Doku-Checkliste
    des Commit-Profils, Commit + Push nach der Push-Policy (Grundsätze). Uncommittete Änderungen → Auswahlfrage.
-2. **ClickUp-Abgleich** wie oben (Batch-Abschluss über tracker), **Memory**: erledigte Merker mit Bestätigung entfernen.
+2. **ClickUp-Abgleich** nach [references/tracker-abgleich.md](references/tracker-abgleich.md) (Batch-Abschluss über tracker),
+   **Memory**: erledigte Merker mit Bestätigung entfernen.
 3. **Link-Prüfung** auf den Stand-Abschnitt und den Startprompt.
-4. **Handover-Prompt nach PROMPT-STRUKTUR ausgeben** (vollständig, als Markdown-Codeblock). Erste Zeile darin ist
+4. **Handover-Prompt nach PROMPT-STRUKTUR ausgeben** ([references/prompt-struktur.md](references/prompt-struktur.md);
+   vollständig, als Markdown-Codeblock). Erste Zeile darin ist
    der Startprompt des Doku-Profils, z.B.:
 
 ```
@@ -376,111 +149,38 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
    Memory-Sektion: in Claude Code die relevanten Memory-Dateien nennen (Titel), nicht kopieren.
 5. **Neues Fenster** (nur wenn die Sitzung in tmux läuft): Umgebung prüfen, per Auswahlfrage anbieten, dann ein
    tmux-Fenster im Projekt-Repo mit `claude --remote-control` anlegen und den Prompt dort einfügen, nicht absenden.
-   Ablauf: `references/neues-fenster.md`.
+   Ablauf: [references/neues-fenster.md](references/neues-fenster.md).
 6. Fertig. Kurzform (nur Startprompt) nur auf ausdrücklichen Wunsch.
 
 ---
 
-## PROMPT-STRUKTUR (beide Umgebungen)
+## Ablauf im Cowork-Chat
 
-```
-# [Projektname] Teil [N+1]
+Der Chat hat kein Repo-Gedächtnis, der Handover-Prompt trägt den Stand. Die Einzelheiten stehen in den References:
 
-Weiterführung aus **[Projektname] Teil [N]**.
-
----
-
-## Aktueller Stand
-- **App-Version:** [Version]
-- **Letzter Commit:** [Hash + Message]
-- **Branch:** [Branch]
-- **Chat-URL Teil [N]:** [aktuelle Chat-URL falls bekannt]
-
-## Erledigt in Teil [N]
-- [Erledigte Punkte/Commits]
-
-## Offene Punkte (aus ClickUp + Chat)
-
-### ClickUp offen (BPM: nach Liste gruppiert; Ein-Listen-Projekte: nach Status):
-PlanManager:
-- [Priority] [Meilenstein] <PRÄFIX>-NNN | Beschreibung
-Docs:
-- [Priority] [Meilenstein] <PRÄFIX>-NNN | Beschreibung
-(nur Listen/Status mit offenen Tasks auflisten)
-
-### Offene Anker aus Teil [N] (aus [ANKER-LIVE]):
-| ID | Typ | Thema |
-|----|-----|-------|
-| TEMP-xxx | offen | Thema (noch kein Task) |
-| 86c9xxx | erstellt | Thema (<PRÄFIX>-NNN) |
-(nur wenn Einträge vorhanden — sonst Sektion weglassen; nur Cowork)
-
-### Offene Punkte aus Memory (gefiltert nach Rubriken):
-
-#### VERIFY
-- [Eintragstext]
-
-#### ARCH-OPEN
-- [Eintragstext]
-
-#### INFRA-TODO
-- [Eintragstext]
-
-#### REVIEW-PENDING
-- [Eintragstext]
-(leere Rubriken weglassen; wenn alle leer: ganze Sektion weglassen)
-
-### Im Chat neu erkannt (noch nicht in ClickUp):
-- Modul — Beschreibung
-
-### Im Chat erledigt (noch nicht in ClickUp markiert):
-- <PRÄFIX>-NNN | Beschreibung
-
-### Sonstige offene Punkte (nicht in ClickUp):
-- [Pending Commits]
-- [Pending Doc-Updates]
-- [Pending Frontmatter/Quickload-Updates]
-- [Neue Fachliche Invarianten die noch eingetragen werden müssen]
-
-## Nächste Schritte (geplant)
-- [Prioritäten — basierend auf V1 + high/urgent zuerst]
-
-## Aktive Entscheidungen
-- [Architektur-Entscheidungen]
-- [Offene Fragen]
-
-## Kontext
-- [Wichtige Erkenntnisse]
-- [Warnungen]
-- [Docs die gelesen werden sollten]
-- [Docs deren Quickload/Invarianten veraltet sein könnten]
-
-## Regeln (Erinnerung) — aus den Profilen der CLAUDE.md erzeugt, nicht fest
-- Commit: <Format, Modul-Namen, Versionsquelle, Bump-Regel aus dem Commit-Profil>
-- Tracker: <Präfix, Liste, Übergänge aus dem Tracker-Profil>; tracker-Skill ist einzige Schreibschnittstelle zu ClickUp
-- Docs: <Pflicht-Docs, Ladereihenfolge, Aufgabenquelle aus dem Doku-Profil>
-- Code: <Testbefehl, Pflicht-Branch, Auslieferung aus dem Code-Profil>
-- Ein Schritt pro Antwort; nachfragen wenn Kontext fehlt → Auswahlfrage bei festen Optionen
-- Wer committet: Cowork der User; Claude Code Claude selbst
-(BPM ohne Profile: User committet und pusht selbst · Commit-Format [vX.Y.Z] Modul, Typ: Kurztitel · Docs Quickload-First-Pass →
-Pflichtlesen → Langform · DOC-STANDARD.md · ClickUp Space "BPM Entwicklung" ist Source of Truth · Task-Nummern BPM-NNN)
-```
+1. **ClickUp-Abgleich** vor dem Übergabeprompt: [references/tracker-abgleich.md](references/tracker-abgleich.md).
+2. **Memory-Scan** nach den Rubriken, erledigte Merker nur mit Bestätigung entfernen:
+   [references/cowork.md](references/cowork.md), Abschnitt „Memory-Scan (PFLICHT bei Handover)“.
+3. **Chat-Anker-Übergabe:** `[ANKER-LIVE]` in den Prompt übernehmen, nach der Prompt-Erstellung aus dem Memory leeren:
+   [references/cowork.md](references/cowork.md), Abschnitt „Chat-Anker-Übergabe (nur Cowork)“.
+4. **Chat-URL** des endenden Chats ermitteln: [references/cowork.md](references/cowork.md), Abschnitt „Chat-URL in
+   Übergabe-Prompt (nur Cowork)“.
+5. **Link-Prüfung** (unten).
+6. **Handover-Prompt** nach [references/prompt-struktur.md](references/prompt-struktur.md) als Markdown-Codeblock direkt
+   im Chat ausgeben.
 
 ---
 
-## Chat-URL in Übergabe-Prompt (nur Cowork)
+## Link-Prüfung (PFLICHT vor der Ausgabe)
 
-Die URL des aktuellen Chats (der gerade endet) wird in den Übergabe-Prompt unter `**Chat-URL Teil [N]:**` geschrieben, damit sie im nächsten Chat für Nachpflege (z.B. tracker done bei retrospektiven Tasks) verfügbar ist.
+Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit falschen Annahmen
+(Beispiel: `heidi-panel-v2.js`, das seit dem Umbau `dreame_x60.js` heißt).
 
-Ermittlung der aktuellen Chat-URL:
-
-1. Wenn User die URL am Chat-Start oder während der Session gepostet hat → verwenden
-2. Sonst: `recent_chats(n: 1, sort_order: "desc")` aufrufen
-   - Oberster Treffer sollte dieser Chat sein (wenn indexiert)
-   - Prüfen ob der Inhalt passt (Chat-Titel, letzte Nachrichten)
-3. Wenn keine URL ermittelbar: Feld im Prompt leer lassen + Hinweis
-
-**Nicht raten.** Lieber Feld leer als falsche URL.
+1. **Dateien und Pfade:** jede genannte Datei existiert (Claude Code: Glob; Cowork: DC `list_directory`)
+2. **Abschnitte:** genannte Kapitel/Abschnitte existieren in der Datei (Grep auf die Überschrift)
+3. **Task-IDs:** jede `<PRÄFIX>-NNN` existiert im Tracker mit dem genannten Status (tracker read-only, `clickup_get_task`)
+4. **Versionen:** Version im Prompt = Versionsquelle des Commit-Profils (Heidi: package.json)
+5. Tote Verweise → Auswahlfrage „Korrigieren / Mit Warnung übernehmen / Weglassen“; nie stumm übernehmen
 
 ---
 

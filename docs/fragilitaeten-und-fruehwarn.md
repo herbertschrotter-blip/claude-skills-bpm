@@ -4,8 +4,9 @@
 **Stand:** 2026-04-29
 **Zweck:** Konkrete Beobachtungssignale für die 4 wichtigsten Fragilitäten im
 Skill-System. Jede Sektion: Indikatoren + Sofortmaßnahme + Beispiel +
-Gegenbeispiel. Diese Doku wird beim Handover (`chat-wechsel` Memory-Scan
-Schritt 4) gegen den laufenden Chat geprüft und bei Treffern als
+Gegenbeispiel. Diese Doku wird beim Handover (`chat-wechsel`,
+`references/cowork.md`, Abschnitt „Schritt 4: Eskalations-Hinweis“ im
+Memory-Scan) gegen den laufenden Chat geprüft und bei Treffern als
 Eskalationshinweis übernommen.
 
 ---
@@ -246,7 +247,7 @@ gelöscht, neue Projekte erzeugen die Datei mit ULID.
 
 - **INDEX.md** Sektion 10 verweist auf diese Doku
 - **MEMORY-RUBRIKEN.md** Anhang verweist für Sektion 3 hierher
-- **chat-wechsel/SKILL.md** Memory-Scan Schritt 4 prüft die Indikatoren
-  beim Handover
+- **chat-wechsel/references/cowork.md** Abschnitt „Schritt 4:
+  Eskalations-Hinweis“ (Memory-Scan) prüft die Indikatoren beim Handover
 - **CGR-Quelle:** `Docs/Referenz/chatgpt-reviews/CGR-2026-04-skillsystem/r6-chatgpt-response.md`
   Kapitel 4 (im BPM-Repo)

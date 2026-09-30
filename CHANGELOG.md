@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.41.1] — 2026-09-30
+
+- **skills/chat-wechsel, Refactor:** SKILL.md von 536 auf 236 Zeilen aufgeteilt, nichts gestrichen (Inventar
+  `docs/skill-refactors/2026-09-30-chat-wechsel.md`: 192 Regeln, KEEP 111, MOVE 77, REWRITE 4 nur Verweise, DROP 0).
+  Neu `references/prompt-struktur.md`, `references/tracker-abgleich.md`, `references/cowork.md` (Memory-Scan,
+  Chat-Anker-Übergabe, Chat-URL); im Kern Tabelle „Fall → Reference“ und „Ablauf im Cowork-Chat“.
+  `docs/fragilitaeten-und-fruehwarn.md`: Verweise auf den Memory-Scan zeigen auf `references/cowork.md`.
+
 ## [v0.41.0] — 2026-09-30
 
 - **skills/chat-wechsel, Feature:** in Claude Code mit tmux richtet der Skill nach dem Handover-Prompt gleich die nächste
