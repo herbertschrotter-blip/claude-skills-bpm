@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.41.0] — 2026-09-30
+
+- **skills/chat-wechsel, Feature:** in Claude Code mit tmux richtet der Skill nach dem Handover-Prompt gleich die nächste
+  Sitzung ein – Umgebung prüfen (tmux, Projekt-Repo, tmux-Sitzung des Projekts), per Auswahlfrage anbieten, neues
+  Fenster „<Projekt> Teil N“ im Repo mit `claude --remote-control`, Prompt per Bracketed Paste einfügen, nicht absenden
+  (Herbert, 30.09.2026). Ablauf in `references/neues-fenster.md`; neuer VERBOTEN-Punkt (Prompt nicht selbst absenden,
+  altes Fenster nicht schließen).
+
 ## [v0.40.0] — 2026-09-29
 
 - **skills/skill-auswertung, Feature:** neuer Skill – wertet das Skill-Log aus (Prompts und Skill-Zündungen aus den

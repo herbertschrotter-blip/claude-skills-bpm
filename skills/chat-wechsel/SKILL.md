@@ -374,7 +374,10 @@ Jeder Verweis im Prompt muss stimmen, sonst startet die nächste Sitzung mit fal
    Abschnitte der PROMPT-STRUKTUR: Aktueller Stand, Erledigt in dieser Sitzung, Offene Punkte (ClickUp nach
    Status, Chat, Sonstiges), Nächste Schritte, Aktive Entscheidungen, Kontext/Warnungen, Regeln aus den Profilen.
    Memory-Sektion: in Claude Code die relevanten Memory-Dateien nennen (Titel), nicht kopieren.
-5. Fertig. Kurzform (nur Startprompt) nur auf ausdrücklichen Wunsch.
+5. **Neues Fenster** (nur wenn die Sitzung in tmux läuft): Umgebung prüfen, per Auswahlfrage anbieten, dann ein
+   tmux-Fenster im Projekt-Repo mit `claude --remote-control` anlegen und den Prompt dort einfügen, nicht absenden.
+   Ablauf: `references/neues-fenster.md`.
+6. Fertig. Kurzform (nur Startprompt) nur auf ausdrücklichen Wunsch.
 
 ---
 
@@ -530,3 +533,4 @@ Ermittlung der aktuellen Chat-URL:
 - **In Claude Code den Stand nur in den Prompt schreiben statt ins Repo** (HANDOFF/Bauplan) — Modus 8 kommt immer zuerst
 - **In Claude Code ungefragt nur den kurzen Startprompt liefern** — der User erwartet den vollständigen Handover-Prompt
 - **Sitzung mit uncommitteten Änderungen übergeben** ohne Auswahlfrage
+- **Den Prompt im neuen Fenster selbst absenden oder das alte Fenster schließen** — beides entscheidet der User
