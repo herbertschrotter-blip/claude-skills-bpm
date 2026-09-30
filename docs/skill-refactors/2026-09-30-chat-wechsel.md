@@ -288,5 +288,5 @@ Suche nach `chat-wechsel`, `PROMPT-STRUKTUR`, `ClickUp-Integration`, `Chat-Anker
   Werkzeugnamen `ask_user_input_v0` jetzt in `references/tracker-abgleich.md` statt in SKILL.md; `memory_user_edits` und
   `recent_chats` stehen jetzt in `references/cowork.md` (dort erlaubt). Das echte Prüfskript läuft nach dem Push per
   GitHub Actions.
-- **Routing-Eval:** steht aus (nach dem Commit, `--tag chat-wechsel`); Description unverändert, auslöserelevante
-  Abschnitte (TRIGGER, Vorrang) wörtlich.
+- **Routing-Eval:** 30.09.2026 nach Commit d2cd58f, `--tag chat-wechsel`, 3 Läufe: 8 von 8 Fällen 100 % (4 chat-wechsel,
+  4 chatgpt-review; $3.72). Description unverändert, auslöserelevante Abschnitte (TRIGGER, Vorrang) wörtlich.
