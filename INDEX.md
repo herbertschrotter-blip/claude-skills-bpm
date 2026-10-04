@@ -23,7 +23,7 @@ wiederholt sie nicht.
 | **code-erstellen** | Code planen und ändern nach dem Profil des Repos (Pflichtkontext, Aufgabenquelle, Stack-Referenzen, Tests, Auslieferung) | jede Anfrage, die Code-Erstellung oder -Änderung meint |
 | **doc-pflege** | Projektdoku anlegen, pflegen, validieren; Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept", "Sitzung abschließen" |
 | **git-commit-helper** | Commit-Befehle und -Messages im Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Version-Bump | "commit", "git commit", "PATCH oder MINOR?" |
-| **mockup-erstellen** | HTML-Mockups nach dem Mockup-Profil, Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
+| **mockup-erstellen** | HTML-Mockups nach dem Mockup-Profil, Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup", "erst ins Mockup einbauen" |
 | **projekt-anlegen** | Neue Projekte anlegen und einrichten, nach Stack; Übergabe an mockup-erstellen, code-erstellen oder tracker | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
 | **sitzung** | Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü: Projekt → Gespräch → fortsetzen im richtigen Ordner mit Remote Control; Fenster verwalten, wiederherstellen, aufräumen | "sitzung", "alte Sitzung öffnen", "wo sind meine Sitzungen", "Fenster wiederherstellen" |
 | **skill-neu** | Neue Skills für dieses Repo anlegen (Absicht, Kollisionsprüfung, Neutralität, Eval-Fälle) | "neuer Skill für X", "erstelle einen Skill" |
@@ -49,7 +49,7 @@ Abschnitt „Vorrang / Delegation“.
 
 | Paar | Entscheidung |
 |---|---|
-| code-erstellen ↔ mockup-erstellen | Code → code-erstellen; HTML-Mockup → mockup-erstellen |
+| code-erstellen ↔ mockup-erstellen | Code → code-erstellen; HTML-Mockup → mockup-erstellen, auch eine Änderung am bestehenden Projekt-Mockup mitten in einem Ticket- oder Code-Ablauf |
 | code-erstellen ↔ git-commit-helper | Code-Änderung samt Commit-Vorschlag → code-erstellen; ausdrücklicher Commit-Wunsch → git-commit-helper |
 | code-erstellen ↔ doc-pflege | Doku-Hinweise aus code-erstellen lösen doc-pflege nicht aus; ausdrücklicher Doku-Auftrag → doc-pflege |
 | code-erstellen ↔ tracker | Code, auch mit Aufgabenbezug → code-erstellen; ausdrücklicher Tracker-Befehl → tracker |

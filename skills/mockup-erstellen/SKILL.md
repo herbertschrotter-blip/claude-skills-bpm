@@ -6,7 +6,9 @@ description: >
   Sitemap; Heidi: dreame_x60/mockups im Bento-Design mit --dx-Tokens). Use when users want to mocken, entwerfen, skizzieren,
   zeigen, visualisieren, layouten, or want to clarify how a screen should
   look before coding — including mockups, screen designs, UI proposals,
-  layout drafts, dialog sketches, and tab/panel arrangements. For
+  layout drafts, dialog sketches, tab/panel arrangements, and changes to an
+  existing project mockup ("erst ins Mockup einbauen", "im Mockup ändern"),
+  also in the middle of a ticket or code task. For
   sequential intents like "mock and then implement": triggers as the first
   step (mockup), then defers to code-erstellen. Do not trigger for direct
   XAML or Lit component implementation, small UI fixes in existing code, or
@@ -45,7 +47,8 @@ echte Code-Implementierung ist, NICHT hier weiterarbeiten, sondern delegieren.**
 
 Nur wenn die Hauptabsicht **ein neuer UI-Entwurf als HTML-Mockup** ist
 (Screen-Vorschlag, Layout-Klärung vor dem Code, Dialog-Skizze),
-bleibt mockup-erstellen zuständig.
+bleibt mockup-erstellen zuständig. Das gilt auch für eine Änderung an einem bestehenden Projekt-Mockup, auch mitten in
+einem Ticket- oder Code-Ablauf („erst ins Mockup einbauen“).
 
 **Wichtig:** Mockup-erstellen liefert HTML in die Mockup-Ablage des Profils. Sobald es um
 echten Code (XAML/C#, TypeScript/Lit) geht, gehört die Arbeit in code-erstellen. Umgekehrt

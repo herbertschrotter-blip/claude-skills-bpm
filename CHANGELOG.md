@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.1] — 2026-10-04
+
+- **skills/mockup-erstellen, Fix:** Description und Abschnitt „Vorrang / Delegation“ decken jetzt auch Änderungen an
+  einem bestehenden Projekt-Mockup ab, auch mitten in einem Ticket- oder Code-Ablauf („erst ins Mockup einbauen“).
+  Befund aus der ersten Skill-Auswertung (Skill-Log ha-pi, 29.09.–04.10.2026): Claude hatte das Glas-Mockup unter
+  code-erstellen geändert, ohne mockup-erstellen zu laden (Issue mockup-erstellen-002). Konfliktpaar
+  code-erstellen ↔ mockup-erstellen in INDEX.md präzisiert, neuer Eval-Fall `mockup-erstellen-real-mockup-zuerst`.
+
 ## [v0.42.0] — 2026-10-04
 
 - **skills/sitzung, Feature:** neuer Skill – Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü, gedacht fürs
