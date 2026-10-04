@@ -20,7 +20,7 @@ Arbeit des Skills danach.
 - `<skill>-fired.md`: Der Skill muss mindestens einmal aufgerufen werden. `<skill>-not-fired.md` (`min: 0`,
   `max: 0`): Der Skill darf nicht aufgerufen werden.
 - Tags: `baseline` (Grundmessung), `routing`, `pilot` (die fünf Pilotfälle), `critical` (muss 3 von 3 Läufen
-  bestehen), `ziel` (Ziel-Fall, darf vor dem Umbau scheitern) und die Namen aller beteiligten Skills.
+  bestehen), `ziel` (Ziel-Fall, darf vor dem Umbau scheitern), `real` (Fall aus einem echten Prompt im Skill-Log, Art „echt“) und die Namen aller beteiligten Skills.
   `--tag <skill>` wählt damit alle Fälle, die ein Skill berührt.
 - Das Manifest `.claude-plugin/plugin.json` zeigt auf `quality/evals`. Ergebnisse landen in
   `quality/evals/results/` und gehören nicht ins Repo.
@@ -53,19 +53,19 @@ Grenze sie prüfen.
 | code-erstellen | 8 | 0 |
 | doc-pflege | 7 | 2 |
 | audit | 7 | 6 |
-| mockup-erstellen | 6 | 0 |
+| mockup-erstellen | 7 | 0 |
 | skill-pflege | 6 | 3 |
 | skill-neu | 5 | 3 |
 | chat-wechsel | 4 | 0 |
 | chatgpt-review | 4 | 0 |
 | tracker | 4 | 3 |
 | git-commit-helper | 3 | 2 |
-| ticket | 3 | 2 |
+| ticket | 5 | 2 |
 | cc-steuerung | 3 | 2 |
 | projekt-anlegen | 6 | 3 |
 | skill-auswertung | 5 | 3 |
-| sitzung | 5 | 3 |
-| **gesamt** | **76** | **32** |
+| sitzung | 6 | 3 |
+| **gesamt** | **80** | **32** |
 
 ## Nicht abgedeckt
 
@@ -78,7 +78,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 04.10.2026, 76 Fälle.
+Stand 04.10.2026, 80 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -108,6 +108,7 @@ Stand 04.10.2026, 76 Fälle.
 | `mockup-sketch-dashboard` | mockup-erstellen | Wie könnte das Dashboard für den Saugroboter aussehen? Skizzier es mir als HTML-Entwurf, bevor wir etwas bauen. | mockup-erstellen | code-erstellen | normal |
 | `mockup-then-implement` | mockup-erstellen | Entwirf zuerst ein Mockup für die Projektliste, danach bauen wir sie ein. | mockup-erstellen | – | normal |
 | `mockup-layout-variants` | mockup-erstellen | Ich brauche drei Layoutvarianten für die Kartenansicht, damit ich mich entscheiden kann. | mockup-erstellen | – | normal |
+| `mockup-erstellen-real-mockup-zuerst` | mockup-erstellen | Bau die neue Sonnenbahn zuerst in den abgenommenen Glas-Mockup ein, bevor du das Panel änderst. | mockup-erstellen | code-erstellen | normal, echt |
 | `mockup-no-trigger-component` | mockup-erstellen | Bau die Lit-Komponente für die Raumkarte. Das Design ist schon abgenommen. | code-erstellen | mockup-erstellen | normal |
 | `mockup-no-trigger-db-schema` | mockup-erstellen | Entwirf das Datenbankschema für die Zeiterfassung: Tabellen, Schlüssel und Beziehungen. | – | mockup-erstellen | normal |
 | `skill-update` | skill-pflege | Ergänze im bestehenden chat-wechsel-Skill eine Regel, dass tote Dateiverweise vor der Übergabe gemeldet werden. | skill-pflege | skill-neu | kritisch, Pilot |
@@ -138,6 +139,8 @@ Stand 04.10.2026, 76 Fälle.
 | `commit-no-trigger-push` | git-commit-helper | Push bitte den aktuellen Stand nach GitHub. | – | git-commit-helper | kritisch |
 | `ticket-number` | ticket | ticket HT-0007 | ticket | tracker, code-erstellen | kritisch |
 | `ticket-list` | ticket | Welche Tickets sind noch offen? ticket liste | ticket | tracker | kritisch |
+| `ticket-real-naechstes-ticket` | ticket | Nächstes Ticket bitte. | ticket | tracker | normal, echt |
+| `ticket-real-tickets-pruefen` | ticket | tickets prüfen | ticket | tracker | normal, echt |
 | `ticket-no-trigger-bug-without-number` | ticket | In der Kartenansicht springt die Roboterposition hin und her. Kannst du das beheben? | code-erstellen | ticket | normal |
 | `cc-not-in-claude-code` | cc-steuerung | Ich arbeite in Claude Code. Zeig mir bitte den Git-Status des Repos. | – | cc-steuerung | kritisch, Pilot |
 | `cc-prefix-code` | cc-steuerung | cc: implementiere im ImportService eine Wiederholung bei Netzwerkfehlern. | code-erstellen | – | normal |
@@ -156,5 +159,6 @@ Stand 04.10.2026, 76 Fälle.
 | `sitzung-oeffnen` | sitzung | Ich finde meine alte Claude-Sitzung zu den Tickets im Baustellen-Projekt nicht mehr. Zeig mir die Chats dieses Projekts zur Auswahl und setz die richtige im passenden Ordner mit Remote Control fort. | sitzung | chat-wechsel | kritisch |
 | `sitzung-wiederherstellen` | sitzung | Nach dem Neustart vom Terminal-Add-on sind alle meine tmux-Fenster mit den Claude-Sitzungen weg. Stell die Sitzungen, die vorher offen waren, wieder her, jede in ihrem Projektordner. | sitzung | – | kritisch |
 | `sitzung-kurz` | sitzung | sitzung | sitzung | – | normal |
+| `sitzung-real-wo-sitzungen` | sitzung | Wo sind meine ganzen Sitzungen? | sitzung | – | normal, echt |
 | `sitzung-no-trigger-handover` | sitzung | Wir machen morgen weiter. Mach mir den Übergabe-Prompt für den nächsten Chat und richte dafür gleich ein neues Fenster im Projekt ein. | chat-wechsel | sitzung | kritisch |
 | `sitzung-no-trigger-tmux-config` | sitzung | Stell in meiner tmux.conf ein, dass die Statusleiste oben steht und Strg+a statt Strg+b der Präfix ist. | – | sitzung | normal |
