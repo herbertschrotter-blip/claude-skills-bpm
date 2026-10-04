@@ -64,7 +64,8 @@ Grenze sie prüfen.
 | cc-steuerung | 3 | 2 |
 | projekt-anlegen | 6 | 3 |
 | skill-auswertung | 5 | 3 |
-| **gesamt** | **71** | **29** |
+| sitzung | 5 | 3 |
+| **gesamt** | **76** | **32** |
 
 ## Nicht abgedeckt
 
@@ -77,7 +78,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 29.09.2026, 71 Fälle.
+Stand 04.10.2026, 76 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -152,3 +153,8 @@ Stand 29.09.2026, 71 Fälle.
 | `skill-auswertung-no-trigger-pflege` | skill-auswertung | Laut Skill-Log hat der tracker-Skill bei „Aufgabe anlegen“ dreimal nicht gezündet. Schärf seine Description, damit das künftig zuverlässig auslöst. | skill-pflege | skill-auswertung | kritisch |
 | `skill-auswertung-no-trigger-hooks` | skill-auswertung | Richte auf meinem Laptop die Hooks ein, die Prompts und Skill-Aufrufe mitprotokollieren, und prüf, ob sie feuern. | – | skill-auswertung | kritisch |
 | `skill-auswertung-no-trigger-eval-run` | skill-auswertung | Lass die Routing-Tests mit claude plugin eval für den tracker-Skill laufen, drei Durchläufe je Fall. | – | skill-auswertung, skill-neu, skill-pflege | normal |
+| `sitzung-oeffnen` | sitzung | Ich finde meine alte Claude-Sitzung zu den Tickets im Baustellen-Projekt nicht mehr. Zeig mir die Chats dieses Projekts zur Auswahl und setz die richtige im passenden Ordner mit Remote Control fort. | sitzung | chat-wechsel | kritisch |
+| `sitzung-wiederherstellen` | sitzung | Nach dem Neustart vom Terminal-Add-on sind alle meine tmux-Fenster mit den Claude-Sitzungen weg. Stell die Sitzungen, die vorher offen waren, wieder her, jede in ihrem Projektordner. | sitzung | – | kritisch |
+| `sitzung-kurz` | sitzung | sitzung | sitzung | – | normal |
+| `sitzung-no-trigger-handover` | sitzung | Wir machen morgen weiter. Mach mir den Übergabe-Prompt für den nächsten Chat und richte dafür gleich ein neues Fenster im Projekt ein. | chat-wechsel | sitzung | kritisch |
+| `sitzung-no-trigger-tmux-config` | sitzung | Stell in meiner tmux.conf ein, dass die Statusleiste oben steht und Strg+a statt Strg+b der Präfix ist. | – | sitzung | normal |

@@ -8,6 +8,17 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.0] — 2026-10-04
+
+- **skills/sitzung, Feature:** neuer Skill – Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü, gedacht fürs
+  Smartphone: erst Projekt (Ordner mit Gesprächen), dann Gespräch, dann Aktion. Öffnen im richtigen Ordner als eigenes
+  Fenster mit `claude --resume … --remote-control`, läuft es schon → nur hinwechseln; Vorschau, Suche, Abzweigen,
+  Umbenennen; Fenster wechseln, umbenennen, verschieben, aus anderen tmux-Sitzungen holen, schließen, Claude neu
+  starten; Arbeitsplatz merken und nach einem Neustart wiederherstellen (auch aus verwaisten Einträgen in
+  `~/.claude/sessions`); Aufräumen mit Archiv, endgültig löschen nur mit Bestätigung (Herbert, 04.10.2026)
+  - Werkzeug `scripts/sitzung.py` (Python, Standardbibliothek), references `befehle.md` und `umgebung.md`
+  - 5 Eval-Fälle (3 kritisch), Konfliktpaar chat-wechsel ↔ sitzung in INDEX.md
+
 ## [v0.41.1] — 2026-09-30
 
 - **skills/chat-wechsel, Refactor:** SKILL.md von 536 auf 236 Zeilen aufgeteilt, nichts gestrichen (Inventar

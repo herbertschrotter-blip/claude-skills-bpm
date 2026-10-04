@@ -1,6 +1,6 @@
 # INDEX — Skill-Übersicht
 
-Verzeichnis der 14 Skills im Repo `claude-skills-bpm`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
+Verzeichnis der 15 Skills im Repo `claude-skills-bpm`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
 zwischen Skills entschieden werden. Die Regeln selbst stehen in den Skills und in den Dokumenten unten – dieser Index
 wiederholt sie nicht.
 
@@ -25,6 +25,7 @@ wiederholt sie nicht.
 | **git-commit-helper** | Commit-Befehle und -Messages im Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Version-Bump | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-Mockups nach dem Mockup-Profil, Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup" |
 | **projekt-anlegen** | Neue Projekte anlegen und einrichten, nach Stack; Übergabe an mockup-erstellen, code-erstellen oder tracker | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
+| **sitzung** | Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü: Projekt → Gespräch → fortsetzen im richtigen Ordner mit Remote Control; Fenster verwalten, wiederherstellen, aufräumen | "sitzung", "alte Sitzung öffnen", "wo sind meine Sitzungen", "Fenster wiederherstellen" |
 | **skill-neu** | Neue Skills für dieses Repo anlegen (Absicht, Kollisionsprüfung, Neutralität, Eval-Fälle) | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills ändern: Safe Patch oder Refactor mit Regel-Inventar; Lieferung | "Skill updaten", "Skill ändern", "Skill erweitern" |
 | **skill-auswertung** | Skill-Log auswerten (Zündungen im Alltag), Modi Schnellblick/Standard/Tiefenanalyse; Befunde → Eval-Fälle, tracker, skill-pflege | "skills auswerten", "skill-log auswerten", "wie zünden die Skills" |
@@ -38,7 +39,7 @@ Abschnitt „Vorrang / Delegation“.
 
 - **Orchestrator:** code-erstellen (ruft mockup-erstellen, git-commit-helper, doc-pflege, tracker, audit auf)
 - **Ändern Dinge:** skill-neu, skill-pflege (Skills), doc-pflege (Doku), projekt-anlegen (neue Projekte)
-- **Abläufe:** chat-wechsel, chatgpt-review, audit, ticket, skill-auswertung
+- **Abläufe:** chat-wechsel, chatgpt-review, audit, ticket, skill-auswertung, sitzung
 - **Schnittstellen:** tracker (ClickUp), git-commit-helper (Git), mockup-erstellen (HTML-Mockups)
 - **Modalität:** cc-steuerung (läuft parallel zum Fachskill, nur im Cowork-Chat)
 
@@ -54,6 +55,7 @@ Abschnitt „Vorrang / Delegation“.
 | code-erstellen ↔ tracker | Code, auch mit Aufgabenbezug → code-erstellen; ausdrücklicher Tracker-Befehl → tracker |
 | ticket ↔ tracker / code-erstellen | Ticketnummer oder Ticket-Befehl → ticket (ruft tracker und code-erstellen selbst auf); Aufgabe ohne Ticket → tracker; Bugfix ohne Ticket → code-erstellen |
 | audit ↔ code-erstellen | read-only Prüfung → audit; Fixes → code-erstellen (nach Auswahlfrage) |
+| chat-wechsel ↔ sitzung | Übergabe mit Handover-Prompt (auch mit neuem Fenster) → chat-wechsel; vorhandenes Gespräch finden, fortsetzen, Fenster verwalten oder wiederherstellen → sitzung |
 | chat-wechsel ↔ chatgpt-review | Übergabe an Claude → chat-wechsel; Review-Prompt für ChatGPT → chatgpt-review; unklar → Auswahlfrage |
 | projekt-anlegen ↔ code-erstellen | neues Projekt anlegen oder Repo holen und einrichten → projekt-anlegen; Änderung in einem bestehenden Projekt → code-erstellen |
 | projekt-anlegen ↔ mockup-erstellen | neues Projekt aufsetzen, auch bei offener Art → projekt-anlegen (bietet mockup-erstellen an); nur Aussehen entwerfen → mockup-erstellen |

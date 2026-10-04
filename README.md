@@ -2,7 +2,7 @@
 
 Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
 
-Dieses Repo enthält die Skill-Definitionen für 14 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
+Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
 > **Umbau läuft (seit 24.09.2026):** [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md) – Skill-Profil v1,
 > Qualitätsregeln, Prüfskript und Routing-Tests; Ergebnis der Review-Serie `CGR-2026-09-24-skillsystem`.
@@ -54,7 +54,7 @@ claude-skills-bpm/
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
-├── skills/                ← 14 Skills, je ein Ordner mit SKILL.md
+├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
 └── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/)
 ```
 
@@ -62,7 +62,7 @@ Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Date
 
 ---
 
-## Kapitel 1 — Die 14 Skills im Überblick
+## Kapitel 1 — Die 15 Skills im Überblick
 
 Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Meta-Skills** und **Modalitäts-Skills**.
 
@@ -84,6 +84,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 | **tracker** | Standardisierte Schreibschnittstelle zum ClickUp-Task-System. | "tracker neu: PM — Regex-Bug", "tracker done BPM-042", "tracker suche Regex" |
 | **git-commit-helper** | Fertige Git-Commit-Befehle im Format `[vX.Y.Z] Modul, Typ: Kurztitel` (Commit-Profil). | "commit bitte", "commit-message", "PATCH oder MINOR?" |
 | **chat-wechsel** | Handover-Prompt für die nächste Claude-Session. | "neuer chat", "nächster chat", "übergabe" |
+| **sitzung** | Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü: Projekt → Gespräch → im richtigen Ordner mit Remote Control fortsetzen; Fenster verwalten, nach Neustart wiederherstellen, aufräumen (Skript `scripts/sitzung.py`). | "sitzung", "alte Sitzung öffnen", "Fenster wiederherstellen" |
 
 ### Meta-Skills (ändern andere Skills)
 
