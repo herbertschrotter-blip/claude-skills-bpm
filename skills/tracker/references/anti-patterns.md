@@ -139,6 +139,7 @@ Vollständige Spec: `batch-protocol.md`. Kurzliste:
 - **Parent überschreiben wenn er schon `in progress` oder `done` ist** — nur `to do`/`open`-Parents werden auf `in progress` gesetzt
 - **Task-ID raten** wenn User Kurzform ohne eindeutige Zuordnung nutzt — stattdessen Auswahlfrage
 - **Status-Wert raten** bei Listen-Typen — Fallback-Reihenfolge einhalten, bei Scheitern Auswahlfrage
+- **Code, Mockup oder Doku zu einem gestarteten Task unter tracker selbst schreiben** (tracker-012) — vor der ersten Dateiänderung den zuständigen Skill laden: Code → code-erstellen, Mockup → mockup-erstellen, Doku → doc-pflege
 
 ### Referenz-Anker in Folge-Antworten (tracker-005)
 

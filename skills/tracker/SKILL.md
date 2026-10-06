@@ -458,5 +458,6 @@ Details in `references/anti-patterns.md`.
 - **Werkzeugsuche mit Umschreibung statt exaktem Tool-Namen** wenn ein ClickUp-Tool nicht geladen ist — das liefert Müll-Treffer und kostet Zeit. Bei `Tool '...' not found` IMMER mit dem exakten Tool-Namen suchen (z.B. `tool_search("clickup_get_task")`, nicht `tool_search("clickup task details")`; Claude Code: `ToolSearch("select:…clickup_get_task")`). Tool-Inventar: `references/clickup-tools.md` (tracker-010)
 - **Werkzeugnamen oder Umgebung fest annehmen** (Desktop Commander, `ask_user_input_v0`, Memory-Einträge) — der Skill beschreibt die Handlung; Claude nimmt Shell, Auswahlfrage und Projektkennung der jeweiligen Umgebung
 - **BPM-Präfix oder BPM-IDs für andere Projekte annehmen** — Präfix, Kürzel, Listen- und Feld-IDs immer aus `projects/<[PROJECT]>/` lesen; das Schema selbst (Titel, Anker, Felder, Template) gilt in jedem Projekt gleich
+- **Code, Mockup oder Doku zu einem gestarteten Task unter tracker selbst schreiben** — nach `tracker start` (auch „mach <PRÄFIX>-NNN“, „weiter mit <PRÄFIX>-NNN“) den zuständigen Skill laden, bevor die erste Datei geändert wird: Code → code-erstellen, Mockup → mockup-erstellen, Doku → doc-pflege; tracker setzt nur den Status (Details: `references/start-task.md`) (tracker-012)
 
 **Vollständige VERBOTEN-Liste:** `references/anti-patterns.md`.

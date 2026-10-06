@@ -47,7 +47,7 @@ ausführen bevor mit inhaltlicher Arbeit begonnen wird.
   / `"wir machen jetzt BPM-082"`)
 - User bestätigt mit `"ja"`, `"ok"`, `"weiter"`, `"mach"`, `"passt"`, `"genau"`,
   `"los"`, `"gemacht"` — oder irgendeiner anderen Zustimmung
-- → **In der darauffolgenden Antwort ZUERST `tracker start`**, dann Analyse/Code
+- → **In der darauffolgenden Antwort ZUERST `tracker start`**, dann Analyse/Code im zuständigen Skill (Code → code-erstellen)
 
 **Voraussetzung:** Der zu fokussierende Task muss **eindeutig aus dem vorigen
 Turn hervorgehen**. Wenn mehrere Tasks im Raum stehen: Auswahlfrage
@@ -115,7 +115,9 @@ gesetzt — obwohl der Fokus eindeutig war.
    Batch-Audit: 2/2 Body-Anker ✅ | 2/2 Custom Fields (Status) ✅
    ```
 
-9. **Erst DANN inhaltliche Arbeit beginnen.**
+9. **Erst DANN inhaltliche Arbeit beginnen**, und zwar im zuständigen Skill: Code → code-erstellen, Mockup →
+   mockup-erstellen, Doku → doc-pflege. Den Skill laden, bevor die erste Datei geändert wird; tracker setzt nur den
+   Status. Das gilt auch für die Fokus-Entscheidung und für „weiter mit <PRÄFIX>-NNN“.
 
 ### Projekte mit eigenem Status-Wert (oder ohne Anker)
 
@@ -151,6 +153,7 @@ Auswahlfrage mit Alternativen.
   (wenn Parent schon `in progress` oder `done`: nichts tun)
 - Inhaltliche Arbeit beginnen BEVOR `tracker start` ausgeführt wurde
 - Raten welche Task-ID gemeint ist wenn unklar — Auswahlfrage
+- Code, Mockup oder Doku zu einem gestarteten Task unter tracker selbst schreiben, statt den zuständigen Skill zu laden
 
 ---
 
@@ -168,7 +171,7 @@ Claude intern:
   4. Kein Parent → Schritt 6
   6. Pro-Task-Quittung im Chat:
      ✅ tracker-002 — [BPM-ANCHOR-86c9f7cm4] — start: in progress
-  8. Inhaltliche Arbeit beginnt.
+  8. Inhaltliche Arbeit beginnt im zuständigen Skill (bei Code: code-erstellen laden).
 ```
 
 ### Impliziter Trigger mit Task-ID

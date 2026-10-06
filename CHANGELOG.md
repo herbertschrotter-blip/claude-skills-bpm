@@ -8,6 +8,15 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.3] — 2026-10-06
+
+- **skills/tracker, Fix:** Nach `tracker start` (auch Fokus-Entscheidung, „mach <PRÄFIX>-NNN“, „weiter mit
+  <PRÄFIX>-NNN“) lädt Claude den zuständigen Skill, bevor die erste Datei geändert wird: Code → code-erstellen,
+  Mockup → mockup-erstellen, Doku → doc-pflege; tracker setzt nur den Status. Neu in `references/start-task.md`
+  (Ablauf, Fokus-Entscheidung, Beispiel, VERBOTEN), dazu VERBOTEN-Punkt in SKILL.md und `references/anti-patterns.md`.
+  Befund aus der Skill-Auswertung vom 06.10.2026: In der Sitzung „ha-baustelle Teil 3“ wurde Code unter tracker
+  geschrieben, ohne code-erstellen zu laden (Issue tracker-012).
+
 ## [v0.42.2] — 2026-10-06
 
 - **skills/code-erstellen, Fix:** Description und Abschnitt „Vorrang / Delegation“ decken jetzt Code-Arbeit an einer
