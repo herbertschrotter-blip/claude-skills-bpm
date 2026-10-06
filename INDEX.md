@@ -52,7 +52,7 @@ Abschnitt „Vorrang / Delegation“.
 | code-erstellen ↔ mockup-erstellen | Code → code-erstellen; HTML-Mockup → mockup-erstellen, auch eine Änderung am bestehenden Projekt-Mockup mitten in einem Ticket- oder Code-Ablauf |
 | code-erstellen ↔ git-commit-helper | Code-Änderung samt Commit-Vorschlag → code-erstellen; ausdrücklicher Commit-Wunsch → git-commit-helper |
 | code-erstellen ↔ doc-pflege | Doku-Hinweise aus code-erstellen lösen doc-pflege nicht aus; ausdrücklicher Doku-Auftrag → doc-pflege |
-| code-erstellen ↔ tracker | Code, auch mit Aufgabenbezug → code-erstellen; ausdrücklicher Tracker-Befehl → tracker |
+| code-erstellen ↔ tracker | Code, auch mit Aufgabenbezug („mach BSM-002“, „weiter mit BSM-014“) → code-erstellen, tracker setzt nur den Status; ausdrücklicher Tracker-Befehl → tracker |
 | ticket ↔ tracker / code-erstellen | Ticketnummer oder Ticket-Befehl → ticket (ruft tracker und code-erstellen selbst auf); Aufgabe ohne Ticket → tracker; Bugfix ohne Ticket → code-erstellen |
 | audit ↔ code-erstellen | read-only Prüfung → audit; Fixes → code-erstellen (nach Auswahlfrage) |
 | chat-wechsel ↔ sitzung | Übergabe mit Handover-Prompt (auch mit neuem Fenster) → chat-wechsel; vorhandenes Gespräch finden, fortsetzen, Fenster verwalten oder wiederherstellen → sitzung |

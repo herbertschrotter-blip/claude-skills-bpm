@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.2] — 2026-10-06
+
+- **skills/code-erstellen, Fix:** Description und Abschnitt „Vorrang / Delegation“ decken jetzt Code-Arbeit an einer
+  Aufgabe per ID ab („mach BSM-002“, „weiter mit BSM-014“). Ausgeschlossen bleiben nur ClickUp-Aktionen ohne
+  Code-Arbeit. Befund aus der Skill-Auswertung vom 06.10.2026: In der Sitzung „ha-baustelle Teil 3“ entstanden rund 310
+  Schreibvorgänge an Code unter tracker, code-erstellen wurde nie geladen (Issue code-erstellen-002). Konfliktpaar
+  code-erstellen ↔ tracker in INDEX.md präzisiert; Description 1022 Zeichen.
+
 ## [v0.42.1] — 2026-10-04
 
 - **skills/mockup-erstellen, Fix:** Description und Abschnitt „Vorrang / Delegation“ decken jetzt auch Änderungen an

@@ -10,10 +10,11 @@ description: >
   models, repositories, handlers, validators, models, validation, persistence,
   data flows, schemas, migrations, automations, or any source file (.cs, .xaml,
   .ts, .js, .py, .yaml, .json). Triggers also on bug fixes, UI fixes in existing
-  screens/components, and implementing logic regardless of domain. Do not
-  trigger for UI mockups (HTML-Entwürfe), git commit commands, explicit
-  documentation authoring (ADR / Konzept-Doc / Frontmatter / Quickload),
-  ClickUp task actions, or read-only audits.
+  screens/components, implementing logic regardless of domain, and code work
+  on a task by its ID ("mach BSM-002", "weiter mit BSM-014"). Do not
+  trigger for UI mockups (HTML-Entwürfe), git commit
+  commands, explicit documentation authoring (ADR / Konzept-Doc / Frontmatter
+  / Quickload), ClickUp task actions without code work, or read-only audits.
 ---
 
 # Code-Erstellen — Orchestrator Skill
@@ -41,7 +42,7 @@ Punkte ist, NICHT hier weiterarbeiten, sondern delegieren.**
 | Großer UI-Umbau (Modus Deep) und das Profil sagt „Mockup-Pflicht: ja“ → zuerst Mockup, Abnahme abwarten, dann hier weiter | **mockup-erstellen** (Mockup-Hook) |
 | Commit-Befehl, Commit-Message, Version-Bump | **git-commit-helper** |
 | ADR, Konzept, Frontmatter, Quickload, Doku-Refactor | **doc-pflege** |
-| ClickUp-Task-Aktion (neu, done, update, split, …) | **tracker** |
+| ClickUp-Task-Aktion ohne Code-Arbeit (neu, done, update, split, …); eine Aufgabe per ID umsetzen („mach BSM-002“, „weiter mit BSM-014“) bleibt hier, tracker setzt nur den Status | **tracker** |
 | Read-only Konsistenzprüfung zwischen Code und Docs | **audit** |
 
 Nur wenn die Hauptabsicht **echte Code-Implementierung** ist
