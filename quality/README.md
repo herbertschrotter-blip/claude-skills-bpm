@@ -50,10 +50,10 @@ Grenze sie prüfen.
 
 | Skill | Fälle | davon kritisch |
 |---|---|---|
-| code-erstellen | 8 | 0 |
+| code-erstellen | 10 | 0 |
 | doc-pflege | 7 | 2 |
 | audit | 7 | 6 |
-| mockup-erstellen | 7 | 0 |
+| mockup-erstellen | 8 | 0 |
 | skill-pflege | 6 | 3 |
 | skill-neu | 5 | 3 |
 | chat-wechsel | 4 | 0 |
@@ -65,7 +65,7 @@ Grenze sie prüfen.
 | projekt-anlegen | 6 | 3 |
 | skill-auswertung | 5 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **80** | **32** |
+| **gesamt** | **83** | **32** |
 
 ## Nicht abgedeckt
 
@@ -78,7 +78,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 04.10.2026, 80 Fälle.
+Stand 06.10.2026, 83 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -87,6 +87,8 @@ Stand 04.10.2026, 80 Fälle.
 | `code-from-approved-mockup` | code-erstellen | Der Entwurf für den Dialog „Projekt anlegen“ ist abgenommen. Setz ihn jetzt in XAML um. | code-erstellen | mockup-erstellen | normal |
 | `code-small-ui-fix` | code-erstellen | Im Profil-Dialog ist der Speichern-Button zu schmal, der Text wird abgeschnitten. Mach ihn breiter. | code-erstellen | mockup-erstellen | normal |
 | `code-with-task-ref` | code-erstellen | Setz BPM-082 um: Im DocumentTypeRecognizer soll die Erkennung auch Plannummern mit Bindestrich finden. | code-erstellen | tracker | normal |
+| `code-erstellen-real-task-id` | code-erstellen | Mach du BSM-002: die Update-Zeitpläne auf den Steckdosen entfernen und in der Integration prüfen, dass keiner mehr aktiv ist. | code-erstellen | – | normal, echt |
+| `code-erstellen-real-weiter-mit` | code-erstellen | Pushen und dann weiter mit BSM-014: Die Auswertung soll ihre Verbrauchswerte aus der eigenen Datenbank der Integration lesen statt aus der HA-Statistik. | code-erstellen | – | normal, echt |
 | `code-refactor` | code-erstellen | Refaktoriere den PlanParser: Die drei fast gleichen Parse-Methoden sollen eine gemeinsame Hilfsmethode nutzen. | code-erstellen | – | normal |
 | `code-ha-automation` | code-erstellen | Schreib mir eine Home-Assistant-Automation in YAML: Wenn alle das Haus verlassen haben, soll der Saugroboter starten. | code-erstellen | – | normal |
 | `code-generic-change` | code-erstellen | Ändere die Zeitüberschreitung beim Upload von 30 auf 60 Sekunden. | code-erstellen | doc-pflege | normal |
@@ -109,6 +111,7 @@ Stand 04.10.2026, 80 Fälle.
 | `mockup-then-implement` | mockup-erstellen | Entwirf zuerst ein Mockup für die Projektliste, danach bauen wir sie ein. | mockup-erstellen | – | normal |
 | `mockup-layout-variants` | mockup-erstellen | Ich brauche drei Layoutvarianten für die Kartenansicht, damit ich mich entscheiden kann. | mockup-erstellen | – | normal |
 | `mockup-erstellen-real-mockup-zuerst` | mockup-erstellen | Bau die neue Sonnenbahn zuerst in den abgenommenen Glas-Mockup ein, bevor du das Panel änderst. | mockup-erstellen | code-erstellen | normal, echt |
+| `mockup-erstellen-real-zustand-varianten` | mockup-erstellen | Mach mir 3 Versionen vom Container-Symbol für Tür offen, Fenster gekippt, Fenster offen und Licht an, damit ich aussuchen kann. | mockup-erstellen | code-erstellen | normal, echt |
 | `mockup-no-trigger-component` | mockup-erstellen | Bau die Lit-Komponente für die Raumkarte. Das Design ist schon abgenommen. | code-erstellen | mockup-erstellen | normal |
 | `mockup-no-trigger-db-schema` | mockup-erstellen | Entwirf das Datenbankschema für die Zeiterfassung: Tabellen, Schlüssel und Beziehungen. | – | mockup-erstellen | normal |
 | `skill-update` | skill-pflege | Ergänze im bestehenden chat-wechsel-Skill eine Regel, dass tote Dateiverweise vor der Übergabe gemeldet werden. | skill-pflege | skill-neu | kritisch, Pilot |
