@@ -253,7 +253,7 @@ def decide(data, rules=None, skills=None):
     if mode == "blocken":
         err = ("Skill-Wächter: Diese Änderung braucht einen geladenen Skill, der dafür zuständig ist.\n" + text +
                "\nLade den passenden Skill mit dem Skill-Werkzeug und wiederhole dann die Aktion. "
-               "Ist die Regel hier falsch, sag es Herbert (wird bei der Skill-Auswertung nachgeschärft).")
+               "Ist die Regel hier falsch, sag es dem Nutzer (wird bei der Skill-Auswertung nachgeschärft).")
         return 2, "", err, entries
     ctx = ("Skill-Wächter (Hinweis): Diese Aktion lief ohne den zuständigen Skill.\n" + text +
            "\nLade den passenden Skill, bevor du weitermachst, damit sein Ablauf (Profil, Tests, Commit) gilt.")

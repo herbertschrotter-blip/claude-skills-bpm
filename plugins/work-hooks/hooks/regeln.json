@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "beschreibung": "Regeln des Skill-Wächters (docs/skill-guard-v1.md). Gepflegt von skill-auswertung, Änderungen nur mit Freigabe von Herbert.",
+  "beschreibung": "Regeln des Skill-Wächters (docs/skill-guard-v1.md). Gepflegt von skill-auswertung, Änderungen nur mit Freigabe des Nutzers.",
   "ausser_immer": [
     "/tmp/*",
     "*/scratchpad/*",

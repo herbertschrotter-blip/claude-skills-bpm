@@ -329,9 +329,10 @@ Plugins im selben Repo)
      Über skill-pflege, PATCH, Upload tracker. Erledigt: tracker liest die Tracker-Config des Skill-Profils; BSM-Werte in
      ha-baustelle `.claude/skill-config/tracker.md` (575a6e3, Push durch Herbert), BPM-Datei an Herbert fürs BPM-Repo,
      Heidi entfällt; Verweise in audit, chat-wechsel, chatgpt-review, code-erstellen angepasst (Upload aller fünf).
-   - **8c** Wächter für Fremde: `regeln.json` im Plugin wird neutrale Vorlage, eigene Regeln außerhalb (z. B.
-     `~/.claude/skill-guard/regeln.json`, wird zuerst gelesen); Hinweistext „sag es Herbert“ neutral. Eigener Entwurf
-     vorab; Herbert legt danach seine Regeldatei an.
+   - ✅ **8c** Wächter für Fremde – geändert nach Befund (Herbert 07.10.2026): `regeln.json` bleibt im Plugin und gilt
+     für alle Nutzer (die Regeln verlangen nur Skills des Plugins; Pflege über skill-auswertung und Abgleich der Rechner
+     über Git bleiben). Eigene Regeln gibt es schon über `SKILL_GUARD_RULES=<pfad>`, abschalten mit `SKILL_GUARD=aus`.
+     Meldung und Beschreibung nennen „den Nutzer“ statt Herbert, Testpfade neutral; Erklärung in der README (8d).
    - **8d** README-Teil für Fremde: was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
      `SKILL_LOG_HOST`), Skill-Profil in der `CLAUDE.md` als Voraussetzung. Über doc-pflege.
    - **8e** Einrichtungsbefehl, der Skill-Profil und Configs im Projekt anlegt – eher eigener Skill, MINOR, später.

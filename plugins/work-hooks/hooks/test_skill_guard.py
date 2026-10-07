@@ -18,7 +18,7 @@ for _rule in MECH["regeln"]:
     _rule["modus"] = "blocken" if _rule["id"] in ("code", "mockup") else "warnen"
 
 
-def hook(event, tool, tool_input, cwd="/config/projekte/ha-baustelle"):
+def hook(event, tool, tool_input, cwd="/home/nutzer/projekte/demo"):
     return {"hook_event_name": event, "tool_name": tool, "tool_input": tool_input, "cwd": cwd,
             "session_id": "s1", "tool_use_id": "t1"}
 
@@ -50,7 +50,7 @@ class BlockenTest(unittest.TestCase):
         self.assertEqual(code, 0)
 
     def test_mockup_braucht_mockup_erstellen(self):
-        data = hook("PreToolUse", "Write", {"file_path": "/config/projekte/ha-baustelle/mockups/quelle/symbol.js"})
+        data = hook("PreToolUse", "Write", {"file_path": "/home/nutzer/projekte/demo/mockups/quelle/symbol.js"})
         code, _, err, _ = g.decide(data, MECH, {"code-erstellen"})
         self.assertEqual(code, 2)
         self.assertIn("mockup-erstellen", err)
@@ -69,7 +69,7 @@ class BlockenTest(unittest.TestCase):
         self.assertEqual(g.decide(data, MECH, set())[0], 0)
 
     def test_scratchpad_und_tmp_sind_frei(self):
-        for path in ("/tmp/claude-0/x/scratchpad/a.py", "/tmp/x.json", "/data/home/.claude/skill-log/a.json"):
+        for path in ("/tmp/claude-0/x/scratchpad/a.py", "/tmp/x.json", "/home/nutzer/.claude/skill-log/a.json"):
             self.assertEqual(g.decide(hook("PreToolUse", "Write", {"file_path": path}), MECH, set())[0], 0, path)
 
     def test_warnregeln_blocken_nicht(self):
