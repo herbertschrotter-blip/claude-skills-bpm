@@ -333,7 +333,7 @@ Plugins im selben Repo)
      für alle Nutzer (die Regeln verlangen nur Skills des Plugins; Pflege über skill-auswertung und Abgleich der Rechner
      über Git bleiben). Eigene Regeln gibt es schon über `SKILL_GUARD_RULES=<pfad>`, abschalten mit `SKILL_GUARD=aus`.
      Meldung und Beschreibung nennen „den Nutzer“ statt Herbert, Testpfade neutral; Erklärung in der README (8d).
-   - **8d** README-Teil für Fremde: was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
+   - ✅ **8d** README-Teil für Fremde (neuer Einstieg, Abschnitt „Nutzung für andere“): was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
      `SKILL_LOG_HOST`), Skill-Profil in der `CLAUDE.md` als Voraussetzung. Über doc-pflege.
    - **8e** Einrichtungsbefehl, der Skill-Profil und Configs im Projekt anlegt – eher eigener Skill, MINOR, später.
 9. **Merge** nach Herberts Freigabe.

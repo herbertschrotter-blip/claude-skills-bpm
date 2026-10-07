@@ -1,14 +1,65 @@
 # claude-workbench
 
-Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
+Claude-Skills von Herbert Schrotter für Claude Code, als Plugin-Marketplace `workbench`. Entstanden im Projekt
+BauProjektManager (BPM), heute für C#-, TypeScript-, Python- und Home-Assistant-Projekte im Einsatz.
 
-Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskript, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus dem Skill-Profil in der `CLAUDE.md` des jeweiligen Repos und dessen Configs unter `.claude/skill-config/`. Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
+Dieses Repo enthält 15 Skills samt Evals, Prüfskript, Refactor-Dokumentation und Memory-Konventionen, dazu zwei Hooks
+(Skill-Log und Skill-Wächter). Die Skills sind projektneutral: Projektwerte (Pfade, Präfixe, IDs, Befehle) kommen aus
+dem Skill-Profil in der `CLAUDE.md` des jeweiligen Repos und dessen Configs unter `.claude/skill-config/`. Sie sind auf
+eine bestimmte Arbeitsweise zugeschnitten (Deutsch, ClickUp, Commit-Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Kapitel 10);
+wer sie nutzen will, ist willkommen – Installation im nächsten Abschnitt. Für generische Skills siehe z.B.
+[obra/superpowers](https://github.com/obra/superpowers) oder
+[alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
 > **Umbau läuft (seit 24.09.2026):** [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md) – Skill-Profil v1,
 > Qualitätsregeln, Prüfskript und Routing-Tests; Ergebnis der Review-Serie `CGR-2026-09-24-skillsystem`.
 
 > **Verbindliche Regelquelle:** [INDEX.md](./INDEX.md) definiert Routing und globale Invarianten.
 > Dieses README ist Onboarding-Kontext und wiederholt keine operativen Regeln.
+
+---
+
+## Nutzung für andere
+
+**Voraussetzungen:** Claude Code; Python 3 für die Hooks; für den Skill tracker ein ClickUp-Konnektor (MCP). Die Skills
+sprechen Deutsch.
+
+**Installation** (in Claude Code):
+
+```
+/plugin marketplace add herbertschrotter-blip/claude-workbench
+/plugin install work@workbench
+/plugin install skill-workshop@workbench      # nur wer selbst an Skills arbeitet
+```
+
+| Plugin | Inhalt | Wann |
+|---|---|---|
+| `work` | 11 Skills für die Projektarbeit (Code, Mockups, Doku, Tickets, Tracker, Commits, Übergaben, Sitzungen, Reviews) + Hooks Skill-Log und Skill-Wächter | Standard |
+| `skill-workshop` | skill-neu, skill-pflege, skill-auswertung | zusätzlich, für die Arbeit an Skills |
+| `work-hooks` | nur Skill-Log und Skill-Wächter, ohne Skills | wenn die Skills schon anders geladen werden (z. B. Upload bei claude.ai). **Nie zusammen mit `work`** – sonst läuft jeder Hook doppelt |
+
+Updates: Die Plugins haben keine feste Version, jeder Commit ist ein Update. Automatisch über `/plugin` → Marketplaces →
+`workbench` → Auto-Update, von Hand mit `claude plugin update work@workbench`.
+
+**Einstellungen** (Block `env` in `~/.claude/settings.json`, alle optional):
+
+| Variable | Wirkung |
+|---|---|
+| `SKILL_LOG_HOST` | Name des Rechners im Skill-Log (sonst der Hostname) |
+| `SKILL_LOG_DIR` | Ablage des Skill-Logs (Standard `~/.claude/skill-log/`) |
+| `SKILL_LOG=aus` | Skill-Log abschalten |
+| `SKILL_GUARD=aus` | Skill-Wächter abschalten |
+| `SKILL_GUARD_RULES` | eigene Regeldatei statt `plugins/work-hooks/hooks/regeln.json` |
+
+**Skill-Wächter:** Er blockiert ab Werk Änderungen an Code, Doku und Mockups, solange der zuständige Skill nicht geladen
+ist (Claude lädt ihn dann nach), und warnt bei Commits und ClickUp-Aktionen ohne Skill. Regeln und Format:
+[`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md). Das Skill-Log hält nur Prompts und Skill-Zündungen fest, lokal auf
+dem Rechner ([`docs/skill-log-v1.md`](./docs/skill-log-v1.md)).
+
+**Projekt einrichten:** Die Skills lesen ihre Werte aus dem Block `## Skill-Profil` der `CLAUDE.md` im Projekt-Repo
+(Schema: [`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md)). Ein Profil ist nicht Pflicht: Fehlt ein Wert, fragt
+der Skill nur nach diesem Wert und schlägt vor, ihn ins Profil zu schreiben. Ein vollständiges Beispiel ist die
+[`CLAUDE.md`](./CLAUDE.md) dieses Repos, Configs liegen unter [`.claude/skill-config/`](./.claude/skill-config/).
 
 ---
 
