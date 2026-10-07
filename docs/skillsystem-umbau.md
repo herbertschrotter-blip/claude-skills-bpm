@@ -298,7 +298,7 @@ Plugins im selben Repo)
    - Skill-Log und Wächter schneiden das Präfix ab (`work:code-erstellen` = `code-erstellen`).
    - Kein Skill geändert, kein Upload. Variante A (Umzug nach `plugins/<name>/skills/`) hätte rund 8 Skills mit Upload
      geändert.
-5. **Doppeltes Laden abschalten – vor dem Plugin-Update:** Sobald der Pi `work@workbench` auf die Version mit Skills
+5. ✅ **Doppeltes Laden abschalten – vor dem Plugin-Update** (07.10.2026 erledigt: `skillOverrides` für 14 Skills, `work` 0.2.0, `skill-workshop` 0.1.0; Gegenprobe: jeder Skill einmal geladen, cc-steuerung weiter aus claude.ai, Skill-Log einmal mit `ha-pi`, Wächter blockt): Sobald der Pi `work@workbench` auf die Version mit Skills
    aktualisiert, wären die 14 Skills doppelt da (`anthropic-skills:…` aus claude.ai und `work:…`/`skill-workshop:…`).
    Deshalb zuerst Herbert: in `~/.claude/settings.json` `skillOverrides` mit `"anthropic-skills:<name>": "off"` für die
    14 Skills, dann `claude plugin update work@workbench`, `claude plugin install skill-workshop@workbench`, Fenster neu
