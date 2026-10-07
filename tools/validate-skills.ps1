@@ -206,6 +206,18 @@ function Read-Json([string]$Path, $Errors, [string]$Rel) {
     catch { $Errors.Add("${Rel}: kein gültiges JSON ($($_.Exception.Message))"); return $null }
 }
 
+# JSON mit sortierten Schlüsseln, damit zwei Hashtables unabhängig von der Reihenfolge vergleichbar sind
+function ConvertTo-SortedJson($Value) {
+    if ($Value -is [System.Collections.IDictionary]) {
+        $parts = foreach ($key in ($Value.Keys | Sort-Object)) { (ConvertTo-Json $key -Compress) + ':' + (ConvertTo-SortedJson $Value[$key]) }
+        return '{' + ($parts -join ',') + '}'
+    }
+    if ($Value -is [System.Collections.IEnumerable] -and $Value -isnot [string]) {
+        return '[' + ((@($Value) | ForEach-Object { ConvertTo-SortedJson $_ }) -join ',') + ']'
+    }
+    return (ConvertTo-Json $Value -Compress)
+}
+
 function Test-PluginFolder([string]$Folder, [string]$RepoRoot, [string]$ExpectedName, $Errors, $Warnings) {
     $rel = [System.IO.Path]::GetRelativePath($RepoRoot, $Folder) -replace '\\', '/'
     $manifest = Join-Path $Folder '.claude-plugin/plugin.json'
@@ -307,6 +319,18 @@ function Test-MarketplaceEntry($Entry, [string]$Folder, $Errors, $Warnings, $Own
             $text = $Entry['hooks'] | ConvertTo-Json -Depth 20
             foreach ($m in [regex]::Matches($text, '\$\{CLAUDE_PLUGIN_ROOT\}/([^"\\\s]+)')) {
                 if (-not (Test-Path -LiteralPath (Join-Path $Folder $m.Groups[1].Value))) { $Errors.Add("${where}: Hook-Skript fehlt: $($m.Groups[1].Value)") }
+            }
+            # Liegen die Skripte in einem Plugin-Ordner mit eigener hooks.json (z. B. work-hooks), müssen beide Hooks gleich sein
+            $pluginDirs = @([regex]::Matches($text, '\$\{CLAUDE_PLUGIN_ROOT\}/(plugins/[^/"]+)/') | ForEach-Object { $_.Groups[1].Value } | Sort-Object -Unique)
+            foreach ($dir in $pluginDirs) {
+                $hooksFile = Join-Path $Folder "$dir/hooks/hooks.json"
+                if (-not (Test-Path -LiteralPath $hooksFile)) { continue }
+                $other = Read-Json $hooksFile $Errors "$dir/hooks/hooks.json"
+                if ($null -eq $other -or -not $other.ContainsKey('hooks')) { continue }
+                $mine = (ConvertTo-SortedJson $Entry['hooks']).Replace('${CLAUDE_PLUGIN_ROOT}/' + $dir + '/', '${CLAUDE_PLUGIN_ROOT}/')
+                if ($mine -ne (ConvertTo-SortedJson $other['hooks'])) {
+                    $Errors.Add("${where}: Hooks weichen von $dir/hooks/hooks.json ab – beide gleich halten (nur der Pfad $dir/ unterscheidet sich)")
+                }
             }
         }
     }
