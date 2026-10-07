@@ -51,7 +51,7 @@ Grenze sie prüfen.
 | Skill | Fälle | davon kritisch |
 |---|---|---|
 | code-erstellen | 11 | 0 |
-| doc-pflege | 7 | 2 |
+| doc-pflege | 8 | 2 |
 | audit | 7 | 6 |
 | mockup-erstellen | 8 | 0 |
 | skill-pflege | 6 | 3 |
@@ -65,7 +65,7 @@ Grenze sie prüfen.
 | projekt-anlegen | 6 | 3 |
 | skill-auswertung | 5 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **84** | **32** |
+| **gesamt** | **85** | **32** |
 
 ## Nicht abgedeckt
 
@@ -78,7 +78,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 07.10.2026, 84 Fälle.
+Stand 07.10.2026, 85 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -100,6 +100,7 @@ Stand 07.10.2026, 84 Fälle.
 | `doc-changelog` | doc-pflege | Trag die Änderungen von heute im CHANGELOG ein. | doc-pflege | git-commit-helper | normal |
 | `doc-no-trigger-discussion` | doc-pflege | Was hältst du grundsätzlich davon, Architekturentscheidungen als ADRs festzuhalten? Nur deine Meinung, bitte nichts anlegen. | – | doc-pflege | normal |
 | `doc-session-close` | doc-pflege | Wir hören für heute auf. Mach bitte den Sitzungsabschluss in der Projektdoku: Stand und offene Punkte eintragen. | doc-pflege | – | normal |
+| `doc-pflege-real-uebergabe-bauplan` | doc-pflege | Übergabe „Saugroboter-Karte – Neubau Teil 5“: bisherigen Aufbau zusammenfassen und den neuen Bauplan schreiben, mit Abschnitt 1 anfangen | doc-pflege | chat-wechsel | normal, echt |
 | `audit-readonly` | audit | Prüfe bitte, ob die INDEX.md und die Beschreibungen der Skills zusammenpassen. Nur prüfen und die Befunde nennen, nichts ändern. | audit | doc-pflege | kritisch, Pilot, Ziel |
 | `audit-code-docs` | audit | Prüf bitte, ob die Doku zum Import-Modul noch zum Code passt. Nur prüfen, nichts ändern – ich will eine Liste der Abweichungen. | audit | doc-pflege, code-erstellen | kritisch |
 | `audit-frontmatter` | audit | Validiere bitte Frontmatter und Quickloads aller Docs. Nur lesen und die Befunde auflisten, nichts korrigieren. | audit | doc-pflege | kritisch |
