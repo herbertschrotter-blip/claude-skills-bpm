@@ -167,6 +167,7 @@ def lies(pfad, voll=False):
          "letzte": "", "beginn": "", "ende": "", "eingaben": 0, "nachrichten": 0, "kontext": 0,
          "groesse": os.path.getsize(pfad)}
     verlauf = []
+    ordner = []
     with open(pfad, errors="ignore") as f:
         for z in f:
             try:
@@ -184,8 +185,8 @@ def lies(pfad, voll=False):
             if ts:
                 g["beginn"] = g["beginn"] or ts
                 g["ende"] = ts
-            if d.get("cwd") and not g["ordner"]:
-                g["ordner"] = d["cwd"]
+            if d.get("cwd"):  # der letzte Ordner zählt, falls das Projekt umgezogen ist
+                ordner.append(d["cwd"])
             if t in ("user", "assistant") and not d.get("isSidechain"):
                 g["nachrichten"] += 1
             if t == "assistant" and not d.get("isSidechain"):
@@ -202,6 +203,8 @@ def lies(pfad, voll=False):
                 txt = e if t == "user" else text_aus(d.get("message"))
                 if txt.strip():
                     verlauf.append({"wer": "du" if t == "user" else "claude", "zeit": ts, "text": txt})
+    if ordner:
+        g["ordner"] = next((o for o in reversed(ordner) if os.path.isdir(o)), ordner[-1])
     if not g["ordner"]:
         g["ordner"] = "?"
     if voll:

@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.8] — 2026-10-07
+
+- **skills/sitzung, Fix:** Der Ordner eines Gesprächs ist jetzt der letzte im Verlauf, den es noch gibt, statt des ersten
+  (`scripts/sitzung.py`). Nach dem Umzug von `claude-skills-bpm` nach `claude-workbench` startete `neustart` das Gespräch
+  sonst im Home-Ordner, weil der alte Ordner fehlte.
+
 ## [v0.42.7] — 2026-10-07
 
 - **skills/skill-pflege, Fix:** Die Description nennt das Skill-Repo mit dem neuen Namen `claude-workbench` (vorher
