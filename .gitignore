@@ -4,3 +4,6 @@ quality/results/
 
 # Liefer-Zips für den Upload bei claude.ai gehören nicht ins Repo
 skills/*.zip
+
+# Python
+__pycache__/
