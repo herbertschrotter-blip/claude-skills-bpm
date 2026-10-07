@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests für skill_guard.py (nur Standardbibliothek): python3 -m unittest plugins/work/hooks/test_skill_guard.py"""
+"""Tests für skill_guard.py (nur Standardbibliothek): python3 -m unittest plugins/work-hooks/hooks/test_skill_guard.py"""
 
 import copy
 import json

@@ -305,7 +305,12 @@ Plugins im selben Repo)
    starten; prüfen, dass jeder Skill einmal geladen wird. claude.ai und Cowork behalten den Upload; cc-steuerung bleibt
    aus claude.ai.
 6. ✅ **Repo umbenennen** in `claude-workbench` (07.10.2026, `gh repo rename`): Verweise, Projekt-ID, Wächter-Regel `skills`, Remote; Ordner auf dem Pi `/config/projekte/claude-workbench` samt Gesprächsverlauf. Der Klon am PC und Verweise in anderen Projekten (`/config/CLAUDE.md`, ha-baustelle, HA_Dash_DreameX60, `/config/projekte/README.md`) ziehen nach; GitHub leitet die alten Adressen weiter.
-7. **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
+7. **Weitere Rechner.** Desktop-PC (07.10.2026): Im Terminal greifen `skillOverrides`, in der Claude-Desktop-App nicht
+   (Skills doppelt, gleiche Version 2.1.293). Deshalb gibt es das Plugin `work-hooks` (nur Skill-Log und Wächter, eigener
+   Ordner `plugins/work-hooks/`, dort liegen jetzt die Hook-Skripte; `work` ruft sie unter diesem Pfad auf). Ein Eintrag
+   mit `strict: false` und `source: "./"` lädt `skills/` immer mit, auch ohne oder mit leerer `skills`-Liste – darum der
+   eigene Ordner. Rechner mit Desktop-App: `work-hooks` statt `work` und `skill-workshop`, ohne `skillOverrides`.
+   **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer.
 9. **Merge** nach Herberts Freigabe.

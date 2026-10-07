@@ -51,7 +51,7 @@ claude-workbench/
 ├── .github/workflows/     ← validate-skills.yml – Prüfskript nach jedem Push
 ├── .claude-plugin/        ← marketplace.json: Marketplace workbench (Plugins work, skill-workshop)
 ├── docs/                  ← Konzepte, Regeln, Reviews, Umbau-Plan
-├── plugins/               ← Hook-Skripte des Plugins work (Skill-Log, Skill-Wächter)
+├── plugins/               ← Plugin work-hooks (Skill-Log, Skill-Wächter); work ruft dieselben Skripte auf
 ├── evals/                 ← Manuelle Skill-Routing-Evals (bis v0.20)
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/               ← Eval-Plugin: evals/ (Testfälle für claude plugin eval), skills → ../skills
@@ -189,7 +189,7 @@ Rohstoff für neue Fälle in `quality/evals/`. Ausgewertet wird mit dem Skill sk
 
 Skills zünden auf den Prompt; bei „weiter“ zündet nichts, obwohl Claude danach Code oder Doku ändert. Der Wächter
 prüft deshalb an der Aktion (Hooks `PreToolUse`/`PostToolUse`), ob der zuständige Skill geladen ist: blocken oder
-warnen nach `plugins/work/hooks/regeln.json`. Die Regeln lernen über skill-auswertung aus dem Skill-Log. Format und
+warnen nach `plugins/work-hooks/hooks/regeln.json`. Die Regeln lernen über skill-auswertung aus dem Skill-Log. Format und
 Einrichtung: [`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md).
 
 ### Eval-Methodik
@@ -433,7 +433,8 @@ claude-workbench/
 │   └── heidi/                             ← dieselben 4 Dateien
 │
 ├── plugins/
-│   └── work/hooks/                        ← skill_log.py, skill_guard.py, regeln.json, Test des Wächters
+│   └── work-hooks/                        ← Plugin nur mit Hooks: .claude-plugin/plugin.json; hooks/: hooks.json,
+│                                            skill_log.py, skill_guard.py, regeln.json, Test des Wächters
 │
 ├── quality/                               ← für claude plugin eval selbst ein Plugin
 │   ├── .claude-plugin/plugin.json         ← Eval-Manifest (experimental.evals: evals)

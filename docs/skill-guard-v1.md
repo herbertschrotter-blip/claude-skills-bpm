@@ -4,7 +4,7 @@ Skills zünden auf den Wortlaut des Prompts. Bei „weiter“, „ja“ oder „
 erkennen könnte, dass er gebraucht wird; die Entscheidung fällt erst bei der Aktion. Der Skill-Wächter prüft deshalb an
 der Aktion: Ändert Claude Code, Mockups, Doku, Skills, ClickUp oder committet, muss der zuständige Skill in der Sitzung
 geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anhand des Skill-Logs nach. Werkzeuge:
-`plugins/work/hooks/`.
+`plugins/work-hooks/hooks/`.
 
 ## Inhalt
 
@@ -31,7 +31,7 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 
 ## Regeln
 
-Datei `plugins/work/hooks/regeln.json`, für alle Rechner gleich (kommt mit dem Plugin-Update). Felder je Regel:
+Datei `plugins/work-hooks/hooks/regeln.json`, für alle Rechner gleich (kommt mit dem Plugin-Update). Felder je Regel:
 
 | Feld | Inhalt |
 |---|---|
@@ -72,15 +72,15 @@ claude plugin marketplace add herbertschrotter-blip/claude-workbench
 claude plugin install work@workbench
 ```
 
-Das Plugin bringt die Hooks für Skill-Log und Wächter mit (eingetragen im Plugin-Eintrag `work` in `.claude-plugin/marketplace.json`, Skripte unter `plugins/work/hooks/`). Den Rechnernamen im Log setzt
+Das Plugin bringt die Hooks für Skill-Log und Wächter mit (eingetragen im Plugin-Eintrag `work` in `.claude-plugin/marketplace.json`, Skripte unter `plugins/work-hooks/hooks/`). Den Rechnernamen im Log setzt
 `env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
 HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
-`claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten.
+`claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten. Rechner, auf denen die Skills aus claude.ai kommen und `skillOverrides` nicht greift (Claude-Desktop-App), installieren statt `work` und `skill-workshop` nur `work-hooks@workbench` (Hooks ohne Skills); nie `work` und `work-hooks` zusammen.
 
 Ohne Plugin (alter Weg) trägt man die Hooks von Hand in `~/.claude/settings.json` ein; Block `hooks`, neben den Hooks des
 Skill-Logs. `<befehl>`:
-- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/plugins/work/hooks/skill_guard.py`
-- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\plugins\work\hooks\skill_guard.py`, dazu im Hook
+- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/plugins/work-hooks/hooks/skill_guard.py`
+- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\plugins\work-hooks\hooks\skill_guard.py`, dazu im Hook
   `"shell": "powershell"`
 
 ```json
@@ -92,7 +92,7 @@ Beides nie zugleich: Hooks von Hand und Plugin würden doppelt prüfen und logge
 nicht selbst, sondern steuert per Remote Control die Sitzung auf dem HA. Im Cowork-Chat und auf claude.ai gibt es keine
 Hooks.
 
-Tests: `python3 -m unittest plugins/work/hooks/test_skill_guard.py` (die Mechanik läuft gegen feste Modi, die echte
+Tests: `python3 -m unittest plugins/work-hooks/hooks/test_skill_guard.py` (die Mechanik läuft gegen feste Modi, die echte
 `regeln.json` wird nur auf Gültigkeit geprüft – so bricht kein Test, wenn eine Regel hochgestuft wird)
 
 ## Grenzen

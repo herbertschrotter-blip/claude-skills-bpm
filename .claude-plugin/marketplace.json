@@ -9,7 +9,7 @@
       "name": "work",
       "source": "./",
       "strict": false,
-      "version": "0.2.0",
+      "version": "0.2.1",
       "description": "Skills für die Projektarbeit (Code, Mockups, Doku, Tickets, Tracker, Commits, Übergaben, Sitzungen, Reviews), dazu Skill-Log und Skill-Wächter als Hooks.",
       "skills": [
         "./skills/code-erstellen",
@@ -30,7 +30,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_log.py\"",
                 "timeout": 10
               }
             ]
@@ -41,7 +41,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_log.py\"",
                 "timeout": 10
               }
             ]
@@ -53,7 +53,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_guard.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_guard.py\"",
                 "timeout": 10
               }
             ]
@@ -65,7 +65,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_log.py\"",
                 "timeout": 10
               }
             ]
@@ -75,7 +75,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_guard.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_guard.py\"",
                 "timeout": 10
               }
             ]
@@ -86,7 +86,7 @@
             "hooks": [
               {
                 "type": "command",
-                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_log.py\"",
                 "timeout": 10
               }
             ]
@@ -105,6 +105,11 @@
         "./skills/skill-pflege",
         "./skills/skill-auswertung"
       ]
+    },
+    {
+      "name": "work-hooks",
+      "source": "./plugins/work-hooks",
+      "description": "Nur Skill-Log und Skill-Wächter, ohne Skills – für Rechner, auf denen die Skills aus claude.ai kommen (z. B. Claude-Desktop-App). Nie zusammen mit work installieren."
     }
   ]
 }
