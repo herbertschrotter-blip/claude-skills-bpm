@@ -23,7 +23,7 @@ fehlenden im Bericht nennen.
 
 | Rechner | ausgewertet bis (UTC) |
 |---|---|
-| ha-pi | 2026-10-07T11:29:14Z |
+| ha-pi | 2026-10-07T12:56:13Z |
 | firmen-laptop | – |
 
 `–` heißt: noch nie ausgewertet, „seit letzter Auswertung“ bedeutet dann „alles“.
