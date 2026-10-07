@@ -21,7 +21,8 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 | `PreToolUse` | `modus: blocken` | Aktion wird abgelehnt (Exit 2); Claude sieht die Begründung, lädt den Skill und wiederholt die Aktion |
 | `PostToolUse` | `modus: warnen` | Aktion läuft; Claude bekommt danach einen Hinweis (`additionalContext`) und lädt den Skill für die weiteren Schritte |
 
-- Geladene Skills liest der Wächter aus dem Transcript der Sitzung (Skill-Aufrufe und Slash-Befehle). Ein Skill bleibt
+- Geladene Skills liest der Wächter aus dem Transcript der Sitzung (Skill-Aufrufe, Slash-Befehle und nach einer
+  Compaction der Anhang `invoked_skills`). Ein Skill bleibt
   bis zum Sitzungsende geladen. Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
   `<sitzung>/subagents/` → `<sitzung>.jsonl`).
 - Jede Entscheidung landet als Ereignis `guard` im Skill-Log (`docs/skill-log-v1.md`): `regel`, `entscheidung`
@@ -42,9 +43,11 @@ Datei `tools/skill-guard/regeln.json`, für alle Rechner gleich (kommt mit `git 
 | `pflicht` | Skills, von denen einer geladen sein muss |
 | `modus` | `blocken`, `warnen` oder `aus` |
 | `herkunft` | Befund oder Entscheidung, aus der die Regel stammt |
-| `stand` | `seit`, `treffer`, `fehlalarm`, `zuletzt` – nachgerechnet von skill-auswertung |
+| `stand` | `seit`, `treffer`, `fehlalarm`, `zuletzt` – nachgerechnet von skill-auswertung; `rueckblick` = Abspielen der Regeln gegen alte Transcripts |
 
-Startregeln (07.10.2026): `code` und `mockup` blocken; `skills`, `doku`, `clickup`, `commit` warnen.
+Startregeln (07.10.2026): `code` und `mockup` blocken; `skills`, `doku`, `clickup`, `commit` warnen. Nach dem Rückblick
+über 29.09.–07.10. (erste Lernrunde): `doku` blockt (89 Treffer, 0 Fehlalarme), `clickup` erlaubt auch projekt-anlegen
+und skill-neu (Fehlalarm beim Anlegen von Issue-Listen). Der Rückblick steht je Regel unter `stand.rueckblick`.
 
 ## Lernen
 
@@ -77,7 +80,8 @@ Je Rechner einmal: Repo klonen bzw. `git pull`, Einträge ergänzen. Auf dem Sma
 nicht selbst, sondern steuert per Remote Control die Sitzung auf dem HA. Im Cowork-Chat und auf claude.ai gibt es keine
 Hooks.
 
-Tests: `python3 -m unittest tools/skill-guard/test_skill_guard.py`
+Tests: `python3 -m unittest tools/skill-guard/test_skill_guard.py` (die Mechanik läuft gegen feste Modi, die echte
+`regeln.json` wird nur auf Gültigkeit geprüft – so bricht kein Test, wenn eine Regel hochgestuft wird)
 
 ## Grenzen
 
