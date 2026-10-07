@@ -310,6 +310,9 @@ Plugins im selben Repo)
    Ordner `plugins/work-hooks/`, dort liegen jetzt die Hook-Skripte; `work` ruft sie unter diesem Pfad auf). Ein Eintrag
    mit `strict: false` und `source: "./"` lädt `skills/` immer mit, auch ohne oder mit leerer `skills`-Liste – darum der
    eigene Ordner. Rechner mit Desktop-App: `work-hooks` statt `work` und `skill-workshop`, ohne `skillOverrides`.
+   Plugin-Versionen: keine feste `version` in `marketplace.json` und `plugin.json`, damit der Git-Commit als Version
+   gilt. Mit fester Nummer erkennt `claude plugin update` Skill-Änderungen nicht (skill-workshop blieb auf 0.1.0 mit
+   alter Description von skill-pflege).
    **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer.

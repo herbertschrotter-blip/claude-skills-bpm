@@ -9,7 +9,6 @@
       "name": "work",
       "source": "./",
       "strict": false,
-      "version": "0.2.1",
       "description": "Skills für die Projektarbeit (Code, Mockups, Doku, Tickets, Tracker, Commits, Übergaben, Sitzungen, Reviews), dazu Skill-Log und Skill-Wächter als Hooks.",
       "skills": [
         "./skills/code-erstellen",
@@ -98,7 +97,6 @@
       "name": "skill-workshop",
       "source": "./",
       "strict": false,
-      "version": "0.1.0",
       "description": "Skills für die Arbeit an Skills: neu anlegen, pflegen, aus dem Skill-Log auswerten.",
       "skills": [
         "./skills/skill-neu",

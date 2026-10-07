@@ -192,6 +192,7 @@ function Get-EvalCoverage([string]$RepoRoot) {
 }
 
 # Plugin-Manifeste: Claude Code lehnt ein Plugin bei einem unbekannten Eintrag ab, Pfade beginnen mit ./
+# Ohne version gilt der Git-Commit als Version: jeder Push kommt als Update an (gewollt, siehe docs/skillsystem-umbau.md)
 $PluginKeys = @('name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'commands',
     'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers', 'userConfig', 'dependencies', 'experimental')
 $MarketplaceKeys = @('$schema', 'name', 'owner', 'description', 'version', 'metadata', 'plugins', 'forceRemoveDeletedPlugins')
@@ -216,7 +217,6 @@ function Test-PluginFolder([string]$Folder, [string]$RepoRoot, [string]$Expected
     }
     if ($data['name'] -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add("$rel/.claude-plugin/plugin.json: name fehlt oder ist nicht kebab-case") }
     elseif ($ExpectedName -and $data['name'] -ne $ExpectedName) { $Errors.Add("$rel/.claude-plugin/plugin.json: name »$($data['name'])« weicht vom Marketplace-Eintrag »$ExpectedName« ab") }
-    if (-not $data['version']) { $Warnings.Add("$rel/.claude-plugin/plugin.json: keine version (Updates folgen dann dem Git-Commit)") }
     foreach ($key in $PathKeys) {
         if (-not $data.ContainsKey($key)) { continue }
         foreach ($value in @($data[$key])) {
@@ -282,7 +282,6 @@ function Test-MarketplaceEntry($Entry, [string]$Folder, $Errors, $Warnings, $Own
     $name = $Entry['name']
     $where = ".claude-plugin/marketplace.json: Plugin »$name«"
     if ($name -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add("${where}: name ist nicht kebab-case") }
-    if (-not $Entry['version']) { $Warnings.Add("${where}: keine version (Updates folgen dann dem Git-Commit)") }
     if (Test-Path -LiteralPath (Join-Path $Folder '.claude-plugin/plugin.json')) {
         $Errors.Add("${where}: strict: false, aber im Quellordner liegt eine .claude-plugin/plugin.json (Claude Code meldet widersprüchliche Manifeste)")
     }

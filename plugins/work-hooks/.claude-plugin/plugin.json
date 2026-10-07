@@ -1,6 +1,5 @@
 {
   "name": "work-hooks",
-  "version": "0.1.0",
   "description": "Skill-Log und Skill-Wächter als Hooks, ohne Skills.",
   "author": {
     "name": "Herbert Schrotter"
