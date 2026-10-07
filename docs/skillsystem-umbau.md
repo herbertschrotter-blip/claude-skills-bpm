@@ -204,6 +204,25 @@ Je Skill:
 - [ ] `test-prompts.md`, `references.zip`, `projects/` entfernt
 - [ ] README und INDEX aktuell; kein Skill mit Werten oder Beispielen einer bestimmten App
 
+### Vorschlag (07.10.2026, Entscheidung Herbert offen) – Plugin-Marketplace
+
+Ziel: Skills, Skill-Log und Skill-Wächter mit einem Befehl auf jedem Rechner installieren (Firmen-Laptop) und für
+andere nutzbar machen. Vorschlag aus der Sitzung vom 07.10.2026:
+
+- **Dasselbe Repo** wird Marketplace (`.claude-plugin/marketplace.json`), kein neues Repo; Updates kommen so über
+  `plugin.json`-Version und Push auf jeden Rechner. Für claude.ai und Cowork bleibt der Zip-Upload.
+- **Plugin `arbeit`:** code-erstellen, mockup-erstellen, doc-pflege, ticket, projekt-anlegen, tracker, git-commit-helper,
+  audit, chat-wechsel, sitzung, chatgpt-review; dazu Hooks (Skill-Log, Wächter mit `regeln.json`) und ein Befehl
+  `/einrichten`, der Skill-Profil und Configs im Projekt anlegt.
+- **Plugin `skill-werkstatt`:** skill-neu, skill-pflege, skill-auswertung, Prüfskript, Eval-Gerüst, Report; allgemein
+  für jedes Skill-Repo mit Profil.
+- **Außerhalb:** cc-steuerung (nur Cowork, Upload).
+- **Vorher klären:** Lassen sich die von claude.ai synchronisierten Skills in Claude Code abschalten (sonst doppelt)?
+  Installation aus einem privaten GitHub-Repo; automatische Updates.
+- **Ablauf:** Fragen klären → Plan → Plugin `arbeit` zuerst nur mit Hooks → Skills nach `plugins/<name>/skills/`
+  umziehen (Prüfskript, Actions, Evals, skill-pflege-Lieferung anpassen) → private Daten aus dem geteilten Teil →
+  Einrichtung für andere. Umsetzung auf Zweig `umbau-plugins`, Merge nach Herberts Freigabe.
+
 ## Was Herbert selbst tut
 
 - nach jeder Skill-Änderung die SKILL.md bzw. Zip bei claude.ai hochladen
