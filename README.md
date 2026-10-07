@@ -49,14 +49,15 @@ claude-skills-bpm/
 ├── MEMORY-RUBRIKEN.md     ← Konvention für 4 Memory-Rubriken
 ├── .claude/skill-config/  ← Configs der Skills für dieses Repo (tracker, review, skill-log)
 ├── .github/workflows/     ← validate-skills.yml – Prüfskript nach jedem Push
-├── .claude-plugin/        ← plugin.json – nur für Tests mit claude plugin eval
+├── .claude-plugin/        ← marketplace.json (Marketplace workbench), plugin.json – nur für claude plugin eval
 ├── docs/                  ← Konzepte, Regeln, Reviews, Umbau-Plan
+├── plugins/               ← Plugins des Marketplace: work (Hooks Skill-Log und Skill-Wächter)
 ├── evals/                 ← Manuelle Skill-Routing-Evals (bis v0.20)
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
-└── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/), Skill-Wächter (skill-guard/)
+└── tools/                 ← Prüfskript validate-skills.ps1, Auswertung des Skill-Logs (skill-log/)
 ```
 
 Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Dateien.
@@ -177,18 +178,18 @@ für Tests). 85 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Log
 Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1), auf Rechnern ohne
 PowerShell (HA) nach jedem Push per GitHub Actions.
 
-### Neu: Skill-Log aus dem Alltag (`tools/skill-log/`)
+### Neu: Skill-Log aus dem Alltag (Plugin `work`, Auswertung `tools/skill-log/`)
 
 Hooks in Claude Code schreiben auf jedem Rechner mit, welche Prompts eingegeben wurden und welche Skills darauf
 gezündet haben. `skill_log_report.py` zeigt Zündungen je Skill, Runden mit mehreren Skills und Prompts ohne Skill –
 Rohstoff für neue Fälle in `quality/evals/`. Ausgewertet wird mit dem Skill skill-auswertung (Config
 `.claude/skill-config/skill-log.md`). Format und Einrichtung: [`docs/skill-log-v1.md`](./docs/skill-log-v1.md).
 
-### Neu: Skill-Wächter (`tools/skill-guard/`)
+### Neu: Skill-Wächter (Plugin `work`)
 
 Skills zünden auf den Prompt; bei „weiter“ zündet nichts, obwohl Claude danach Code oder Doku ändert. Der Wächter
 prüft deshalb an der Aktion (Hooks `PreToolUse`/`PostToolUse`), ob der zuständige Skill geladen ist: blocken oder
-warnen nach `tools/skill-guard/regeln.json`. Die Regeln lernen über skill-auswertung aus dem Skill-Log. Format und
+warnen nach `plugins/work/hooks/regeln.json`. Die Regeln lernen über skill-auswertung aus dem Skill-Log. Format und
 Einrichtung: [`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md).
 
 ### Eval-Methodik
@@ -394,6 +395,7 @@ claude-skills-bpm/
 │   └── validate-skills.yml                ← Prüfskript nach jedem Push
 │
 ├── .claude-plugin/
+│   ├── marketplace.json                   ← Marketplace workbench (Plugins unter plugins/)
 │   └── plugin.json                        ← nur für claude plugin eval
 │
 ├── docs/
@@ -430,6 +432,10 @@ claude-skills-bpm/
 │   │   └── memory-format.md
 │   └── heidi/                             ← dieselben 4 Dateien
 │
+├── plugins/
+│   └── work/                              ← .claude-plugin/plugin.json; hooks/: hooks.json, skill_log.py,
+│                                            skill_guard.py, regeln.json, Tests
+│
 ├── quality/
 │   ├── README.md                          ← Regeln und Tabelle aller Fälle
 │   └── evals/                             ← 85 Fälle (prompt.md + graders/), 9 aus echten Prompts
@@ -462,8 +468,7 @@ claude-skills-bpm/
 │       └── references.zip                 ← entfällt in Umbau Phase 7
 │
 └── tools/
-    ├── skill-guard/                       ← Skill-Wächter: skill_guard.py, regeln.json, Tests
-    ├── skill-log/                         ← Skill-Log: skill_log.py (Hook), skill_log_report.py (Auswertung), Tests
+    ├── skill-log/                         ← skill_log_report.py (Auswertung des Skill-Logs), Tests
     └── validate-skills.ps1                ← Prüfskript (PowerShell 7)
 ```
 

@@ -191,6 +191,76 @@ function Get-EvalCoverage([string]$RepoRoot) {
     return $covered
 }
 
+# Plugin-Manifeste: Claude Code lehnt ein Plugin bei einem unbekannten Eintrag ab, Pfade beginnen mit ./
+$PluginKeys = @('name', 'version', 'description', 'author', 'homepage', 'repository', 'license', 'keywords', 'commands',
+    'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers', 'userConfig', 'dependencies', 'experimental')
+$MarketplaceKeys = @('$schema', 'name', 'owner', 'description', 'version', 'metadata', 'plugins', 'forceRemoveDeletedPlugins')
+$EntryKeys = @('name', 'source', 'description', 'version', 'author', 'homepage', 'repository', 'license', 'keywords',
+    'category', 'tags', 'strict', 'commands', 'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers',
+    'dependencies')
+$PathKeys = @('commands', 'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers')
+
+function Read-Json([string]$Path, $Errors, [string]$Rel) {
+    try { return Get-Content -LiteralPath $Path -Raw -Encoding utf8 | ConvertFrom-Json -AsHashtable }
+    catch { $Errors.Add("${Rel}: kein gültiges JSON ($($_.Exception.Message))"); return $null }
+}
+
+function Test-PluginFolder([string]$Folder, [string]$RepoRoot, [string]$ExpectedName, $Errors, $Warnings) {
+    $rel = [System.IO.Path]::GetRelativePath($RepoRoot, $Folder) -replace '\\', '/'
+    $manifest = Join-Path $Folder '.claude-plugin/plugin.json'
+    if (-not (Test-Path -LiteralPath $manifest)) { $Errors.Add("${rel}: .claude-plugin/plugin.json fehlt"); return }
+    $data = Read-Json $manifest $Errors "$rel/.claude-plugin/plugin.json"
+    if ($null -eq $data) { return }
+    foreach ($key in $data.Keys) {
+        if ($key -notin $PluginKeys) { $Errors.Add("$rel/.claude-plugin/plugin.json: unbekannter Eintrag »$key« (Claude Code lehnt das Plugin ab)") }
+    }
+    if ($data['name'] -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add("$rel/.claude-plugin/plugin.json: name fehlt oder ist nicht kebab-case") }
+    elseif ($ExpectedName -and $data['name'] -ne $ExpectedName) { $Errors.Add("$rel/.claude-plugin/plugin.json: name »$($data['name'])« weicht vom Marketplace-Eintrag »$ExpectedName« ab") }
+    if (-not $data['version']) { $Warnings.Add("$rel/.claude-plugin/plugin.json: keine version (Updates folgen dann dem Git-Commit)") }
+    foreach ($key in $PathKeys) {
+        if (-not $data.ContainsKey($key)) { continue }
+        foreach ($value in @($data[$key])) {
+            if ($value -is [string] -and -not $value.StartsWith('./')) { $Errors.Add("$rel/.claude-plugin/plugin.json: Pfad in »$key« beginnt nicht mit ./ ($value)") }
+        }
+    }
+    $hooksFile = Join-Path $Folder 'hooks/hooks.json'
+    if (Test-Path -LiteralPath $hooksFile) {
+        $text = Get-Content -LiteralPath $hooksFile -Raw -Encoding utf8
+        if ($null -ne (Read-Json $hooksFile $Errors "$rel/hooks/hooks.json")) {
+            foreach ($m in [regex]::Matches($text, '\$\{CLAUDE_PLUGIN_ROOT\}/([^"\\\s]+)')) {
+                if (-not (Test-Path -LiteralPath (Join-Path $Folder $m.Groups[1].Value))) { $Errors.Add("$rel/hooks/hooks.json: Skript fehlt: $($m.Groups[1].Value)") }
+            }
+        }
+    }
+}
+
+function Test-Marketplace([string]$RepoRoot, $Errors, $Warnings) {
+    $file = Join-Path $RepoRoot '.claude-plugin/marketplace.json'
+    if (-not (Test-Path -LiteralPath $file)) { return }
+    $data = Read-Json $file $Errors '.claude-plugin/marketplace.json'
+    if ($null -eq $data) { return }
+    foreach ($key in $data.Keys) {
+        if ($key -notin $MarketplaceKeys) { $Errors.Add(".claude-plugin/marketplace.json: unbekannter Eintrag »$key«") }
+    }
+    if ($data['name'] -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add('.claude-plugin/marketplace.json: name fehlt oder ist nicht kebab-case') }
+    if (-not $data['owner'] -or -not $data['owner']['name']) { $Errors.Add('.claude-plugin/marketplace.json: owner.name fehlt') }
+    $seen = @{}
+    foreach ($entry in @($data['plugins'])) {
+        $name = $entry['name']
+        foreach ($key in $entry.Keys) {
+            if ($key -notin $EntryKeys) { $Errors.Add(".claude-plugin/marketplace.json: Plugin »$name« mit unbekanntem Eintrag »$key«") }
+        }
+        if ($seen.ContainsKey("$name")) { $Errors.Add(".claude-plugin/marketplace.json: Plugin »$name« doppelt") }
+        $seen["$name"] = $true
+        $source = $entry['source']
+        if ($source -isnot [string]) { continue }  # GitHub- oder URL-Quellen prüft Claude Code selbst
+        if (-not $source.StartsWith('./')) { $Errors.Add(".claude-plugin/marketplace.json: source von »$name« beginnt nicht mit ./ ($source)"); continue }
+        $folder = Join-Path $RepoRoot $source.Substring(2)
+        if (-not (Test-Path -LiteralPath $folder -PathType Container)) { $Errors.Add(".claude-plugin/marketplace.json: Ordner von »$name« fehlt ($source)"); continue }
+        Test-PluginFolder $folder $RepoRoot $name $Errors $Warnings
+    }
+}
+
 function Invoke-Validation {
     $repoRoot = (Resolve-Path -LiteralPath $Root).Path
     $skillsRoot = Join-Path $repoRoot 'skills'
@@ -330,6 +400,7 @@ function Invoke-Validation {
     foreach ($zip in Get-ChildItem -LiteralPath $skillsRoot -File -Filter '*.zip') {
         $repoWarnings.Add("Zip direkt unter skills/: $($zip.Name)")
     }
+    Test-Marketplace $repoRoot $repoErrors $repoWarnings
 
     $errorCount = $repoErrors.Count + ($results | ForEach-Object { $_.errors.Count } | Measure-Object -Sum).Sum
     $warningCount = $repoWarnings.Count + ($results | ForEach-Object { $_.warnings.Count } | Measure-Object -Sum).Sum

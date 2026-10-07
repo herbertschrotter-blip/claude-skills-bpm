@@ -4,7 +4,7 @@ Skills zünden auf den Wortlaut des Prompts. Bei „weiter“, „ja“ oder „
 erkennen könnte, dass er gebraucht wird; die Entscheidung fällt erst bei der Aktion. Der Skill-Wächter prüft deshalb an
 der Aktion: Ändert Claude Code, Mockups, Doku, Skills, ClickUp oder committet, muss der zuständige Skill in der Sitzung
 geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anhand des Skill-Logs nach. Werkzeuge:
-`tools/skill-guard/`.
+`plugins/work/hooks/`.
 
 ## Inhalt
 
@@ -31,7 +31,7 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 
 ## Regeln
 
-Datei `tools/skill-guard/regeln.json`, für alle Rechner gleich (kommt mit `git pull`). Felder je Regel:
+Datei `plugins/work/hooks/regeln.json`, für alle Rechner gleich (kommt mit dem Plugin-Update). Felder je Regel:
 
 | Feld | Inhalt |
 |---|---|
@@ -65,10 +65,22 @@ Nach jeder Auswertung `stand` aktualisieren und `regeln.json` mit der Auswertung
 
 ## Einrichtung
 
-In den globalen Einstellungen `~/.claude/settings.json` (gilt für alle Projekte), Block `hooks`, neben den Hooks des
+Über das Plugin `work` aus dem Marketplace `workbench` (dieses Repo), je Rechner einmal:
+
+```
+claude plugin marketplace add herbertschrotter-blip/claude-skills-bpm
+claude plugin install work@workbench
+```
+
+Das Plugin bringt die Hooks für Skill-Log und Wächter mit (`plugins/work/hooks/hooks.json`). Den Rechnernamen im Log setzt
+`env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
+HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
+`claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten.
+
+Ohne Plugin (alter Weg) trägt man die Hooks von Hand in `~/.claude/settings.json` ein; Block `hooks`, neben den Hooks des
 Skill-Logs. `<befehl>`:
-- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/tools/skill-guard/skill_guard.py`
-- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\tools\skill-guard\skill_guard.py`, dazu im Hook
+- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/plugins/work/hooks/skill_guard.py`
+- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\plugins\work\hooks\skill_guard.py`, dazu im Hook
   `"shell": "powershell"`
 
 ```json
@@ -76,11 +88,11 @@ Skill-Logs. `<befehl>`:
 "PostToolUse": [{ "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|mcp__.*[Cc]lick[Uu]p.*", "hooks": [{ "type": "command", "command": "<befehl>", "timeout": 10 }] }]
 ```
 
-Je Rechner einmal: Repo klonen bzw. `git pull`, Einträge ergänzen. Auf dem Smartphone nichts – dort läuft Claude Code
+Beides nie zugleich: Hooks von Hand und Plugin würden doppelt prüfen und loggen. Auf dem Smartphone nichts – dort läuft Claude Code
 nicht selbst, sondern steuert per Remote Control die Sitzung auf dem HA. Im Cowork-Chat und auf claude.ai gibt es keine
 Hooks.
 
-Tests: `python3 -m unittest tools/skill-guard/test_skill_guard.py` (die Mechanik läuft gegen feste Modi, die echte
+Tests: `python3 -m unittest plugins/work/hooks/test_skill_guard.py` (die Mechanik läuft gegen feste Modi, die echte
 `regeln.json` wird nur auf Gültigkeit geprüft – so bricht kein Test, wenn eine Regel hochgestuft wird)
 
 ## Grenzen

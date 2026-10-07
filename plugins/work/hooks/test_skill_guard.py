@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Tests für skill_guard.py (nur Standardbibliothek): python3 -m unittest tools/skill-guard/test_skill_guard.py"""
+"""Tests für skill_guard.py (nur Standardbibliothek): python3 -m unittest plugins/work/hooks/test_skill_guard.py"""
 
 import copy
 import json
@@ -106,7 +106,7 @@ class WarnenTest(unittest.TestCase):
 
 class ProjektTest(unittest.TestCase):
     def test_skills_regel_nur_im_skill_repo(self):
-        repo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
+        repo = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
         data = hook("PostToolUse", "Edit", {"file_path": "skills/tracker/SKILL.md"}, cwd=os.path.abspath(repo))
         self.assertIn("skill-pflege", g.decide(data, MECH, set())[1])
         data = hook("PostToolUse", "Edit", {"file_path": "/anderswo/skills/x/SKILL.md"}, cwd="/anderswo")

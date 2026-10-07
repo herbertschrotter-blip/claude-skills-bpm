@@ -1,0 +1,14 @@
+{
+  "name": "workbench",
+  "owner": {
+    "name": "Herbert Schrotter"
+  },
+  "description": "Herberts Werkbank für Claude Code: Skills für die Projektarbeit und für die Skill-Arbeit, dazu Skill-Log und Skill-Wächter.",
+  "plugins": [
+    {
+      "name": "work",
+      "source": "./plugins/work",
+      "description": "Skill-Log und Skill-Wächter als Hooks (die Skills folgen im Umbau)."
+    }
+  ]
+}

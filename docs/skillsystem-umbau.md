@@ -273,10 +273,17 @@ Plugins im selben Repo)
      Rechner gesetzt werden (Plugin-Option oder `env` in `settings.json`). Der Wächter hat den Schalter `SKILL_GUARD=0`
      schon; Skill-Log bekommt `SKILL_LOG=0`. `claude plugin marketplace list` zeigt außerdem
      `claudeai-my-uploads` – die claude.ai-Uploads als eigener Marketplace; vor Schritt 5 prüfen, ob das ein Weg ist.
-2. **Zweig `umbau-plugins`, Marketplace-Gerüst:** `marketplace.json` (`workbench`), Plugin `work` nur mit den Hooks
-   (Skill-Log, Wächter mit Abschalt-Variablen); Prüfskript um `plugin.json`/`marketplace.json` erweitert.
-3. **Pi umstellen:** Herbert entfernt die Hooks aus `~/.claude/settings.json` und installiert `work@workbench`; Skill-Log
-   und Wächter laufen weiter wie bisher (Gegenprobe im Log).
+2. ✅ **Zweig `umbau-plugins`, Marketplace-Gerüst:** `marketplace.json` (`workbench`), Plugin `work` nur mit den Hooks;
+   `skill_log.py`, `skill_guard.py`, `regeln.json` und der Wächter-Test liegen jetzt in `plugins/work/hooks/`
+   (`tools/skill-log/` behält nur die Auswertung); Schalter `SKILL_LOG=0` neu; Prüfskript prüft `marketplace.json` und
+   die Plugin-Ordner (unbekannte Einträge, Pfade mit `./`, Namen, fehlende Hook-Skripte). Gegenprobe auf dem Pi mit
+   dem Plugin aus dem Worktree: Wächter blockt, Skill-Log schreibt – zusammen mit den Hooks aus `settings.json` jedes
+   Ereignis doppelt, also nie beides zugleich einrichten.
+3. **Pi umstellen – vor dem Merge:** Der Pi-Klon auf `main` ist zugleich die Quelle der heutigen Hooks. Nach dem Merge
+   fehlen `tools/skill-guard/` und `tools/skill-log/skill_log.py`; ein fehlendes Skript im `PreToolUse`-Hook endet mit
+   Exit 2 und blockiert jede Aktion. Deshalb zuerst: Herbert trägt `"env": { "SKILL_LOG_HOST": "ha-pi" }` ein, entfernt
+   die Hooks aus `~/.claude/settings.json`, installiert `work@workbench` (vor dem Merge aus dem Worktree, danach aus
+   GitHub) und startet die Fenster neu; erst dann Merge und `git pull`. Gegenprobe: jedes Ereignis einmal im Log.
 4. **Skills umziehen:** nach `plugins/work/skills/` und `plugins/skill-workshop/skills/`; Prüfskript, Action, Evals,
    Report, skill-pflege-Lieferung anpassen; alle Evals grün.
 5. **Doppeltes Laden abschalten:** auf dem Pi `skillOverrides` (oder `syncClaudeAiSkills: false`) durch Herbert; prüfen,

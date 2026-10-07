@@ -1,0 +1,9 @@
+{
+  "name": "work",
+  "version": "0.1.0",
+  "description": "Skill-Log (protokolliert Prompts und Skill-Aufrufe) und Skill-Wächter (prüft, ob der zuständige Skill geladen ist) als Hooks.",
+  "author": {
+    "name": "Herbert Schrotter"
+  },
+  "repository": "https://github.com/herbertschrotter-blip/claude-skills-bpm"
+}

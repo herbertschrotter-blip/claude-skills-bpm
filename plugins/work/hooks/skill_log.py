@@ -6,6 +6,7 @@ stdin und hängt eine Zeile an <SKILL_LOG_DIR>/<JJJJ-MM>.jsonl an. Scheitert nie
 damit der Chat nie blockiert wird.
 
 Umgebungsvariablen (optional):
+  SKILL_LOG       "0", "off" oder "aus" = nichts protokollieren
   SKILL_LOG_HOST  Name des Rechners im Log (Standard: Hostname)
   SKILL_LOG_DIR   Ablage (Standard: ~/.claude/skill-log)
   SKILL_LOG_RAW   "1" = zusätzlich die rohen Hook-Daten nach raw-<JJJJ-MM>.jsonl schreiben (nur zur Fehlersuche)
@@ -119,6 +120,8 @@ def append(directory, name, obj):
 
 
 def main():
+    if (os.environ.get("SKILL_LOG") or "").lower() in ("aus", "off", "0"):
+        return 0
     try:
         raw = sys.stdin.read()
         data = json.loads(raw) if raw.strip() else {}

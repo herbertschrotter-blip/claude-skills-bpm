@@ -2,7 +2,7 @@
 
 Das Skill-Log hält fest, welche Prompts in Claude Code eingegeben wurden und welche Skills darauf gezündet haben – auf
 jedem Rechner im selben Format. Daraus lässt sich regelmäßig prüfen, ob die Skills richtig auslösen, und es entstehen
-echte Fälle für `evals/`. Werkzeuge: `tools/skill-log/`.
+echte Fälle für `evals/`. Werkzeuge: Hook `plugins/work/hooks/skill_log.py`, Auswertung `tools/skill-log/`.
 
 ## Inhalt
 
@@ -83,10 +83,22 @@ zur Fehlersuche einschalten und danach die Datei löschen.
 
 ## Einrichtung
 
-In den globalen Einstellungen `~/.claude/settings.json` (gilt für alle Projekte), Block `hooks`. `<befehl>` ist der
-Aufruf des Skripts:
-- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/tools/skill-log/skill_log.py`
-- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\tools\skill-log\skill_log.py`, dazu im Hook
+Über das Plugin `work` aus dem Marketplace `workbench` (dieses Repo), je Rechner einmal:
+
+```
+claude plugin marketplace add herbertschrotter-blip/claude-skills-bpm
+claude plugin install work@workbench
+```
+
+Das Plugin bringt die Hooks für Skill-Log und Skill-Wächter mit (`plugins/work/hooks/hooks.json`). Den Rechnernamen im Log setzt
+`env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
+HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
+`claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten.
+
+Ohne Plugin (alter Weg) trägt man die Hooks von Hand in `~/.claude/settings.json` ein; Block `hooks`. `<befehl>` ist der Aufruf des
+Skripts:
+- Linux: `SKILL_LOG_HOST=<name> python3 <repo>/plugins/work/hooks/skill_log.py`
+- Windows (PowerShell): `$env:SKILL_LOG_HOST='<name>'; python <repo>\plugins\work\hooks\skill_log.py`, dazu im Hook
   `"shell": "powershell"`
 
 ```json
