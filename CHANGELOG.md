@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.6] — 2026-10-07
+
+- **skills/chat-wechsel, Fix:** Die Zeile „Code:“ unter „Regeln (Erinnerung)“ nennt jetzt auch Doku → doc-pflege
+  (`references/prompt-struktur.md`). Befund aus der Gesamtauswertung vom 07.10.2026: Nach der Übergabe „Heidi-Neubau
+  Teil 5“ schrieb Claude 37-mal `docs/NEUBAU.md` ohne doc-pflege. Neuer Eval-Fall `doc-pflege-real-uebergabe-bauplan`.
+
 ## [v0.42.5] — 2026-10-07
 
 - **skills/chat-wechsel, Fix:** Der Handover-Prompt nennt unter „Regeln (Erinnerung)“ jetzt den Fachskill: Code-Arbeit

@@ -80,7 +80,7 @@ Docs:
 - Tracker: <Präfix, Liste, Übergänge aus dem Tracker-Profil>; tracker-Skill ist einzige Schreibschnittstelle zu ClickUp
 - Docs: <Pflicht-Docs, Ladereihenfolge, Aufgabenquelle aus dem Doku-Profil>
 - Code: <Testbefehl, Pflicht-Branch, Auslieferung aus dem Code-Profil>; Code-Arbeit nur mit dem Skill code-erstellen (vor
-  der ersten Dateiänderung laden); Tickets → ticket, Mockups → mockup-erstellen, ClickUp → tracker
+  der ersten Dateiänderung laden); Tickets → ticket, Mockups → mockup-erstellen, Doku → doc-pflege, ClickUp → tracker
 - Ein Schritt pro Antwort; nachfragen wenn Kontext fehlt → Auswahlfrage bei festen Optionen
 - Wer committet: Cowork der User; Claude Code Claude selbst
 (BPM ohne Profile: User committet und pusht selbst · Commit-Format [vX.Y.Z] Modul, Typ: Kurztitel · Docs Quickload-First-Pass →
