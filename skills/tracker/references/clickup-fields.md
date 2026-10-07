@@ -2,20 +2,20 @@
 
 Universelle Referenz für `tracker neu`, `tracker done`, `tracker field`, `tracker split`.
 
-**Konkrete BPM-Werte** (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel, Meilenstein-Tags, Status-Werte-Matrix) liegen in `projects/<[PROJECT]>/clickup-fields.md`. Diese Datei enthält nur universelle Regeln und Muster.
+**Konkrete BPM-Werte** (Listen-IDs, Custom-Field-IDs, Option-IDs, Modul-Kürzel, Meilenstein-Tags, Status-Werte-Matrix) liegen in der Tracker-Config des Projekts (Skill-Profil → Tracker → Config). Diese Datei enthält nur universelle Regeln und Muster.
 
 ---
 
 ## ClickUp-Konfiguration
 
-Aus Memory lesen: `[PROJECT]`- und `[CLICKUP]`-Einträge. Format-Spec siehe `projects/<[PROJECT]>/memory-format.md`.
+Aus Memory lesen: `[PROJECT]`- und `[CLICKUP]`-Einträge. Format: `[PROJECT] <n> | Repo: <pfad> | ...` und `[CLICKUP] Space:<ID> | Listen: <Modul>:<ListID>, ... | Next:<NNN> | Letzte Sync: Teil <N>`.
 
 ---
 
 ## Custom Fields
 
 Custom-Field-IDs, -Typen und deren Semantik sind **projekt-spezifisch**.
-Siehe `projects/<[PROJECT]>/clickup-fields.md`:
+Siehe Tracker-Config, Abschnitt „Felder und Option-IDs“:
 
 - **Abschnitt 1 — BPM-Scope / Haupt-Scope:** Fields die bei `tracker neu`
   (Neue Tasks) und `tracker done` (Abschluss) gesetzt werden — typischerweise
@@ -26,7 +26,7 @@ Siehe `projects/<[PROJECT]>/clickup-fields.md`:
 ### Dropdown-Regel (universell)
 
 Wenn ein Field `drop_down`-Typ hat: **Option-ID** (nicht Display-Label) als
-Value setzen. Option-IDs stehen in `projects/<[PROJECT]>/clickup-fields.md`.
+Value setzen. Option-IDs stehen in der Tracker-Config.
 Bei unbekannter Option-ID: `ask_user_input_v0` mit den bekannten Options —
 **nie raten**.
 
@@ -35,7 +35,7 @@ Bei unbekannter Option-ID: `ask_user_input_v0` mit den bekannten Options —
 ### Option-IDs pro Dropdown
 
 Liste der Option-IDs für alle Dropdowns des Projekts:
-`projects/<[PROJECT]>/clickup-fields.md`.
+Tracker-Config.
 
 ---
 
@@ -50,7 +50,7 @@ Liste der Option-IDs für alle Dropdowns des Projekts:
 
 **Wenn bekannt** (sonst leer lassen):
 - Aufwand, Zielversion, Komponente, Zugehörige Docs (oder äquivalente
-  Projekt-Fields — siehe `projects/<[PROJECT]>/clickup-fields.md`)
+  Projekt-Fields — siehe Tracker-Config)
 
 ---
 
@@ -69,9 +69,9 @@ Liste der Option-IDs für alle Dropdowns des Projekts:
 ## Modul-Kürzel
 
 Die Zuordnung Modul-Name → Kürzel → Listen-ID ist **projekt-spezifisch**.
-Siehe `projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Modul-Kürzel".
+Siehe Tracker-Config, Abschnitt „Listen und Routing“.
 
-Bei Abweichung: Memory `[CLICKUP]`-Eintrag ist Quelle, danach `projects/<[PROJECT]>/clickup-lists.md`.
+Bei Abweichung: Memory `[CLICKUP]`-Eintrag ist Quelle, danach die Tracker-Config.
 
 ### Auto-Create für neue Module
 
@@ -80,7 +80,7 @@ Wenn ein neues Modul auftaucht das noch keine Liste hat:
 1. `ask_user_input_v0` zur Bestätigung: "Liste '<Modul>' neu anlegen?"
 2. Bei Bestätigung: `clickup_create_list(name: "<Modul>", space_id: "<Space-ID-aus-Memory>")`
 3. Memory-Eintrag `[CLICKUP]` aktualisieren mit neuer Listen-ID
-4. Kürzel-Eintrag in `projects/<[PROJECT]>/clickup-fields.md` ergänzen
+4. Kürzel-Eintrag in der Tracker-Config ergänzen
 5. User informieren über neue Liste + Kürzel
 
 ---
@@ -90,7 +90,7 @@ Wenn ein neues Modul auftaucht das noch keine Liste hat:
 **Pattern:** `<PROJEKT-PREFIX>-<NNN>` — dreistellig mit führenden Nullen,
 global über alle Listen des Projekts, **nie wiederverwendet**.
 
-- Projekt-Prefix (z.B. `BPM-`) aus `projects/<[PROJECT]>/clickup-fields.md`
+- Projekt-Prefix (z.B. `BPM-`) aus der Tracker-Config
 - Nächste freie Nummer im Memory: `<Prefix>Next:<NNN>`
 - Nach jedem `tracker neu`: Next +1
 
@@ -144,14 +144,14 @@ Kein Prefix, kein Kürzel. Zuordnung über Parent-Task + Nummerierung.
 Beispiel: `tracker-005: Anker-Persistenz in Folge-Antworten`
 
 Issue-ID zusätzlich im passenden Custom Field speichern — siehe
-`projects/<[PROJECT]>/clickup-fields.md`.
+Tracker-Config.
 
 ---
 
 ## Meilenstein-Tags
 
 Tag-Namen + Bedeutung sind **projekt-spezifisch**:
-`projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Meilenstein-Tags".
+Tracker-Config, Abschnitt „Sonderfälle“.
 
 Universelle Regeln:
 - Tags **kleingeschrieben** in ClickUp
@@ -188,11 +188,11 @@ Grossgeschrieben wirft `"Status does not exist"`-Fehler.
 
 Nicht alle ClickUp-Listen nutzen die gleichen Status-Werte. Die
 **konkrete Matrix** pro Listen-Typ steht in
-`projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Status-Werte pro Listen-Typ".
+Tracker-Config, Abschnitt „Statusmodell“.
 
 ### Fallback-Reihenfolge bei Status-Änderung
 
-1. Zuerst den listen-typischen Wert versuchen (aus `projects/<[PROJECT]>/clickup-fields.md`)
+1. Zuerst den listen-typischen Wert versuchen (aus der Tracker-Config)
 2. Bei Fehler `"Status does not exist"`: Alternative aus derselben Zeile probieren
 3. Wenn beide scheitern: `ask_user_input_v0` mit den bekannten Werten
 
@@ -209,4 +209,4 @@ aktualisieren:
 - Next-Nummer → `<Prefix>Next:` erhöhen
 - Letzte Sync-Markierung (z.B. `Letzte Sync: Teil <N>`) setzen
 
-Eintragsformate pro Projekt: `projects/<[PROJECT]>/memory-format.md`.
+Eintragsformate: Abschnitt „ClickUp-Konfiguration“ oben.

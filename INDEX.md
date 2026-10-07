@@ -102,7 +102,7 @@ fragt der Skill nur nach diesem Wert; ein ganzes Profil legt er nur mit Zustimmu
 ([docs/skill-profile-v1.md](./docs/skill-profile-v1.md), „Fehlende Werte“).
 
 Bis zum Ende des Umbaus lesen einzelne Skills noch ältere Quellen: die früheren Profil-Abschnitte der `CLAUDE.md`
-(Tracker-, Code-, Doku-, Mockup-, Review-Profil) und `projects/<name>/` (tracker). Die Werte des Space „Claude Skills
+(Tracker-, Code-, Doku-, Mockup-, Review-Profil). Die Werte des Space „Claude Skills
 Entwicklung“ stehen in `.claude/skill-config/tracker.md`.
 
 ---

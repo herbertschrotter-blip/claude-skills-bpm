@@ -2,7 +2,7 @@
 
 Vollständiger Ablauf für das `tracker issue` Kommando.
 Issue-Tasks leben in Skill-Issues-Listen (projekt-spezifisch, siehe
-`projects/<[PROJECT]>/clickup-lists.md` Abschnitt 2b).
+Tracker-Config, Abschnitt „Listen und Routing“).
 
 Abgrenzung zu `create-task.md`: Dort geht es um Haupttasks im Projekt-Scope
 (BPM-Listen, ClaudeSkills-Liste). Hier geht es um Skill-Issues-Scope
@@ -23,7 +23,7 @@ Abgrenzung zu `create-task.md`: Dort geht es um Haupttasks im Projekt-Scope
 ### Gültige Skill-Namen
 
 Die Liste gültiger Skill-Namen steht in
-`projects/<[PROJECT]>/clickup-lists.md` (Abschnitt "Gültige Skill-Namen für `tracker issue`").
+Tracker-Config (Abschnitt „Listen und Routing“, Skill-Issue-Listen).
 
 Bei unbekanntem Skill-Name: Auswahlfrage mit den vorhandenen Skills
 als Optionen. **Nie raten.**
@@ -35,12 +35,12 @@ als Optionen. **Nie raten.**
 ### 1. Skill-Name validieren
 
 - Aus Kommando-Text extrahieren (zwischen `tracker issue ` und `:`)
-- Gegen Liste aus `projects/<[PROJECT]>/clickup-lists.md` abgleichen
+- Gegen Liste aus der Tracker-Config abgleichen
 - Bei Unstimmigkeit: Auswahlfrage mit gültigen Werten
 
 ### 2. Ziel-Listen-ID ermitteln
 
-- Lookup in `projects/<[PROJECT]>/clickup-lists.md` Abschnitt "Skill Issues"
+- Lookup in der Tracker-Config, Abschnitt „Listen und Routing“
 - Listen-ID merken für alle nachfolgenden Schritte
 
 ### 3. Dedup-Suche
@@ -139,7 +139,7 @@ clickup_create_task(
 )
 ```
 
-Field-IDs und Option-IDs: `projects/<[PROJECT]>/clickup-fields.md` Abschnitt 2.
+Field-IDs und Option-IDs: Tracker-Config, Abschnitt „Felder und Option-IDs“.
 
 ### 7. Pro-Task-Quittung im Chat
 
@@ -179,7 +179,7 @@ Wenn User keinen Typ angibt: Auswahlfrage mit:
 - Verbesserung
 - Refactor-Idee
 
-Option-IDs stehen in `projects/<[PROJECT]>/clickup-fields.md` Abschnitt 2
+Option-IDs stehen in der Tracker-Config, Abschnitt „Felder und Option-IDs“
 (Skill-Issues-Typ-Dropdown).
 
 **Unterschied zu BPM-Scope:** Skill-Issues-Typ hat 5 Optionen (Bug /
@@ -192,7 +192,7 @@ Nie verwechseln — Option-IDs sind pro Scope unterschiedlich.
 ## Status-Werte
 
 Skill-Issues-Listen nutzen `to do` / `in progress` / `complete`
-(siehe `projects/<[PROJECT]>/clickup-fields.md` Abschnitt 7).
+(siehe Tracker-Config, Abschnitt „Sonderfälle“).
 Beim Anlegen greift der Default-Status der Liste (meist `to do`).
 
 **NICHT** `done` verwenden — das ist BPM-Scope.
@@ -205,11 +205,11 @@ Beim Anlegen greift der Default-Status der Liste (meist `to do`).
 User: tracker issue tracker: Em-Dash-Problem in Custom-Field-Values
 
 Claude intern:
-  1. Skill-Name: "tracker" → gültig (aus projects/bpm/clickup-lists.md)
-  2. Listen-ID Lookup: 901522952249
+  1. Skill-Name: "tracker" → gültig (aus der Tracker-Config)
+  2. Listen-ID Lookup: <Listen-ID tracker>
   3. Dedup: clickup_filter_tasks → kein Treffer
   4. Issue-ID automatisch:
-     - clickup_filter_tasks(list_ids: ["901522952249"], include_closed: true)
+     - clickup_filter_tasks(list_ids: ["<Listen-ID tracker>"], include_closed: true)
      - Custom Field Issue-ID jedes Tasks lesen
      - Pattern ^tracker-(\d{3})$ parsen
      - Höchste Nummer: 008 (aus tracker-008)
@@ -219,7 +219,7 @@ Claude intern:
   6. Beobachtungs-Chat: "Bauprojektmanager Teil 28"
   7. Description-Template mit Bug-Anpassung generieren
   8. clickup_create_task(
-       list_id: "901522952249",
+       list_id: "<Listen-ID tracker>",
        name: "tracker-009: Em-Dash-Problem in Custom-Field-Values",
        custom_fields: [
          {id: "<Issue-ID-Field>",          value: "tracker-009"},
@@ -258,9 +258,9 @@ Claude intern:
 
 ## Abhängigkeiten
 
-- `projects/<[PROJECT]>/clickup-lists.md` muss Abschnitt 2b mit allen
+- Tracker-Config muss im Abschnitt „Listen und Routing“ alle
   Skill-Issue-Listen enthalten
-- `projects/<[PROJECT]>/clickup-fields.md` muss Abschnitt 2 mit
+- Tracker-Config muss im Abschnitt „Felder und Option-IDs“ den
   Skill-Issues-Scope (6 Fields + 5 Typ-Option-IDs) enthalten
 - `anker-system.md` für Memory-`[ANKER-LIVE]`-Format
 - `batch-protocol.md` wenn mehrere Issues in einer Antwort angelegt werden

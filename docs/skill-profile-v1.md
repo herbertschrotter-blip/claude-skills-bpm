@@ -193,7 +193,7 @@ anderen Repos keine Profile an; dort entsteht eines erst, wenn ein Skill es brau
 „Fehlende Werte“).
 
 Bis die Skills in den Umbau-Phasen 5 und 6 das Profil lesen, bleiben ihre bisherigen Quellen als Verweise erhalten:
-`docs/project-architecture.md` und der Abschnitt `## Review-Profil` in der CLAUDE.md des Skill-Repos. `projects/` wird
-erst entfernt, wenn kein Skill mehr dorthin zeigt. Entwürfe für die Profile von BPM und Heidi stehen in
+der Abschnitt `## Review-Profil` in der CLAUDE.md des Skill-Repos. `projects/` ist seit 07.10.2026 entfernt (tracker liest
+die Tracker-Config); seine Werte liegen in den Projekt-Repos. Entwürfe für die Profile von BPM und Heidi stehen in
 `docs/chatgpt-reviews/CGR-2026-09-24-skillsystem/r2/02-chatgpt-response.md` (Abschnitt 5) – nur als Ausgangspunkt, falls
 ein Projekt das Profil einführt; die Werte müssen dann im jeweiligen Repo geprüft werden.

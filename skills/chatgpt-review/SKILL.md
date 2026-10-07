@@ -62,7 +62,7 @@ Cowork per DC). Felder:
 | Ergebnis-Ort | wohin Entscheidungen nach Phase 3 gehen | ADR.md, BACKLOG.md | Bauplan Abschnitt 10 (Notiz, Art `Widerspruch`/`Befund`), 10a bei Abweichung, HANDOFF 3e |
 
 **Fehlt das Profil:** BPM-Werte aus diesem Skill annehmen – nur wenn das Repo `Docs/Referenz/` hat;
-sonst Auswahlfrage „Profil anlegen (Vorschlag aus dem Repo)“. Repo-Pfad: Tracker-Profil (Claude Code)
+sonst Auswahlfrage „Profil anlegen (Vorschlag aus dem Repo)“. Repo-Pfad: Skill-Profil der CLAUDE.md (Claude Code)
 bzw. Memory `[PROJECT]` (Cowork).
 
 ## Grundsätze

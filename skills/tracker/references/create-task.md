@@ -22,7 +22,7 @@ Nummerierungslogik.
 ### Fragemodus (Infos fehlen)
 
 Per Auswahlfrage (nicht Prosa!). Gültige Werte für Modul-Auswahl
-und Meilensteine stehen in `projects/<[PROJECT]>/clickup-fields.md`
+und Meilensteine stehen in der Tracker-Config
 (Modul-Kürzel-Tabelle + Meilenstein-Tags). Konkrete Zielversion-Optionen
 ergeben sich aus Memory `[CLICKUP]` und dem aktuellen Release-Stand.
 
@@ -41,11 +41,11 @@ Frage 3 — Zielversion: Aktuelle, Nächste Minor, später
 ```
 
 Die konkreten Typ/Aufwand-Options sind projekt-spezifisch — siehe
-`projects/<[PROJECT]>/clickup-fields.md`.
+Tracker-Config.
 
 Offensichtliches aus Kontext überspringen. Max 3 Fragen pro Aufruf.
 
-**Projekte ohne Custom Fields** (`projects/<[PROJECT]>/clickup-fields.md` sagt
+**Projekte ohne Custom Fields** (die Tracker-Config sagt
 „Keine“): Fragen nach Modul, Meilenstein, Typ, Aufwand und Zielversion entfallen.
 Gefragt wird nur, was in Titel oder Beschreibung landet (Bauplan-Nummer, Ziel,
 Akzeptanz). Priorität nur, wenn nicht `normal`.
@@ -58,8 +58,8 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
 
 ## Ablauf
 
-1. Nächste freie Haupt-Nummer `<PRÄFIX>-<Next>` — Präfix aus `projects/<[PROJECT]>/clickup-lists.md`; `Next` im Cowork-Chat aus Memory `[CLICKUP]`, in Claude Code aus dem Tracker-Profil der CLAUDE.md
-2. Kürzel + Liste-ID aus `projects/<[PROJECT]>/clickup-fields.md` (Modul-Kürzel-Tabelle) bzw. `projects/<[PROJECT]>/clickup-lists.md`
+1. Nächste freie Haupt-Nummer `<PRÄFIX>-<Next>` — Präfix aus der Tracker-Config; `Next` im Cowork-Chat aus Memory `[CLICKUP]`, in Claude Code aus der Tracker-Config
+2. Kürzel + Liste-ID aus der Tracker-Config (Abschnitt „Listen und Routing“)
 3. Dedup: `clickup_search` → wenn Treffer, per Auswahlfrage fragen: Trotzdem neu, Bestehenden nutzen, Abbrechen. Bei ähnlichen Treffern zusätzlich Review-Workflow-Check gemäß `references/review-workflow.md` — besprochene Änderungen könnten bestehende Tasks im Scope verschieben.
 4. **Description**: Template aus Abschnitt "Description-Template" unten generieren
 5. **TEMP-Anker aus `[ANKER-LIVE]` prüfen** (siehe `anker-system.md`):
@@ -87,22 +87,22 @@ Akzeptanz). Priorität nur, wenn nicht `normal`.
      {"id": "<Chat-Anker-temp-ID>",   "value": "TEMP-<id>"}
    ]
    ```
-   Konkrete Field-IDs und Option-IDs: `projects/<[PROJECT]>/clickup-fields.md`.
+   Konkrete Field-IDs und Option-IDs: Tracker-Config.
 9. **Memory `[ANKER-LIVE]` aktualisieren**:
    - Falls TEMP existierte: Eintrag **ersetzen** (TEMP-... → Task-ID-Eintrag mit Typ `erstellt`)
    - Sonst: neuen Eintrag hinzufügen mit Typ `erstellt`
-10. `Next` +1 (Cowork: Memory `[CLICKUP]`; Claude Code: Tracker-Profil in CLAUDE.md, mit committen)
+10. `Next` +1 (Cowork: Memory `[CLICKUP]`; Claude Code: Tracker-Config, mit committen)
 11. Bestätigung an User inkl. Task-ID als Anker-Referenz
 
 ### Ablauf für Projekte ohne Zähler, Felder oder Anker (Ausnahme)
 
-Gilt nur, wenn `projects/<[PROJECT]>/clickup-lists.md` ausdrücklich „kein Zähler“
-oder „Chat-Anker: nicht verwendet“ sagt bzw. `clickup-fields.md` „Keine“. Standard
+Gilt nur, wenn die Tracker-Config ausdrücklich „kein Zähler“
+oder „Chat-Anker: nicht verwendet“ sagt bzw. bei den Feldern „Keine“. Standard
 ist das volle Schema (Präfix, Felder, Anker) — BPM und Heidi nutzen es.
 
 1. Nummer = Nummer aus dem Kontext (z.B. Nummer eines Bauplan-Schritts) — nichts
    hochzählen, kein `[CLICKUP]`-Eintrag
-2. Liste = die eine Liste aus `clickup-lists.md`
+2. Liste = die eine Liste aus der Tracker-Config
 3. Dedup wie oben (Schritt 3)
 4. Beschreibung nach dem Muster in `clickup-fields.md` Abschnitt „Was stattdessen
    in die Beschreibung gehört“ (statt Description-Template unten)
@@ -167,14 +167,14 @@ Kein Problem/Lösungsansatz (das steht im Parent).
 ## Beispiel-Workflow (BPM-Projekt, `tracker neu` mit allen Feldern)
 
 Dieser Beispiel-Ablauf zeigt einen konkreten `tracker neu`-Durchlauf für BPM.
-Feld-IDs und Option-IDs stehen in `projects/bpm/clickup-fields.md`.
+Feld-IDs und Option-IDs stehen in der Tracker-Config des BPM-Repos.
 
 ```
 User: tracker neu: PM — neue Regex-Erkennung in DocumentTypeRecognizer, v1, high
 
 Claude intern:
   1. BPM-<Next> aus Memory: BPM-082
-  2. Kürzel PM → Liste-ID aus projects/bpm/clickup-fields.md (PlanManager-Zeile)
+  2. Kürzel PM → Liste-ID aus der Tracker-Config (PlanManager-Zeile)
   3. Dedup: clickup_search "Regex DocumentTypeRecognizer" → kein Treffer
   4. Auswahlfrage:
      Frage 1 — Typ: Feature, Fix, Refactor, Perf, Docs, Konzept, Meta

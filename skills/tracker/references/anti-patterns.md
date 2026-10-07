@@ -151,14 +151,14 @@ Vollständige Spec: `batch-protocol.md`. Kurzliste:
 
 ### Projekt-Config (Projekt-Architektur, v0.13.0)
 
-Skills lesen projekt-spezifische Daten aus `projects/<[PROJECT]>/`.
+Skills lesen projekt-spezifische Daten aus der Tracker-Config des Projekts (Skill-Profil → Tracker → Config).
 VERBOTEN ist jede Form von Hartkodierung oder Fallback-Weglassung:
 
-- **Konkrete Listen-IDs / Custom-Field-IDs / Option-IDs** im Skill selbst führen — alles aus `projects/<[PROJECT]>/clickup-fields.md` und `projects/<[PROJECT]>/clickup-lists.md` lesen
-- **Modul-Kürzel oder Präfix raten** wenn die Projektkennung fehlt — stattdessen Auswahlfrage mit den vorhandenen Ordnern in `projects/`
-- **Projekt-Config-Dateipfade raten** — Muster ist immer `projects/<[PROJECT]>/<datei>.md`, niemals davon abweichen
-- **Fallback-Frage weglassen** wenn die Projektkennung (Memory bzw. Tracker-Profil) fehlt — Skill MUSS aktiv nach dem aktiven Projekt fragen, nicht still rumraten
+- **Konkrete Listen-IDs / Custom-Field-IDs / Option-IDs** im Skill selbst führen — alles aus der Tracker-Config lesen
+- **Modul-Kürzel oder Präfix raten** wenn die Projektkennung fehlt — stattdessen Auswahlfrage nach dem Fallback „Tracker-Config fehlt“ (SKILL.md)
+- **Projekt-Config-Dateipfade raten** — der Pfad steht im Skill-Profil (Tracker → Config), niemals davon abweichen
+- **Fallback-Frage weglassen** wenn die Projektkennung (Memory bzw. Skill-Profil) fehlt — Skill MUSS aktiv nach dem aktiven Projekt fragen, nicht still rumraten
 - **Annehmen dass `[PROJECT]` immer "bpm" ist** — Projektkennung lesen und den tatsächlichen Wert (und Präfix) verwenden
-- **`projects/<[PROJECT]>/`-Dateien ohne Lesen verwenden** — zuerst prüfen dass die Datei existiert, dann ihren Inhalt laden, erst dann verwenden
-- **BPM-Spezifika (PlanManager, PM, v1, 901522…) inline im Skill einbauen** statt sie als Beispiele mit Kontext zu markieren — wenn Beispiele, dann explizit als "Beispiel (BPM-Projekt)"
-- **Status-Werte `done` oder `complete` hartkodieren** statt aus `projects/<[PROJECT]>/clickup-fields.md` Status-Werte-Matrix zu lesen
+- **Tracker-Config ohne Lesen verwenden** — zuerst prüfen dass die Datei existiert, dann ihren Inhalt laden, erst dann verwenden
+- **BPM-Spezifika (PlanManager, PM, v1, Listen-IDs) inline im Skill einbauen** statt sie als Beispiele mit Kontext zu markieren — wenn Beispiele, dann explizit als "Beispiel (BPM-Projekt)"
+- **Status-Werte `done` oder `complete` hartkodieren** statt aus dem Statusmodell der Tracker-Config zu lesen

@@ -101,7 +101,7 @@ Wenn KEINE Rubrik Einträge hat: komplette Sektion `## Offene Punkte aus Memory`
 
 ## Chat-Anker-Übergabe (nur Cowork)
 
-**Zweck:** Die Live-Registry `[ANKER-LIVE]` (aus dem Chat-Anker-System, siehe tracker-Skill) muss beim Chat-Wechsel in den neuen Chat transportiert werden, weil Memory pro Session gilt. Anker-Präfix = Projekt-Präfix (`clickup-lists.md`). In Claude Code gibt es keine Anker-Registry – Abschnitt entfällt.
+**Zweck:** Die Live-Registry `[ANKER-LIVE]` (aus dem Chat-Anker-System, siehe tracker-Skill) muss beim Chat-Wechsel in den neuen Chat transportiert werden, weil Memory pro Session gilt. Anker-Präfix = Projekt-Präfix (Tracker-Config). In Claude Code gibt es keine Anker-Registry – Abschnitt entfällt.
 
 ### Schritt 1: `[ANKER-LIVE]` aus Memory lesen
 

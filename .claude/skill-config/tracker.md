@@ -1,8 +1,8 @@
 # Tracker-Konfiguration – Skill-Repo
 
 Für den Skill tracker (Skill-Profil → Tracker): der ClickUp-Space „Claude Skills Entwicklung“ mit der Liste
-ClaudeSkills und den Skill-Issue-Listen. Die Werte standen bis 24.09.2026 in `projects/bpm/clickup-lists.md` und
-`clickup-fields.md` und stehen jetzt nur hier.
+ClaudeSkills und den Skill-Issue-Listen. Die Werte standen bis 24.09.2026 im (am 07.10.2026 entfernten) Ordner
+`projects/bpm/` und stehen jetzt nur hier.
 
 ## Inhalt
 

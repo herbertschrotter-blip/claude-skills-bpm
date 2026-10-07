@@ -5,8 +5,8 @@ Cowork-Chat“).
 
 ## Schritt 1: Offene Tasks laden
 
-1. Space/Listen-ID und Präfix aus dem **Tracker-Profil** (Claude Code: CLAUDE.md) bzw. dem Memory-Eintrag `[CLICKUP]` (Cowork) lesen
-2. `clickup_filter_tasks(list_ids/space_ids: [...], statuses: <offene Status laut projects/<name>/clickup-lists.md>)` – read-only, über den tracker-Skill
+1. Space/Listen-ID und Präfix aus der **Tracker-Config** (Claude Code: Skill-Profil der CLAUDE.md → Tracker → Config) bzw. dem Memory-Eintrag `[CLICKUP]` (Cowork) lesen
+2. `clickup_filter_tasks(list_ids/space_ids: [...], statuses: <offene Status laut Statusmodell der Tracker-Config>)` – read-only, über den tracker-Skill
 3. Tasks gruppieren: mehrere Listen → nach Liste (BPM); eine Liste → nach Status (Heidi: in development, testing, backlog)
 
 ## Schritt 2: Chat-Verlauf scannen
@@ -80,7 +80,7 @@ ask_user_input_v0(
 
 - Done-Tasks: `tracker done` pro ausgewähltem Task (Status laut Übergängen des Projekts – Heidi `testing`, BPM `done`; Commit-Felder bzw. Kommentar)
 - Neue Tasks: `tracker neu` pro ausgewähltem Task (Fragemodus per Auswahlfrage im tracker-Skill, Präfix des Projekts)
-- Cowork: Memory `[CLICKUP]` Eintrag aktualisieren: `Letzte Sync: Teil <N>`; Claude Code: `Next` im Tracker-Profil, wenn Tasks angelegt wurden
+- Cowork: Memory `[CLICKUP]` Eintrag aktualisieren: `Letzte Sync: Teil <N>`; Claude Code: `Next` in der Tracker-Config, wenn Tasks angelegt wurden
 
 ## ClickUp nicht erreichbar?
 

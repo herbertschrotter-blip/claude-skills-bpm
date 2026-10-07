@@ -194,7 +194,7 @@ BPM:
 - ClickUp-Tasks (BPM-NNN) ↔ BACKLOG
 
 Heidi:
-- Bauplan Statusliste (Abschnitt 1) ↔ ClickUp `DX-NNN`-Status (Mapping aus `projects/heidi/clickup-lists.md`: fertig→shipped/testing, in Arbeit→in development, offen→backlog); Abweichung ⚠️, fehlende Aufgabe ❌
+- Bauplan Statusliste (Abschnitt 1) ↔ ClickUp `DX-NNN`-Status (Mapping aus der Tracker-Config des Projekts: fertig→shipped/testing, in Arbeit→in development, offen→backlog); Abweichung ⚠️, fehlende Aufgabe ❌
 - Jede Aufgabenkarte hat eine DX-Aufgabe und umgekehrt (Phasen ausgenommen)
 - Notizen in Abschnitt 10 mit Format `- [Datum] [Aufgabe] Art · Schwere: … Entscheidung Herbert: …`; Wünsche mit Post-2.0-Task
 (ClickUp lesen über den tracker-Skill, read-only: `clickup_filter_tasks`, `clickup_get_task`)

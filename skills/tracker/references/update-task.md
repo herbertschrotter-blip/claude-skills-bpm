@@ -23,4 +23,4 @@ Beispiele (BPM-Projekt):
 - `tracker field: BPM-079 Komponente SettingsView.xaml`
 
 Bei Dropdown-Feldern (Typ, Aufwand, etc.): Option-ID aus
-`projects/<[PROJECT]>/clickup-fields.md` nehmen — nie raten.
+der Tracker-Config nehmen — nie raten.

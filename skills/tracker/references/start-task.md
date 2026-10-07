@@ -121,7 +121,7 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 ### Projekte mit eigenem Status-Wert (oder ohne Anker)
 
-- Status-Wert für „gestartet“ aus `projects/<[PROJECT]>/clickup-lists.md`
+- Status-Wert für „gestartet“ aus der Tracker-Config
   Abschnitt „Übergänge“ nehmen (z.B. `in development` statt `in progress`).
 - Parent-Regel (Schritte 5–6) gilt unverändert.
 - Nur falls das Projekt keine Anker führt: Quittung `✅ <PRÄFIX>-NNN — start: <Status> — <ClickUp-Link>`,
@@ -133,11 +133,11 @@ gesetzt — obwohl der Fokus eindeutig war.
 
 Nicht alle Listen nutzen die gleichen Status-Werte. Die konkrete Matrix
 (z.B. BPM-Listen mit `done`, Skill-Issues-Listen mit `complete`) steht in
-`projects/<[PROJECT]>/clickup-fields.md` Abschnitt "Status-Werte pro Listen-Typ".
+Tracker-Config, Abschnitt „Statusmodell“.
 
 Bei `tracker start` ist nur `in progress` relevant — der Wert ist
 listen-übergreifend gleich. Ausnahme: Projekte mit eigenem Übergang in
-`clickup-lists.md` (z.B. `in development`).
+der Tracker-Config (z.B. `in development`).
 
 Bei `tracker done`: Fallback-Reihenfolge gemäß Projekt-Matrix. Bei Fehler
 Auswahlfrage mit Alternativen.

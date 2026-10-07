@@ -77,7 +77,7 @@ Docs:
 
 ## Regeln (Erinnerung) — aus den Profilen der CLAUDE.md erzeugt, nicht fest
 - Commit: <Format, Modul-Namen, Versionsquelle, Bump-Regel aus dem Commit-Profil>
-- Tracker: <Präfix, Liste, Übergänge aus dem Tracker-Profil>; tracker-Skill ist einzige Schreibschnittstelle zu ClickUp
+- Tracker: <Präfix, Liste, Übergänge aus der Tracker-Config>; tracker-Skill ist einzige Schreibschnittstelle zu ClickUp
 - Docs: <Pflicht-Docs, Ladereihenfolge, Aufgabenquelle aus dem Doku-Profil>
 - Code: <Testbefehl, Pflicht-Branch, Auslieferung aus dem Code-Profil>; Code-Arbeit nur mit dem Skill code-erstellen (vor
   der ersten Dateiänderung laden); Tickets → ticket, Mockups → mockup-erstellen, Doku → doc-pflege, ClickUp → tracker

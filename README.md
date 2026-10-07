@@ -2,7 +2,7 @@
 
 Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
 
-Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskript, Projekt-Config, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus Profilen in der `CLAUDE.md` des jeweiligen Repos bzw. noch aus `projects/<projekt>/` (BPM, Heidi). Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
+Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskript, Refactor-Dokumentation und Memory-Konventionen. Seit v0.24 (16.09.2026) sind die Skills projektneutral: Projektwerte (Pfade, Präfixe, IDs) kommen aus dem Skill-Profil in der `CLAUDE.md` des jeweiligen Repos und dessen Configs unter `.claude/skill-config/`. Sie sind **nicht** als allgemeine Community-Skills gedacht — für generische Skills siehe z.B. [obra/superpowers](https://github.com/obra/superpowers) oder [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
 > **Umbau läuft (seit 24.09.2026):** [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md) – Skill-Profil v1,
 > Qualitätsregeln, Prüfskript und Routing-Tests; Ergebnis der Review-Serie `CGR-2026-09-24-skillsystem`.
@@ -33,7 +33,7 @@ Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskri
 | **Versionshistorie** | Jede Skill-Änderung ist ein Git-Commit. Volle Nachvollziehbarkeit von v0.1.0 bis aktuell. Format-Details siehe [`INDEX.md`](./INDEX.md). |
 | **Cross-Review** | ChatGPT kann Skills und Review-Runden direkt aus dem Repo lesen. CGR-System archiviert jede Review-Runde in 4 Dateien. |
 | **Backup** | Skills gehen nicht verloren wenn der Claude-Projekt-Speicher reset wird. |
-| **Portabilität** | Universelle Skills + projektspezifische Werte sind getrennt (`skills/` vs Profile in der CLAUDE.md des Projekts bzw. noch `projects/<projekt>/`). Neue Projekte nutzen dasselbe Skill-System, indem sie ihr Profil anlegen ([`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md)). |
+| **Portabilität** | Universelle Skills + projektspezifische Werte sind getrennt (`skills/` vs Skill-Profil in der CLAUDE.md des Projekts). Neue Projekte nutzen dasselbe Skill-System, indem sie ihr Profil anlegen ([`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md)). |
 | **Meta-Werkzeug** | Die Skills reflektieren über sich selbst: `skill-neu` erstellt neue Skills, `skill-pflege` ändert bestehende, `quality/evals/` misst das Routing-Verhalten, das Skill-Log mit `skill-auswertung` zeigt, wie die Skills im Alltag greifen. |
 
 ---
@@ -54,7 +54,6 @@ claude-workbench/
 ├── docs/                  ← Konzepte, Regeln, Reviews, Umbau-Plan
 ├── plugins/               ← Plugin work-hooks (Skill-Log, Skill-Wächter); work ruft dieselben Skripte auf
 ├── evals/                 ← Manuelle Skill-Routing-Evals (bis v0.20)
-├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
 ├── quality/               ← Eval-Plugin: evals/ (Testfälle für claude plugin eval), skills → ../skills
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
@@ -206,30 +205,17 @@ Der Report in `phase-5-abschluss-report.md` aggregiert die 4 Eval-Durchläufe. G
 
 ---
 
-## Kapitel 4 — `projects/<projekt>/` — Projekt-spezifische Config
+## Kapitel 4 — Projektwerte
 
-Dieser Ordner isoliert alle Daten, die sich bei einem Projektwechsel ändern würden. Dadurch bleiben die Skills **projekt-agnostisch** — sie lesen ihre projekt-spezifischen Werte zur Laufzeit aus `projects/<[PROJECT]>/`.
-
-### Aktuell: `projects/bpm/` und `projects/heidi/`
-
-| Datei | Inhalt |
-|---|---|
-| `README.md` | Projekt-Identität: Name, Repo-URL, Memory-Eintragsformat |
-| `clickup-lists.md` | Listen-IDs, Status, Nummernschema (BPM: nur noch der BPM-Space) |
-| `clickup-fields.md` | Custom Fields mit IDs + Dropdown-Option-IDs + Modul-Kürzel + Nummerierungs-Schema |
-| `memory-format.md` | Memory-Eintragsformate (BPM: `[PROJECT]`, `[CLICKUP]`, `[ANKER-LIVE]`; Heidi: CLAUDE.md-Abschnitt statt Memory) |
-
-`projects/heidi/` ist die Config der Heidi-Karte (Home Assistant, Dreame X60, Repo `HA_Dash_DreameX60`). Die Werte des
-Space „Claude Skills Entwicklung“ (Liste ClaudeSkills, Skill-Issue-Listen) stehen seit 24.09.2026 in
-`.claude/skill-config/tracker.md`. Der Umbau ändert keine Projekt-Repos; was mit den Werten in `projects/` geschieht,
-klärt Phase 6 beim Skill tracker, entfernt wird der Ordner in Phase 7.
-
-### Was gehört in `projects/<projekt>/` vs. `skills/`
+Die Skills sind projekt-agnostisch. Projektwerte (Pfade, Präfixe, ClickUp-IDs, Befehle) stehen nicht in diesem Repo,
+sondern im Projekt-Repo: im Block `## Skill-Profil` der `CLAUDE.md`, große Strukturen unter `.claude/skill-config/`
+(z. B. `tracker.md`). Der frühere Ordner `projects/<projekt>/` ist seit 07.10.2026 aufgelöst; seine Werte liegen in den
+Projekt-Repos.
 
 | Ort | Beispiele |
 |---|---|
 | `skills/<skill>/` | Universelle Kernregeln, Ablauf-Schritte, Trigger-Phrasen, VERBOTEN-Listen |
-| `projects/<projekt>/` | ClickUp-IDs, Custom-Field-IDs, Modul-Kürzel, Repo-Pfade, projekt-spezifische Konventionen |
+| Skill-Profil und `.claude/skill-config/` im Projekt-Repo | ClickUp-IDs, Custom-Field-IDs, Modul-Kürzel, Repo-Pfade, projekt-spezifische Konventionen |
 
 > **Operative Regelquelle:** [`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md) (Skill-Profil v1: welche Werte wohin gehören und wie ein Skill sie findet).
 
@@ -243,7 +229,6 @@ klärt Phase 6 beim Skill tracker, entfernt wird der Ordner in Phase 7.
 | `chatgpt-reviews/` | CGR-Archiv dieses Repos (Serien `CGR-2026-09-23-ha-grundsatz`, `CGR-2026-09-24-skillsystem`) mit `INDEX.md` |
 | `fragilitaeten-und-fruehwarn.md` | 4 Fragilitäten mit Frühwarn-Indikatoren (INDEX-Invariante 10) |
 | `ha-grundsatz/` | HA-Grundsatzregeln für Home-Assistant-Projekte (im Aufbau, genutzt von `projekt-anlegen`; G-22 Oberfläche mit Lit) |
-| `project-architecture.md` | Verweis auf `skill-profile-v1.md` (bleibt, bis tracker umgestellt ist) |
 | `skill-guard-v1.md` | Skill-Wächter: Hooks, die an der Aktion prüfen, ob der zuständige Skill geladen ist; lernbare Regeln |
 | `skill-log-v1.md` | Format, Einrichtung und Auswertung des Skill-Logs |
 | `skill-profile-v1.md` | Spezifikation Skill-Profil v1 (Abschnitt `## Skill-Profil` in der CLAUDE.md, Configs unter `.claude/skill-config/`) |
@@ -324,7 +309,7 @@ CGR-Archiv im BPM-Repo). Seit v0.24 (16.09.2026) sind sie projektneutral; sie bl
 zugeschnitten:
 
 - Workflow-Regeln (Commit-Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Ein-Task-Ein-Commit, Pro-Task-Quittung)
-- ClickUp als Aufgaben-System (Werte je Projekt aus Profil bzw. `projects/<projekt>/`)
+- ClickUp als Aufgaben-System (Werte je Projekt aus der Tracker-Config des Projekt-Repos)
 - Herberts Rechner (Büro-PC auf D:, Surface auf C:, Standrechner) und der Home Assistant (Raspberry Pi), auf dem
   Claude Code als Hauptumgebung läuft
 - CGR-Archivierung der ChatGPT-Reviews im jeweiligen Repo
@@ -369,8 +354,7 @@ Die 4 Rubriken werden automatisch beim Handover gescannt. Einträge werden nie s
 ### Projekt-Config erweitern
 
 Wenn weitere Skills projekt-spezifische Daten brauchen: nach Skill-Profil v1 als Feld im `## Skill-Profil` der
-CLAUDE.md des Projekts oder als Config unter `.claude/skill-config/`. Bis zur Umstellung der Skills (Umbau Phase 3–6)
-lesen tracker und git-commit-helper noch `projects/<[PROJECT]>/<datei>.md`.
+CLAUDE.md des Projekts oder als Config unter `.claude/skill-config/`.
 
 > **Operative Regelquelle:** [`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md).
 
@@ -405,7 +389,6 @@ claude-workbench/
 │   ├── chatgpt-reviews/                   ← CGR-Archiv + INDEX.md
 │   ├── fragilitaeten-und-fruehwarn.md
 │   ├── ha-grundsatz/
-│   ├── project-architecture.md            ← Verweis auf skill-profile-v1.md
 │   ├── skill-guard-v1.md                  ← Skill-Wächter
 │   ├── skill-log-v1.md                    ← Skill-Log
 │   ├── skill-profile-v1.md
@@ -425,14 +408,6 @@ claude-workbench/
 │   ├── phase-5-abschluss-report.md
 │   ├── smoke-all-skills.md
 │   └── runs/
-│
-├── projects/
-│   ├── bpm/
-│   │   ├── README.md
-│   │   ├── clickup-lists.md
-│   │   ├── clickup-fields.md
-│   │   └── memory-format.md
-│   └── heidi/                             ← dieselben 4 Dateien
 │
 ├── plugins/
 │   └── work-hooks/                        ← Plugin nur mit Hooks: .claude-plugin/plugin.json; hooks/: hooks.json,

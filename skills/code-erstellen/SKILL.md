@@ -117,7 +117,7 @@ Entry Points prüfen), das Arbeitsverzeichnis nach **cc-steuerung**, Abschnitt
 **Gilt nur im Cowork-Chat.** In Claude Code gibt es weder Chat-Suche noch `[ANKER-LIVE]`-Memory;
 dort ersetzt eine Auswahlfrage den Anker: „Task jetzt anlegen (`tracker neu`)“ / „Im
 Notiz-Ort des Profils vermerken“ (Heidi: Bauplan Abschnitt 10) / „Nichts“. Anker-Präfix =
-Projekt-Präfix aus `projects/<[PROJECT]>/clickup-lists.md` (BPM `BPM`, Heidi `DX`).
+Projekt-Präfix aus der Tracker-Config (BPM `BPM`, Heidi `DX`).
 
 Konzept-Doc: `docs/chat-anker-konzept.md` (Phase 1).
 Anker-Format + Memory-Registry: siehe tracker-Skill Kapitel "Chat-Anker-System".

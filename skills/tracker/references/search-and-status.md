@@ -16,7 +16,7 @@ Lese-Operationen auf den ClickUp-Tracker.
 ```
 
 Modul-Kürzel und Meilenstein-Tags sind projekt-spezifisch — siehe
-`projects/<[PROJECT]>/clickup-fields.md`. Anzeige kann Typ und Aufwand als
+der Tracker-Config. Anzeige kann Typ und Aufwand als
 weitere Kurz-Indikatoren enthalten. Ohne Custom Fields: nur
 `[prio] <Status> <Titel>`, gruppiert nach Status statt nach Liste; als
 „offen“ zählen alle Status außer `shipped`/`done`/`cancelled`.
@@ -28,7 +28,7 @@ weitere Kurz-Indikatoren enthalten. Ohne Custom Fields: nur
 1. Offene Tasks laden
 2. Prio-Sortierung: urgent > high > normal > low. Meilenstein-Tag (z.B. `v1`)
    kann zusätzliche Gewichtung geben (Projekt-Regeln in
-   `projects/<[PROJECT]>/clickup-fields.md`).
+   Tracker-Config).
 3. Aufwand berücksichtigen: "heute nur S-Tasks" per User-Wunsch möglich
 4. Abhängigkeiten prüfen (blocked_by!)
 5. Vorschlag: `"Nächster Schritt: <Task-ID> | <Kürzel> | ..."`

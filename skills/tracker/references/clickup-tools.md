@@ -118,7 +118,7 @@ Nach erfolgreichem `tool_search` ist das Tool für den Rest der Session aufrufba
 
 ## Workspace-, Space- und Listen-IDs
 
-Stehen **nur** in `projects/<[PROJECT]>/clickup-lists.md` (BPM: Spaces „BPM Entwicklung“ und
+Stehen **nur** in der Tracker-Config des Projekts (BPM: Spaces „BPM Entwicklung“ und
 „Claude Skills Entwicklung“ mit dem Ordner „Skill Issues“; Heidi: Space „Smart Home“). Nichts davon
 im Skill führen.
 

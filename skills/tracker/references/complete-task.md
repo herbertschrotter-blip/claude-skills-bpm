@@ -20,7 +20,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    Tasks) gemäß `references/review-workflow.md`. Gefundene Änderungen in
    ClickUp umsetzen BEVOR der Task auf done gesetzt wird.
 4. **Commit-Infos ermitteln** (Pflicht):
-   - Wenn Task Code-Bezug hat (Modul mit Code-Scope — siehe `projects/<[PROJECT]>/clickup-fields.md` Modul-Kürzel):
+   - Wenn Task Code-Bezug hat (Modul mit Code-Scope — siehe Tracker-Config, Modul-Kürzel):
      - Claude fragt User: "Welche Datei(en) sind betroffen?" (Prosa, offene Frage!)
      - In der Shell (Cowork: DC, Claude Code: Bash): `git log -1 --format="%h|%ad|%s" --date=short -- <Datei>`
      - Oder: `git log --all --diff-filter=A --format="%h %ad %s" --date=short -- <Datei>` (erste Erwähnung)
@@ -40,7 +40,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 7. **Nachpflege-Felder prüfen** (falls bei `tracker neu` nicht gesetzt):
    - Typ, Aufwand, Zielversion, Komponente, Zugehörige Docs
    - Falls alle leer: Auswahlfrage mit fehlenden Feldern
-8. **Custom Fields vorbereiten** (konkrete Field-IDs siehe `projects/<[PROJECT]>/clickup-fields.md`):
+8. **Custom Fields vorbereiten** (konkrete Field-IDs siehe Tracker-Config):
    ```
    custom_fields = [
      {"id": "<Commit-ID-Field>",         "value": "<7-char-hash>"},
@@ -54,7 +54,7 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
    ```
    clickup_update_task(
      task_id: "<TaskID>",
-     status: "<Status laut Übergängen der Projekt-Config>",   ← KLEINGESCHRIEBEN; BPM done/complete, Heidi testing (Abnahme → shipped macht der User); Quelle projects/<[PROJECT]>/clickup-lists.md bzw. clickup-fields.md
+     status: "<Status laut Übergängen der Projekt-Config>",   ← KLEINGESCHRIEBEN; BPM done/complete, Heidi testing (Abnahme → shipped macht der User); Quelle: Statusmodell der Tracker-Config
      custom_fields: custom_fields
    )
    ```
@@ -72,14 +72,14 @@ Vollständiger Ablauf, Commit-Ermittlung und Beispiel-Workflow für `tracker don
 
 ### Ablauf für Projekte ohne Custom Fields oder Anker (Ausnahme)
 
-Gilt nur, wenn `projects/<[PROJECT]>/clickup-fields.md` ausdrücklich „Keine“ sagt.
+Gilt nur, wenn die Tracker-Config ausdrücklich „Keine“ sagt.
 Standard ist das volle Schema (BPM und Heidi haben alle Felder):
 
 1. Task finden, Review-Check, Commit-Hash ermitteln wie in Schritten 1–5
    (Hash in der Shell der Umgebung: `git log -1 --format='%h %s'`)
 2. Schritte 7, 8, 10 entfallen (keine Nachpflege-Felder, keine Feld-Liste,
    kein `[ANKER-LIVE]`)
-3. Status-Wert aus `clickup-lists.md` Abschnitt „Übergänge“ (z.B. `testing`
+3. Status-Wert aus der Tracker-Config, Abschnitt „Statusmodell“ (z.B. `testing`
    statt `done`, wenn die Abnahme der User macht)
 4. `clickup_update_task(task_id, status)` + `clickup_create_task_comment` mit
    dem Kommentar-Muster aus `clickup-fields.md` (Version, Commit-Hash, was
@@ -345,7 +345,7 @@ In der Regel: Erster Commit der die Funktionalität eingeführt hat (diff-filter
 ## Beispiel-Workflow (BPM-Projekt, `tracker done` mit Commit-Ermittlung)
 
 Dieser Beispiel-Ablauf zeigt einen konkreten `tracker done`-Durchlauf für BPM.
-Feld-IDs und Status-Werte stehen in `projects/bpm/clickup-fields.md`.
+Feld-IDs und Status-Werte stehen in der Tracker-Config des BPM-Repos.
 
 ```
 User: tracker done BPM-007

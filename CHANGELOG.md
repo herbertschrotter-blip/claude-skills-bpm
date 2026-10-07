@@ -8,6 +8,19 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.9] — 2026-10-07
+
+- **skills/tracker, Fix:** Projektwerte (Präfix, nächste freie Nummer, Listen, Status, Felder) kommen aus der
+  Tracker-Config des Projekts (Skill-Profil → Tracker → Config, meist `.claude/skill-config/tracker.md`) statt aus
+  `projects/<projekt>/` im Skill-Repo. Kernregel „Projektwerte aus der Tracker-Config“ mit neuem Fallback (Auswahlfrage
+  nach skill-profile-v1, „Fehlende Werte“); feste Listen-IDs aus `SKILL.md` und `references/issue-task.md` durch
+  Platzhalter ersetzt; alle References verweisen auf die Abschnitte der Tracker-Config (Umbau-Plan Plugin-Marketplace,
+  Schritt 8b).
+- **skills/audit, skills/chat-wechsel, skills/chatgpt-review, skills/code-erstellen, Fix:** Verweise auf
+  `projects/<projekt>/clickup-lists.md` bzw. das Tracker-Profil zeigen auf die Tracker-Config.
+- **projects/** entfernt: BSM-Werte liegen in ha-baustelle (`.claude/skill-config/tracker.md`), BPM-Werte gehen als Datei
+  ins BPM-Repo, Heidi entfällt (Neubau). `docs/project-architecture.md` entfernt.
+
 ## [v0.42.8] — 2026-10-07
 
 - **skills/sitzung, Fix:** Der Ordner eines Gesprächs ist jetzt der letzte im Verlauf, den es noch gibt, statt des ersten
