@@ -313,6 +313,8 @@ Plugins im selben Repo)
    Plugin-Versionen: keine feste `version` in `marketplace.json` und `plugin.json`, damit der Git-Commit als Version
    gilt. Mit fester Nummer erkennt `claude plugin update` Skill-Änderungen nicht (skill-workshop blieb auf 0.1.0 mit
    alter Description von skill-pflege).
+   ✅ Desktop-PC eingerichtet (07.10.2026): `work-hooks`, `SKILL_LOG_HOST=desktop-pc`, keine `skillOverrides`; in der App
+   alle 15 Skills einmal aus claude.ai; Log-Zeilen mit `desktop-pc` vor dem Wechsel auf `work-hooks` geprüft.
    **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer.
