@@ -316,6 +316,9 @@ Plugins im selben Repo)
    ✅ Desktop-PC eingerichtet (07.10.2026): `work-hooks`, `SKILL_LOG_HOST=desktop-pc`, keine `skillOverrides`; in der App
    alle 15 Skills einmal aus claude.ai; Log-Zeilen mit `desktop-pc` vor dem Wechsel auf `work-hooks` geprüft.
    **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
+   Pi (08.10.2026): `autoUpdate: true` im Eintrag `workbench` unter `extraKnownMarketplaces` nachgetragen – ohne ihn
+   blieb der Pi auf `921f403` stehen, obwohl die Plugins keine feste Version haben; von Hand auf `e8e1de5` gebracht.
+   Gilt für jeden Rechner: Auto-Update gehört in den Eintrag, sonst nur `claude plugin update` von Hand.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
    Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist
@@ -336,7 +339,8 @@ Plugins im selben Repo)
    - ✅ **8d** README-Teil für Fremde (neuer Einstieg, Abschnitt „Nutzung für andere“): was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
      `SKILL_LOG_HOST`), Skill-Profil in der `CLAUDE.md` als Voraussetzung. Über doc-pflege.
    - ✅ **8e** (v0.43.0, Herbert 07.10.2026: kein eigener Skill) projekt-anlegen hat den Fall „Bestehendes Repo
-     einrichten“: Repo lesen, Bereiche wählen, Skill-Profil und Configs vorschlagen, nach Zustimmung anlegen.
+     einrichten“: Repo lesen, Bereiche wählen, Skill-Profil und Configs vorschlagen, nach Zustimmung anlegen. Eval 7/7,
+     hochgeladen 08.10.2026. **Schritt 8 abgeschlossen.**
 9. **Merge** nach Herberts Freigabe.
 
 ## Was Herbert selbst tut
