@@ -262,8 +262,17 @@ Plugins im selben Repo)
 
 **Schritte**
 
-1. **Test auf dem Pi:** `skillOverrides` für einen Skill und Installation eines kleinen Test-Plugins aus dem privaten Repo;
-   klappt eins nicht, Plan anpassen.
+1. ✅ **Test auf dem Pi (07.10.2026, Claude Code 2.1.292),** im Scratch-Ordner, danach wieder entfernt:
+   - `skillOverrides` in der Projekt-`settings.json`: `"anthropic-skills:audit": "off"` blendet den Skill aus;
+     `"name-only"` lässt ihn in der Liste.
+   - Marketplace `workbench` mit Plugin `work` nur mit Hooks: `claude plugin validate` grün, auch neben der
+     Root-`plugin.json` des Eval-Rahmens; Installation mit `--scope local`; Skill-Log schreibt Sitzung, Prompt und
+     Rundenende. Die Skripte müssen im Plugin-Ordner liegen (installiert wird nur der Plugin-Ordner).
+   - Befunde: Das Repo ist **öffentlich** (kein Test mit privatem Repo nötig; Schritt 8 heißt damit „private Daten
+     raus“, bevor der Marketplace beworben wird). Der Hostname im Add-on ist eine Container-ID; `SKILL_LOG_HOST` muss je
+     Rechner gesetzt werden (Plugin-Option oder `env` in `settings.json`). Der Wächter hat den Schalter `SKILL_GUARD=0`
+     schon; Skill-Log bekommt `SKILL_LOG=0`. `claude plugin marketplace list` zeigt außerdem
+     `claudeai-my-uploads` – die claude.ai-Uploads als eigener Marketplace; vor Schritt 5 prüfen, ob das ein Weg ist.
 2. **Zweig `umbau-plugins`, Marketplace-Gerüst:** `marketplace.json` (`workbench`), Plugin `work` nur mit den Hooks
    (Skill-Log, Wächter mit Abschalt-Variablen); Prüfskript um `plugin.json`/`marketplace.json` erweitert.
 3. **Pi umstellen:** Herbert entfernt die Hooks aus `~/.claude/settings.json` und installiert `work@workbench`; Skill-Log
