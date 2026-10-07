@@ -139,6 +139,7 @@ def build_rounds(entries, skill_names=None, transcripts_dir=None):
                 "aktiv": sorted(active.get(session, set())),
                 "unsicher": session in open_round,
                 "skills": [],
+                "guard": [],
             }
             if slash and short(slash) in skill_names:
                 current["skills"].append({"skill": slash, "ok": True, "via": "slash"})
@@ -153,6 +154,8 @@ def build_rounds(entries, skill_names=None, transcripts_dir=None):
                 if any(s.get("via") == "slash" and short(s["skill"]) == name for s in skills):
                     continue
                 skills.append({"skill": entry.get("skill"), "ok": entry.get("ok", True), "via": "tool"})
+        elif event == "guard" and session in open_round:
+            open_round[session]["guard"].append({k: entry.get(k) for k in ("regel", "entscheidung", "ziel", "tool")})
         elif event == "turn_end":
             open_round.pop(session, None)
     return rounds
@@ -204,6 +207,12 @@ def report(rounds, limit_without):
         for r in unsure:
             names = ", ".join(short(s["skill"]) for s in r["skills"])
             print(f"  {r['ts']} [{r['project']}] {names}: {r['text'][:100]!r}")
+
+    guard = collections.Counter((g["regel"], g["entscheidung"]) for r in rounds for g in r.get("guard", []))
+    if guard:
+        print("\nSkill-Wächter (docs/skill-guard-v1.md) – Treffer je Regel:")
+        for rule in sorted({k[0] for k in guard}):
+            print(f"  {rule:<12} geblockt: {guard[(rule, 'geblockt')]:>4}  gewarnt: {guard[(rule, 'gewarnt')]:>4}")
 
     if without:
         shown = without[-limit_without:] if limit_without else without

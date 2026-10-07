@@ -86,5 +86,14 @@ class UnsicherTest(unittest.TestCase):
         self.assertFalse(rounds[1]["unsicher"])
 
 
+class GuardTest(unittest.TestCase):
+    def test_waechter_ereignis_haengt_an_der_runde(self):
+        rounds = r.build_rounds([e(1, "prompt", text="weiter"),
+                                 e(2, "guard", regel="code", entscheidung="geblockt", ziel="/x/a.py", tool="Edit"),
+                                 e(3, "skill", skill="code-erstellen"), e(4, "turn_end")], SKILLS)
+        self.assertEqual(rounds[0]["guard"][0]["regel"], "code")
+        self.assertEqual(rounds[0]["skills"][0]["skill"], "code-erstellen")
+
+
 if __name__ == "__main__":
     unittest.main()
