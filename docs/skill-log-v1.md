@@ -120,7 +120,8 @@ genug bleiben, `"cleanupPeriodDays": 365` setzen (Standard 30 Tage). Das Skript 
 - zeigt je Skill die Zündungen, getrennt nach automatisch und per `/name`, und die gescheiterten Aufrufe; ein
   Slash-Aufruf eines Skills (`/projekt-anlegen`) zählt per `/name`, auch wenn dabei kein Ereignis `skill` entsteht
 - trennt die Runden nach Art (`art`): `prompt`, `system` (Meldungen von Hintergrundaufgaben und Subagenten,
-  `<task-notification>`, `<agent-message>`) und `leer` (nur Bild); bewertet werden nur Prompts
+  `<task-notification>`, `<agent-message>`), `befehl` (beginnt mit `!`: Shell-Befehl, den die Claude-Desktop-App als
+  Prompt schickt) und `leer` (nur Bild); bewertet werden nur Prompts
 - führt je Runde die Skills, die in der Sitzung schon geladen waren (`aktiv`); sie bleiben bis zum Sitzungsende im
   Kontext. Was eine Sitzung vor dem Log geladen hatte (Gabelung `fork`, `resume`), liest das Skript aus ihrem
   Transcript unter `--transcripts` (Standard `~/.claude/projects`, `''` schaltet es ab). Ein Prompt ohne Skill mit

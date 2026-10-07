@@ -63,6 +63,8 @@ def prompt_kind(text):
         return "leer"
     if stripped.startswith(_SYSTEM_PREFIXES):
         return "system"
+    if stripped.startswith("!"):
+        return "befehl"  # Shell-Befehl; in der Claude-Desktop-App kommt er als normaler Prompt an
     return "prompt"
 
 
@@ -178,6 +180,7 @@ def report(rounds, limit_without):
     prompts = [r for r in rounds if r["art"] == "prompt"]
     system = sum(1 for r in rounds if r["art"] == "system")
     empty = sum(1 for r in rounds if r["art"] == "leer")
+    commands = sum(1 for r in rounds if r["art"] == "befehl")
     with_skill = [r for r in prompts if r["skills"]]
     without = [r for r in prompts if not r["skills"]]
     without_active = [r for r in without if not r["aktiv"]]
@@ -197,7 +200,7 @@ def report(rounds, limit_without):
             if not s["ok"]:
                 failed[name] += 1
 
-    print(f"Runden: {len(rounds)}  davon Systemmeldungen: {system}  leer: {empty}")
+    print(f"Runden: {len(rounds)}  davon Systemmeldungen: {system}  Shell-Befehle (!): {commands}  leer: {empty}")
     print(f"Prompts: {len(prompts)}  mit Skill: {len(with_skill)}  ohne Skill: {len(without)} "
           f"(davon ohne aktiven Skill der Sitzung: {len(without_active)})  mehrere Skills: {len(multi)}  "
           f"unsicher zugeordnet: {len(unsure)}")

@@ -14,7 +14,7 @@ Befunde gehen. Format des Logs: [docs/skill-log-v1.md](../../docs/skill-log-v1.m
 | Rechner (`host`) | Ordner | Anmerkung |
 |---|---|---|
 | ha-pi | `/data/home/.claude/skill-log` | Home Assistant, Terminal-App; Log läuft seit 29.09.2026 |
-| desktop-pc | `~/.claude/skill-log` am Desktop-PC (Windows) | Plugin `work@workbench` seit 07.10.2026; Desktop-App: `!`-Zeilen sind dort normale Prompts; zur Auswertung die Dateien neben das HA-Log kopieren |
+| desktop-pc | `~/.claude/skill-log` am Desktop-PC (Windows) | Plugin `work-hooks@workbench` seit 07.10.2026; Desktop-App: `!`-Zeilen sind dort normale Prompts (Art `befehl`); zur Auswertung die Dateien neben das HA-Log kopieren |
 | firmen-laptop | fehlt | Hooks nach `docs/skill-log-v1.md` einrichten; Ordner hier eintragen oder die Dateien zur Auswertung neben das HA-Log kopieren |
 
 Wird auf einem Rechner ausgewertet, der die Ordner der anderen nicht sieht, nur die erreichbaren auswerten und die

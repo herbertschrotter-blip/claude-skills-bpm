@@ -82,6 +82,9 @@ Jede Runde ohne Skill und jede mit mehreren Skills bekommt ein Urteil:
 
 - Kurze Zustimmungen, Rückfragen und Gespräch ohne Auftrag sind *richtig* ohne Skill; nicht einzeln aufführen, nur
   zählen.
+- Prompts, die mit `!` beginnen, sind Shell-Befehle: In der Terminal-App erreichen sie das Log nicht, in der
+  Claude-Desktop-App kommen sie als normaler Prompt an. Sie sind nie ein Fehlausfall; das Skript zählt sie getrennt
+  (Art `befehl`).
 - Runden mit genau einem Skill werden nur geprüft, wenn der Aufruf gescheitert ist (`ok: false`) oder der Nutzer es
   im Bereich verlangt.
 - **Tiefenanalyse:** Für jeden Fehlausfall, jede Fehlzündung und jeden Konflikt das Transcript der Sitzung lesen

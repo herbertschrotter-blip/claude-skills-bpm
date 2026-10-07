@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.43.1] — 2026-10-08
+
+- **skills/skill-auswertung, Fix:** Prompts, die mit `!` beginnen, sind Shell-Befehle (die Claude-Desktop-App schickt sie
+  als normalen Prompt) und nie ein Fehlausfall. Dazu zählt `tools/skill-log/skill_log_report.py` sie als eigene Art
+  `befehl` (Test ergänzt); `docs/skill-log-v1.md` und die Skill-Log-Config nachgezogen (desktop-pc nutzt `work-hooks`).
+
 ## [v0.43.0] — 2026-10-07
 
 - **skills/projekt-anlegen, Feature:** Neuer Abschnitt „Bestehendes Repo einrichten“: Für ein vorhandenes Repo ohne oder

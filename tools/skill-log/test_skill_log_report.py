@@ -41,6 +41,7 @@ class ArtTest(unittest.TestCase):
         self.assertEqual(r.prompt_kind("  <agent-message from='a'>"), "system")
         self.assertEqual(r.prompt_kind("   "), "leer")
         self.assertEqual(r.prompt_kind("nächstes ticket"), "prompt")
+        self.assertEqual(r.prompt_kind("! git status"), "befehl")
 
 
 class AktivTest(unittest.TestCase):
