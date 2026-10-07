@@ -204,7 +204,7 @@ Je Skill:
 - [ ] `test-prompts.md`, `references.zip`, `projects/` entfernt
 - [ ] README und INDEX aktuell; kein Skill mit Werten oder Beispielen einer bestimmten App
 
-### Plan (07.10.2026, Freigabe Herbert offen) – Plugin-Marketplace
+### Plan (07.10.2026, von Herbert freigegeben; Schritte 1–6 erledigt) – Plugin-Marketplace
 
 Ziel: Skills, Skill-Log und Skill-Wächter mit einem Befehl auf jedem Rechner installieren (Firmen-Laptop) und für
 andere nutzbar machen. Herbert hat entschieden: erst Fragen klären und Plan, umgebaut wird nach seiner Freigabe auf dem
