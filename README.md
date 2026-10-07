@@ -34,7 +34,7 @@ Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskri
 | **Cross-Review** | ChatGPT kann Skills und Review-Runden direkt aus dem Repo lesen. CGR-System archiviert jede Review-Runde in 4 Dateien. |
 | **Backup** | Skills gehen nicht verloren wenn der Claude-Projekt-Speicher reset wird. |
 | **Portabilität** | Universelle Skills + projektspezifische Werte sind getrennt (`skills/` vs Profile in der CLAUDE.md des Projekts bzw. noch `projects/<projekt>/`). Neue Projekte nutzen dasselbe Skill-System, indem sie ihr Profil anlegen ([`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md)). |
-| **Meta-Werkzeug** | Die Skills reflektieren über sich selbst: `skill-neu` erstellt neue Skills, `skill-pflege` ändert bestehende, `evals/` misst das Routing-Verhalten. |
+| **Meta-Werkzeug** | Die Skills reflektieren über sich selbst: `skill-neu` erstellt neue Skills, `skill-pflege` ändert bestehende, `quality/evals/` misst das Routing-Verhalten, das Skill-Log mit `skill-auswertung` zeigt, wie die Skills im Alltag greifen. |
 
 ---
 
@@ -47,7 +47,8 @@ claude-skills-bpm/
 ├── CHANGELOG.md           ← Versionsverlauf
 ├── CLAUDE.md              ← Skill-Profil dieses Repos (Commit, Checks, Push)
 ├── MEMORY-RUBRIKEN.md     ← Konvention für 4 Memory-Rubriken
-├── .claude/skill-config/  ← Configs der Skills für dieses Repo (tracker, review)
+├── .claude/skill-config/  ← Configs der Skills für dieses Repo (tracker, review, skill-log)
+├── .github/workflows/     ← validate-skills.yml – Prüfskript nach jedem Push
 ├── .claude-plugin/        ← plugin.json – nur für Tests mit claude plugin eval
 ├── docs/                  ← Konzepte, Regeln, Reviews, Umbau-Plan
 ├── evals/                 ← Manuelle Skill-Routing-Evals (bis v0.20)
@@ -171,9 +172,10 @@ Das Eval-System misst, ob ein Skill bei den richtigen Queries triggert und bei d
 ### Neu: automatische Routing-Tests (`quality/evals/`)
 
 Seit Umbau Phase 1 (24.09.2026) gibt es Testfälle für `claude plugin eval` (Manifest `.claude-plugin/plugin.json`, nur
-für Tests). Fünf Pilotfälle: audit-readonly, doc-write, code-implement, skill-update, cc-not-in-claude-code. Aufruf und
-Schwellen: Skill-Profil in [`CLAUDE.md`](./CLAUDE.md) und [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md).
-Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1).
+für Tests). 85 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Logs (Tag `real`); Tabelle aller Fälle in
+[`quality/README.md`](./quality/README.md). Aufruf und Schwellen: Skill-Profil in [`CLAUDE.md`](./CLAUDE.md) und [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md).
+Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1), auf Rechnern ohne
+PowerShell (HA) nach jedem Push per GitHub Actions.
 
 ### Neu: Skill-Log aus dem Alltag (`tools/skill-log/`)
 
@@ -238,8 +240,10 @@ klärt Phase 6 beim Skill tracker, entfernt wird der Ordner in Phase 7.
 | `chat-anker-konzept.md` | Draft v2 des Chat-Anker-Systems |
 | `chatgpt-reviews/` | CGR-Archiv dieses Repos (Serien `CGR-2026-09-23-ha-grundsatz`, `CGR-2026-09-24-skillsystem`) mit `INDEX.md` |
 | `fragilitaeten-und-fruehwarn.md` | 4 Fragilitäten mit Frühwarn-Indikatoren (INDEX-Invariante 10) |
-| `ha-grundsatz/` | HA-Grundsatzregeln für Home-Assistant-Projekte (im Aufbau, genutzt von `projekt-anlegen`) |
+| `ha-grundsatz/` | HA-Grundsatzregeln für Home-Assistant-Projekte (im Aufbau, genutzt von `projekt-anlegen`; G-22 Oberfläche mit Lit) |
 | `project-architecture.md` | Verweis auf `skill-profile-v1.md` (bleibt, bis tracker umgestellt ist) |
+| `skill-guard-v1.md` | Skill-Wächter: Hooks, die an der Aktion prüfen, ob der zuständige Skill geladen ist; lernbare Regeln |
+| `skill-log-v1.md` | Format, Einrichtung und Auswertung des Skill-Logs |
 | `skill-profile-v1.md` | Spezifikation Skill-Profil v1 (Abschnitt `## Skill-Profil` in der CLAUDE.md, Configs unter `.claude/skill-config/`) |
 | `skill-quality.md` | Verbindliche Qualitätsregeln für Skills |
 | `skill-refactor-phases.md` | Arbeitsnahe Referenz der 5 Refactor-Phasen (April 2026) |
@@ -319,7 +323,8 @@ zugeschnitten:
 
 - Workflow-Regeln (Commit-Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Ein-Task-Ein-Commit, Pro-Task-Quittung)
 - ClickUp als Aufgaben-System (Werte je Projekt aus Profil bzw. `projects/<projekt>/`)
-- Herberts PCs (Büro-PC auf D:, Surface auf C:, Standrechner)
+- Herberts Rechner (Büro-PC auf D:, Surface auf C:, Standrechner) und der Home Assistant (Raspberry Pi), auf dem
+  Claude Code als Hauptumgebung läuft
 - CGR-Archivierung der ChatGPT-Reviews im jeweiligen Repo
 
 Für **generische** Skills (TDD, Debugging, Refactoring, allgemeine Code-Patterns) empfehlen sich öffentliche Repos:
@@ -346,7 +351,8 @@ Für **generische** Skills (TDD, Debugging, Refactoring, allgemeine Code-Pattern
 
 ### Prüfen und Eval-Runs
 
-Vor jedem Commit an Skills: `pwsh -NoProfile -File tools/validate-skills.ps1` (mechanische Prüfung). Nach Änderungen an
+Vor jedem Commit an Skills: `pwsh -NoProfile -File tools/validate-skills.ps1` (mechanische Prüfung); auf dem HA ohne
+PowerShell läuft sie nach jedem Push per GitHub Actions (`gh run list`). Nach Änderungen an
 einer description und vor dem Hochladen: die betroffenen Fälle mit `claude plugin eval` (Befehl im Skill-Profil der
 [`CLAUDE.md`](./CLAUDE.md)). Die manuellen Evals unter `evals/` bleiben als Archiv.
 
@@ -381,7 +387,11 @@ claude-skills-bpm/
 │
 ├── .claude/skill-config/
 │   ├── review.md                          ← Config für chatgpt-review
+│   ├── skill-log.md                       ← Config für skill-auswertung (Log-Ordner, ausgewertet bis)
 │   └── tracker.md                         ← Config für tracker (Space Claude Skills Entwicklung)
+│
+├── .github/workflows/
+│   └── validate-skills.yml                ← Prüfskript nach jedem Push
 │
 ├── .claude-plugin/
 │   └── plugin.json                        ← nur für claude plugin eval
@@ -392,6 +402,8 @@ claude-skills-bpm/
 │   ├── fragilitaeten-und-fruehwarn.md
 │   ├── ha-grundsatz/
 │   ├── project-architecture.md            ← Verweis auf skill-profile-v1.md
+│   ├── skill-guard-v1.md                  ← Skill-Wächter
+│   ├── skill-log-v1.md                    ← Skill-Log
 │   ├── skill-profile-v1.md
 │   ├── skill-quality.md
 │   ├── skill-refactor-phases.md
@@ -418,7 +430,9 @@ claude-skills-bpm/
 │   │   └── memory-format.md
 │   └── heidi/                             ← dieselben 4 Dateien
 │
-├── quality/evals/                         ← 5 Pilotfälle (prompt.md + graders/)
+├── quality/
+│   ├── README.md                          ← Regeln und Tabelle aller Fälle
+│   └── evals/                             ← 85 Fälle (prompt.md + graders/), 9 aus echten Prompts
 │
 ├── reference/
 │   └── anthropic-skill-creator/
@@ -428,7 +442,7 @@ claude-skills-bpm/
 │   ├── cc-steuerung/
 │   │   ├── SKILL.md
 │   │   └── references/desktop-commander.md
-│   ├── chat-wechsel/SKILL.md
+│   ├── chat-wechsel/                      ← SKILL.md + references/ (prompt-struktur, tracker-abgleich, cowork, neues-fenster)
 │   ├── chatgpt-review/SKILL.md
 │   ├── code-erstellen/
 │   │   ├── SKILL.md
@@ -437,6 +451,8 @@ claude-skills-bpm/
 │   ├── git-commit-helper/SKILL.md
 │   ├── mockup-erstellen/SKILL.md
 │   ├── projekt-anlegen/                   ← SKILL.md + references/ (github, stacks/home-assistant)
+│   ├── sitzung/                           ← SKILL.md + references/ (befehle, umgebung) + scripts/sitzung.py
+│   ├── skill-auswertung/SKILL.md
 │   ├── skill-neu/                         ← SKILL.md + references/ (cowork)
 │   ├── skill-pflege/                      ← SKILL.md + references/ (rule-inventory, delivery)
 │   ├── ticket/                            ← SKILL.md + test-prompts.md
@@ -446,6 +462,8 @@ claude-skills-bpm/
 │       └── references.zip                 ← entfällt in Umbau Phase 7
 │
 └── tools/
+    ├── skill-guard/                       ← Skill-Wächter: skill_guard.py, regeln.json, Tests
+    ├── skill-log/                         ← Skill-Log: skill_log.py (Hook), skill_log_report.py (Auswertung), Tests
     └── validate-skills.ps1                ← Prüfskript (PowerShell 7)
 ```
 
