@@ -46,6 +46,7 @@ claude-workbench/
 ├── INDEX.md               ← Verbindliches Routing + globale Invarianten
 ├── CHANGELOG.md           ← Versionsverlauf
 ├── CLAUDE.md              ← Skill-Profil dieses Repos (Commit, Checks, Push)
+├── LICENSE                ← MIT
 ├── MEMORY-RUBRIKEN.md     ← Konvention für 4 Memory-Rubriken
 ├── .claude/skill-config/  ← Configs der Skills für dieses Repo (tracker, review, skill-log)
 ├── .github/workflows/     ← validate-skills.yml – Prüfskript nach jedem Push
@@ -383,6 +384,7 @@ claude-workbench/
 ├── INDEX.md                               ← Routing + globale Invarianten (verbindlich)
 ├── CHANGELOG.md                           ← Versionseinträge
 ├── CLAUDE.md                              ← Skill-Profil dieses Repos
+├── LICENSE                                ← MIT (reference/ unter Apache-2.0)
 ├── MEMORY-RUBRIKEN.md                     ← Memory-Konvention (4 Rubriken)
 ├── .gitignore
 │
@@ -478,4 +480,5 @@ claude-workbench/
 
 ## Lizenz
 
-Privates Repo von Herbert Schrotter. Keine freie Lizenz. Anthropic-Referenzmaterial unter `reference/anthropic-skill-creator/` folgt der dortigen `LICENSE.txt`.
+MIT, siehe [LICENSE](./LICENSE) (© 2026 Herbert Schrotter). Ausgenommen ist das Anthropic-Referenzmaterial unter
+`reference/anthropic-skill-creator/`: Es steht unter Apache-2.0 (dortige `LICENSE.txt`).

@@ -317,7 +317,22 @@ Plugins im selben Repo)
    alle 15 Skills einmal aus claude.ai; Log-Zeilen mit `desktop-pc` vor dem Wechsel auf `work-hooks` geprüft.
    **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
-   README für fremde Nutzer.
+   README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
+   Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist
+   seit 04/2026 öffentlich, ClickUp-IDs ohne Zugang wertlos); Lizenz **MIT**. Bleiben drin: Protokolle
+   (`docs/chatgpt-reviews/`, `docs/skill-refactors/`, `quality/real-environment/`, `evals/runs/`), BPM/Heidi als
+   Beispiele in den Skills, `.claude/skill-config/tracker.md` (Arbeits-Config dieses Repos).
+   - **8a** `LICENSE` (MIT), Lizenz-Abschnitt der README, `skills/sitzung/scripts/__pycache__/*.pyc` aus dem Repo
+     (steht trotz `.gitignore` drin). Keine neue Nummer.
+   - **8b** tracker neutral: feste IDs aus `skills/tracker/SKILL.md` (BPM-Listen) und `references/issue-task.md`
+     (Skill-Issue-Liste) in Profil bzw. Tracker-Config; danach `projects/` entfernen (nur noch tracker liest dort).
+     Über skill-pflege, PATCH, Upload tracker.
+   - **8c** Wächter für Fremde: `regeln.json` im Plugin wird neutrale Vorlage, eigene Regeln außerhalb (z. B.
+     `~/.claude/skill-guard/regeln.json`, wird zuerst gelesen); Hinweistext „sag es Herbert“ neutral. Eigener Entwurf
+     vorab; Herbert legt danach seine Regeldatei an.
+   - **8d** README-Teil für Fremde: was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
+     `SKILL_LOG_HOST`), Skill-Profil in der `CLAUDE.md` als Voraussetzung. Über doc-pflege.
+   - **8e** Einrichtungsbefehl, der Skill-Profil und Configs im Projekt anlegt – eher eigener Skill, MINOR, später.
 9. **Merge** nach Herberts Freigabe.
 
 ## Was Herbert selbst tut
