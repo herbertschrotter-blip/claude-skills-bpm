@@ -36,6 +36,7 @@ Andere Ablage über die Umgebungsvariable `SKILL_LOG_DIR`.
 | `prompt` | `UserPromptSubmit` | Was eingegeben wurde – Maßstab, ob ein Skill hätte zünden müssen |
 | `skill` | `PostToolUse`, Matcher `Skill` | Welcher Skill tatsächlich geladen wurde |
 | `turn_end` | `Stop` | Ende der Runde; danach gehören Skill-Aufrufe nicht mehr zu diesem Prompt |
+| `guard` | `PreToolUse`/`PostToolUse` (Skill-Wächter) | Aktion ohne zuständigen Skill: geblockt oder gewarnt (`docs/skill-guard-v1.md`) |
 
 Eine **Runde** ist ein `prompt` mit allen `skill`-Zeilen derselben Sitzung bis zum nächsten `prompt` oder `turn_end`.
 
@@ -118,4 +119,5 @@ genug bleiben, `"cleanupPeriodDays": 365` setzen (Standard 30 Tage). Das Skript 
   (möglicher Fehlausfall)
 - mehrere Ordner zusammen auswerten, z. B. das Log des Laptops neben dem des HA
 - `--json` gibt die Runden aus – Grundlage für neue Fälle in `evals/` (`should_trigger`, `should_not_trigger`)
+- zählt die Entscheidungen des Skill-Wächters je Regel (`guard` je Runde; `docs/skill-guard-v1.md`)
 - Tests: `python3 -m unittest tools/skill-log/test_skill_log_report.py`

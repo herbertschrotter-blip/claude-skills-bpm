@@ -55,7 +55,7 @@ claude-skills-bpm/
 ├── quality/evals/         ← Testfälle für claude plugin eval
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
-└── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/)
+└── tools/                 ← Prüfskript validate-skills.ps1, Skill-Log (skill-log/), Skill-Wächter (skill-guard/)
 ```
 
 Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Dateien.
@@ -181,6 +181,13 @@ Hooks in Claude Code schreiben auf jedem Rechner mit, welche Prompts eingegeben 
 gezündet haben. `skill_log_report.py` zeigt Zündungen je Skill, Runden mit mehreren Skills und Prompts ohne Skill –
 Rohstoff für neue Fälle in `quality/evals/`. Ausgewertet wird mit dem Skill skill-auswertung (Config
 `.claude/skill-config/skill-log.md`). Format und Einrichtung: [`docs/skill-log-v1.md`](./docs/skill-log-v1.md).
+
+### Neu: Skill-Wächter (`tools/skill-guard/`)
+
+Skills zünden auf den Prompt; bei „weiter“ zündet nichts, obwohl Claude danach Code oder Doku ändert. Der Wächter
+prüft deshalb an der Aktion (Hooks `PreToolUse`/`PostToolUse`), ob der zuständige Skill geladen ist: blocken oder
+warnen nach `tools/skill-guard/regeln.json`. Die Regeln lernen über skill-auswertung aus dem Skill-Log. Format und
+Einrichtung: [`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md).
 
 ### Eval-Methodik
 
