@@ -50,7 +50,7 @@ Grenze sie prüfen.
 
 | Skill | Fälle | davon kritisch |
 |---|---|---|
-| code-erstellen | 10 | 0 |
+| code-erstellen | 11 | 0 |
 | doc-pflege | 7 | 2 |
 | audit | 7 | 6 |
 | mockup-erstellen | 8 | 0 |
@@ -65,7 +65,7 @@ Grenze sie prüfen.
 | projekt-anlegen | 6 | 3 |
 | skill-auswertung | 5 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **83** | **32** |
+| **gesamt** | **84** | **32** |
 
 ## Nicht abgedeckt
 
@@ -78,7 +78,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 06.10.2026, 83 Fälle.
+Stand 07.10.2026, 84 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -89,6 +89,7 @@ Stand 06.10.2026, 83 Fälle.
 | `code-with-task-ref` | code-erstellen | Setz BPM-082 um: Im DocumentTypeRecognizer soll die Erkennung auch Plannummern mit Bindestrich finden. | code-erstellen | tracker | normal |
 | `code-erstellen-real-task-id` | code-erstellen | Mach du BSM-002: die Update-Zeitpläne auf den Steckdosen entfernen und in der Integration prüfen, dass keiner mehr aktiv ist. | code-erstellen | – | normal, echt |
 | `code-erstellen-real-weiter-mit` | code-erstellen | Pushen und dann weiter mit BSM-014: Die Auswertung soll ihre Verbrauchswerte aus der eigenen Datenbank der Integration lesen statt aus der HA-Statistik. | code-erstellen | – | normal, echt |
+| `code-erstellen-real-uebergabe` | code-erstellen | Übergabe „Baustrom-Integration Teil 3“ mit offenen Punkten (Berechtigungen, Ticket WU-0018) und „fang mit Punkt 1 an“ | code-erstellen | chat-wechsel | normal, echt |
 | `code-refactor` | code-erstellen | Refaktoriere den PlanParser: Die drei fast gleichen Parse-Methoden sollen eine gemeinsame Hilfsmethode nutzen. | code-erstellen | – | normal |
 | `code-ha-automation` | code-erstellen | Schreib mir eine Home-Assistant-Automation in YAML: Wenn alle das Haus verlassen haben, soll der Saugroboter starten. | code-erstellen | – | normal |
 | `code-generic-change` | code-erstellen | Ändere die Zeitüberschreitung beim Upload von 30 auf 60 Sekunden. | code-erstellen | doc-pflege | normal |
