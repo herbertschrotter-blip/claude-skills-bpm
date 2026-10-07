@@ -49,12 +49,12 @@ claude-skills-bpm/
 ├── MEMORY-RUBRIKEN.md     ← Konvention für 4 Memory-Rubriken
 ├── .claude/skill-config/  ← Configs der Skills für dieses Repo (tracker, review, skill-log)
 ├── .github/workflows/     ← validate-skills.yml – Prüfskript nach jedem Push
-├── .claude-plugin/        ← marketplace.json (Marketplace workbench), plugin.json – nur für claude plugin eval
+├── .claude-plugin/        ← marketplace.json: Marketplace workbench (Plugins work, skill-workshop)
 ├── docs/                  ← Konzepte, Regeln, Reviews, Umbau-Plan
-├── plugins/               ← Plugins des Marketplace: work (Hooks Skill-Log und Skill-Wächter)
+├── plugins/               ← Hook-Skripte des Plugins work (Skill-Log, Skill-Wächter)
 ├── evals/                 ← Manuelle Skill-Routing-Evals (bis v0.20)
 ├── projects/              ← Projekt-spezifische Daten (isoliert pro Projekt)
-├── quality/evals/         ← Testfälle für claude plugin eval
+├── quality/               ← Eval-Plugin: evals/ (Testfälle für claude plugin eval), skills → ../skills
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
 └── tools/                 ← Prüfskript validate-skills.ps1, Auswertung des Skill-Logs (skill-log/)
@@ -172,8 +172,8 @@ Das Eval-System misst, ob ein Skill bei den richtigen Queries triggert und bei d
 
 ### Neu: automatische Routing-Tests (`quality/evals/`)
 
-Seit Umbau Phase 1 (24.09.2026) gibt es Testfälle für `claude plugin eval` (Manifest `.claude-plugin/plugin.json`, nur
-für Tests). 85 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Logs (Tag `real`); Tabelle aller Fälle in
+Seit Umbau Phase 1 (24.09.2026) gibt es Testfälle für `claude plugin eval` (Manifest `quality/.claude-plugin/plugin.json`,
+nur für Tests). 85 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Logs (Tag `real`); Tabelle aller Fälle in
 [`quality/README.md`](./quality/README.md). Aufruf und Schwellen: Skill-Profil in [`CLAUDE.md`](./CLAUDE.md) und [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md).
 Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1), auf Rechnern ohne
 PowerShell (HA) nach jedem Push per GitHub Actions.
@@ -395,8 +395,8 @@ claude-skills-bpm/
 │   └── validate-skills.yml                ← Prüfskript nach jedem Push
 │
 ├── .claude-plugin/
-│   ├── marketplace.json                   ← Marketplace workbench (Plugins unter plugins/)
-│   └── plugin.json                        ← nur für claude plugin eval
+│   └── marketplace.json                   ← Marketplace workbench: Plugins work und skill-workshop (strict: false,
+│                                            Skills aus skills/, Hooks direkt im Eintrag)
 │
 ├── docs/
 │   ├── chat-anker-konzept.md
@@ -433,10 +433,11 @@ claude-skills-bpm/
 │   └── heidi/                             ← dieselben 4 Dateien
 │
 ├── plugins/
-│   └── work/                              ← .claude-plugin/plugin.json; hooks/: hooks.json, skill_log.py,
-│                                            skill_guard.py, regeln.json, Tests
+│   └── work/hooks/                        ← skill_log.py, skill_guard.py, regeln.json, Test des Wächters
 │
-├── quality/
+├── quality/                               ← für claude plugin eval selbst ein Plugin
+│   ├── .claude-plugin/plugin.json         ← Eval-Manifest (experimental.evals: evals)
+│   ├── skills → ../skills                 ← Symlink, damit die Evals die Skills laden
 │   ├── README.md                          ← Regeln und Tabelle aller Fälle
 │   └── evals/                             ← 85 Fälle (prompt.md + graders/), 9 aus echten Prompts
 │

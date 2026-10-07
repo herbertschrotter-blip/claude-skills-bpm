@@ -110,7 +110,7 @@ audit beurteilt, was kein Skript kann:
 ### Verhalten
 
 - **`claude plugin eval`** misst, welcher unserer Skills auslöst.
-  - Fälle unter `quality/evals/`, Test-Manifest `.claude-plugin/plugin.json`.
+  - Fälle unter `quality/evals/`, Test-Manifest `quality/.claude-plugin/plugin.json` (Aufruf `claude plugin eval quality …`).
   - Pflicht vor dem Upload bei claude.ai und nach jeder Änderung an einer Description oder an auslöserelevanten
     Abschnitten; dann nur die betroffenen Fälle (`--case`/`--tag`). Die ganze Suite läuft vor und nach einem großen Umbau.
   - Schwellen: kritische Fälle 3 von 3 Läufen, sonst mindestens 2 von 3.

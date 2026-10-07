@@ -22,8 +22,7 @@ Arbeit des Skills danach.
 - Tags: `baseline` (Grundmessung), `routing`, `pilot` (die fünf Pilotfälle), `critical` (muss 3 von 3 Läufen
   bestehen), `ziel` (Ziel-Fall, darf vor dem Umbau scheitern), `real` (Fall aus einem echten Prompt im Skill-Log, Art „echt“) und die Namen aller beteiligten Skills.
   `--tag <skill>` wählt damit alle Fälle, die ein Skill berührt.
-- Das Manifest `.claude-plugin/plugin.json` zeigt auf `quality/evals`. Ergebnisse landen in
-  `quality/evals/results/` und gehören nicht ins Repo.
+- `quality/` ist für `claude plugin eval` selbst ein Plugin: Manifest `quality/.claude-plugin/plugin.json` (Fälle in `quality/evals`), `quality/skills` ist ein Symlink auf `skills/`. Eine `plugin.json` im Hauptordner geht nicht, weil der Marketplace dort mit `strict: false` liest. Auf Windows braucht der Symlink `git config core.symlinks true`; die Evals laufen auf dem HA. Ergebnisse landen in `quality/evals/results/` und gehören nicht ins Repo.
 
 ## Regeln für Fälle
 
@@ -39,9 +38,9 @@ Voraussetzung ist ein angemeldetes CLI (`claude auth login`, prüfen mit `claude
 
 | Zweck | Befehl |
 |---|---|
-| alle Fälle | `claude plugin eval . --runs 3 --ablation none --no-publish --trust-plugin` |
+| alle Fälle | `claude plugin eval quality --runs 3 --ablation none --no-publish --trust-plugin` |
 | Fälle eines Skills | dazu `--tag <skill>` |
-| ein Fall zur Fehlersuche | `claude plugin eval . --case <fall> --runs 1 --ablation none --no-publish --trust-plugin --keep-temp` |
+| ein Fall zur Fehlersuche | `claude plugin eval quality --case <fall> --runs 1 --ablation none --no-publish --trust-plugin --keep-temp` |
 
 ## Verteilung
 

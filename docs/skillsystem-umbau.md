@@ -237,7 +237,7 @@ Zweig `umbau-plugins`, Merge ebenfalls nach Freigabe. ClickUp:
 | Synchronisierte claude.ai-Skills in Claude Code abschalten? | Ja: `syncClaudeAiSkills: false` in `settings.json` (ganz) oder `skillOverrides` je Skill (`"anthropic-skills:<name>": "off"`). Damit kann der Pi die Skills aus dem Plugin laden, ohne sie doppelt zu haben |
 | Installation aus privatem GitHub-Repo? | Ja, über die Git-Zugangsdaten des Rechners (SSH-Schlüssel oder `gh auth login` + `gh auth setup-git`); Plugins in Unterordnern per `"source": "./plugins/<name>"` |
 | Automatische Updates? | Ab Werk aus; je Marketplace in `/plugin` einschaltbar oder `"autoUpdate": true` im Eintrag unter `extraKnownMarketplaces`. Version aus `plugin.json`, sonst der Git-Commit; von Hand `claude plugin update work@workbench` |
-| Plugin nur mit Hooks? | Ja: `.claude-plugin/plugin.json` und `hooks/hooks.json` genügen; Skripte über `"${CLAUDE_PLUGIN_ROOT}/…"` |
+| Plugin nur mit Hooks? | Ja: `.claude-plugin/plugin.json` und `hooks/hooks.json` genügen; Skripte über `"${CLAUDE_PLUGIN_ROOT}/…"`; für Variante B stehen die Hooks direkt im Marketplace-Eintrag |
 
 **Übernommen aus [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills)** (Marketplace mit 99
 Plugins im selben Repo)
@@ -284,10 +284,26 @@ Plugins im selben Repo)
    Exit 2 und blockiert jede Aktion. Deshalb zuerst: Herbert trägt `"env": { "SKILL_LOG_HOST": "ha-pi" }` ein, entfernt
    die Hooks aus `~/.claude/settings.json`, installiert `work@workbench` (vor dem Merge aus dem Worktree, danach aus
    GitHub) und startet die Fenster neu; erst dann Merge und `git pull`. Gegenprobe: jedes Ereignis einmal im Log.
-4. **Skills umziehen:** nach `plugins/work/skills/` und `plugins/skill-workshop/skills/`; Prüfskript, Action, Evals,
-   Report, skill-pflege-Lieferung anpassen; alle Evals grün.
-5. **Doppeltes Laden abschalten:** auf dem Pi `skillOverrides` (oder `syncClaudeAiSkills: false`) durch Herbert; prüfen,
-   dass jeder Skill einmal geladen wird. claude.ai und Cowork behalten den Upload.
+4. ✅ **Skills ins Plugin – ohne Umzug (Variante B, Herbert 07.10.2026):** Die Skills bleiben unter `skills/`. Die
+   Einträge in `marketplace.json` haben `"source": "./"` und `"strict": false` und nennen die Skill-Ordner
+   (`work`: 11 Skills, `skill-workshop`: 3; cc-steuerung in keinem Plugin); die Hooks stehen direkt im Eintrag von
+   `work` (ein Dateipfad für Hooks geht dort nicht), die Skripte bleiben unter `plugins/work/hooks/`. Folgen, auf dem Pi
+   getestet:
+   - Im Hauptordner darf keine `.claude-plugin/plugin.json` liegen (sonst „widersprüchliche Manifeste“). Der
+     Eval-Rahmen zieht nach `quality/`: Manifest `quality/.claude-plugin/plugin.json`, `quality/skills` als Symlink auf
+     `../skills`, Aufruf `claude plugin eval quality …` (ein Symlink für die Fälle wird abgelehnt, einer für die Skills
+     nicht).
+   - Bei der Installation landet das ganze Repo (rund 4 MB) im Plugin-Cache.
+   - Claude Code registriert Hooks eines Plugin-Namens nur einmal, auch aus zwei Marketplaces.
+   - Skill-Log und Wächter schneiden das Präfix ab (`work:code-erstellen` = `code-erstellen`).
+   - Kein Skill geändert, kein Upload. Variante A (Umzug nach `plugins/<name>/skills/`) hätte rund 8 Skills mit Upload
+     geändert.
+5. **Doppeltes Laden abschalten – vor dem Plugin-Update:** Sobald der Pi `work@workbench` auf die Version mit Skills
+   aktualisiert, wären die 14 Skills doppelt da (`anthropic-skills:…` aus claude.ai und `work:…`/`skill-workshop:…`).
+   Deshalb zuerst Herbert: in `~/.claude/settings.json` `skillOverrides` mit `"anthropic-skills:<name>": "off"` für die
+   14 Skills, dann `claude plugin update work@workbench`, `claude plugin install skill-workshop@workbench`, Fenster neu
+   starten; prüfen, dass jeder Skill einmal geladen wird. claude.ai und Cowork behalten den Upload; cc-steuerung bleibt
+   aus claude.ai.
 6. **Repo umbenennen** in `claude-workbench` (Herbert auf GitHub), alle Verweise nachziehen.
 7. **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,

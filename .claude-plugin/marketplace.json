@@ -7,8 +7,104 @@
   "plugins": [
     {
       "name": "work",
-      "source": "./plugins/work",
-      "description": "Skill-Log und Skill-Wächter als Hooks (die Skills folgen im Umbau)."
+      "source": "./",
+      "strict": false,
+      "version": "0.2.0",
+      "description": "Skills für die Projektarbeit (Code, Mockups, Doku, Tickets, Tracker, Commits, Übergaben, Sitzungen, Reviews), dazu Skill-Log und Skill-Wächter als Hooks.",
+      "skills": [
+        "./skills/code-erstellen",
+        "./skills/mockup-erstellen",
+        "./skills/doc-pflege",
+        "./skills/ticket",
+        "./skills/projekt-anlegen",
+        "./skills/tracker",
+        "./skills/git-commit-helper",
+        "./skills/audit",
+        "./skills/chat-wechsel",
+        "./skills/sitzung",
+        "./skills/chatgpt-review"
+      ],
+      "hooks": {
+        "SessionStart": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "timeout": 10
+              }
+            ]
+          }
+        ],
+        "UserPromptSubmit": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "timeout": 10
+              }
+            ]
+          }
+        ],
+        "PreToolUse": [
+          {
+            "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_guard.py\"",
+                "timeout": 10
+              }
+            ]
+          }
+        ],
+        "PostToolUse": [
+          {
+            "matcher": "Skill",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "timeout": 10
+              }
+            ]
+          },
+          {
+            "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash|mcp__.*[Cc]lick[Uu]p.*",
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_guard.py\"",
+                "timeout": 10
+              }
+            ]
+          }
+        ],
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work/hooks/skill_log.py\"",
+                "timeout": 10
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "skill-workshop",
+      "source": "./",
+      "strict": false,
+      "version": "0.1.0",
+      "description": "Skills für die Arbeit an Skills: neu anlegen, pflegen, aus dem Skill-Log auswerten.",
+      "skills": [
+        "./skills/skill-neu",
+        "./skills/skill-pflege",
+        "./skills/skill-auswertung"
+      ]
     }
   ]
 }

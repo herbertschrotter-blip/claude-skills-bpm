@@ -21,11 +21,11 @@ HA. Das Skill-Log dieses Rechners liegt unter `/data/home/.claude/skill-log/` (`
 
 ### Checks
 - skill-validation: pwsh -NoProfile -File tools/validate-skills.ps1 [skills/**; quality/evals/**; .claude-plugin/**; plugins/**; docs/skill-quality.md; docs/skill-profile-v1.md]
-- routing-eval: claude plugin eval . --runs 3 --ablation none --no-publish --trust-plugin [skills/**]
+- routing-eval: claude plugin eval quality --runs 3 --ablation none --no-publish --trust-plugin [skills/**]
 
 ### Commit
 - Format: [vX.Y.Z] <Modul>, <Typ>: <Kurztitel>
-- Module: <skill>=skills/<skill>/**; skillsystem=docs/**, INDEX.md, README.md, CLAUDE.md, .claude/**; ha-grundsatz=docs/ha-grundsatz/**; Tools=tools/**, plugins/**, .claude-plugin/marketplace.json; Eval=quality/**, .claude-plugin/plugin.json
+- Module: <skill>=skills/<skill>/**; skillsystem=docs/**, INDEX.md, README.md, CLAUDE.md, .claude/**; ha-grundsatz=docs/ha-grundsatz/**; Tools=tools/**, plugins/**, .claude-plugin/**; Eval=quality/**
 - Versionsquelle: changelog:CHANGELOG.md
 - Versionsregel: Skill-Änderung unter skills/** → neue Nummer (Feature → MINOR, sonst PATCH) und CHANGELOG-Eintrag; Commits an Doku, Reviews, Config, Evals und Tools behalten die aktuelle Nummer
 - Push-Policy: required-after-commit

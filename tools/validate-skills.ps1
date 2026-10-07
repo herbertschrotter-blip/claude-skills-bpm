@@ -245,6 +245,7 @@ function Test-Marketplace([string]$RepoRoot, $Errors, $Warnings) {
     if ($data['name'] -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add('.claude-plugin/marketplace.json: name fehlt oder ist nicht kebab-case') }
     if (-not $data['owner'] -or -not $data['owner']['name']) { $Errors.Add('.claude-plugin/marketplace.json: owner.name fehlt') }
     $seen = @{}
+    $owners = @{}
     foreach ($entry in @($data['plugins'])) {
         $name = $entry['name']
         foreach ($key in $entry.Keys) {
@@ -255,9 +256,60 @@ function Test-Marketplace([string]$RepoRoot, $Errors, $Warnings) {
         $source = $entry['source']
         if ($source -isnot [string]) { continue }  # GitHub- oder URL-Quellen prüft Claude Code selbst
         if (-not $source.StartsWith('./')) { $Errors.Add(".claude-plugin/marketplace.json: source von »$name« beginnt nicht mit ./ ($source)"); continue }
-        $folder = Join-Path $RepoRoot $source.Substring(2)
+        $sub = $source.Substring(2).TrimEnd('/')
+        $folder = if ($sub) { Join-Path $RepoRoot $sub } else { $RepoRoot }
         if (-not (Test-Path -LiteralPath $folder -PathType Container)) { $Errors.Add(".claude-plugin/marketplace.json: Ordner von »$name« fehlt ($source)"); continue }
-        Test-PluginFolder $folder $RepoRoot $name $Errors $Warnings
+        if ($entry.ContainsKey('strict') -and $entry['strict'] -eq $false) {
+            Test-MarketplaceEntry $entry $folder $Errors $Warnings $owners
+        } else {
+            Test-PluginFolder $folder $RepoRoot $name $Errors $Warnings
+        }
+    }
+    # Jeder Skill gehört zu höchstens einem Plugin; Skills ohne Plugin (z. B. nur für Cowork) sind ein Hinweis
+    foreach ($skill in $owners.Keys) {
+        if ($owners[$skill].Count -gt 1) { $Errors.Add(".claude-plugin/marketplace.json: Skill »$skill« steht in mehreren Plugins ($($owners[$skill] -join ', '))") }
+    }
+    $skillsRoot = Join-Path $RepoRoot 'skills'
+    if ($owners.Count -gt 0 -and (Test-Path -LiteralPath $skillsRoot)) {
+        foreach ($folder in Get-ChildItem -LiteralPath $skillsRoot -Directory) {
+            if (-not $owners.ContainsKey($folder.Name)) { $Warnings.Add(".claude-plugin/marketplace.json: Skill »$($folder.Name)« gehört zu keinem Plugin") }
+        }
+    }
+}
+
+# Eintrag mit strict: false – der Eintrag selbst beschreibt das Plugin (Skills als Pfade, Hooks direkt eingetragen)
+function Test-MarketplaceEntry($Entry, [string]$Folder, $Errors, $Warnings, $Owners) {
+    $name = $Entry['name']
+    $where = ".claude-plugin/marketplace.json: Plugin »$name«"
+    if ($name -notmatch '^[a-z0-9]+(-[a-z0-9]+)*$') { $Errors.Add("${where}: name ist nicht kebab-case") }
+    if (-not $Entry['version']) { $Warnings.Add("${where}: keine version (Updates folgen dann dem Git-Commit)") }
+    if (Test-Path -LiteralPath (Join-Path $Folder '.claude-plugin/plugin.json')) {
+        $Errors.Add("${where}: strict: false, aber im Quellordner liegt eine .claude-plugin/plugin.json (Claude Code meldet widersprüchliche Manifeste)")
+    }
+    foreach ($key in $PathKeys) {
+        if (-not $Entry.ContainsKey($key) -or $key -eq 'hooks') { continue }
+        foreach ($value in @($Entry[$key])) {
+            if ($value -isnot [string]) { continue }
+            if (-not $value.StartsWith('./')) { $Errors.Add("${where}: Pfad in »$key« beginnt nicht mit ./ ($value)"); continue }
+            $target = Join-Path $Folder $value.Substring(2)
+            if (-not (Test-Path -LiteralPath $target)) { $Errors.Add("${where}: Pfad in »$key« fehlt ($value)"); continue }
+            if ($key -eq 'skills') {
+                if (-not (Test-Path -LiteralPath (Join-Path $target 'SKILL.md'))) { $Errors.Add("${where}: $value hat keine SKILL.md") }
+                $skill = Split-Path -Leaf $target
+                if (-not $Owners.ContainsKey($skill)) { $Owners[$skill] = [System.Collections.Generic.List[string]]::new() }
+                $Owners[$skill].Add($name)
+            }
+        }
+    }
+    if ($Entry.ContainsKey('hooks')) {
+        if ($Entry['hooks'] -is [string] -or $Entry['hooks'] -is [array]) {
+            $Errors.Add("${where}: hooks als Dateipfad oder Liste geht im Marketplace-Eintrag nicht – direkt als Objekt eintragen")
+        } else {
+            $text = $Entry['hooks'] | ConvertTo-Json -Depth 20
+            foreach ($m in [regex]::Matches($text, '\$\{CLAUDE_PLUGIN_ROOT\}/([^"\\\s]+)')) {
+                if (-not (Test-Path -LiteralPath (Join-Path $Folder $m.Groups[1].Value))) { $Errors.Add("${where}: Hook-Skript fehlt: $($m.Groups[1].Value)") }
+            }
+        }
     }
 }
 
@@ -382,7 +434,7 @@ function Invoke-Validation {
     }
 
     # Prüfungen für das ganze Repo
-    foreach ($central in '.claude-plugin/plugin.json', 'docs/skill-quality.md', 'docs/skill-profile-v1.md') {
+    foreach ($central in '.claude-plugin/marketplace.json', 'quality/.claude-plugin/plugin.json', 'docs/skill-quality.md', 'docs/skill-profile-v1.md') {
         if (-not (Test-Path -LiteralPath (Join-Path $repoRoot $central))) { $repoErrors.Add("zentrale Datei fehlt: $central") }
     }
     $claudeFile = Join-Path $repoRoot 'CLAUDE.md'

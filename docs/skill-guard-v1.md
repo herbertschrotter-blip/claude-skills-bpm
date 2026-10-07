@@ -72,7 +72,7 @@ claude plugin marketplace add herbertschrotter-blip/claude-skills-bpm
 claude plugin install work@workbench
 ```
 
-Das Plugin bringt die Hooks für Skill-Log und Wächter mit (`plugins/work/hooks/hooks.json`). Den Rechnernamen im Log setzt
+Das Plugin bringt die Hooks für Skill-Log und Wächter mit (eingetragen im Plugin-Eintrag `work` in `.claude-plugin/marketplace.json`, Skripte unter `plugins/work/hooks/`). Den Rechnernamen im Log setzt
 `env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
 HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
 `claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten.

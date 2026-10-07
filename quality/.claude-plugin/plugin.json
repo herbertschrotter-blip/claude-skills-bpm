@@ -5,6 +5,6 @@
     "name": "Herbert Schrotter"
   },
   "experimental": {
-    "evals": "quality/evals"
+    "evals": "evals"
   }
 }
