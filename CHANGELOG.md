@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.5] — 2026-10-07
+
+- **skills/chat-wechsel, Fix:** Der Handover-Prompt nennt unter „Regeln (Erinnerung)“ jetzt den Fachskill: Code-Arbeit
+  nur mit code-erstellen (vor der ersten Dateiänderung laden), Tickets → ticket, Mockups → mockup-erstellen, ClickUp →
+  tracker (`references/prompt-struktur.md`). Befund aus der Skill-Auswertung vom 07.10.2026: „ha-baustelle Teil 3“
+  begann nach der Übergabe sofort mit Code, ohne code-erstellen zu laden (Issue chat-wechsel-002). Neuer Eval-Fall
+  `code-erstellen-real-uebergabe`.
+
 ## [v0.42.4] — 2026-10-07
 
 - **skills/code-erstellen, Fix:** `references/stacks/typescript-lit.md` gilt jetzt für jede Lit-Oberfläche in Home
