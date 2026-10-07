@@ -215,7 +215,7 @@ Zweig `umbau-plugins`, Merge ebenfalls nach Freigabe. ClickUp:
 
 | Was | Name | Installation |
 |---|---|---|
-| Repo | `claude-workbench` (heute `claude-skills-bpm`, wird umbenannt) | `/plugin marketplace add herbertschrotter-blip/claude-workbench` |
+| Repo | `claude-workbench` (bis 07.10.2026 `claude-skills-bpm`) | `/plugin marketplace add herbertschrotter-blip/claude-workbench` |
 | Marketplace | `workbench` (steht in `marketplace.json`, unabhängig vom Repo-Namen) | |
 | Plugin für die Arbeit | `work` | `work@workbench` |
 | Plugin für Skill-Arbeit | `skill-workshop` | `skill-workshop@workbench` |
@@ -304,7 +304,7 @@ Plugins im selben Repo)
    14 Skills, dann `claude plugin update work@workbench`, `claude plugin install skill-workshop@workbench`, Fenster neu
    starten; prüfen, dass jeder Skill einmal geladen wird. claude.ai und Cowork behalten den Upload; cc-steuerung bleibt
    aus claude.ai.
-6. **Repo umbenennen** in `claude-workbench` (Herbert auf GitHub), alle Verweise nachziehen.
+6. ✅ **Repo umbenennen** in `claude-workbench` (07.10.2026, `gh repo rename`): Verweise, Projekt-ID, Wächter-Regel `skills`, Remote; Ordner auf dem Pi `/config/projekte/claude-workbench` samt Gesprächsverlauf. Der Klon am PC und Verweise in anderen Projekten (`/config/CLAUDE.md`, ha-baustelle, HA_Dash_DreameX60, `/config/projekte/README.md`) ziehen nach; GitHub leitet die alten Adressen weiter.
 7. **Firmen-Laptop:** Marketplace hinzufügen, `work` installieren, Auto-Update einschalten.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer.

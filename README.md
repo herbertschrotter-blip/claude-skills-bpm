@@ -1,4 +1,4 @@
-# claude-skills-bpm
+# claude-workbench
 
 Claude-Skills von Herbert Schrotter, entstanden im Projekt BauProjektManager (BPM).
 
@@ -41,7 +41,7 @@ Dieses Repo enthält die Skill-Definitionen für 15 Skills samt Evals, Prüfskri
 ## Verzeichnisstruktur (Überblick)
 
 ```
-claude-skills-bpm/
+claude-workbench/
 ├── README.md              ← Dieses File (Onboarding)
 ├── INDEX.md               ← Verbindliches Routing + globale Invarianten
 ├── CHANGELOG.md           ← Versionsverlauf
@@ -143,7 +143,7 @@ Der `tracker`-Skill nutzt Progressive Disclosure: Die `SKILL.md` enthält nur Ke
 
 ### Two-Place-Pflege
 
-Skills werden an zwei Orten gepflegt: `claude-skills-bpm/skills/<n>/SKILL.md` (Repo) und `/mnt/skills/user/<n>/SKILL.md` (Claude.ai).
+Skills werden an zwei Orten gepflegt: `claude-workbench/skills/<n>/SKILL.md` (Repo) und `/mnt/skills/user/<n>/SKILL.md` (Claude.ai).
 
 > **Operative Regelquelle:** [`skills/skill-pflege/references/delivery.md`](./skills/skill-pflege/references/delivery.md) und [`INDEX.md`](./INDEX.md).
 
@@ -378,7 +378,7 @@ lesen tracker und git-commit-helper noch `projects/<[PROJECT]>/<datei>.md`.
 ## Kapitel 12 — Schnellreferenz: Datei-Inventar
 
 ```
-claude-skills-bpm/
+claude-workbench/
 ├── README.md                              ← dieses File (Onboarding)
 ├── INDEX.md                               ← Routing + globale Invarianten (verbindlich)
 ├── CHANGELOG.md                           ← Versionseinträge

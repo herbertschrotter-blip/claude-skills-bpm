@@ -1,7 +1,7 @@
 ---
 name: skill-pflege
 description: >
-  Ändert und erweitert bestehende Skills im Skills-Repo (claude-skills-bpm),
+  Ändert und erweitert bestehende Skills im Skills-Repo (claude-workbench),
   ohne deren Originalinhalt ungewollt zu kürzen oder umzuschreiben – aus dem
   Cowork-Chat wie aus Claude Code. Use when users want to ändern,
   erweitern, ergänzen, einbauen, einfügen, schärfen, refactoren,

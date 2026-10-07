@@ -68,7 +68,7 @@ Nach jeder Auswertung `stand` aktualisieren und `regeln.json` mit der Auswertung
 Über das Plugin `work` aus dem Marketplace `workbench` (dieses Repo), je Rechner einmal:
 
 ```
-claude plugin marketplace add herbertschrotter-blip/claude-skills-bpm
+claude plugin marketplace add herbertschrotter-blip/claude-workbench
 claude plugin install work@workbench
 ```
 

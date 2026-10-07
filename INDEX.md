@@ -1,6 +1,6 @@
 # INDEX — Skill-Übersicht
 
-Verzeichnis der 15 Skills im Repo `claude-skills-bpm`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
+Verzeichnis der 15 Skills im Repo `claude-workbench`: wofür jeder zuständig ist, wann er auslöst und wie Konflikte
 zwischen Skills entschieden werden. Die Regeln selbst stehen in den Skills und in den Dokumenten unten – dieser Index
 wiederholt sie nicht.
 

@@ -7,14 +7,14 @@ CLAUDE.md.
 
 - Review-Ablage: `docs/chatgpt-reviews/` – je Serie ein Ordner `CGR-<JJJJ-MM-TT>-<thema>/`
 - Übersicht: `docs/chatgpt-reviews/INDEX.md`
-- GitHub-Repo: `herbertschrotter-blip/claude-skills-bpm`
+- GitHub-Repo: `herbertschrotter-blip/claude-workbench`
 - Themen: `skillsystem`, `ha-grundsatz`
 
 ## Thema: skillsystem
 
 - Beschreibung: Aufbau, Auslösen und Neutralität der Skills
 - Reviewer-Rolle: erfahrener Architekt für Prompts und Skills
-- Repos: `herbertschrotter-blip/claude-skills-bpm`
+- Repos: `herbertschrotter-blip/claude-workbench`
 - Kontextquelle: `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1.md`, die betroffenen `SKILL.md`; höchstens
   3–5 Blöcke
 - Pflicht-Block: die Neutralitäts-Checkliste (`skills/skill-neu/SKILL.md`, Abschnitt „Neutralitäts-Checkliste“) und die
@@ -26,7 +26,7 @@ CLAUDE.md.
 - Beschreibung: Grundsatzregeln für Home-Assistant-Projekte und Skill `modul-bauplan`
 - Reviewer-Rolle: erfahrener Home-Assistant-Architekt (Core- und eigene Integrationen, eigene Karten und Panels, HACS)
   und Architekt für modulare Systeme
-- Repos: `herbertschrotter-blip/claude-skills-bpm`; zusätzlich der Referenzfall `herbertschrotter-blip/HA_Dash_DreameX60`
+- Repos: `herbertschrotter-blip/claude-workbench`; zusätzlich der Referenzfall `herbertschrotter-blip/HA_Dash_DreameX60`
 - Kontextquelle: im Referenzfall `docs/ARCHITEKTUR.md`, `docs/DATEN.md`, `docs/HAUSREGELN.md`, `docs/ENTSCHEIDUNGEN.md`;
   hier `docs/ha-grundsatz/`; höchstens 3–5 Blöcke
 - Ergebnis-Ort: `docs/ha-grundsatz/` (Grundsatzregeln) und `skills/modul-bauplan/` (Skill)

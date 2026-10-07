@@ -8,6 +8,11 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.7] — 2026-10-07
+
+- **skills/skill-pflege, Fix:** Die Description nennt das Skill-Repo mit dem neuen Namen `claude-workbench` (vorher
+  `claude-skills-bpm`; Umbau-Plan Plugin-Marketplace, Schritt 6).
+
 ## [v0.42.6] — 2026-10-07
 
 - **skills/chat-wechsel, Fix:** Die Zeile „Code:“ unter „Regeln (Erinnerung)“ nennt jetzt auch Doku → doc-pflege

@@ -104,7 +104,7 @@
         "*/skills/*"
       ],
       "ausser": [],
-      "projekt": "claude-skills-bpm",
+      "projekt": "claude-workbench",
       "pflicht": [
         "skill-pflege",
         "skill-neu"

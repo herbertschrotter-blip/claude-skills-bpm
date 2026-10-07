@@ -1,4 +1,4 @@
-# claude-skills-bpm
+# claude-workbench
 
 Skills für Claude (Hauptumgebung Claude Code, dazu der Cowork-Chat) mit ihrer Prüf- und Test-Infrastruktur. Aufbau und
 Regeln: `README.md`, `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1.md`; laufender Umbau:
@@ -7,7 +7,7 @@ Regeln: `README.md`, `INDEX.md`, `docs/skill-quality.md`, `docs/skill-profile-v1
 ## Arbeiten auf dem HA
 
 Claude Code läuft auch direkt auf Herberts Home Assistant (Add-on). Dort liegt dieser Klon unter
-`/config/projekte/claude-skills-bpm`; ein zweiter Klon liegt am Windows-PC – vor der Arbeit `git pull`, danach committen und
+`/config/projekte/claude-workbench`; ein zweiter Klon liegt am Windows-PC – vor der Arbeit `git pull`, danach committen und
 pushen. Auf dem HA gibt es kein PowerShell: Der Check `skill-validation` läuft dort nicht vor dem Commit, sondern nach jedem
 Push per GitHub Actions (`.github/workflows/validate-skills.yml`, Ergebnis mit `gh run list`); `routing-eval` läuft auf dem
 HA. Das Skill-Log dieses Rechners liegt unter `/data/home/.claude/skill-log/` (`.claude/skill-config/skill-log.md`).
@@ -15,8 +15,8 @@ HA. Das Skill-Log dieses Rechners liegt unter `/data/home/.claude/skill-log/` (`
 ## Skill-Profil
 
 - Profil-Version: 1
-- Projekt-ID: claude-skills-bpm
-- Repo: herbertschrotter-blip/claude-skills-bpm
+- Projekt-ID: claude-workbench
+- Repo: herbertschrotter-blip/claude-workbench
 - Branch-Policy: fixed:main
 
 ### Checks
