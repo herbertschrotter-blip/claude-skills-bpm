@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.43.0] — 2026-10-07
+
+- **skills/projekt-anlegen, Feature:** Neuer Abschnitt „Bestehendes Repo einrichten“: Für ein vorhandenes Repo ohne oder
+  mit unvollständigem Skill-Profil liest der Skill das Repo, lässt die Bereiche wählen, schlägt Skill-Profil v1 und die
+  nötigen Configs unter `.claude/skill-config/` mit erkannten Werten vor und legt sie nach Zustimmung an, ohne
+  vorhandenen Text der `CLAUDE.md` zu entfernen. Description nennt den Fall (1020 Zeichen); neuer Eval-Fall
+  `projekt-anlegen-profil-einrichten` (Umbau-Plan Plugin-Marketplace, Schritt 8e).
+
 ## [v0.42.9] — 2026-10-07
 
 - **skills/tracker, Fix:** Projektwerte (Präfix, nächste freie Nummer, Listen, Status, Felder) kommen aus der

@@ -61,10 +61,10 @@ Grenze sie prüfen.
 | git-commit-helper | 3 | 2 |
 | ticket | 5 | 2 |
 | cc-steuerung | 3 | 2 |
-| projekt-anlegen | 6 | 3 |
+| projekt-anlegen | 7 | 3 |
 | skill-auswertung | 5 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **85** | **32** |
+| **gesamt** | **86** | **32** |
 
 ## Nicht abgedeckt
 
@@ -77,7 +77,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 07.10.2026, 85 Fälle.
+Stand 07.10.2026, 86 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -152,6 +152,7 @@ Stand 07.10.2026, 85 Fälle.
 | `projekt-anlegen-ha-new` | projekt-anlegen | Ich will ein neues Home-Assistant-Projekt für die Fensterüberwachung mit Reedkontakten anfangen. Leg mir dafür alles an, was dazugehört: Ordner, Git-Repo und die Grunddateien. | projekt-anlegen | code-erstellen | kritisch |
 | `projekt-anlegen-unklar` | projekt-anlegen | Ich hätte gern etwas, das mir im Smart Home anzeigt, wann der Müll abgeholt wird. Ich weiß aber nicht, ob das eine eigene Karte, eine Integration oder nur eine Automation wird. Hilf mir, das als neues Projekt aufzusetzen. | projekt-anlegen | mockup-erstellen | normal |
 | `projekt-anlegen-clone` | projekt-anlegen | Hol mein bestehendes Repo mit der Staubsauger-Karte von GitHub hierher und richte es als Projekt ein, damit ich ab jetzt hier damit weiterarbeiten kann. | projekt-anlegen | – | normal |
+| `projekt-anlegen-profil-einrichten` | projekt-anlegen | Ich habe hier ein bestehendes Repo mit meiner Python-App. Richte es bitte so ein, dass deine Skills damit arbeiten können: Skill-Profil in der CLAUDE.md und was an Configs dazugehört. | projekt-anlegen | code-erstellen | normal |
 | `projekt-anlegen-no-trigger-code` | projekt-anlegen | Füge im bestehenden Netzwerk-Paket von Home Assistant einen Sensor hinzu, der die Ping-Zeit zum Router misst. | code-erstellen | projekt-anlegen | kritisch |
 | `projekt-anlegen-no-trigger-mockup` | projekt-anlegen | Wie könnte die Dashboard-Karte für die Fensterüberwachung aussehen? Skizzier sie mir als HTML-Entwurf mit zwei Varianten. | mockup-erstellen | projekt-anlegen | normal |
 | `projekt-anlegen-no-trigger-skill` | projekt-anlegen | Ich brauche einen neuen Skill, der beim Start eines Projekts die passenden Ordner und Dateien anlegt. Entwirf mir dafür die SKILL.md. | skill-neu | projekt-anlegen | kritisch |

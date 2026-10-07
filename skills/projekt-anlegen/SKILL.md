@@ -3,15 +3,14 @@ name: projekt-anlegen
 description: >
   Legt neue Projekte an und richtet sie ein – projektneutral nach Stack (z. B.
   Home Assistant: Integration, Karte, Dashboard, Paket; C#-App;
-  Python-Werkzeug). Klärt, was entstehen soll, auch wenn die Idee noch unscharf
-  ist, prüft Bestand, Ablageort und Quelle der Wahrheit, legt Ordner,
+  Python-Werkzeug). Klärt unscharfe Ideen, prüft Bestand, Ablageort und Quelle der Wahrheit, legt Ordner,
   Grunddateien, Git-Repo, .gitignore und CLAUDE.md mit Skill-Profil an,
   erstellt oder klont nach Rückfrage das GitHub-Repo und trägt das Projekt in
   die Übersicht ein. Use when users want to start, set up, anlegen, aufsetzen,
   einrichten, or begin a new project, module, integration, custom card,
   dashboard or tool, say "neues Projekt" or "ich will X bauen, weiß aber nicht
-  wie", or want a new Git/GitHub repo created or an existing repo cloned and
-  eingerichtet as a project. Do not trigger for changes inside an existing
+  wie", or want a new Git/GitHub repo created, an existing repo cloned, or an
+  existing repo eingerichtet for these skills (Skill-Profil, Configs). Do not trigger for changes inside an existing
   project (code-erstellen), UI drafts or mockups (mockup-erstellen), new or
   changed skills (skill-neu, skill-pflege), ClickUp tasks (tracker),
   documentation only (doc-pflege), or plain git commands like commit or push.
@@ -28,7 +27,8 @@ klären, was es werden soll, prüfen, ob es das schon gibt, entscheiden, wo es l
 - **Grenzen:** Inhalt und Code schreibt code-erstellen, Entwürfe macht mockup-erstellen, Doku pflegt doc-pflege,
   Aufgaben legt tracker an. Dieser Skill legt nur das Gerüst an: Ordner, Grunddateien, Repo, Profil, Eintrag.
 - **Bestehende Projekte** gehören nicht hierher. Wer in einem vorhandenen Projekt etwas ergänzt, braucht code-erstellen.
-  Ausnahme: ein bestehendes Repo zum ersten Mal an einen Ort holen und einrichten (klonen).
+  Ausnahmen: ein bestehendes Repo zum ersten Mal an einen Ort holen und einrichten (klonen) und ein bestehendes Repo
+  für die Skills einrichten (Abschnitt „Bestehendes Repo einrichten“).
 - **Prüfen** eines Projekts gegen seine Regeln macht audit.
 
 ## Benötigte Werte
@@ -109,6 +109,26 @@ Auswahlfrage: anlegen / anpassen / abbrechen.
 - Nächsten Schritt per Auswahlfrage anbieten: Entwurf (mockup-erstellen) / erste Funktion (code-erstellen) / Aufgaben
   anlegen (tracker) / fertig.
 
+## Bestehendes Repo einrichten
+
+Für ein Repo, das es schon gibt und in dem die Skills arbeiten sollen, dessen `CLAUDE.md` aber kein oder nur ein
+unvollständiges `## Skill-Profil` hat („richte die Skills hier ein“, „leg das Skill-Profil an“). Kein Gerüst, keine
+Grunddateien, kein GitHub – nur Profil und Configs. Jeder Schritt läuft wie oben über eine Auswahlfrage.
+
+1. **Repo lesen:** `CLAUDE.md`, `README.md`, Build- und Testdateien (z. B. `package.json`, `*.csproj`, `pyproject.toml`,
+   `Makefile`), Versionsquelle (`CHANGELOG.md`, Manifest), Branches, Stil der letzten Commits, `docs/`.
+2. **Bereiche wählen:** Auswahlfrage mit Mehrfachauswahl, welche Skills dort arbeiten sollen (Code, Doku, Commits,
+   Tracker, Tickets, Mockups, Reviews). Die Pflichtfelder je Skill stehen in `docs/skill-profile-v1.md`.
+3. **Vorschlag zeigen:** das Skill-Profil v1 für die gewählten Bereiche mit den erkannten Werten und ihrer Herkunft
+   (Datei); Unbekanntes als `fehlt`, bewusst Leeres als `none`. Dazu die Configs unter `.claude/skill-config/`, die die
+   Bereiche brauchen (z. B. `tracker.md` mit Listen, Status und Feldern aus dem Tracker gelesen), in der Gliederung aus
+   `docs/skill-profile-v1.md`. Auswahlfrage: anlegen / anpassen / abbrechen.
+4. **Anlegen:** Den Profil-Block an die `CLAUDE.md` anhängen; vorhandener Text bleibt. Steht ein Wert schon als Prosa
+   oder in einem älteren Profil-Abschnitt, die Stelle nennen und per Auswahlfrage klären, ob sie auf das Profil verweist
+   oder bleibt (Werte genau einmal). Commit im Format des neuen Profils, Push nach seiner Push-Policy.
+5. **Übergeben:** Zusammenfassung, welche Felder noch `fehlt` sind und welcher Skill sie braucht; nächsten Schritt wie
+   oben anbieten.
+
 ## Stacks
 
 Die Arten, Orte, Grunddateien und `.gitignore` eines Stacks stehen in `references/stacks/<key>.md`; der Schlüssel kommt
@@ -128,6 +148,7 @@ bestätigt. Keine Vorlagen erfinden.
 - Tokens, Passwörter oder andere Geheimnisse in Dateien, Befehlen oder Commits
 - Einen Pfad, Owner oder Stack raten
 - Fachlogik schreiben – das Gerüst endet mit einer lauffähigen Minimalfassung
+- Beim Einrichten eines bestehenden Repos vorhandenen Text der `CLAUDE.md` überschreiben oder still entfernen
 
 ## VERWEIS
 

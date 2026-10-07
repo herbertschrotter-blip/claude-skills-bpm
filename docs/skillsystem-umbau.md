@@ -335,7 +335,8 @@ Plugins im selben Repo)
      Meldung und Beschreibung nennen „den Nutzer“ statt Herbert, Testpfade neutral; Erklärung in der README (8d).
    - ✅ **8d** README-Teil für Fremde (neuer Einstieg, Abschnitt „Nutzung für andere“): was das Repo ist, Installation (`marketplace add`, welches Plugin wofür,
      `SKILL_LOG_HOST`), Skill-Profil in der `CLAUDE.md` als Voraussetzung. Über doc-pflege.
-   - **8e** Einrichtungsbefehl, der Skill-Profil und Configs im Projekt anlegt – eher eigener Skill, MINOR, später.
+   - ✅ **8e** (v0.43.0, Herbert 07.10.2026: kein eigener Skill) projekt-anlegen hat den Fall „Bestehendes Repo
+     einrichten“: Repo lesen, Bereiche wählen, Skill-Profil und Configs vorschlagen, nach Zustimmung anlegen.
 9. **Merge** nach Herberts Freigabe.
 
 ## Was Herbert selbst tut
