@@ -102,9 +102,20 @@ genug bleiben, `"cleanupPeriodDays": 365` setzen (Standard 30 Tage). Das Skript 
 
 ## Auswertung
 
-`python3 tools/skill-log/skill_log_report.py [ordner …] [--since JJJJ-MM-TT] [--host …] [--project …]`
+`python3 tools/skill-log/skill_log_report.py [ordner …] [--since JJJJ-MM-TT] [--host …] [--project …] [--transcripts …]`
 
-- zeigt je Skill die Zündungen, getrennt nach automatisch und per `/name`, und die gescheiterten Aufrufe
-- listet Runden mit mehreren Skills (möglicher Konflikt) und Prompts ohne Skill (möglicher Fehlausfall)
+- zeigt je Skill die Zündungen, getrennt nach automatisch und per `/name`, und die gescheiterten Aufrufe; ein
+  Slash-Aufruf eines Skills (`/projekt-anlegen`) zählt per `/name`, auch wenn dabei kein Ereignis `skill` entsteht
+- trennt die Runden nach Art (`art`): `prompt`, `system` (Meldungen von Hintergrundaufgaben und Subagenten,
+  `<task-notification>`, `<agent-message>`) und `leer` (nur Bild); bewertet werden nur Prompts
+- führt je Runde die Skills, die in der Sitzung schon geladen waren (`aktiv`); sie bleiben bis zum Sitzungsende im
+  Kontext. Was eine Sitzung vor dem Log geladen hatte (Gabelung `fork`, `resume`), liest das Skript aus ihrem
+  Transcript unter `--transcripts` (Standard `~/.claude/projects`, `''` schaltet es ab). Ein Prompt ohne Skill mit
+  aktivem Skill ist meist kein Fehlausfall
+- markiert Runden als `unsicher`, wenn der Prompt vor dem `turn_end` der vorigen Runde kam (Nachricht während Claude
+  noch arbeitet); ein Skill-Aufruf darin kann zur vorigen Runde gehören
+- listet Runden mit mehreren Skills (möglicher Konflikt), unsicher zugeordnete Runden und Prompts ohne Skill
+  (möglicher Fehlausfall)
 - mehrere Ordner zusammen auswerten, z. B. das Log des Laptops neben dem des HA
 - `--json` gibt die Runden aus – Grundlage für neue Fälle in `evals/` (`should_trigger`, `should_not_trigger`)
+- Tests: `python3 -m unittest tools/skill-log/test_skill_log_report.py`
