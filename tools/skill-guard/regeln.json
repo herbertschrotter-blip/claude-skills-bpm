@@ -1,79 +1,234 @@
 {
   "version": 1,
   "beschreibung": "Regeln des Skill-Wächters (docs/skill-guard-v1.md). Gepflegt von skill-auswertung, Änderungen nur mit Freigabe von Herbert.",
-  "ausser_immer": ["/tmp/*", "*/scratchpad/*", "*/.claude/*", "*/node_modules/*", "*/.git/*", "*/__pycache__/*"],
+  "ausser_immer": [
+    "/tmp/*",
+    "*/scratchpad/*",
+    "*/.claude/*",
+    "*/node_modules/*",
+    "*/.git/*",
+    "*/__pycache__/*"
+  ],
   "regeln": [
     {
       "id": "code",
       "beschreibung": "Code ändern braucht code-erstellen (oder einen Skill, der Code selbst führt)",
-      "aktion": ["datei", "bash:schreibt"],
-      "pfad": ["*.py", "*.js", "*.mjs", "*.cjs", "*.ts", "*.yaml", "*.yml", "*.json", "*.sh", "*.ps1", "*.cs", "*.xaml", "*.css", "*.html"],
-      "ausser": ["*/mockups/*", "*/skills/*", "*/quality/evals/*", "*/.claude-plugin/*", "*/package-lock.json", "*/secrets.yaml"],
+      "aktion": [
+        "datei",
+        "bash:schreibt"
+      ],
+      "pfad": [
+        "*.py",
+        "*.js",
+        "*.mjs",
+        "*.cjs",
+        "*.ts",
+        "*.yaml",
+        "*.yml",
+        "*.json",
+        "*.sh",
+        "*.ps1",
+        "*.cs",
+        "*.xaml",
+        "*.css",
+        "*.html"
+      ],
+      "ausser": [
+        "*/mockups/*",
+        "*/skills/*",
+        "*/quality/evals/*",
+        "*/.claude-plugin/*",
+        "*/package-lock.json",
+        "*/secrets.yaml"
+      ],
       "projekt": "*",
-      "pflicht": ["code-erstellen", "ticket", "skill-neu", "skill-pflege", "projekt-anlegen"],
+      "pflicht": [
+        "code-erstellen",
+        "ticket",
+        "skill-neu",
+        "skill-pflege",
+        "projekt-anlegen"
+      ],
       "modus": "blocken",
       "herkunft": "Skill-Auswertung 06.10.2026: ha-baustelle Teil 3, rund 310 Code-Änderungen ohne code-erstellen",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 316,
+          "fehlalarm": 0
+        }
+      }
     },
     {
       "id": "mockup",
       "beschreibung": "Mockups ändern braucht mockup-erstellen",
-      "aktion": ["datei", "bash:schreibt"],
-      "pfad": ["*/mockups/*", "*/Mockups/*"],
+      "aktion": [
+        "datei",
+        "bash:schreibt"
+      ],
+      "pfad": [
+        "*/mockups/*",
+        "*/Mockups/*"
+      ],
       "ausser": [],
       "projekt": "*",
-      "pflicht": ["mockup-erstellen"],
+      "pflicht": [
+        "mockup-erstellen"
+      ],
       "modus": "blocken",
       "herkunft": "Skill-Auswertung 04.10.2026 (mockup-erstellen-002) und 06.10.2026 (Zustandsvarianten)",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 31,
+          "fehlalarm": 0
+        }
+      }
     },
     {
       "id": "skills",
       "beschreibung": "Skills im Skill-Repo ändern braucht skill-pflege oder skill-neu",
-      "aktion": ["datei", "bash:schreibt"],
-      "pfad": ["*/skills/*"],
+      "aktion": [
+        "datei",
+        "bash:schreibt"
+      ],
+      "pfad": [
+        "*/skills/*"
+      ],
       "ausser": [],
       "projekt": "claude-skills-bpm",
-      "pflicht": ["skill-pflege", "skill-neu"],
+      "pflicht": [
+        "skill-pflege",
+        "skill-neu"
+      ],
       "modus": "warnen",
       "herkunft": "Startregel 07.10.2026",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 0,
+          "fehlalarm": 0
+        }
+      }
     },
     {
       "id": "doku",
       "beschreibung": "Projektdoku ändern braucht doc-pflege oder einen Skill, der seine Doku selbst führt",
-      "aktion": ["datei", "bash:schreibt"],
-      "pfad": ["*/docs/*.md", "*/README.md", "*/CHANGELOG.md", "*/INDEX.md", "*/CLAUDE.md", "*BAUPLAN*.md", "*bauplan*.md"],
+      "aktion": [
+        "datei",
+        "bash:schreibt"
+      ],
+      "pfad": [
+        "*/docs/*.md",
+        "*/README.md",
+        "*/CHANGELOG.md",
+        "*/INDEX.md",
+        "*/CLAUDE.md",
+        "*BAUPLAN*.md",
+        "*bauplan*.md"
+      ],
       "ausser": [],
       "projekt": "*",
-      "pflicht": ["doc-pflege", "code-erstellen", "skill-pflege", "skill-neu", "skill-auswertung", "chatgpt-review", "chat-wechsel", "ticket", "projekt-anlegen"],
-      "modus": "warnen",
-      "herkunft": "Startregel 07.10.2026",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "pflicht": [
+        "doc-pflege",
+        "code-erstellen",
+        "skill-pflege",
+        "skill-neu",
+        "skill-auswertung",
+        "chatgpt-review",
+        "chat-wechsel",
+        "ticket",
+        "projekt-anlegen"
+      ],
+      "modus": "blocken",
+      "herkunft": "Startregel 07.10.2026; 07.10.2026: auf blocken hochgestuft (Rückblick 29.09.–07.10.: 89 Treffer, 0 Fehlalarme; Heidi-Neubau, ha-baustelle Teil 3)",
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 89,
+          "fehlalarm": 0
+        }
+      }
     },
     {
       "id": "clickup",
-      "beschreibung": "ClickUp schreiben braucht tracker (ticket ruft tracker selbst)",
-      "aktion": ["mcp:clickup-schreibt"],
+      "beschreibung": "ClickUp schreiben braucht tracker (ticket ruft tracker selbst; projekt-anlegen und skill-neu legen Listen an)",
+      "aktion": [
+        "mcp:clickup-schreibt"
+      ],
       "pfad": [],
       "ausser": [],
       "projekt": "*",
-      "pflicht": ["tracker", "ticket"],
+      "pflicht": [
+        "tracker",
+        "ticket",
+        "projekt-anlegen",
+        "skill-neu"
+      ],
       "modus": "warnen",
-      "herkunft": "Startregel 07.10.2026 (tracker ist einzige Schreibschnittstelle zu ClickUp)",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "herkunft": "Startregel 07.10.2026 (tracker ist einzige Schreibschnittstelle zu ClickUp); 07.10.2026: projekt-anlegen und skill-neu ergänzt (Fehlalarm beim Anlegen von Issue-Listen, 29.09.)",
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 3,
+          "fehlalarm": 3
+        }
+      }
     },
     {
       "id": "commit",
       "beschreibung": "Commit braucht einen Skill, der das Commit-Profil anwendet",
-      "aktion": ["bash:commit"],
+      "aktion": [
+        "bash:commit"
+      ],
       "pfad": [],
       "ausser": [],
       "projekt": "*",
-      "pflicht": ["git-commit-helper", "code-erstellen", "doc-pflege", "skill-pflege", "skill-neu", "skill-auswertung", "ticket", "tracker", "projekt-anlegen", "chatgpt-review"],
+      "pflicht": [
+        "git-commit-helper",
+        "code-erstellen",
+        "doc-pflege",
+        "skill-pflege",
+        "skill-neu",
+        "skill-auswertung",
+        "ticket",
+        "tracker",
+        "projekt-anlegen",
+        "chatgpt-review"
+      ],
       "modus": "warnen",
       "herkunft": "Startregel 07.10.2026",
-      "stand": {"seit": "2026-10-07", "treffer": 0, "fehlalarm": 0, "zuletzt": null}
+      "stand": {
+        "seit": "2026-10-07",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null,
+        "rueckblick": {
+          "bis": "2026-10-07T12:56:13Z",
+          "treffer": 5,
+          "fehlalarm": 0
+        }
+      }
     }
   ]
 }

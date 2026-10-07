@@ -91,17 +91,22 @@ def transcripts(data):
 
 
 def loaded_skills(paths):
-    """Alle in den Transcripts geladenen Skills: Skill-Aufrufe und Slash-Befehle."""
+    """Alle in den Transcripts geladenen Skills: Skill-Aufrufe, Slash-Befehle, Anhang invoked_skills (Compaction)."""
     found = set()
     for path in paths:
         try:
             with open(path, encoding="utf-8") as fh:
                 for line in fh:
-                    if '"Skill"' not in line and "command-name" not in line:
+                    if '"Skill"' not in line and "command-name" not in line and "invoked_skills" not in line:
                         continue
                     try:
                         msg = json.loads(line)
                     except json.JSONDecodeError:
+                        continue
+                    attachment = msg.get("attachment")
+                    if isinstance(attachment, dict) and attachment.get("type") == "invoked_skills":
+                        # nach einer Compaction legt Claude Code die geladenen Skills als Anhang ab
+                        found.update(short(s.get("name")) for s in attachment.get("skills") or [])
                         continue
                     content = (msg.get("message") or {}).get("content")
                     if isinstance(content, str):

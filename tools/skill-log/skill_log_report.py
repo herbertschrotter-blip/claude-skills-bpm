@@ -84,8 +84,12 @@ def transcript_path(transcripts_dir, session):
 
 
 def skills_before(path, until_ts):
-    """Skills, die laut Transcript vor `until_ts` geladen wurden (Skill-Aufrufe und Slash-Befehle)."""
+    """Skills, die laut Transcript vor `until_ts` geladen wurden: (Skill-Aufrufe und Anhang invoked_skills, Slash-Befehle).
+
+    Skill-Aufrufe sind sicher Skills; Slash-Befehle können auch eingebaute Befehle sein (/clear) und werden vom Aufrufer
+    gegen die bekannten Skill-Namen gefiltert."""
     found = set()
+    tool_skills = set()
     until = (until_ts or "").replace("Z", "")
     try:
         with open(path, encoding="utf-8") as fh:
@@ -96,19 +100,24 @@ def skills_before(path, until_ts):
                     continue
                 if until and (msg.get("timestamp") or "")[:19] >= until[:19]:
                     break
+                attachment = msg.get("attachment")
+                if isinstance(attachment, dict) and attachment.get("type") == "invoked_skills":
+                    tool_skills.update(short(s.get("name")) for s in attachment.get("skills") or [])
+                    continue
                 content = (msg.get("message") or {}).get("content")
                 if isinstance(content, str):
                     found.update(short(m) for m in _COMMAND_NAME.findall(content))
                 elif isinstance(content, list):
                     for block in content:
                         if block.get("type") == "tool_use" and block.get("name") == "Skill":
-                            found.add(short((block.get("input") or {}).get("skill")))
+                            tool_skills.add(short((block.get("input") or {}).get("skill")))
                         elif block.get("type") == "text":
                             found.update(short(m) for m in _COMMAND_NAME.findall(block.get("text") or ""))
     except OSError:
-        return set()
+        return set(), set()
     found.discard("?")
-    return found
+    tool_skills.discard("?")
+    return tool_skills, found
 
 
 def build_rounds(entries, skill_names=None, transcripts_dir=None):
@@ -124,7 +133,11 @@ def build_rounds(entries, skill_names=None, transcripts_dir=None):
         if session not in seen:
             seen.add(session)
             path = transcript_path(transcripts_dir, entry.get("session"))
-            active[session] = (skills_before(path, entry.get("ts")) & skill_names) if path else set()
+            if path:
+                tool_skills, slash = skills_before(path, entry.get("ts"))
+                active[session] = tool_skills | (slash & skill_names)
+            else:
+                active[session] = set()
         if event == "prompt":
             text = entry.get("text") or ""
             slash = entry.get("slash")

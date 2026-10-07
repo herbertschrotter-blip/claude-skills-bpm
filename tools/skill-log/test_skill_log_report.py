@@ -68,6 +68,23 @@ class AktivTest(unittest.TestCase):
                                      e(2, "turn_end", session="fork1")], SKILLS, transcripts_dir=tmp)
         self.assertEqual(rounds[0]["aktiv"], ["mockup-erstellen", "ticket"])
 
+    def test_skills_nach_compaction_und_fremde_skills_zaehlen(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            os.makedirs(os.path.join(tmp, "-config"))
+            lines = [
+                {"timestamp": "2026-10-01T09:00:00.000Z", "type": "attachment", "attachment": {
+                    "type": "invoked_skills", "skills": [{"name": "anthropic-skills:mockup-erstellen"}]}},
+                {"timestamp": "2026-10-01T09:01:00.000Z", "type": "assistant", "message": {"content": [
+                    {"type": "tool_use", "name": "Skill", "input": {"skill": "update-config"}}]}},
+                {"timestamp": "2026-10-01T09:02:00.000Z", "type": "user",
+                 "message": {"content": "<command-name>/clear</command-name>"}},
+            ]
+            with open(os.path.join(tmp, "-config", "c1.jsonl"), "w", encoding="utf-8") as fh:
+                fh.write("\n".join(json.dumps(x) for x in lines))
+            rounds = r.build_rounds([e(1, "prompt", session="c1", text="weiter"), e(2, "turn_end", session="c1")],
+                                    SKILLS, transcripts_dir=tmp)
+        self.assertEqual(rounds[0]["aktiv"], ["mockup-erstellen", "update-config"])
+
     def test_ohne_transcript_nichts_aktiv(self):
         rounds = r.build_rounds([e(1, "prompt", text="x"), e(2, "turn_end")], SKILLS, transcripts_dir="/gibt/es/nicht")
         self.assertEqual(rounds[0]["aktiv"], [])
