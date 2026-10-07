@@ -279,7 +279,7 @@ Plugins im selben Repo)
    die Plugin-Ordner (unbekannte Einträge, Pfade mit `./`, Namen, fehlende Hook-Skripte). Gegenprobe auf dem Pi mit
    dem Plugin aus dem Worktree: Wächter blockt, Skill-Log schreibt – zusammen mit den Hooks aus `settings.json` jedes
    Ereignis doppelt, also nie beides zugleich einrichten.
-3. **Pi umstellen – vor dem Merge:** Der Pi-Klon auf `main` ist zugleich die Quelle der heutigen Hooks. Nach dem Merge
+3. ✅ **Pi umstellen – vor dem Merge** (07.10.2026 erledigt: Hooks aus `settings.json` entfernt, `env` gesetzt, Plugin installiert, Fenster neu gestartet; Gegenprobe: jedes Ereignis einmal mit Host `ha-pi`, Wächter blockt aus dem Plugin; danach Merge): Der Pi-Klon auf `main` ist zugleich die Quelle der heutigen Hooks. Nach dem Merge
    fehlen `tools/skill-guard/` und `tools/skill-log/skill_log.py`; ein fehlendes Skript im `PreToolUse`-Hook endet mit
    Exit 2 und blockiert jede Aktion. Deshalb zuerst: Herbert trägt `"env": { "SKILL_LOG_HOST": "ha-pi" }` ein, entfernt
    die Hooks aus `~/.claude/settings.json`, installiert `work@workbench` (vor dem Merge aus dem Worktree, danach aus
