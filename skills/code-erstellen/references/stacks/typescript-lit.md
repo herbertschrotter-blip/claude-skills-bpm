@@ -1,26 +1,31 @@
-# Stack: typescript-lit — TypeScript strict + Lit 3 Web Components (Heidi-Karte)
+# Stack: typescript-lit — Lit 3 Web Components in Home Assistant (TypeScript strict oder JavaScript)
 
 Stack-Referenz für `code-erstellen`. Wird geladen, wenn das Code-Profil des Projekts
 `Stacks: typescript-lit` enthält. Projektspezifisches (Pfade, Pflicht-Docs, Deploy) steht
 im Code-Profil, nicht hier.
 
+Gilt für jede eigene Oberfläche in Home Assistant (HA-Grundsatz G-22). Pfade und Namen unten stammen aus der
+Heidi-Karte (TypeScript) und sind Beispiele; jedes Projekt nennt seine Entsprechungen im Code-Profil oder in der README.
+In JavaScript-Projekten (z. B. ha-baustelle, gebündelt mit esbuild) gelten die Regeln zu `tsc`, `strict` und `any`
+sinngemäß über die Prüfungen des Projekts.
+
 ---
 
 ## Schichten und Kopplungsregeln
 
-- **Vertrag** (`ha/contract.ts`): einzige Stelle für Entitäts-IDs, Dienste, Optionen. Neue Entität
+- **Vertrag** (Beispiel Heidi: `ha/contract.ts`): einzige Stelle für Entitäts-IDs, Dienste, Optionen. Neue Entität
   zuerst hier (und in der Vertrags-Doku des Projekts), dann weiter.
-- **Erkennung/Profil** (`ha/device.ts`, `ha/profile.ts`): Gerätename, Räume, Optionen, Fähigkeiten
+- **Erkennung/Profil** (Beispiel Heidi: `ha/device.ts`, `ha/profile.ts`): Gerätename, Räume, Optionen, Fähigkeiten
   aus HA lesen – nichts davon fest verdrahten.
-- **Selektoren** (`ha/selectors.ts`, `memoizeSelector`): memoisierte Views aus `hass.states`;
+- **Selektoren** (Beispiel Heidi: `ha/selectors.ts`, `memoizeSelector`): memoisierte Views aus `hass.states`;
   `ids` als Liste oder Funktion; eigener Vergleich nur wenn nötig. Komponenten lesen **nur** Views.
-- **Schreiben** nur über die API-Klasse (`ha/api.ts`, `DxApi`): Dienstaufrufe, Teilfehler sammeln
+- **Schreiben** nur über die API-Klasse (Beispiel Heidi: `ha/api.ts`, `DxApi`): Dienstaufrufe, Teilfehler sammeln
   (`Promise.allSettled`), Ergebnis `{ok, fehlgeschlagen}`.
-- **Komponenten** (`components/dx-*.ts`): Lit `render()` ohne Fachlogik; Fachlogik in `domain/*`
+- **Komponenten** (Beispiel Heidi: `components/dx-*.ts`): Lit `render()` ohne Fachlogik; Fachlogik in `domain/*`
   als reine Funktionen mit Tests.
-- **Shell** (`<name>-panel.ts`): erzeugt Views, reicht `hass`, Views, `api` nach unten; Overlay,
+- **Shell** (Beispiel Heidi: `<name>-panel.ts`): erzeugt Views, reicht `hass`, Views, `api` nach unten; Overlay,
   Toast, Navigation; kein `shouldUpdate` in der Shell.
-- Styles als Design-Tokens (`styles/tokens.ts`, `--dx-*`); keine Farben/Abstände hart in Komponenten.
+- Styles als Design-Tokens (Beispiel Heidi: `styles/tokens.ts`, `--dx-*`); keine Farben/Abstände hart in Komponenten.
 - Keine externen Ressourcen (Fonts, CDN, Bilder) – alles im Bundle.
 
 ## Modus-Eskalation (Beispiele)
@@ -34,7 +39,7 @@ im Code-Profil, nicht hier.
 
 ## Impact-Check-Zeilen (Stack-Lesart)
 
-- UI / Lit-Templates / Tokens `--dx-*`
+- UI / Lit-Templates / Tokens (Heidi: `--dx-*`)
 - Selektoren / Views (memoisiert? `ids` vollständig?)
 - Domäne (`domain/*`) / Vertrag (`contract.ts`)
 - Backend-Entitäten betroffen (→ Stack home-assistant-yaml)
@@ -53,6 +58,8 @@ im Code-Profil, nicht hier.
 | Domänenregel | Portierungstabelle / Regeln des Projekts |
 
 ## Tests
+
+Befehle und Pfade nennt das Profil (Feld Tests); die folgenden sind das Beispiel Heidi.
 
 - **Unit:** `node --test` über `tsx`, Dateien `tests/unit/*.test.ts`; Vektoren als JSON
   (`*.v1.json` aus der Referenz, `*.spec.json` handgeschrieben)

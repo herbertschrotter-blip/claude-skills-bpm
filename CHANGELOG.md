@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.42.4] — 2026-10-07
+
+- **skills/code-erstellen, Fix:** `references/stacks/typescript-lit.md` gilt jetzt für jede Lit-Oberfläche in Home
+  Assistant (HA-Grundsatz G-22, Herbert 07.10.2026), nicht nur für die Heidi-Karte: Titel neutral, Heidi-Pfade
+  (`ha/contract.ts`, `DxApi`, `dx-*`, `--dx-*`) als Beispiele markiert, Absatz zu JavaScript-Projekten (ha-baustelle,
+  esbuild), Hinweis zu Testbefehlen aus dem Profil. Keine Regel entfallen.
+
 ## [v0.42.3] — 2026-10-06
 
 - **skills/tracker, Fix:** Nach `tracker start` (auch Fokus-Entscheidung, „mach <PRÄFIX>-NNN“, „weiter mit
