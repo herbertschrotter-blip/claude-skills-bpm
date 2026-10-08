@@ -24,7 +24,10 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 
 - Geladene Skills liest der Wächter aus dem Transcript der Sitzung (Skill-Aufrufe, Slash-Befehle und nach einer
   Compaction der Anhang `invoked_skills`). Ein geladener Skill gilt bis zur nächsten Grenze, die ihn verbraucht
-  (Abschnitt „Grenzen für geladene Skills“), sonst bis zum Sitzungsende. Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
+  (Abschnitt „Grenzen für geladene Skills“), sonst bis zum Sitzungsende. Claude Code schreibt das Transcript mit
+  einigen Sekunden Verzögerung; deshalb zählen zusätzlich die Skill-Ereignisse dieser Sitzung aus dem Skill-Log, die
+  neuer sind als die letzte Transcript-Zeile (Befund Auswertung 08.10.2026: drei Fehlalarme 4–7 s nach dem Laden).
+  Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
   `<sitzung>/subagents/` → `<sitzung>.jsonl`).
 - Jede Entscheidung landet als Ereignis `guard` im Skill-Log (`docs/skill-log-v1.md`): `regel`, `entscheidung`
   (`geblockt`/`gewarnt`), `tool`, `tool_use_id`, `ziel`, `pflicht`, `aktiv`.

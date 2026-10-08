@@ -280,5 +280,45 @@ class NeueRegelnTest(unittest.TestCase):
         self.assertEqual(g.decide(data, RULES, {"code-erstellen"})[0], 2)
         self.assertEqual(g.decide(data, RULES, {"git-commit-helper"})[0], 0)
 
+
+class VerzoegerungTest(unittest.TestCase):
+    """Gerade geladene Skills stehen sofort im Skill-Log, im Transcript erst später."""
+
+    def setUp(self):
+        self.dir = tempfile.mkdtemp()
+        self._env = os.environ.get("SKILL_LOG_DIR")
+        os.environ["SKILL_LOG_DIR"] = self.dir
+
+    def tearDown(self):
+        if self._env is None:
+            os.environ.pop("SKILL_LOG_DIR", None)
+        else:
+            os.environ["SKILL_LOG_DIR"] = self._env
+
+    def log(self, ts, skill, session="s1"):
+        with open(os.path.join(self.dir, "2026-10.jsonl"), "a", encoding="utf-8") as fh:
+            fh.write(json.dumps({"v": 1, "ts": ts, "session": session, "event": "skill", "skill": skill, "ok": True}) + "\n")
+
+    def test_skill_nach_letzter_transcript_zeile_zaehlt(self):
+        self.log("2026-10-08T16:00:31Z", "work:doc-pflege")
+        self.assertEqual(g.recent_skills("s1", "2026-10-08T16:00:29"), ["doc-pflege"])
+
+    def test_aelterer_skill_zaehlt_nicht(self):
+        self.log("2026-10-08T15:00:00Z", "work:doc-pflege")
+        self.assertEqual(g.recent_skills("s1", "2026-10-08T16:00:29"), [])
+
+    def test_andere_sitzung_zaehlt_nicht(self):
+        self.log("2026-10-08T16:00:31Z", "work:doc-pflege", session="s2")
+        self.assertEqual(g.recent_skills("s1", "2026-10-08T16:00:29"), [])
+
+    def test_letzter_zeitstempel(self):
+        path = _tx(("skill", "code-erstellen"))
+        try:
+            with open(path, "a", encoding="utf-8") as fh:
+                fh.write(json.dumps({"type": "user", "timestamp": "2026-10-08T16:00:29.800Z"}) + "\n")
+            self.assertEqual(g.last_timestamp([path]), "2026-10-08T16:00:29")
+        finally:
+            os.unlink(path)
+
 if __name__ == "__main__":
     unittest.main()

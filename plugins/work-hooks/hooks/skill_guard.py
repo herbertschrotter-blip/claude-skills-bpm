@@ -20,6 +20,7 @@ Einstellungen (optional) – Umgebungsvariable oder Plugin-Option (/plugin confi
 
 import datetime
 import fnmatch
+import glob
 import json
 import os
 import re
@@ -49,6 +50,7 @@ _PY_WRITE = re.compile(r"open\([^)]*['\"][wax]b?['\"]|\.write_text\(|\.write\(|s
 _QUOTED_FILE = re.compile(r"['\"]([\w./~-]*[\w-]\.[A-Za-z0-9]{1,5}|[\w./~-]*/mockups/[\w./-]+)['\"]")
 _SEGMENT = re.compile(r"\s*(?:;|&&|\|\||\||\n)\s*")
 _COMMAND_NAME = re.compile(r"<command-name>/?([\w:.-]+)</command-name>")
+_TIMESTAMP = re.compile(r'"timestamp":\s*"(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)')
 _PROJECT_ID = re.compile(r"^\s*-\s*Projekt-ID:\s*(\S+)", re.M)
 
 
@@ -208,6 +210,52 @@ def history(paths, grenzen):
     return out
 
 
+def last_timestamp(paths):
+    """Jüngster Zeitstempel in den Transcripts (nur das Dateiende wird gelesen)."""
+    latest = ""
+    for path in paths:
+        try:
+            with open(path, "rb") as fh:
+                fh.seek(0, os.SEEK_END)
+                fh.seek(max(0, fh.tell() - 65536))
+                tail = fh.read().decode("utf-8", "ignore")
+        except OSError:
+            continue
+        for ts in _TIMESTAMP.findall(tail):
+            latest = max(latest, ts)
+    return latest
+
+
+def recent_skills(session, since):
+    """Skills, die das Skill-Log für die Sitzung nach `since` verzeichnet.
+
+    Claude Code schreibt das Transcript verzögert; ein gerade geladener Skill steht dort oft erst Sekunden später. Das
+    Skill-Log schreibt ihn sofort (PostToolUse). Nur Ereignisse nach der letzten Transcript-Zeile zählen – sie liegen
+    sicher hinter jeder Grenze, die das Transcript schon kennt. Sekundengenau: dieselbe Sekunde zählt mit.
+    """
+    if not session:
+        return []
+    directory = setting("SKILL_LOG_DIR", "LOG_DIR") or os.path.join(os.path.expanduser("~"), ".claude", "skill-log")
+    since = since[:19]
+    found = []
+    for path in sorted(glob.glob(os.path.join(directory, "????-??.jsonl")))[-2:]:
+        try:
+            with open(path, encoding="utf-8") as fh:
+                for line in fh:
+                    if session not in line or '"skill"' not in line:
+                        continue
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if entry.get("event") == "skill" and entry.get("session") == session and entry.get("ok", True) \
+                            and (entry.get("ts") or "")[:19] >= since:
+                        found.append(short(entry.get("skill")))
+        except OSError:
+            continue
+    return [s for s in found if s]
+
+
 def active(histories, grenzen, gilt_bis):
     """Skills, die für eine Regel mit diesen Grenzen gelten: geladen und seither von keiner Grenze verbraucht."""
     result = set()
@@ -356,7 +404,11 @@ def decide(data, rules=None, skills=None):
     project = project_of(data.get("cwd"))
     if skills is None:
         grenzen = rules.get("grenzen", {})
-        hist = history(transcripts(data), grenzen)
+        paths = transcripts(data)
+        hist = history(paths, grenzen)
+        recent = recent_skills(data.get("session_id"), last_timestamp(paths)) if paths else []
+        if recent:
+            hist = hist + [[("skill", name) for name in recent]]
         skills = lambda rule: active(hist, grenzen, rule.get("gilt_bis", []))  # noqa: E731
     found = violations(rules, acts, project, skills, mode)
     if not found:
