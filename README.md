@@ -24,7 +24,7 @@ wer sie nutzen will, ist willkommen – Installation im nächsten Abschnitt. Fü
 **Voraussetzungen:** Claude Code; Python 3 für die Hooks; für den Skill tracker ein ClickUp-Konnektor (MCP). Die Skills
 sprechen Deutsch.
 
-**Installation** (in Claude Code):
+**Installation** (in Claude Code; in der Shell gehen dieselben Befehle als `claude plugin …`):
 
 ```
 /plugin marketplace add herbertschrotter-blip/claude-workbench
@@ -38,10 +38,35 @@ sprechen Deutsch.
 | `skill-workshop` | skill-neu, skill-pflege, skill-auswertung | zusätzlich, für die Arbeit an Skills |
 | `work-hooks` | nur Skill-Log und Skill-Wächter, ohne Skills | wenn die Skills schon anders geladen werden (z. B. Upload bei claude.ai). **Nie zusammen mit `work`** – sonst läuft jeder Hook doppelt |
 
-Updates: Die Plugins haben keine feste Version, jeder Commit ist ein Update. Automatisch über `/plugin` → Marketplaces →
-`workbench` → Auto-Update, von Hand mit `claude plugin update work@workbench`.
+Die Hooks kommen mit dem Plugin; von Hand eingerichtet wird nichts außer den Einstellungen unten.
 
-**Einstellungen** (Block `env` in `~/.claude/settings.json`, alle optional):
+**Updates:** Die Plugins haben keine feste Version, jeder Commit ist ein Update. Auto-Update ist bei fremden Marketplaces
+ab Werk **aus**. Einschalten über `/plugin` → Marketplaces → `workbench` → Auto-Update, oder in
+`~/.claude/settings.json`:
+
+```json
+"extraKnownMarketplaces": {
+  "workbench": {
+    "source": { "source": "github", "repo": "herbertschrotter-blip/claude-workbench" },
+    "autoUpdate": true
+  }
+}
+```
+
+Auto-Update greift beim Start einer Sitzung. Von Hand – zuerst den Marketplace, sonst sieht Claude Code keine neue
+Version:
+
+```
+claude plugin marketplace update workbench
+claude plugin update work@workbench
+claude plugin update skill-workshop@workbench
+```
+
+Danach Claude neu starten (mit tmux und dem Skill sitzung: `sitzung.py neustart <fenster>` je Fenster). Stand prüfen:
+`claude plugin list` (Version = Git-Commit). Entfernen: `claude plugin uninstall work@workbench`.
+
+**Einstellungen** (Block `env` in `~/.claude/settings.json`, alle optional), z. B.
+`"env": { "SKILL_LOG_HOST": "laptop" }`:
 
 | Variable | Wirkung |
 |---|---|
@@ -50,6 +75,27 @@ Updates: Die Plugins haben keine feste Version, jeder Commit ist ein Update. Aut
 | `SKILL_LOG=aus` | Skill-Log abschalten |
 | `SKILL_GUARD=aus` | Skill-Wächter abschalten |
 | `SKILL_GUARD_RULES` | eigene Regeldatei statt `plugins/work-hooks/hooks/regeln.json` |
+
+**Dieselben Skills auch bei claude.ai hochgeladen?** Dann wären sie im Terminal doppelt da (`anthropic-skills:<name>`
+und `work:<name>`). Im Terminal die claude.ai-Fassung je Skill abschalten, in `~/.claude/settings.json`:
+
+```json
+"skillOverrides": {
+  "anthropic-skills:audit": "off", "anthropic-skills:chat-wechsel": "off", "anthropic-skills:chatgpt-review": "off",
+  "anthropic-skills:code-erstellen": "off", "anthropic-skills:doc-pflege": "off", "anthropic-skills:git-commit-helper": "off",
+  "anthropic-skills:mockup-erstellen": "off", "anthropic-skills:projekt-anlegen": "off", "anthropic-skills:sitzung": "off",
+  "anthropic-skills:ticket": "off", "anthropic-skills:tracker": "off", "anthropic-skills:skill-neu": "off",
+  "anthropic-skills:skill-pflege": "off", "anthropic-skills:skill-auswertung": "off"
+}
+```
+
+Die Claude-Desktop-App beachtet `skillOverrides` nicht. Dort `work-hooks` statt `work` und `skill-workshop`
+installieren; die Skills kommen dann aus claude.ai.
+
+| Rechner | Plugins | dazu |
+|---|---|---|
+| Terminal (z. B. Home-Assistant-Add-on) | `work`, `skill-workshop` | `env.SKILL_LOG_HOST`, `autoUpdate`, `skillOverrides` (falls bei claude.ai hochgeladen) |
+| Claude-Desktop-App | `work-hooks` | `env.SKILL_LOG_HOST`, `autoUpdate` |
 
 **Skill-Wächter:** Er blockiert ab Werk Änderungen an Code, Doku und Mockups, solange der zuständige Skill nicht geladen
 ist (Claude lädt ihn dann nach), und warnt bei Commits und ClickUp-Aktionen ohne Skill. Regeln und Format:
