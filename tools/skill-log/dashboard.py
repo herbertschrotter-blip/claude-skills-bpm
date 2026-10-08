@@ -121,6 +121,56 @@ def project_section(projects):
     return chart + table(["Projekt", "Prompts", "Zündungen", "Blockaden", "häufigste Skills"], detail)
 
 
+MONATE = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November",
+          "Dezember"]
+WOCHENTAGE = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"]
+
+
+def level(value, top):
+    """Stufe 0–4 für die Farbe: 0 = kein Prompt, sonst Viertel des Maximums."""
+    if not value:
+        return 0
+    return min(4, 1 + int(4 * (value - 1) / max(1, top)))
+
+
+def calendar(days):
+    """Kalender je Monat: ein Kästchen je Tag (Zeilen Mo–So), Farbe nach Prompts des Tages."""
+    if not days:
+        return '<p class="leer">Keine Daten im Zeitraum.</p>'
+    data = dict(days)
+    top = max(d["prompts"] for d in data.values()) or 1
+    first = datetime.date.fromisoformat(days[0][0]).replace(day=1)
+    last = datetime.date.fromisoformat(days[-1][0])
+    out = ['<div class="kal">']
+    month = first
+    cell, gap = 18, 3
+    while month <= last:
+        nxt = (month.replace(day=28) + datetime.timedelta(days=4)).replace(day=1)
+        ndays = (nxt - month).days
+        offset = month.weekday()
+        weeks = (offset + ndays + 6) // 7
+        w, h = 22 + weeks * (cell + gap), 7 * (cell + gap)
+        svg = [f'<svg viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img">']
+        for i, name in enumerate(WOCHENTAGE):
+            if i % 2 == 0:
+                svg.append(f'<text class="axis" x="0" y="{i * (cell + gap) + 13}">{name}</text>')
+        for d in range(ndays):
+            day = month + datetime.timedelta(days=d)
+            pos = offset + d
+            x, y = 22 + (pos // 7) * (cell + gap), (pos % 7) * (cell + gap)
+            v = data.get(day.isoformat(), {"prompts": 0, "zuendungen": 0})
+            tip = html.escape(f"{WOCHENTAGE[day.weekday()]} {day:%d.%m.}: {v['prompts']} Prompts, {v['zuendungen']} Zündungen")
+            svg.append(f'<rect class="mark tag l{level(v["prompts"], top)}" data-tip="{tip}" x="{x}" y="{y}" '
+                       f'width="{cell}" height="{cell}" rx="4"/>')
+        svg.append("</svg>")
+        out.append(f'<div class="monat"><div class="mname">{MONATE[month.month - 1]} {month.year}</div>{"".join(svg)}</div>')
+        month = nxt
+    out.append("</div>")
+    legend = "".join(f'<span class="lg l{i}"></span>' for i in range(5))
+    out.append(f'<div class="legende">weniger {legend} mehr · dunkelste Stufe ≈ {top} Prompts am Tag</div>')
+    return "".join(out)
+
+
 def table(headers, rows):
     head = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
     body = "".join("<tr>" + "".join(f"<td>{html.escape(str(c))}</td>" for c in row) + "</tr>" for row in rows)
@@ -136,10 +186,13 @@ def page(s, title):
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{html.escape(title)}</title>
 <style>
-:root {{ --surface: #fcfcfb; --card: #ffffff; --line: #e4e3df; --ink: #0b0b0b; --ink-2: #52514e; --series: #2a78d6; }}
+:root {{ --surface: #fcfcfb; --card: #ffffff; --line: #e4e3df; --ink: #0b0b0b; --ink-2: #52514e; --series: #2a78d6;
+  --k0: #f0efec; --k1: #86b6ef; --k2: #5598e7; --k3: #2a78d6; --k4: #1c5cab; }}
 @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --surface: #1a1a19; --card: #232321; --line: #383835;
-  --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5; }} }}
-:root[data-theme="dark"] {{ --surface: #1a1a19; --card: #232321; --line: #383835; --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5; }}
+  --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5; --k0: #383835; --k1: #184f95; --k2: #256abf; --k3: #3987e5;
+  --k4: #86b6ef; }} }}
+:root[data-theme="dark"] {{ --surface: #1a1a19; --card: #232321; --line: #383835; --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5;
+  --k0: #383835; --k1: #184f95; --k2: #256abf; --k3: #3987e5; --k4: #86b6ef; }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--surface); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }}
 main {{ max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }}
@@ -155,6 +208,13 @@ h1 {{ font-size: 22px; margin: 0 0 4px; }} h2 {{ font-size: 16px; margin: 0 0 12
 .lbl, .val, .axis {{ fill: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }} .val {{ fill: var(--ink); }}
 .grid {{ stroke: var(--line); stroke-width: 1; }} .base {{ stroke: var(--ink-2); stroke-width: 1; }}
 .leer {{ color: var(--ink-2); }}
+.kal {{ display: flex; flex-wrap: wrap; gap: 24px; }} .mname {{ font-size: 13px; color: var(--ink-2); margin-bottom: 6px; }}
+.tag {{ stroke: var(--card); stroke-width: 2; }} .tag:hover {{ stroke: var(--ink); }}
+.l0 {{ fill: var(--k0); background: var(--k0); }} .l1 {{ fill: var(--k1); background: var(--k1); }}
+.l2 {{ fill: var(--k2); background: var(--k2); }} .l3 {{ fill: var(--k3); background: var(--k3); }}
+.l4 {{ fill: var(--k4); background: var(--k4); }}
+.legende {{ margin-top: 10px; font-size: 12px; color: var(--ink-2); display: flex; align-items: center; gap: 4px; }}
+.lg {{ display: inline-block; width: 14px; height: 14px; border-radius: 3px; }}
 details {{ margin-top: 10px; font-size: 13px; }} summary {{ cursor: pointer; color: var(--ink-2); }}
 table {{ border-collapse: collapse; margin-top: 8px; width: 100%; }} td, th {{ text-align: left; padding: 4px 8px; border-bottom: 1px solid var(--line); }}
 #tip {{ position: fixed; pointer-events: none; background: var(--ink); color: var(--surface); padding: 4px 8px; border-radius: 6px;
@@ -164,6 +224,7 @@ table {{ border-collapse: collapse; margin-top: 8px; width: 100%; }} td, th {{ t
 <h1>{html.escape(title)}</h1>
 <p class="sub">Skill-Log {html.escape(s["von"])} bis {html.escape(s["bis"])} UTC · Rechner: {html.escape(", ".join(s["hosts"]))} · {s["runden"]} Runden, ohne Testprojekte</p>
 <div class="tiles">{tiles_html}</div>
+<div class="card"><h2>Aktivität je Tag</h2>{calendar(s["days"])}</div>
 <div class="card"><h2>Projekte (Prompts)</h2>{project_section(s["projects"])}</div>
 <div class="card"><h2>Zündungen je Skill</h2>{hbars(s["fired"], "Zündungen")}{table(["Skill", "Zündungen"], s["fired"])}</div>
 <div class="grid2">
