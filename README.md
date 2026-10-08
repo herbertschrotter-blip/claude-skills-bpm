@@ -25,15 +25,18 @@ curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbe
 irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
 ```
 
-Das Skript prüft die Voraussetzungen und fragt dann drei Dinge:
+Das Skript prüft zuerst ohne Netz, was schon da ist, und stellt dann **alle Fragen auf einmal**:
 
-1. **Desktop-App oder Terminal?** In der Claude-Desktop-App kommen nur die Helfer (`work-hooks`), die Skills holt die
-   App von claude.ai. Im Terminal kommen Skills und Helfer (`work`, dazu `skill-workshop` für die Arbeit an Skills).
-2. **Rechnername** – so heißt der Rechner im Skill-Log (z. B. `laptop`).
-3. **Sind dieselben Skills auch bei claude.ai hochgeladen?** Dann blendet es dort die doppelten aus.
+1. **Was fehlt, installieren?** (git, Python, Claude Code – nur, was wirklich fehlt; Updates für git werden angeboten)
+2. **Desktop-App oder Terminal?** In der Claude-Desktop-App kommen nur die Helfer (`work-hooks`), die Skills holt die
+   App von claude.ai. Im Terminal kommen Skills und Helfer (`work`, dazu `skill-workshop`).
+3. **Rechnername** – Vorschlag ist der Windows-Computername bzw. der schon eingerichtete Name (z. B. `surface`).
+4. **Sammel-Repo** (optional, privat) und ob dieselben Skills auch bei claude.ai hochgeladen sind.
 
-Vor jeder Änderung fragt es nach, und bevor es die `settings.json` ändert, legt es eine Sicherung an. Danach
-**Claude Code neu starten** – fertig.
+Danach läuft alles ohne Rückfrage durch, mit einem Fortschrittsbalken. Zum Schluss meldet es sich bei Claude an, falls
+nötig (Browser) – die Anmeldung der Desktop-App zählt dafür nicht. Dann **Claude Code neu starten** – fertig.
+Was das Skript installiert, steht im Protokoll `~/.claude/workbench-einrichtung.json`; ein erneuter Start setzt fort.
+Updates, Entfernen und was bei Problemen hilft: [`docs/installation.md`](./docs/installation.md).
 
 ### 3. Im Alltag
 
@@ -45,7 +48,7 @@ Vor jeder Änderung fragt es nach, und bevor es die `settings.json` ändert, leg
 | prüfen, was installiert ist | `claude plugin list` |
 | Statistik sehen (auch Arbeitszeit je Projekt) | in Claude Code `/statistik` (oder `/statistik ha-baustelle`, `/statistik 2026-10-01`): Dashboard mit Zündungen je Skill und Projekt, Verlauf und Blockaden des Wächters |
 | reparieren oder neuen Rechner einrichten | das Installationsskript einfach noch einmal laufen lassen |
-| entfernen | `claude plugin uninstall work@workbench` (und `skill-workshop@workbench`) |
+| entfernen | Installationsskript mit `-Entfernen` bzw. `--entfernen` (nimmt nur zurück, was es selbst angelegt hat) – siehe [`docs/installation.md`](./docs/installation.md) |
 
 **Gut zu wissen**
 
@@ -563,6 +566,7 @@ claude-workbench/
 │   ├── chat-anker-konzept.md
 │   ├── chatgpt-reviews/                   ← CGR-Archiv + INDEX.md
 │   ├── fragilitaeten-und-fruehwarn.md
+│   ├── installation.md                    ← Installation: Ablauf, Updates, Entfernen, Fehlerquellen
 │   ├── ha-grundsatz/
 │   ├── skill-guard-v1.md                  ← Skill-Wächter
 │   ├── skill-log-v1.md                    ← Skill-Log

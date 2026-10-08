@@ -42,5 +42,52 @@ class EinrichtenTest(unittest.TestCase):
                          (["work-hooks"], [], ["work", "skill-workshop"]))
 
 
+
+class SettingsTest(unittest.TestCase):
+    def test_leer_ist_leeres_objekt(self):
+        self.assertEqual(e.parse_settings("  "), ({}, None))
+
+    def test_kaputt_liefert_lesbaren_fehler(self):
+        data, fehler = e.parse_settings('{"a": 1,}')
+        self.assertIsNone(data)
+        self.assertIn("Zeile 1", fehler)
+
+    def test_kein_objekt(self):
+        self.assertEqual(e.parse_settings("[1, 2]"), (None, "kein JSON-Objekt"))
+
+    def test_gueltig(self):
+        self.assertEqual(e.parse_settings('{"theme": "dark"}'), ({"theme": "dark"}, None))
+
+
+class ProtokollTest(unittest.TestCase):
+    def test_erster_befund_bleibt(self):
+        p = e.merge_protokoll({}, [{"was": "git", "wert": "Git.Git", "aktion": "war-da"}], "t1")
+        p = e.merge_protokoll(p, [{"was": "git", "wert": "Git.Git", "aktion": "installiert"}], "t2")
+        self.assertEqual(p["eintraege"][0]["aktion"], "war-da")
+
+    def test_entfernt_ersetzt_und_danach_neu(self):
+        p = e.merge_protokoll({}, [{"was": "plugin", "wert": "work", "aktion": "installiert"}])
+        p = e.merge_protokoll(p, [{"was": "plugin", "wert": "work", "aktion": "entfernt"}])
+        self.assertEqual(e.offen(p), [])
+        p = e.merge_protokoll(p, [{"was": "plugin", "wert": "work", "aktion": "installiert"}])
+        self.assertEqual([x["wert"] for x in e.offen(p, "plugin")], ["work"])
+
+    def test_settings_entfernen_nur_eigene(self):
+        s = {"theme": "dark",
+             "extraKnownMarketplaces": {"workbench": {"source": {"source": "github"}, "autoUpdate": True}},
+             "skillOverrides": {"anthropic-skills:audit": "off", "anthropic-skills:tracker": "name-only",
+                                "anthropic-skills:x": "off"}}
+        e.settings_entfernen(s, [{"was": "einstellung-autoupdate", "wert": "workbench", "neu_eintrag": False},
+                                 {"was": "einstellung-override", "wert": "anthropic-skills:audit"},
+                                 {"was": "einstellung-override", "wert": "anthropic-skills:tracker"}])
+        self.assertEqual(s["extraKnownMarketplaces"]["workbench"], {"source": {"source": "github"}})
+        self.assertEqual(s["skillOverrides"], {"anthropic-skills:tracker": "name-only", "anthropic-skills:x": "off"})
+        self.assertEqual(s["theme"], "dark")
+
+    def test_settings_entfernen_neuer_eintrag_ganz(self):
+        s = {"extraKnownMarketplaces": {"workbench": {"autoUpdate": True}}}
+        e.settings_entfernen(s, [{"was": "einstellung-autoupdate", "wert": "workbench", "neu_eintrag": True}])
+        self.assertEqual(s, {})
+
 if __name__ == "__main__":
     unittest.main()

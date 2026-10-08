@@ -23,6 +23,13 @@ jobs:
         shell: pwsh
         run: |
           sh -n tools/install.sh
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/tools/install.ps1", [ref]$null, [ref]$errors) | Out-Null
-          if ($errors) { $errors | ForEach-Object { Write-Error $_.Message }; exit 1 }
+          $fail = $false
+          foreach ($f in Get-ChildItem tools/*.ps1) {
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($f.FullName, [ref]$null, [ref]$errors) | Out-Null
+            if ($errors) { $errors | ForEach-Object { Write-Error "$($f.Name): $($_.Message)" }; $fail = $true }
+          }
+          # install.ps1 laeuft ueber "irm | iex": nur ASCII, ohne BOM (sonst scheitert schon die erste Zeile)
+          $bytes = [IO.File]::ReadAllBytes("$PWD/tools/install.ps1")
+          if ($bytes | Where-Object { $_ -gt 127 }) { Write-Error 'install.ps1 enthaelt Nicht-ASCII-Zeichen oder eine BOM'; $fail = $true }
+          if ($fail) { exit 1 }

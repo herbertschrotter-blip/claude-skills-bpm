@@ -324,6 +324,12 @@ Plugins im selben Repo)
    Marketplace, Plugins je Rechner, `autoUpdate`, `skillOverrides`, Probe der Hooks; `install.ps1` noch nicht unter echtem
    Windows gelaufen). Prüfskript vergleicht Hooks und `userConfig` von `work` und `work-hooks`. skill-auswertung v0.44.0
    schärft die Wächter-Regeln nach; `!`-Prompts zählen als Art `befehl` (v0.43.1).
+   Erster echter Windows-Lauf (Surface, 08.10.2026): Python aus dem Store und Claude Code installiert, dann Ende mit
+   „anmelden und erneut starten“ – `%USERPROFILE%\.local\bin` fehlte im PATH, ein neuer Start hätte Claude erneut
+   installiert; Schritte 2–5 liefen nicht. Überarbeitet: PATH-Reparatur (REG_EXPAND_SZ), Bestandsaufnahme ohne Netz,
+   alle Fragen vorab, Claude-Installer als eigener Prozess parallel zu winget, Anmeldung am Ende (`claude plugin` läuft
+   ohne), durchgehender Balken, geplante Aufgabe für git-Updates, Protokoll und `-Entfernen`/`--entfernen`,
+   Fehlerquellen in `docs/installation.md`. install.sh mit derselben Logik, echt getestet (isoliertes HOME).
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
    Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist

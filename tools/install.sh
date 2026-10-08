@@ -1,29 +1,75 @@
 #!/bin/sh
 # Einrichtung des Marketplace workbench auf Linux/macOS (auch Home-Assistant-Add-on).
-# Prüft git, Python 3 und Claude Code, installiert Fehlendes nach Rückfrage, legt den Marketplace an bzw. aktualisiert
-# ihn und übergibt dann an tools/einrichten.py (Plugins, Optionen, autoUpdate, skillOverrides, Probe der Hooks).
 #
-#   sh tools/install.sh [--modus terminal|desktop] [--host NAME] [--ja] [--ohne-overrides]
-#   curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh -s -- --host laptop
-set -e
+#   sh tools/install.sh [--modus terminal|desktop] [--host NAME] [--log-repo owner/name] [--ja] [--ohne-overrides]
+#   sh tools/install.sh --entfernen
+#   Tests: WORKBENCH_REPO=<lokaler Ordner> HOME=<leerer Ordner> sh tools/install.sh --ja --ohne-login ...
+#   curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh
+#
+# Ablauf wie tools/install.ps1: Bestandsaufnahme -> alle Fragen auf einmal -> installieren (Claude-Installer parallel
+# zu den Paketen) -> Marketplace -> einrichten.py (Plugins, Optionen, autoUpdate, skillOverrides, Probe) -> Anmeldung.
+# Protokoll fuer --entfernen: ~/.claude/workbench-einrichtung.json. Fehlerquellen: docs/installation.md.
 
-REPO="herbertschrotter-blip/claude-workbench"
+REPO="${WORKBENCH_REPO:-herbertschrotter-blip/claude-workbench}"  # WORKBENCH_REPO: anderes Repo oder lokaler Ordner (Tests)
 MARKETPLACE="workbench"
-JA=""
-for arg in "$@"; do [ "$arg" = "--ja" ] && JA=1; done
+JA=""; MODUS=""; HOST=""; LOGREPO="-"; OHNE_OVERRIDES=""; ENTFERNEN=""; OHNE_LOGIN=""
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --ja) JA=1 ;;
+        --modus) shift; MODUS="$1" ;;
+        --host) shift; HOST="$1" ;;
+        --log-repo) shift; LOGREPO="$1" ;;
+        --ohne-overrides) OHNE_OVERRIDES=1 ;;
+        --entfernen) ENTFERNEN=1 ;;
+        --ohne-login) OHNE_LOGIN=1 ;;
+    esac
+    shift
+done
+TTY=/dev/tty; ( : < /dev/tty ) 2>/dev/null || TTY=/dev/null  # ohne Terminal: Vorschläge nehmen
+[ "$TTY" = /dev/null ] && JA=1
+TMP="${TMPDIR:-/tmp}/workbench-einrichtung.$$"
+mkdir -p "$TMP"
+trap 'rm -rf "$TMP"' EXIT
+LOCALBIN="$HOME/.local/bin"
+PROTOKOLL="$HOME/.claude/workbench-einrichtung.json"
+ZUSATZ="$TMP/zusatz.json"
+printf '[' > "$ZUSATZ"
 
 has() { command -v "$1" >/dev/null 2>&1; }
-schritt() { printf '\n%s\n' "$1"; }
-ok() { printf '  OK  %s\n' "$1"; }
-
-frage() {  # frage "Text" → 0 bei ja (Vorschlag: ja)
-    [ -n "$JA" ] && return 0
-    printf '%s [J/n] ' "$1"
-    read -r antwort </dev/tty || antwort=""
-    case "$antwort" in n|N|nein|Nein) return 1 ;; *) return 0 ;; esac
+zeile_leeren() { [ -t 1 ] && printf '\r%-78s\r' ''; }
+meldung() { zeile_leeren; printf '%s\n' "$1"; balken "$PCT" ""; }
+ok() { meldung "  OK  $1"; }
+hinweis() { meldung "  !   $1"; }
+fehler() { meldung "  X   $1"; }
+PCT=0; TEXT=""
+balken() {  # balken PROZENT TEXT – eine Zeile, die sich an derselben Stelle aktualisiert
+    [ "$1" -gt "$PCT" ] && PCT=$1
+    [ -n "$2" ] && TEXT=$2
+    [ -t 1 ] || return 0
+    voll=$((PCT * 30 / 100)); bar=""; i=0
+    while [ $i -lt 30 ]; do if [ $i -lt $voll ]; then bar="$bar█"; else bar="$bar░"; fi; i=$((i + 1)); done
+    printf '\r  %s  %3d%%  %-40.40s' "$bar" "$PCT" "$TEXT"
 }
-
-paket() {  # paket <apk/apt-Name> – installiert mit dem Paketmanager des Systems
+frage() {  # frage "Text" [j|n] -> 0 bei ja
+    vorschlag=${2:-j}
+    if [ -n "$JA" ]; then [ "$vorschlag" = j ]; return; fi
+    zeile_leeren
+    if [ "$vorschlag" = j ]; then printf '  %s [J/n] ' "$1"; else printf '  %s [j/N] ' "$1"; fi
+    read -r antwort < "$TTY" || antwort=""
+    [ -z "$antwort" ] && { [ "$vorschlag" = j ]; return; }
+    case "$antwort" in j|J|ja|Ja|y|Y|yes) return 0 ;; *) return 1 ;; esac
+}
+eingabe() {  # eingabe "Text" VORSCHLAG -> Ergebnis in $ANTWORT
+    ANTWORT=$2
+    [ -n "$JA" ] && return
+    zeile_leeren; printf '  %s [%s] ' "$1" "$2"
+    read -r a <"$TTY" && [ -n "$a" ] && ANTWORT=$a
+}
+protokoll() { # protokoll WAS WERT AKTION
+    [ "$(cat "$ZUSATZ")" = "[" ] || printf ',' >> "$ZUSATZ"
+    printf '{"was":"%s","wert":"%s","aktion":"%s"}' "$1" "$2" "$3" >> "$ZUSATZ"
+}
+paket() {  # paket NAME – mit dem Paketmanager des Systems
     sudo=""
     [ "$(id -u)" != "0" ] && has sudo && sudo="sudo"
     if has apk; then $sudo apk add --no-cache "$1"
@@ -31,48 +77,177 @@ paket() {  # paket <apk/apt-Name> – installiert mit dem Paketmanager des Syste
     elif has dnf; then $sudo dnf install -y "$1"
     elif has pacman; then $sudo pacman -S --noconfirm "$1"
     elif has brew; then brew install "$1"
-    else echo "Kein bekannter Paketmanager – bitte $1 von Hand installieren."; return 1
+    else return 1
     fi
 }
-
-printf '\n=== Einrichtung workbench (Skills, Skill-Log, Skill-Wächter) ===\n'
-schritt "[1/5] Voraussetzungen"
-if has git; then ok "git: $(git --version)"
-elif frage "git fehlt. Installieren?"; then paket git
-else echo "Ohne git geht es nicht (der Marketplace ist ein Git-Repo)."; exit 1
-fi
-
-if has python3 && python3 -c 'import sys; sys.exit(sys.version_info < (3, 8))'; then
-    ok "Python: $(python3 --version)"
-elif frage "Python 3 (ab 3.8) fehlt. Installieren?"; then paket python3
-else echo "Ohne Python 3 laufen Skill-Log und Skill-Wächter nicht."; exit 1
-fi
-
-if has claude; then ok "Claude Code: $(claude --version 2>/dev/null | head -1)"
-elif frage "Claude Code fehlt. Mit dem offiziellen Installer installieren (curl -fsSL https://claude.ai/install.sh | bash)?"; then
-    curl -fsSL https://claude.ai/install.sh | bash
-    PATH="$HOME/.local/bin:$PATH"
-    has claude || { echo "claude noch nicht im PATH – neue Shell öffnen und dieses Skript erneut starten."; exit 1; }
-    echo "Anmelden: claude starten und /login ausführen, danach dieses Skript erneut starten."
-else echo "Ohne Claude Code geht es nicht."; exit 1
-fi
-
-schritt "[2/5] Marketplace $MARKETPLACE"
-if claude plugin marketplace list --json 2>/dev/null | grep -q "\"name\": *\"$MARKETPLACE\""; then
-    claude plugin marketplace update "$MARKETPLACE"
-else
-    claude plugin marketplace add "$REPO"
-fi
-
-ORT=$(claude plugin marketplace list --json | python3 -I -c '
+python3_ok() { has python3 && python3 -c 'import sys; sys.exit(sys.version_info < (3, 8))' 2>/dev/null; }
+profil_datei() { case "$(basename "${SHELL:-sh}")" in zsh) echo "$HOME/.zprofile" ;; *) echo "$HOME/.profile" ;; esac; }
+pfad_dauerhaft() {  # ~/.local/bin dauerhaft in die Profil-Datei, sofort in die laufende Sitzung
+    datei=$(profil_datei)
+    if ! grep -qs 'workbench: ~/.local/bin' "$datei"; then
+        printf '\nexport PATH="$HOME/.local/bin:$PATH"  # workbench: ~/.local/bin (tools/install.sh)\n' >> "$datei"
+        ok "PATH ergänzt in $datei (neue Shells sehen es)"
+        protokoll pfad "$datei" installiert
+    fi
+    case ":$PATH:" in *":$LOCALBIN:"*) ;; *) PATH="$LOCALBIN:$PATH"; export PATH ;; esac
+}
+eingeloggt() { claude auth status 2>/dev/null | python3 -I -c 'import json,sys; sys.exit(0 if json.load(sys.stdin).get("loggedIn") else 1)' 2>/dev/null; }
+marketplace_ort() {
+    claude plugin marketplace list --json 2>/dev/null | python3 -I -c '
 import json, sys
-print(next(m["installLocation"] for m in json.load(sys.stdin) if m["name"] == sys.argv[1]))' "$MARKETPLACE")
+print(next((m["installLocation"] for m in json.load(sys.stdin) if m["name"] == sys.argv[1]), ""))' "$MARKETPLACE" 2>/dev/null
+}
 
-ok "Marketplace $MARKETPLACE in $ORT"
+# --- Entfernen --------------------------------------------------------------------------------------------------------
+if [ -n "$ENTFERNEN" ]; then
+    printf '\n=== workbench entfernen (nur, was die Einrichtung selbst angelegt hat) ===\n'
+    [ -f "$PROTOKOLL" ] || { echo "Kein Protokoll ($PROTOKOLL) - nichts zu tun. Von Hand: docs/installation.md, Abschnitt Entfernen."; exit 0; }
+    [ -x "$LOCALBIN/claude" ] && PATH="$LOCALBIN:$PATH"
+    ORT=$(has claude && python3_ok && marketplace_ort)
+    if [ -n "$ORT" ] && [ -f "$ORT/tools/einrichten.py" ]; then
+        cp "$ORT/tools/einrichten.py" "$TMP/einrichten.py"  # Kopie: einrichten.py entfernt den Marketplace-Ordner selbst
+        python3 -I "$TMP/einrichten.py" --entfernen ${JA:+--ja} <"$TTY"
+    else
+        echo "  python3, claude oder der Marketplace fehlt - Plugins und Einstellungen bitte von Hand prüfen."
+    fi
+    python3 -I - "$PROTOKOLL" <<'PY' > "$TMP/rest.txt"
+import json, sys
+for e in json.load(open(sys.argv[1], encoding="utf-8-sig")).get("eintraege", []):
+    if e.get("aktion") == "installiert" and e["was"] in ("pfad", "claude", "git", "python"):
+        print(e["was"], e.get("wert", ""))
+PY
+    printf '\n[Entfernen] System\n'
+    : > "$TMP/weg.txt"
+    while read -r was wert; do
+        case "$was" in
+            pfad) if frage "PATH-Zeile aus $wert entfernen?" j; then sed -i.bak '/workbench: ~\/.local\/bin/d' "$wert" && echo "  OK  entfernt" && echo "$was $wert" >> "$TMP/weg.txt"; fi ;;
+            claude) if frage "Claude Code entfernen (~/.claude mit Gesprächen und Skill-Log bleibt)?" n; then
+                        rm -f "$LOCALBIN/claude"; rm -rf "$HOME/.local/share/claude"; echo "  OK  entfernt"; echo "$was $wert" >> "$TMP/weg.txt"; fi ;;
+            git|python) echo "  $was wurde über den Paketmanager installiert - bei Bedarf von Hand entfernen." ;;
+        esac
+    done < "$TMP/rest.txt"
+    # Protokoll fortschreiben; löschen nur, wenn nichts mehr offen ist
+    python3 -I - "$PROTOKOLL" "$TMP/weg.txt" <<'PY'
+import json, os, sys
+path, weg = sys.argv[1], {tuple(l.split(" ", 1)) for l in open(sys.argv[2]).read().splitlines() if l}
+data = json.load(open(path, encoding="utf-8-sig"))
+for e in data.get("eintraege", []):
+    if (e["was"], e.get("wert", "")) in weg:
+        e["aktion"] = "entfernt"
+rest = [e for e in data["eintraege"] if e.get("aktion") == "installiert" and e["was"] not in ("git", "python")]
+if rest:
+    json.dump(data, open(path, "w", encoding="utf-8"), indent=1, ensure_ascii=False)
+    print("  !   Noch offen (abgelehnt oder gescheitert): " + ", ".join(f'{e["was"]} {e.get("wert", "")}' for e in rest))
+    print("      Das Protokoll bleibt; ein erneutes --entfernen macht weiter.")
+else:
+    os.remove(path)
+    print("  OK  Alles zurückgenommen, Protokoll gelöscht. Das Skill-Log (~/.claude/skill-log) bleibt.")
+PY
+    exit 0
+fi
 
-if python3 -I "$ORT/tools/einrichten.py" --schritt 3 "$@" </dev/tty; then
-    printf '\n=== FERTIG – Claude Code jetzt neu starten ===\n'
+# --- 1. Bestandsaufnahme ----------------------------------------------------------------------------------------------
+printf '\n=== Einrichtung workbench (Skills, Skill-Log, Skill-Wächter) ===\n'
+balken 1 "Bestandsaufnahme"
+if [ -x "$LOCALBIN/claude" ] && ! has claude; then pfad_dauerhaft; fi
+HAT_GIT=""; HAT_PY=""; HAT_CLAUDE=""; ANGEMELDET=""; MP_DA=""
+has git && HAT_GIT=1 && ok "git: $(git --version | sed 's/git version //')" && protokoll git git war-da
+python3_ok && HAT_PY=1 && ok "Python: $(python3 --version)" && protokoll python python3 war-da
+if has claude; then
+    HAT_CLAUDE=1; protokoll claude claude war-da
+    [ -n "$HAT_PY" ] && eingeloggt && ANGEMELDET=1
+    [ -n "$HAT_PY" ] && [ -n "$(marketplace_ort)" ] && MP_DA=1
+    ok "Claude Code: $(claude --version 2>/dev/null | head -1)$([ -n "$ANGEMELDET" ] && echo ', angemeldet' || echo ', nicht angemeldet')"
+fi
+if [ -n "$MP_DA" ]; then protokoll marketplace "$MARKETPLACE" war-da; else protokoll marketplace "$MARKETPLACE" installiert; fi
+# Marketplace sofort im Hintergrund auffrischen
+[ -n "$MP_DA" ] && { claude plugin marketplace update "$MARKETPLACE" > "$TMP/mp.txt" 2>&1 & }
+balken 5 "Bestandsaufnahme fertig"
+
+# --- 2. Alle Fragen auf einmal ----------------------------------------------------------------------------------------
+meldung ""
+meldung "  Bitte einmal alles beantworten - danach läuft die Einrichtung ohne weitere Fragen."
+WOLL_GIT=""; WOLL_PY=""; WOLL_CLAUDE=""
+if [ -z "$HAT_GIT" ]; then frage "git fehlt. Installieren?" && WOLL_GIT=1 || { fehler "Ohne git geht es nicht."; exit 1; }; fi
+if [ -z "$HAT_PY" ]; then frage "Python 3 (ab 3.8) fehlt. Installieren?" && WOLL_PY=1 || { fehler "Ohne python3 laufen die Hooks nicht."; exit 1; }; fi
+if [ -z "$HAT_CLAUDE" ]; then frage "Claude Code fehlt. Mit dem offiziellen Installer installieren?" && WOLL_CLAUDE=1 || { fehler "Ohne Claude Code geht es nicht."; exit 1; }; fi
+if [ -z "$MODUS" ]; then
+    if frage "Läuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?" n; then MODUS=desktop; else MODUS=terminal; fi
+fi
+if [ -z "$HOST" ]; then eingabe "Rechnername im Skill-Log (Enter = Vorschlag)" "$(hostname 2>/dev/null | cut -d. -f1 | tr 'A-Z' 'a-z')"; HOST=$ANTWORT; fi
+if [ "$LOGREPO" = "-" ]; then eingabe "Privates Sammel-Repo für das Skill-Log (owner/name, leer = keins)" ""; LOGREPO=$ANTWORT; fi
+OVERRIDES="--ohne-overrides"
+if [ "$MODUS" = terminal ] && [ -z "$OHNE_OVERRIDES" ] && frage "Sind dieselben Skills auch bei claude.ai hochgeladen (doppelte ausblenden)?" n; then OVERRIDES="--mit-overrides"; fi
+
+# --- 3. Installieren (Claude-Installer parallel zu den Paketen) -------------------------------------------------------
+meldung ""
+balken 10 "Installieren"
+if [ -n "$WOLL_CLAUDE" ]; then (curl -fsSL https://claude.ai/install.sh | bash > "$TMP/claude.txt" 2>&1; echo $? > "$TMP/claude.rc") & fi
+if [ -n "$WOLL_GIT" ]; then
+    balken 15 "git wird installiert"
+    if paket git > "$TMP/git.txt" 2>&1; then ok "git installiert"; protokoll git git installiert; else fehler "git-Installation gescheitert: $(tail -1 "$TMP/git.txt")"; exit 1; fi
+fi
+if [ -n "$WOLL_PY" ]; then
+    balken 25 "Python wird installiert"
+    if paket python3 > "$TMP/py.txt" 2>&1 && python3_ok; then ok "Python: $(python3 --version)"; protokoll python python3 installiert
+    else fehler "Python-Installation gescheitert: $(tail -1 "$TMP/py.txt")"; exit 1; fi
+fi
+if [ -n "$WOLL_CLAUDE" ]; then
+    balken 35 "Claude Code wird installiert"
+    wait
+    [ -x "$LOCALBIN/claude" ] && pfad_dauerhaft
+    if has claude; then ok "Claude Code: $(claude --version 2>/dev/null | head -1)"; protokoll claude claude installiert
+    else fehler "Claude Code nicht installiert: $(tail -2 "$TMP/claude.txt" | tr '\n' ' ')"; exit 1; fi
+fi
+
+# --- 4. Marketplace ---------------------------------------------------------------------------------------------------
+balken 50 "Marketplace $MARKETPLACE"
+wait
+[ -z "$MP_DA" ] && claude plugin marketplace add "$REPO" > "$TMP/mp.txt" 2>&1
+ORT=$(marketplace_ort)
+if [ -z "$ORT" ]; then fehler "Marketplace nicht eingerichtet: $(tail -2 "$TMP/mp.txt" | tr '\n' ' ')"; exit 1; fi
+ok "Marketplace $MARKETPLACE"
+printf ']' >> "$ZUSATZ"
+
+# --- 5. Plugins, Einstellungen, Probe (einrichten.py meldet ##BALKEN-Zeilen) ------------------------------------------
+python3 -I "$ORT/tools/einrichten.py" --ja --balken --modus "$MODUS" --host "$HOST" --log-repo "$LOGREPO" $OVERRIDES \
+    --protokoll-zusatz "$ZUSATZ" </dev/null > "$TMP/einrichten.txt" 2>&1 &
+PID=$!; GELESEN=0
+while kill -0 $PID 2>/dev/null || [ "$GELESEN" -lt "$(wc -l < "$TMP/einrichten.txt")" ]; do
+    ANZ=$(wc -l < "$TMP/einrichten.txt")
+    while [ "$GELESEN" -lt "$ANZ" ]; do
+        GELESEN=$((GELESEN + 1))
+        z=$(sed -n "${GELESEN}p" "$TMP/einrichten.txt")
+        case "$z" in
+            "##BALKEN "*) p=$(echo "$z" | cut -d' ' -f2); balken $((55 + p * 35 / 100)) "$(echo "$z" | cut -d' ' -f3-)" ;;
+            "") ;;
+            *) meldung "$z" ;;
+        esac
+    done
+    kill -0 $PID 2>/dev/null && sleep 0.3
+done
+wait $PID; RC=$?
+
+# --- 6. Anmeldung (claude plugin ... läuft auch ohne; deshalb erst am Ende) -------------------------------------------
+balken 92 "Anmeldung"
+if [ -n "$OHNE_LOGIN" ]; then
+    eingeloggt && ANGEMELDET=1
+elif [ -z "$ANGEMELDET" ] && ! eingeloggt; then
+    meldung ""
+    meldung "  Claude Code ist noch nicht angemeldet - gleich startet die Anmeldung im Browser."
+    zeile_leeren
+    claude auth login <"$TTY"
+    eingeloggt && ANGEMELDET=1 && ok "Claude Code angemeldet"
 else
-    printf '\n=== NICHT FERTIG – siehe die Meldung oben ===\n'
+    ANGEMELDET=1
+fi
+balken 100 "Fertig"
+printf '\n\n'
+if [ "$RC" -eq 0 ] && [ -n "$ANGEMELDET" ]; then
+    printf '=== FERTIG – Claude Code neu starten ===\n'
+elif [ "$RC" -eq 0 ]; then
+    printf '=== FERTIG bis auf die Anmeldung – claude auth login, dann Claude Code neu starten ===\n'
+else
+    printf '=== NICHT FERTIG – siehe die Meldung oben; ein erneuter Start setzt fort ===\n'
     exit 1
 fi
