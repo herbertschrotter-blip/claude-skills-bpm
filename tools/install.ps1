@@ -54,10 +54,11 @@ elseif (Frage 'Claude Code fehlt. Mit dem offiziellen Installer installieren (ir
 } else { throw 'Ohne Claude Code geht es nicht.' }
 
 Write-Host "== Marketplace $Marketplace"
-$markets = claude plugin marketplace list --json | ConvertFrom-Json
-if ($markets | Where-Object { $_.name -eq $Marketplace }) { claude plugin marketplace update $Marketplace }
+function Marketplaces { $json = (claude plugin marketplace list --json | Out-String); $list = ConvertFrom-Json $json; $list }
+if (@(Marketplaces) | Where-Object { $_.name -eq $Marketplace }) { claude plugin marketplace update $Marketplace }
 else { claude plugin marketplace add $Repo }
-$ort = (claude plugin marketplace list --json | ConvertFrom-Json | Where-Object { $_.name -eq $Marketplace }).installLocation
+$ort = (@(Marketplaces) | Where-Object { $_.name -eq $Marketplace } | Select-Object -First 1).installLocation
+if (-not $ort) { throw "Marketplace $Marketplace nicht gefunden." }
 
 Write-Host '== Plugins und Einstellungen'
 $weiter = @()
@@ -66,4 +67,4 @@ if ($RechnerName) { $weiter += @('--host', $RechnerName) }
 if ($Ja) { $weiter += '--ja' }
 if ($OhneOverrides) { $weiter += '--ohne-overrides' }
 & python3 -I (Join-Path $ort 'tools\einrichten.py') @weiter
-exit $LASTEXITCODE
+# kein exit: beim Start mit "irm … | iex" würde es das PowerShell-Fenster schließen
