@@ -29,31 +29,43 @@ TTY=/dev/tty; ( : < /dev/tty ) 2>/dev/null || TTY=/dev/null  # ohne Terminal: Vo
 [ "$TTY" = /dev/null ] && JA=1
 TMP="${TMPDIR:-/tmp}/workbench-einrichtung.$$"
 mkdir -p "$TMP"
-trap 'rm -rf "$TMP"' EXIT
+trap 'fest_aus; rm -rf "$TMP"' EXIT
 LOCALBIN="$HOME/.local/bin"
 PROTOKOLL="$HOME/.claude/workbench-einrichtung.json"
 ZUSATZ="$TMP/zusatz.json"
 printf '[' > "$ZUSATZ"
 
 has() { command -v "$1" >/dev/null 2>&1; }
-zeile_leeren() { [ -t 1 ] && printf '\r%-78s\r' ''; }
-meldung() { zeile_leeren; printf '%s\n' "$1"; balken "$PCT" ""; }
+# Fortschritt oben fest: Zeile 1 Gesamt, Zeile 2 laufende Aufgabe; darunter scrollt die Ausgabe (Rollbereich ab Zeile 4)
+PCT=0; TEXT=""; TPCT=0; TTEXT=""; FEST=""
+leiste() {  # leiste PROZENT BREITE
+    voll=$(($1 * $2 / 100)); out=""; i=0
+    while [ $i -lt "$2" ]; do if [ $i -lt $voll ]; then out="$out█"; else out="$out░"; fi; i=$((i + 1)); done
+    printf '%s' "$out"
+}
+zeichnen() {
+    [ -n "$FEST" ] || return 0
+    printf '\0337\033[1;1H\033[2K  %s %3d%%  %.50s\033[2;1H\033[2K' "$(leiste "$PCT" 30)" "$PCT" "$TEXT"
+    [ -n "$TTEXT" ] && printf '      %s %3d%%  %.46s' "$(leiste "$TPCT" 24)" "$TPCT" "$TTEXT"
+    printf '\0338'
+}
+fest_an() {
+    [ -t 1 ] || return 0
+    rows=$(stty size < "$TTY" 2>/dev/null | cut -d' ' -f1)
+    [ -n "$rows" ] && [ "$rows" -gt 10 ] || return 0
+    printf '\033[H\033[2J\033[4;%sr\033[4;1H' "$rows"
+    FEST=1; zeichnen
+}
+fest_aus() { [ -n "$FEST" ] && printf '\0337\033[r\0338'; FEST=""; }
+balken() { [ "$1" -gt "$PCT" ] && PCT=$1; [ -n "$2" ] && TEXT=$2; zeichnen; }
+teil() { TPCT=$1; TTEXT=$2; zeichnen; }   # teil PROZENT TEXT; teil 0 "" blendet aus
+meldung() { printf '%s\n' "$1"; }
 ok() { meldung "  OK  $1"; }
 hinweis() { meldung "  !   $1"; }
 fehler() { meldung "  X   $1"; }
-PCT=0; TEXT=""
-balken() {  # balken PROZENT TEXT – eine Zeile, die sich an derselben Stelle aktualisiert
-    [ "$1" -gt "$PCT" ] && PCT=$1
-    [ -n "$2" ] && TEXT=$2
-    [ -t 1 ] || return 0
-    voll=$((PCT * 30 / 100)); bar=""; i=0
-    while [ $i -lt 30 ]; do if [ $i -lt $voll ]; then bar="$bar█"; else bar="$bar░"; fi; i=$((i + 1)); done
-    printf '\r  %s  %3d%%  %-40.40s' "$bar" "$PCT" "$TEXT"
-}
 frage() {  # frage "Text" [j|n] -> 0 bei ja
     vorschlag=${2:-j}
     if [ -n "$JA" ]; then [ "$vorschlag" = j ]; return; fi
-    zeile_leeren
     if [ "$vorschlag" = j ]; then printf '  %s [J/n] ' "$1"; else printf '  %s [j/N] ' "$1"; fi
     read -r antwort < "$TTY" || antwort=""
     [ -z "$antwort" ] && { [ "$vorschlag" = j ]; return; }
@@ -62,7 +74,7 @@ frage() {  # frage "Text" [j|n] -> 0 bei ja
 eingabe() {  # eingabe "Text" VORSCHLAG -> Ergebnis in $ANTWORT
     ANTWORT=$2
     [ -n "$JA" ] && return
-    zeile_leeren; printf '  %s [%s] ' "$1" "$2"
+    printf '  %s [%s] ' "$1" "$2"
     read -r a <"$TTY" && [ -n "$a" ] && ANTWORT=$a
 }
 protokoll() { # protokoll WAS WERT AKTION
@@ -147,6 +159,7 @@ PY
 fi
 
 # --- 1. Bestandsaufnahme ----------------------------------------------------------------------------------------------
+fest_an
 printf '\n=== Einrichtung workbench (Skills, Skill-Log, Skill-Wächter) ===\n'
 balken 1 "Bestandsaufnahme"
 if [ -x "$LOCALBIN/claude" ] && ! has claude; then pfad_dauerhaft; fi
@@ -184,16 +197,16 @@ meldung ""
 balken 10 "Installieren"
 if [ -n "$WOLL_CLAUDE" ]; then (curl -fsSL https://claude.ai/install.sh | bash > "$TMP/claude.txt" 2>&1; echo $? > "$TMP/claude.rc") & fi
 if [ -n "$WOLL_GIT" ]; then
-    balken 15 "git wird installiert"
+    balken 15 "git wird installiert"; teil 10 "git"
     if paket git > "$TMP/git.txt" 2>&1; then ok "git installiert"; protokoll git git installiert; else fehler "git-Installation gescheitert: $(tail -1 "$TMP/git.txt")"; exit 1; fi
 fi
 if [ -n "$WOLL_PY" ]; then
-    balken 25 "Python wird installiert"
+    teil 0 ""; balken 25 "Python wird installiert"; teil 10 "Python"
     if paket python3 > "$TMP/py.txt" 2>&1 && python3_ok; then ok "Python: $(python3 --version)"; protokoll python python3 installiert
     else fehler "Python-Installation gescheitert: $(tail -1 "$TMP/py.txt")"; exit 1; fi
 fi
 if [ -n "$WOLL_CLAUDE" ]; then
-    balken 35 "Claude Code wird installiert"
+    teil 0 ""; balken 35 "Claude Code wird installiert"; teil 30 "Claude Code (offizieller Installer)"
     wait
     [ -x "$LOCALBIN/claude" ] && pfad_dauerhaft
     if has claude; then ok "Claude Code: $(claude --version 2>/dev/null | head -1)"; protokoll claude claude installiert
@@ -201,7 +214,7 @@ if [ -n "$WOLL_CLAUDE" ]; then
 fi
 
 # --- 4. Marketplace ---------------------------------------------------------------------------------------------------
-balken 50 "Marketplace $MARKETPLACE"
+teil 0 ""; balken 50 "Marketplace $MARKETPLACE"
 wait
 [ -z "$MP_DA" ] && claude plugin marketplace add "$REPO" > "$TMP/mp.txt" 2>&1
 ORT=$(marketplace_ort)
@@ -219,7 +232,7 @@ while kill -0 $PID 2>/dev/null || [ "$GELESEN" -lt "$(wc -l < "$TMP/einrichten.t
         GELESEN=$((GELESEN + 1))
         z=$(sed -n "${GELESEN}p" "$TMP/einrichten.txt")
         case "$z" in
-            "##BALKEN "*) p=$(echo "$z" | cut -d' ' -f2); balken $((55 + p * 35 / 100)) "$(echo "$z" | cut -d' ' -f3-)" ;;
+            "##BALKEN "*) p=$(echo "$z" | cut -d' ' -f2); balken $((55 + p * 35 / 100)) "Plugins und Einstellungen"; teil "$p" "$(echo "$z" | cut -d' ' -f3-)" ;;
             "") ;;
             *) meldung "$z" ;;
         esac
@@ -229,20 +242,21 @@ done
 wait $PID; RC=$?
 
 # --- 6. Anmeldung (claude plugin ... läuft auch ohne; deshalb erst am Ende) -------------------------------------------
-balken 92 "Anmeldung"
+teil 0 ""; balken 92 "Anmeldung"
 if [ -n "$OHNE_LOGIN" ]; then
     eingeloggt && ANGEMELDET=1
 elif [ -z "$ANGEMELDET" ] && ! eingeloggt; then
     meldung ""
     meldung "  Claude Code ist noch nicht angemeldet - gleich startet die Anmeldung im Browser."
-    zeile_leeren
+    fest_aus
     claude auth login <"$TTY"
     eingeloggt && ANGEMELDET=1 && ok "Claude Code angemeldet"
 else
     ANGEMELDET=1
 fi
 balken 100 "Fertig"
-printf '\n\n'
+fest_aus
+printf '\n'
 if [ "$RC" -eq 0 ] && [ -n "$ANGEMELDET" ]; then
     printf '=== FERTIG – Claude Code neu starten ===\n'
 elif [ "$RC" -eq 0 ]; then

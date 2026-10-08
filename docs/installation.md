@@ -26,8 +26,11 @@ Ergänzt den Schnellstart der [README](../README.md). Die Skripte: `tools/instal
    eigenen Prozess – er setzt `Set-StrictMode`, `$ErrorActionPreference = "Stop"` und endet bei Fehlern mit `exit`, was
    im selben Fenster das Skript bzw. das Fenster beenden würde.
 5. **Marketplace**, dann **einrichten.py**: Plugins je Rechner, Optionen `log_host`/`log_repo`, `autoUpdate`,
-   `skillOverrides`, Probe der Hooks. `einrichten.py` meldet seinen Fortschritt als `##BALKEN`-Zeilen, das Skript zeigt
-   einen durchgehenden Balken.
+   `skillOverrides`, Probe der Hooks. `einrichten.py` meldet seinen Fortschritt als `##BALKEN`-Zeilen.
+
+**Fortschritt:** oben im Fenster fest (scrollt nicht mit) ein Gesamtbalken und darunter eingerückt ein Balken für die
+laufende Aufgabe. Windows: `Write-Progress` (PowerShell 7 auf die Ansicht „Classic“ gestellt); Linux/macOS: die oberen
+Zeilen als fester Bereich (Rollbereich des Terminals), ohne Terminal einfache Zeilen.
 6. **Anmeldung am Ende:** `claude plugin …` läuft auch ohne Anmeldung (geprüft 08.10.2026). Steht `loggedIn` auf
    `false`, startet `claude auth login` (Browser), danach geht es weiter. **Die Anmeldung der Claude-Desktop-App zählt
    für das CLI nicht.**
@@ -101,7 +104,7 @@ Was das Skript selbst abfängt, steht mit ✓; sonst die Lösung.
 2. `irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex`
    (direkt nach einem Push kann GitHub noch einige Minuten den alten Stand liefern – dann die Adresse mit dem
    Commit-Hash statt `main` verwenden).
-3. Prüfen: Balken läuft in einer Zeile; alle Fragen kommen am Anfang; danach keine Rückfrage mehr bis zur Anmeldung;
+3. Prüfen: Gesamt- und Aufgabenbalken stehen oben fest und scrollen nicht mit; alle Fragen kommen am Anfang; danach keine Rückfrage mehr bis zur Anmeldung;
    am Ende „FERTIG“.
 4. Neues Fenster: `claude --version` (PATH dauerhaft), `claude plugin list`, `Get-Content ~\.claude\workbench-einrichtung.json`.
 5. Skript noch einmal starten: alles „OK“, nichts wird neu installiert.

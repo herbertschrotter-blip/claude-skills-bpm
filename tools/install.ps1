@@ -44,38 +44,34 @@ New-Item -ItemType Directory -Force -Path $Temp | Out-Null
 $LocalBin = Join-Path $env:USERPROFILE '.local\bin'
 $PsExe = (Get-Process -Id $PID).Path
 
-# --- Ausgabe: Balken in einer Zeile, Meldungen darueber -----------------------------------------------------------------
+# --- Ausgabe: Fortschritt oben fest (Write-Progress), Meldungen laufen darunter ----------------------------------------
+# Gesamtbalken (Id 1) und darunter eingerueckt ein Balken fuer die laufende Aufgabe (Id 2). Beide bleiben oben stehen
+# und scrollen nicht mit. PowerShell 7 zeigt Fortschritt sonst als schmale Zeile unten - deshalb "Classic".
+if ($PSStyle) { try { $PSStyle.Progress.View = 'Classic' } catch { } }
 $script:Pct = 0; $script:Text = ''
-function Breite { try { [Math]::Max(40, $Host.UI.RawUI.WindowSize.Width - 1) } catch { 79 } }
 function Balken([int]$Prozent, [string]$Text) {
     $script:Pct = [Math]::Min(100, [Math]::Max($script:Pct, $Prozent)); if ($Text) { $script:Text = $Text }
-    if ($Ise) { return }
-    $voll = [int]($script:Pct * 30 / 100)
-    $bar = ([string][char]0x2588) * $voll + ([string][char]0x2591) * (30 - $voll)
-    $zeile = '  {0}  {1,3}%  {2}' -f $bar, $script:Pct, $script:Text
-    $w = Breite
-    if ($zeile.Length -gt $w) { $zeile = $zeile.Substring(0, $w) }
-    Write-Host ("`r" + $zeile.PadRight($w)) -NoNewline
+    Write-Progress -Id 1 -Activity 'Einrichtung workbench' -Status ('{0,3}%  {1}' -f $script:Pct, $script:Text) -PercentComplete $script:Pct
 }
-function Meldung([string]$Text, [string]$Farbe = 'Gray') {
-    if (-not $Ise) { Write-Host ("`r" + (' ' * (Breite)) + "`r") -NoNewline }
-    Write-Host $Text -ForegroundColor $Farbe
-    Balken $script:Pct ''
+function Teil([string]$Aufgabe, [int]$Prozent) {
+    $p = [Math]::Min(100, [Math]::Max(0, $Prozent))
+    Write-Progress -Id 2 -ParentId 1 -Activity $Aufgabe -Status ('{0,3}%' -f $p) -PercentComplete $p
 }
+function Teil-Fertig { Write-Progress -Id 2 -ParentId 1 -Activity 'Aufgabe' -Completed }
+function Fortschritt-Ende { Teil-Fertig; Write-Progress -Id 1 -Activity 'Einrichtung workbench' -Completed }
+function Meldung([string]$Text, [string]$Farbe = 'Gray') { Write-Host $Text -ForegroundColor $Farbe }
 function Ok([string]$Text) { Meldung "  OK  $Text" 'Green' }
 function Hinweis([string]$Text) { Meldung "  !   $Text" 'Yellow' }
 function Fehler([string]$Text) { Meldung "  X   $Text" 'Red' }
 function Frage([string]$Text, [bool]$Vorschlag = $true) {
     if ($Ja) { return $Vorschlag }
     $hint = if ($Vorschlag) { 'J/n' } else { 'j/N' }
-    if (-not $Ise) { Write-Host ("`r" + (' ' * (Breite)) + "`r") -NoNewline }
     $antwort = Read-Host "  $Text [$hint]"
     if (-not $antwort) { return $Vorschlag }
     return ($antwort -match '^(j|ja|y|yes)$')
 }
 function Eingabe([string]$Text, [string]$Vorschlag) {
     if ($Ja) { return $Vorschlag }
-    if (-not $Ise) { Write-Host ("`r" + (' ' * (Breite)) + "`r") -NoNewline }
     $antwort = Read-Host "  $Text [$Vorschlag]"
     if ($antwort) { return $antwort.Trim() } else { return $Vorschlag }
 }
@@ -160,14 +156,18 @@ function Starte([string]$Name, [string]$Exe, [string[]]$Argumente) {
 }
 
 function Warte($Aufgaben, [int]$Von, [int]$Bis, [string]$Text) {
+    # Dauer unbekannt: Gesamt- und Teilbalken naehern sich mit der Zeit dem Ziel; fertig = Teilbalken 100 %
     $Aufgaben = @($Aufgaben | Where-Object { $_ -and $_.Proc })
     $start = Get-Date
     while ($Aufgaben | Where-Object { -not $_.Proc.HasExited }) {
-        $s = ((Get-Date) - $start).TotalSeconds
-        Balken ([int]($Von + ($Bis - $Von) * (1 - [Math]::Exp(-$s / 60)))) $Text
+        $f = 1 - [Math]::Exp(-((Get-Date) - $start).TotalSeconds / 60)
+        Balken ([int]($Von + ($Bis - $Von) * $f)) $Text
+        Teil $Text ([int](99 * $f))
         Start-Sleep -Milliseconds 400
     }
+    Teil $Text 100
     Balken $Bis $Text
+    Teil-Fertig
 }
 
 function Code($Aufgabe) { if ($Aufgabe -and $Aufgabe.Proc) { $Aufgabe.Proc.WaitForExit(); return $Aufgabe.Proc.ExitCode } else { return -1 } }
@@ -181,8 +181,7 @@ $ProtokollDatei = Join-Path $env:USERPROFILE '.claude\workbench-einrichtung.json
 if ($Entfernen) {
     Write-Host ''
     Write-Host '=== workbench entfernen (nur, was die Einrichtung selbst angelegt hat) ===' -ForegroundColor Cyan
-    $Ise = $true  # ohne Balken
-    if (-not (Test-Path $ProtokollDatei)) { Fehler "Kein Protokoll ($ProtokollDatei) - nichts zu tun. Von Hand: docs/installation.md, Abschnitt Entfernen."; return }
+    if (-not (Test-Path $ProtokollDatei)) { Fehler "Kein Protokoll ($ProtokollDatei) - nichts zu tun. Von Hand: docs/installation.md, Abschnitt Entfernen."; Fortschritt-Ende; return }
     Neu-Pfad
     if ((Python3-Ok) -and (Has 'claude')) {
         $ort = (Claude-Json @('plugin', 'marketplace', 'list', '--json') | Where-Object { $_.name -eq $Marketplace } | Select-Object -First 1).installLocation
@@ -226,10 +225,10 @@ Balken 1 'Bestandsaufnahme'
 
 if ([Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     Hinweis 'PowerShell laeuft als Administrator. Eingerichtet wird fuer das Profil dieses Kontos.'
-    if (-not (Frage "Ist das dein normales Konto ($env:USERNAME) und willst du fortfahren?" $false)) { Fehler 'Abgebrochen: bitte ein normales PowerShell-Fenster ohne "Als Administrator" verwenden.'; return }
+    if (-not (Frage "Ist das dein normales Konto ($env:USERNAME) und willst du fortfahren?" $false)) { Fehler 'Abgebrochen: bitte ein normales PowerShell-Fenster ohne "Als Administrator" verwenden.'; Fortschritt-Ende; return }
 }
 if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { Hinweis 'ARM64-Windows: Claude Code hat eine eigene ARM64-Fassung, Python aus dem Store ebenfalls.' }
-if ($Ise) { Hinweis 'PowerShell ISE: ohne Fortschrittsbalken. Besser ein normales PowerShell-Fenster.' }
+if ($Ise) { Hinweis 'PowerShell ISE: besser ein normales PowerShell-Fenster.' }
 
 # Claude Code liegt schon unter .local\bin, ist aber nicht im PATH: nur den PATH reparieren, nicht neu installieren
 if ((Test-Path (Join-Path $LocalBin 'claude.exe')) -and -not (Im-Pfad $LocalBin ([Environment]::GetEnvironmentVariable('Path', 'User') + ';' + [Environment]::GetEnvironmentVariable('Path', 'Machine')))) {
@@ -284,9 +283,9 @@ Meldung ''
 Meldung '  Bitte einmal alles beantworten - danach laeuft die Einrichtung ohne weitere Fragen.' 'Cyan'
 $wollGit = $false; $wollPython = $false; $wollClaude = $false; $wollGitUpdate = $false
 if (-not $hatGit) {
-    if (-not $wingetVersion) { Fehler 'git fehlt und winget ist nicht da (App-Installer aus dem Microsoft Store). git von https://git-scm.com installieren und das Skript erneut starten.'; return }
+    if (-not $wingetVersion) { Fehler 'git fehlt und winget ist nicht da (App-Installer aus dem Microsoft Store). git von https://git-scm.com installieren und das Skript erneut starten.'; Fortschritt-Ende; return }
     $wollGit = Frage 'git fehlt. Mit winget installieren?'
-    if (-not $wollGit) { Fehler 'Ohne git geht es nicht (der Marketplace ist ein Git-Repo).'; return }
+    if (-not $wollGit) { Fehler 'Ohne git geht es nicht (der Marketplace ist ein Git-Repo).'; Fortschritt-Ende; return }
 } elseif ($bg.gitUpdate) {
     Warte @($bg.gitUpdate) 8 10 'Pruefe git auf Updates'
     if ((Code $bg.gitUpdate) -eq 0 -and (Ausgabe $bg.gitUpdate) -match 'Git\.Git') {
@@ -295,13 +294,13 @@ if (-not $hatGit) {
 }
 if (-not $hatPython) {
     if ($nurPythonOrg) { Hinweis 'Python ist da, aber ohne den Befehl python3, den die Hooks aufrufen (typisch fuer python.org). Siehe docs/installation.md.' }
-    if (-not $wingetVersion) { Fehler 'python3 fehlt und winget ist nicht da. Python aus dem Microsoft Store installieren und erneut starten.'; return }
+    if (-not $wingetVersion) { Fehler 'python3 fehlt und winget ist nicht da. Python aus dem Microsoft Store installieren und erneut starten.'; Fortschritt-Ende; return }
     $wollPython = Frage 'python3 fehlt (Skill-Log und Waechter brauchen es). Python 3.12 aus dem Microsoft Store mit winget installieren?'
-    if (-not $wollPython) { Fehler 'Ohne python3 laufen Skill-Log und Skill-Waechter nicht.'; return }
+    if (-not $wollPython) { Fehler 'Ohne python3 laufen Skill-Log und Skill-Waechter nicht.'; Fortschritt-Ende; return }
 }
 if (-not $hatClaude) {
     $wollClaude = Frage 'Claude Code fehlt. Mit dem offiziellen Installer installieren?'
-    if (-not $wollClaude) { Fehler 'Ohne Claude Code geht es nicht.'; return }
+    if (-not $wollClaude) { Fehler 'Ohne Claude Code geht es nicht.'; Fortschritt-Ende; return }
 }
 if (-not $Modus) {
     $desktop = Frage 'Laeuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?' $false
@@ -341,7 +340,7 @@ if ($wollGit) {
     if ($bg.gitDownload) { Warte @($bg.gitDownload) 12 18 'git wird geladen' }
     $j = Starte 'git-install' 'winget' (@('install', '-e', '--id', 'Git.Git', '--silent') + $wingetArgs)
     Warte @($j, $claudeJob) 18 30 'git wird installiert'
-    if ((Code $j) -ne 0) { Fehler "git-Installation gescheitert: $(Letzte $j)"; return }
+    if ((Code $j) -ne 0) { Fehler "git-Installation gescheitert: $(Letzte $j)"; Fortschritt-Ende; return }
     Ok 'git installiert'
     $script:Protokoll += @{ was = 'git'; wert = 'Git.Git'; aktion = 'installiert' }
 }
@@ -358,7 +357,7 @@ if ($wollPython) {
         $text = Letzte $j
         if ($text -match 'msstore|store|policy|0x8a15') { Fehler "Python aus dem Store ging nicht (Store gesperrt?): $text" } else { Fehler "python3 noch nicht verfuegbar: $text" }
         Meldung '      Loesungen: docs/installation.md, Abschnitt "Python". Danach das Skript erneut starten (es setzt fort).'
-        return
+        Fortschritt-Ende; return
     }
     Ok "Python: $(python3 --version)"
     $script:Protokoll += @{ was = 'python'; wert = 'python3'; aktion = 'installiert' }
@@ -372,7 +371,7 @@ if ($claudeJob) {
         Fehler "Claude Code nicht installiert: $text"
         if ($text -match 'region|supported-countries') { Meldung '      Der Download-Dienst ist in dieser Region nicht erreichbar.' }
         else { Meldung '      Proxy, Firewall oder Virenscanner? Siehe docs/installation.md, Abschnitt "Claude Code".' }
-        return
+        Fortschritt-Ende; return
     }
     Ok "Claude Code: $((claude --version) -replace ' \(Claude Code\)', '')"
     $script:Protokoll += @{ was = 'claude'; wert = 'claude'; aktion = 'installiert' }
@@ -389,7 +388,7 @@ if (-not $ort) {
     $text = Letzte $bg.marketplace
     Fehler "Marketplace $Marketplace nicht eingerichtet: $text"
     if ($text -match 'strictKnownMarketplaces|managed|policy') { Meldung '      Verwaltete Einstellungen erlauben diesen Marketplace nicht (Firmenrechner) - IT fragen.' }
-    return
+    Fortschritt-Ende; return
 }
 Ok "Marketplace $Marketplace"
 if ($bg.claudeUpdate -and (Code $bg.claudeUpdate) -eq 0 -and (Ausgabe $bg.claudeUpdate) -match 'Successfully updated|updated to') { Ok 'Claude Code aktualisiert (gilt ab dem naechsten Start)' }
@@ -421,7 +420,7 @@ while ($py.Proc -and -not $py.Proc.HasExited) {
     $zeilen = @(Get-Content $py.Out -ErrorAction SilentlyContinue)
     for (; $gelesen -lt $zeilen.Count; $gelesen++) {
         $z = $zeilen[$gelesen]
-        if ($z -match '^##BALKEN (\d+) (.*)$') { Balken (58 + [int]$Matches[1] * 30 / 100) $Matches[2] } elseif ($z.Trim()) { Meldung $z }
+        if ($z -match '^##BALKEN (\d+) (.*)$') { Balken (58 + [int]$Matches[1] * 30 / 100) 'Plugins und Einstellungen'; Teil $Matches[2] ([int]$Matches[1]) } elseif ($z.Trim()) { Meldung $z }
     }
     Start-Sleep -Milliseconds 300
 }
@@ -429,6 +428,7 @@ $zeilen = @(Get-Content $py.Out -ErrorAction SilentlyContinue)
 for (; $gelesen -lt $zeilen.Count; $gelesen++) { $z = $zeilen[$gelesen]; if ($z -notmatch '^##BALKEN' -and $z.Trim()) { Meldung $z } }
 $einrichtenOk = (Code $py) -eq 0
 if (-not $einrichtenOk) { Fehler "einrichten.py meldet einen Fehler: $((Get-Content $py.Err -ErrorAction SilentlyContinue | Select-Object -Last 3) -join ' | ')" }
+Teil-Fertig
 Balken 88 'Plugins eingerichtet'
 
 # --- 8. Anmeldung (claude plugin ... laeuft auch ohne; deshalb erst am Ende) -------------------------------------------------
@@ -437,13 +437,13 @@ if (-not $angemeldet -and -not $OhneLogin) {
     Meldung ''
     Meldung '  Claude Code ist noch nicht angemeldet (die Anmeldung der Desktop-App zaehlt fuer das CLI nicht).' 'Cyan'
     Meldung '  Gleich oeffnet sich der Browser - dort anmelden, dann geht es hier weiter.' 'Cyan'
-    if (-not $Ise) { Write-Host ("`r" + (' ' * (Breite)) + "`r") -NoNewline }
+    Fortschritt-Ende
     & claude auth login
     $angemeldet = [bool]((Claude-Json @('auth', 'status')).loggedIn)
     if ($angemeldet) { Ok 'Claude Code angemeldet' } else { Hinweis 'Noch nicht angemeldet - spaeter mit: claude auth login' }
 }
 Balken 100 'Fertig'
-Write-Host ''
+Fortschritt-Ende
 Write-Host ''
 if ($einrichtenOk -and $angemeldet) {
     Write-Host '=== FERTIG - Claude Code neu starten (bzw. die Desktop-App beenden und neu oeffnen) ===' -ForegroundColor Green
