@@ -43,7 +43,7 @@ Vor jeder Änderung fragt es nach, und bevor es die `settings.json` ändert, leg
 | sofort aktualisieren | `claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, dann Claude neu starten |
 | Einstellungen ändern (Rechnername, Log oder Wächter aus) | in Claude Code `/plugin configure work@workbench` (bzw. `work-hooks@workbench`) |
 | prüfen, was installiert ist | `claude plugin list` |
-| Statistik sehen | in Claude Code `/statistik` (oder `/statistik ha-baustelle`, `/statistik 2026-10-01`): Dashboard mit Zündungen je Skill und Projekt, Verlauf und Blockaden des Wächters |
+| Statistik sehen (auch Arbeitszeit je Projekt) | in Claude Code `/statistik` (oder `/statistik ha-baustelle`, `/statistik 2026-10-01`): Dashboard mit Zündungen je Skill und Projekt, Verlauf und Blockaden des Wächters |
 | reparieren oder neuen Rechner einrichten | das Installationsskript einfach noch einmal laufen lassen |
 | entfernen | `claude plugin uninstall work@workbench` (und `skill-workshop@workbench`) |
 
@@ -152,6 +152,7 @@ im Block `env` der `~/.claude/settings.json`; die Variable hat Vorrang.
 | `skill_log` | `SKILL_LOG=aus` | Skill-Log an/aus |
 | `skill_guard` | `SKILL_GUARD=aus` | Skill-Wächter an/aus |
 | `guard_rules` | `SKILL_GUARD_RULES` | eigene Regeldatei statt `plugins/work-hooks/hooks/regeln.json` |
+| `log_repo` | `SKILL_LOG_REPO` | privates GitHub-Repo `owner/name`, in das jeder Rechner sein Skill-Log beim Sitzungsstart abgleicht (enthält Prompt-Texte – nur privat). Leer = kein Abgleich. `/statistik` und die Auswertung zeigen dann alle Rechner |
 
 **Dieselben Skills auch bei claude.ai hochgeladen?** Dann wären sie im Terminal doppelt da (`anthropic-skills:<name>`
 und `work:<name>`). Im Terminal die claude.ai-Fassung je Skill abschalten, in `~/.claude/settings.json`:

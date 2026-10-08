@@ -113,5 +113,63 @@ class GuardTest(unittest.TestCase):
         self.assertEqual(rounds[0]["skills"][0]["skill"], "code-erstellen")
 
 
+
+class ArbeitszeitTest(unittest.TestCase):
+    def ev(self, minute, event, session="s1", project="p", text="mach"):
+        e = {"v": 1, "ts": f"2026-10-01T{10 + minute // 60:02d}:{minute % 60:02d}:00Z", "host": "h",
+             "session": session, "event": event, "project": project}
+        if event == "prompt":
+            e["text"] = text
+        return e
+
+    def test_aktiv_und_claude(self):
+        es = [self.ev(0, "prompt"), self.ev(5, "turn_end"), self.ev(8, "prompt"), self.ev(10, "turn_end")]
+        t = r.arbeitszeit(es)["p"]
+        self.assertEqual(t["aktiv"], 10 * 60)
+        self.assertEqual(t["claude"], 7 * 60)
+
+    def test_pause_ab_15_minuten_zaehlt_nicht(self):
+        es = [self.ev(0, "prompt"), self.ev(5, "turn_end"), self.ev(40, "prompt"), self.ev(42, "turn_end")]
+        self.assertEqual(r.arbeitszeit(es)["p"]["aktiv"], 7 * 60)
+
+    def test_parallele_fenster_einmal(self):
+        es = [self.ev(0, "prompt", "a"), self.ev(10, "turn_end", "a"), self.ev(5, "prompt", "b"), self.ev(15, "turn_end", "b")]
+        self.assertEqual(r.arbeitszeit(es)["p"]["aktiv"], 15 * 60)
+        self.assertEqual(r.arbeitszeit(es, key=lambda e: "alle")["alle"]["claude"], 15 * 60)
+
+    def test_systemmeldung_zaehlt_nicht_als_claude_zeit(self):
+        es = [self.ev(0, "prompt", text="<task-notification> x"), self.ev(30, "turn_end")]
+        self.assertEqual(r.arbeitszeit(es).get("p", {"claude": 0})["claude"], 0)
+
+    def test_lange_claude_arbeit_zaehlt_auch_als_aktiv(self):
+        es = [self.ev(0, "prompt"), self.ev(50, "turn_end")]
+        t = r.arbeitszeit(es)["p"]
+        self.assertEqual((t["aktiv"], t["claude"]), (50 * 60, 50 * 60))
+
+    def test_runde_hoechstens_zwei_stunden(self):
+        es = [self.ev(0, "prompt"), self.ev(300, "turn_end")]
+        self.assertEqual(r.arbeitszeit(es)["p"]["claude"], 2 * 3600)
+
+    def test_je_projekt_getrennt(self):
+        es = [self.ev(0, "prompt", "a", "x"), self.ev(4, "turn_end", "a", "x"),
+              self.ev(0, "prompt", "b", "y"), self.ev(6, "turn_end", "b", "y")]
+        t = r.arbeitszeit(es)
+        self.assertEqual((t["x"]["aktiv"], t["y"]["aktiv"]), (4 * 60, 6 * 60))
+
+
+class SammelTest(unittest.TestCase):
+    def test_gleiche_zeilen_einmal_und_platzhalter(self):
+        with tempfile.TemporaryDirectory() as d:
+            line = json.dumps(e(1, "prompt", text="x")) + "\n"
+            for sub in ("lokal", "sammel/logs/h", "sammel/logs/laptop"):
+                os.makedirs(os.path.join(d, sub))
+            for sub in ("lokal", "sammel/logs/h"):
+                with open(os.path.join(d, sub, "2026-10.jsonl"), "w") as fh:
+                    fh.write(line)
+            with open(os.path.join(d, "sammel/logs/laptop", "2026-10.jsonl"), "w") as fh:
+                fh.write(json.dumps(dict(e(2, "prompt", text="y"), host="laptop")) + "\n")
+            entries = r.read_entries([os.path.join(d, "lokal"), os.path.join(d, "sammel/logs/*")])
+            self.assertEqual(len(entries), 2)
+
 if __name__ == "__main__":
     unittest.main()

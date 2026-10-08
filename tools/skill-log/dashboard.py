@@ -25,7 +25,7 @@ TEST_PROJECTS = {"plugtest", "mptest-proj", "guard-test", "proj", "home", "t-den
 RENAMED = {"claude-skills-bpm": "claude-workbench"}
 
 
-def collect(rounds):
+def collect(rounds, entries=()):
     prompts = [x for x in rounds if x["art"] == "prompt"]
     fired = collections.Counter()
     for x in prompts:
@@ -48,12 +48,20 @@ def collect(rounds):
             p["zuendungen"] += len(x["skills"])
             p["skills"].update(r.short(s["skill"]) for s in x["skills"])
     projects = sorted(projects.items(), key=lambda kv: -kv[1]["prompts"])
+    zeit_projekt = r.arbeitszeit(entries)
+    zeit_tag = r.arbeitszeit(entries, key=lambda e: e["ts"][:10])
+    zeit_rechner = r.arbeitszeit(entries, key=lambda e: e.get("host") or "?")
+    gesamt = r.arbeitszeit(entries, key=lambda e: "alle").get("alle", {"aktiv": 0, "claude": 0})
+    for day, d in days.items():
+        d["aktiv"] = zeit_tag.get(day, {}).get("aktiv", 0)
     return {
         "runden": len(rounds), "prompts": len(prompts),
         "mit_skill": sum(1 for x in prompts if x["skills"]),
         "ohne_jeden": sum(1 for x in prompts if not x["skills"] and not x["aktiv"]),
         "fehler": sum(1 for x in prompts for s in x["skills"] if not s["ok"]),
-        "fired": fired.most_common(), "days": list(days.items()), "projects": projects, "guard": guard.most_common(), "hosts": hosts,
+        "fired": fired.most_common(), "days": list(days.items()), "projects": projects,
+        "zeit_projekt": sorted(zeit_projekt.items(), key=lambda kv: -kv[1]["aktiv"]),
+        "zeit_rechner": sorted(zeit_rechner.items(), key=lambda kv: -kv[1]["aktiv"]), "gesamt": gesamt, "guard": guard.most_common(), "hosts": hosts,
         "von": rounds[0]["ts"][:10] if rounds else "-", "bis": rounds[-1]["ts"][:16].replace("T", " ") if rounds else "-",
     }
 
@@ -158,8 +166,9 @@ def calendar(days):
             day = month + datetime.timedelta(days=d)
             pos = offset + d
             x, y = 22 + (pos // 7) * (cell + gap), (pos % 7) * (cell + gap)
-            v = data.get(day.isoformat(), {"prompts": 0, "zuendungen": 0})
-            tip = html.escape(f"{WOCHENTAGE[day.weekday()]} {day:%d.%m.}: {v['prompts']} Prompts, {v['zuendungen']} Zündungen")
+            v = data.get(day.isoformat(), {"prompts": 0, "zuendungen": 0, "aktiv": 0})
+            tip = html.escape(f"{WOCHENTAGE[day.weekday()]} {day:%d.%m.}: {v['prompts']} Prompts, {v['zuendungen']} Zündungen, "
+                              f"{r.stunden(v.get('aktiv', 0))} aktiv")
             svg.append(f'<rect class="mark tag l{level(v["prompts"], top)}" data-tip="{tip}" x="{x}" y="{y}" '
                        f'width="{cell}" height="{cell}" rx="4"/>')
         svg.append("</svg>")
@@ -171,6 +180,16 @@ def calendar(days):
     return "".join(out)
 
 
+def zeit_section(zeiten):
+    rows = [(name, round(t["aktiv"] / 3600, 1)) for name, t in zeiten if t["aktiv"] >= 360]
+    chart = hbars(rows, "h aktiv")
+    for name, t in zeiten:
+        old = html.escape(f"{name}: {round(t['aktiv'] / 3600, 1)} h aktiv")
+        chart = chart.replace(f'data-tip="{old}"',
+                              f'data-tip="{html.escape(name + ": " + r.stunden(t["aktiv"]) + " aktiv, " + r.stunden(t["claude"]) + " Claude")}"', 1)
+    return chart + table(["", "aktiv", "davon Claude"], [(n, r.stunden(t["aktiv"]), r.stunden(t["claude"])) for n, t in zeiten])
+
+
 def table(headers, rows):
     head = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
     body = "".join("<tr>" + "".join(f"<td>{html.escape(str(c))}</td>" for c in row) + "</tr>" for row in rows)
@@ -178,7 +197,8 @@ def table(headers, rows):
 
 
 def page(s, title):
-    tiles = [("Prompts", s["prompts"]), ("mit Skill-Zündung", s["mit_skill"]), ("ganz ohne Skill", s["ohne_jeden"]),
+    tiles = [("Arbeitszeit aktiv", r.stunden(s["gesamt"]["aktiv"])), ("davon Claude", r.stunden(s["gesamt"]["claude"])),
+             ("Prompts", s["prompts"]), ("mit Skill-Zündung", s["mit_skill"]), ("ganz ohne Skill", s["ohne_jeden"]),
              ("Wächter-Blockaden", sum(v for _, v in s["guard"])), ("gescheiterte Aufrufe", s["fehler"])]
     tiles_html = "".join(f'<div class="tile"><div class="num">{v}</div><div class="cap">{html.escape(k)}</div></div>'
                          for k, v in tiles)
@@ -225,6 +245,8 @@ table {{ border-collapse: collapse; margin-top: 8px; width: 100%; }} td, th {{ t
 <p class="sub">Skill-Log {html.escape(s["von"])} bis {html.escape(s["bis"])} UTC · Rechner: {html.escape(", ".join(s["hosts"]))} · {s["runden"]} Runden, ohne Testprojekte</p>
 <div class="tiles">{tiles_html}</div>
 <div class="card"><h2>Aktivität je Tag</h2>{calendar(s["days"])}</div>
+<div class="card"><h2>Arbeitszeit je Projekt</h2>{zeit_section(s["zeit_projekt"])}
+<p class="sub" style="margin:8px 0 0">aktiv = Zeit zwischen Ereignissen einer Sitzung, Pausen ab 15 min zählen nicht; Claude = vom Prompt bis zur fertigen Antwort (höchstens 2 h je Antwort); parallele Fenster zählen einmal.</p></div>
 <div class="card"><h2>Projekte (Prompts)</h2>{project_section(s["projects"])}</div>
 <div class="card"><h2>Zündungen je Skill</h2>{hbars(s["fired"], "Zündungen")}{table(["Skill", "Zündungen"], s["fired"])}</div>
 <div class="grid2">
@@ -232,6 +254,7 @@ table {{ border-collapse: collapse; margin-top: 8px; width: 100%; }} td, th {{ t
 <div class="card"><h2>Skill-Zündungen je Tag</h2>{vbars(s["days"], "zuendungen", "Zündungen")}</div>
 </div>
 <div class="card"><h2>Skill-Wächter: Blockaden je Regel</h2>{hbars(s["guard"], "Blockaden")}{table(["Regel", "Blockaden"], s["guard"])}</div>
+<div class="card"><h2>Rechner</h2>{table(["Rechner", "aktiv", "davon Claude"], [(n, r.stunden(t["aktiv"]), r.stunden(t["claude"])) for n, t in s["zeit_rechner"]]).replace("<details>", "<details open>")}</div>
 </main><div id="tip"></div>
 <script>
 const tip = document.getElementById("tip");
@@ -248,7 +271,7 @@ document.querySelectorAll(".mark").forEach(m => {{
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("dirs", nargs="*", default=["~/.claude/skill-log"])
+    parser.add_argument("dirs", nargs="*", default=r.DEFAULT_DIRS)
     parser.add_argument("--since", help="ab Datum JJJJ-MM-TT (UTC)")
     parser.add_argument("--projekt", help="nur dieses Projekt")
     parser.add_argument("--out", default="skill-log-dashboard.html")
@@ -259,15 +282,17 @@ def main():
         entries = [e for e in entries if (e.get("ts") or "") >= args.since]
     rounds = r.build_rounds(entries, r.known_skill_names(entries), os.path.expanduser(args.transcripts) or None)
     rounds = [x for x in rounds if x.get("project") not in TEST_PROJECTS]
-    for x in rounds:
+    entries = [e for e in entries if e.get("project") not in TEST_PROJECTS]
+    for x in rounds + entries:
         x["project"] = RENAMED.get(x.get("project"), x.get("project"))
     if args.projekt:
         rounds = [x for x in rounds if x.get("project") == args.projekt]
+        entries = [e for e in entries if e.get("project") == args.projekt]
     stand = datetime.datetime.now().strftime("%d.%m.%Y %H:%M")
     title = f"Skill-Statistik{' · ' + args.projekt if args.projekt else ''} · Stand {stand}"
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
-        fh.write(page(collect(rounds), title))
+        fh.write(page(collect(rounds, entries), title))
     print(args.out)
 
 

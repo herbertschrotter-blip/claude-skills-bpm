@@ -32,17 +32,29 @@ _COMMAND_NAME = re.compile(r"<command-name>/?([\w:.-]+)</command-name>")
 _REPO_SKILLS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "skills")
 
 
+# Lokales Log und, falls vorhanden, das Sammel-Repo aller Rechner (Plugin-Option log_repo, docs/skill-log-v1.md)
+DEFAULT_DIRS = ["~/.claude/skill-log", "~/.claude/skill-log-sammel/logs/*"]
+PAUSE = 15 * 60  # Lücke ab 15 Minuten gilt als Pause (Arbeitszeit)
+RUNDE_MAX = 2 * 3600  # eine Antwort zählt höchstens 2 Stunden (offen liegengebliebene Sitzungen)
+
+
 def read_entries(directories):
-    entries = []
+    """Einträge aller Monatsdateien; Ordner dürfen Platzhalter enthalten. Gleiche Zeilen zählen einmal (der eigene
+    Rechner liegt lokal und im Sammel-Repo)."""
+    entries, seen = [], set()
+    folders = []
     for directory in directories:
-        for path in sorted(glob.glob(os.path.join(os.path.expanduser(directory), "*.jsonl"))):
+        folders += sorted(glob.glob(os.path.expanduser(directory))) or []
+    for directory in folders:
+        for path in sorted(glob.glob(os.path.join(directory, "*.jsonl"))):
             if not _MONTH_FILE.match(os.path.basename(path)):
                 continue
             with open(path, encoding="utf-8") as fh:
                 for line in fh:
                     line = line.strip()
-                    if not line:
+                    if not line or line in seen:
                         continue
+                    seen.add(line)
                     try:
                         entry = json.loads(line)
                     except json.JSONDecodeError:
@@ -51,6 +63,61 @@ def read_entries(directories):
                         entries.append(entry)
     entries.sort(key=lambda e: (e.get("ts") or ""))
     return entries
+
+
+def _secs(ts):
+    import datetime
+    return datetime.datetime.strptime(ts[:19], "%Y-%m-%dT%H:%M:%S").replace(tzinfo=datetime.timezone.utc).timestamp()
+
+
+def _union(intervals):
+    """Summe der Sekunden, überlappende Zeiträume (parallele Fenster) einmal gezählt."""
+    total, end = 0, None
+    for a, b in sorted(intervals):
+        if end is None or a > end:
+            total += b - a
+            end = b
+        elif b > end:
+            total += b - end
+            end = b
+    return total
+
+
+def arbeitszeit(entries, pause=PAUSE, key=lambda e: e.get("project") or "?"):
+    """Arbeitszeit in Sekunden je Gruppe (Standard: Projekt): {gruppe: {"aktiv": s, "claude": s}}.
+
+    claude = vom eigenen Prompt (keine Systemmeldung) bis zum Ende der Antwort (turn_end), höchstens RUNDE_MAX
+    aktiv  = Lücken zwischen aufeinanderfolgenden Ereignissen einer Sitzung unter `pause`, dazu die Claude-Zeit
+    Zeiträume mehrerer Sitzungen derselben Gruppe, die sich überlappen, zählen einmal. Mit key=lambda e: "alle"
+    ergibt sich die Gesamtzeit, mit key=lambda e: e["ts"][:10] die Zeit je Tag.
+    """
+    by_session = {}
+    for e in entries:
+        if e.get("ts") and e.get("event") in ("session", "prompt", "skill", "turn_end", "guard"):
+            by_session.setdefault((e.get("host"), e.get("session")), []).append(e)
+    active, claude = {}, {}
+    for events in by_session.values():
+        events.sort(key=lambda e: e["ts"])
+        start = None
+        for prev, cur in zip(events, events[1:]):
+            a, b = _secs(prev["ts"]), _secs(cur["ts"])
+            if 0 < b - a < pause:
+                active.setdefault(key(cur), []).append((a, b))
+        for e in events:
+            if e["event"] == "prompt":
+                start = e if prompt_kind(e.get("text")) == "prompt" else None
+            elif e["event"] == "turn_end" and start is not None:
+                a, b = _secs(start["ts"]), _secs(e["ts"])
+                if b > a:
+                    claude.setdefault(key(start), []).append((a, min(b, a + RUNDE_MAX)))
+                start = None
+    groups = set(active) | set(claude)
+    return {g: {"aktiv": _union(active.get(g, []) + claude.get(g, [])), "claude": _union(claude.get(g, []))}
+            for g in groups}
+
+
+def stunden(secs):
+    return f"{secs / 3600:.1f} h"
 
 
 def short(name):
@@ -241,7 +308,8 @@ def report(rounds, limit_without):
 
 def main():
     parser = argparse.ArgumentParser(description="Auswertung Skill-Log v1")
-    parser.add_argument("dirs", nargs="*", default=["~/.claude/skill-log"], help="Log-Ordner (mehrere möglich)")
+    parser.add_argument("dirs", nargs="*", default=DEFAULT_DIRS,
+                        help="Log-Ordner, Platzhalter erlaubt (Standard: lokal und Sammel-Repo)")
     parser.add_argument("--since", help="ab Datum JJJJ-MM-TT (UTC)")
     parser.add_argument("--host", help="nur dieser Rechner")
     parser.add_argument("--project", help="nur diese Projekt-ID")
@@ -265,6 +333,16 @@ def main():
         print()
     else:
         report(rounds, args.ohne_skill)
+        chosen = [e for e in entries if (not args.since or (e.get("ts") or "") >= args.since)
+                  and (not args.host or e.get("host") == args.host)
+                  and (not args.project or e.get("project") == args.project)]
+        times = arbeitszeit(chosen)
+        if times:
+            total = arbeitszeit(chosen, key=lambda e: "alle")["alle"]
+            print(f"\nArbeitszeit (aktiv = Lücken unter {PAUSE // 60} min; Claude = Prompt bis Antwort fertig):")
+            print(f"  {'gesamt':<24}{stunden(total['aktiv']):>10}{stunden(total['claude']):>10}")
+            for name, t in sorted(times.items(), key=lambda kv: -kv[1]["aktiv"]):
+                print(f"  {name:<24}{stunden(t['aktiv']):>10}{stunden(t['claude']):>10}")
     return 0
 
 

@@ -12,6 +12,7 @@ echte Fälle für `evals/`. Werkzeuge: Hook `plugins/work-hooks/hooks/skill_log.
 - Felder
 - Datenschutz
 - Einrichtung
+- Sammel-Repo und Arbeitszeit
 - Auswertung
 
 ## Grundregeln
@@ -116,6 +117,24 @@ Skripts:
 
 Vorhandene Einträge in `hooks` bleiben erhalten; die vier Einträge kommen dazu. Damit Transcripts für Nachfragen lange
 genug bleiben, `"cleanupPeriodDays": 365` setzen (Standard 30 Tage). Das Skript braucht Python 3 ohne Zusatzpakete.
+
+## Sammel-Repo und Arbeitszeit
+
+**Sammel-Repo** (Plugin-Option `log_repo` bzw. `SKILL_LOG_REPO`, z. B. `herbertschrotter-blip/skill-log`, **privat**):
+Beim Sitzungsstart startet `plugins/work-hooks/hooks/skill_sync.py` einen Hintergrundprozess, die Sitzung wartet nicht.
+Er klont das Repo beim ersten Mal nach `~/.claude/skill-log-sammel`, holt den Stand (`pull --rebase`), kopiert die
+eigenen Monatsdateien nach `logs/<rechner>/` (Rechner = `log_host`), committet und pusht. Fehler bleiben still, das
+Ergebnis steht in `~/.claude/skill-log/sammel-status.json`. Jeder Rechner schreibt nur seinen eigenen Ordner, deshalb
+gibt es keine Konflikte. Auswertung, Bericht und `/statistik` lesen lokal und `~/.claude/skill-log-sammel/logs/*`,
+gleiche Zeilen zählen einmal. Das Repo enthält Prompt-Texte und gehört nur dem Nutzer selbst. Andere Nutzer des Plugins
+haben die Option leer und gleichen nicht ab.
+
+**Arbeitszeit** (`skill_log_report.arbeitszeit`, im Bericht und in `/statistik`):
+- *aktiv*: Zeit zwischen aufeinanderfolgenden Ereignissen einer Sitzung (Prompt, Skill, Antwort fertig, Wächter),
+  solange die Lücke unter 15 Minuten liegt, dazu die Claude-Zeit
+- *Claude*: vom eigenen Prompt (keine Systemmeldung wie `<task-notification>`) bis zum Ende der Antwort, höchstens
+  2 Stunden je Antwort (offen liegengebliebene Sitzungen)
+- Zeiträume paralleler Sitzungen derselben Gruppe (Projekt, Tag, Rechner, gesamt) zählen einmal
 
 ## Auswertung
 

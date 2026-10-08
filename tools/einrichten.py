@@ -6,7 +6,7 @@ Marketplace angelegt ist. Läuft auch allein: python3 tools/einrichten.py [--mod
 
 Schritte (jeder mit Rückfrage, außer mit --ja):
   1. Plugins passend zum Rechner: terminal → work + skill-workshop, desktop → work-hooks (nie work und work-hooks zusammen)
-  2. Plugin-Option log_host (Rechnername im Skill-Log)
+  2. Plugin-Optionen log_host (Rechnername im Skill-Log) und log_repo (privates Sammel-Repo, optional)
   3. ~/.claude/settings.json: autoUpdate für workbench; im Terminal auf Wunsch skillOverrides für die Skills der Plugins,
      falls dieselben Skills auch bei claude.ai hochgeladen sind (Sicherung settings.json.bak)
   4. Probe: Hook-Skripte laufen mit dem gefundenen Python
@@ -156,6 +156,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--modus", choices=sorted(PLUGINS), help="terminal (work + skill-workshop) oder desktop (work-hooks)")
     parser.add_argument("--host", help="Rechnername im Skill-Log (Plugin-Option log_host)")
+    parser.add_argument("--log-repo", help="privates Sammel-Repo owner/name für das Skill-Log (Plugin-Option log_repo)")
     parser.add_argument("--ja", action="store_true", help="alle Rückfragen mit dem Vorschlag beantworten")
     parser.add_argument("--ohne-overrides", action="store_true", help="keine skillOverrides setzen")
     parser.add_argument("--schritt", type=int, default=3, help=argparse.SUPPRESS)
@@ -169,6 +170,9 @@ def main():
         desktop = ask("Läuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?", False, yes)
         mode = "desktop" if desktop else "terminal"
     host = args.host or ask_text("Rechnername im Skill-Log", socket.gethostname().split(".")[0], yes)
+    repo = args.log_repo if args.log_repo is not None else ask_text(
+        "Privates Sammel-Repo für das Skill-Log (owner/name, leer = keins)", "", yes)
+    options = {"log_host": host, "log_repo": repo}
     print(f"  Modus {mode}: {', '.join(PLUGINS[mode])} - Rechner {host}")
 
     installed = installed_plugins()
@@ -179,10 +183,11 @@ def main():
     for name in install:
         if name == "skill-workshop" and not ask("skill-workshop (Arbeit an Skills) mit installieren?", True, yes):
             continue
-        claude("plugin", "install", f"{name}@{MARKETPLACE}", "--config", f"log_host={host}", capture=False)
+        claude("plugin", "install", f"{name}@{MARKETPLACE}", "--config", f"log_host={host}",
+               *(["--config", f"log_repo={repo}"] if repo else []), capture=False)
     for name in update:
         claude("plugin", "update", f"{name}@{MARKETPLACE}", capture=False)
-        claude("plugin", "configure", f"{name}@{MARKETPLACE}", "--values-stdin", stdin=json.dumps({"log_host": host}))
+        claude("plugin", "configure", f"{name}@{MARKETPLACE}", "--values-stdin", stdin=json.dumps(options))
     plugins = sorted(installed_plugins())
     ok("installiert: " + (", ".join(plugins) or "keine"))
 
@@ -208,6 +213,7 @@ def main():
 
     print("\nZusammenfassung")
     print(f"  Rechner        {host}")
+    print(f"  Sammel-Repo    {repo or 'keins'}")
     print(f"  Plugins        {', '.join(plugins) or 'keine'}")
     print(f"  Auto-Update    {'an' if auto else 'aus'}")
     print(f"  skillOverrides {overrides}")

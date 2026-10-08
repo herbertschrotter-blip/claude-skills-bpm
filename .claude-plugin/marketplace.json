@@ -56,6 +56,12 @@
           "title": "Ordner des Skill-Logs",
           "description": "Ablage des Skill-Logs. Leer = ~/.claude/skill-log.",
           "default": ""
+        },
+        "log_repo": {
+          "type": "string",
+          "title": "Sammel-Repo für das Skill-Log",
+          "description": "Privates GitHub-Repo owner/name, in das jeder Rechner sein Skill-Log beim Sitzungsstart abgleicht (enthält Prompt-Texte – nur privat!). Leer = kein Abgleich.",
+          "default": ""
         }
       },
       "hooks": {
@@ -65,6 +71,11 @@
               {
                 "type": "command",
                 "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_log.py\"",
+                "timeout": 10
+              },
+              {
+                "type": "command",
+                "command": "python3 \"${CLAUDE_PLUGIN_ROOT}/plugins/work-hooks/hooks/skill_sync.py\"",
                 "timeout": 10
               }
             ]
