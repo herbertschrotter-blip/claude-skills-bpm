@@ -123,6 +123,9 @@ genug bleiben, `"cleanupPeriodDays": 365` setzen (Standard 30 Tage). Das Skript 
 
 - zeigt je Skill die Zündungen, getrennt nach automatisch und per `/name`, und die gescheiterten Aufrufe; ein
   Slash-Aufruf eines Skills (`/projekt-anlegen`) zählt per `/name`, auch wenn dabei kein Ereignis `skill` entsteht
+- Dashboard: `tools/skill-log/dashboard.py` (bzw. Befehl `/statistik` des Plugins `work`) schreibt eine HTML-Seite
+  mit Kennzahlen, Projekten, Zündungen je Skill, Verlauf je Tag und Blockaden des Wächters – nur Zahlen, keine
+  Prompt-Texte; Testprojekte der Plugin-Umstellung zählen nicht, `claude-skills-bpm` zählt als `claude-workbench`
 - trennt die Runden nach Art (`art`): `prompt`, `system` (Meldungen von Hintergrundaufgaben und Subagenten,
   `<task-notification>`, `<agent-message>`), `befehl` (beginnt mit `!`: Shell-Befehl, den die Claude-Desktop-App als
   Prompt schickt) und `leer` (nur Bild); bewertet werden nur Prompts

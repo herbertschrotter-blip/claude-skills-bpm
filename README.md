@@ -43,6 +43,7 @@ Vor jeder Änderung fragt es nach, und bevor es die `settings.json` ändert, leg
 | sofort aktualisieren | `claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, dann Claude neu starten |
 | Einstellungen ändern (Rechnername, Log oder Wächter aus) | in Claude Code `/plugin configure work@workbench` (bzw. `work-hooks@workbench`) |
 | prüfen, was installiert ist | `claude plugin list` |
+| Statistik sehen | in Claude Code `/statistik` (oder `/statistik ha-baustelle`, `/statistik 2026-10-01`): Dashboard mit Zündungen je Skill und Projekt, Verlauf und Blockaden des Wächters |
 | reparieren oder neuen Rechner einrichten | das Installationsskript einfach noch einmal laufen lassen |
 | entfernen | `claude plugin uninstall work@workbench` (und `skill-workshop@workbench`) |
 
@@ -622,7 +623,8 @@ claude-workbench/
 └── tools/
     ├── install.sh, install.ps1            ← Installation: Voraussetzungen, Marketplace, dann einrichten.py
     ├── einrichten.py, test_einrichten.py  ← Plugins, Optionen, autoUpdate, skillOverrides, Probe der Hooks
-    ├── skill-log/                         ← skill_log_report.py (Auswertung des Skill-Logs), Tests
+    ├── commands/statistik.md              ← Befehl /statistik des Plugins work
+    ├── skill-log/                         ← skill_log_report.py (Bericht), dashboard.py (Dashboard), Tests
     └── validate-skills.ps1                ← Prüfskript (PowerShell 7)
 ```
 

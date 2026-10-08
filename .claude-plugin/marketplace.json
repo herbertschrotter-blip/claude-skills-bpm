@@ -23,6 +23,9 @@
         "./skills/sitzung",
         "./skills/chatgpt-review"
       ],
+      "commands": [
+        "./tools/commands/statistik.md"
+      ],
       "userConfig": {
         "log_host": {
           "type": "string",
