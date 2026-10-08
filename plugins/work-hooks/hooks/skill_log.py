@@ -5,10 +5,10 @@ Aufruf als Hook für SessionStart, UserPromptSubmit, PostToolUse (Matcher Skill)
 stdin und hängt eine Zeile an <SKILL_LOG_DIR>/<JJJJ-MM>.jsonl an. Scheitert nie laut: jeder Fehler endet mit Exit 0,
 damit der Chat nie blockiert wird.
 
-Umgebungsvariablen (optional):
-  SKILL_LOG       "0", "off" oder "aus" = nichts protokollieren
-  SKILL_LOG_HOST  Name des Rechners im Log (Standard: Hostname)
-  SKILL_LOG_DIR   Ablage (Standard: ~/.claude/skill-log)
+Einstellungen (optional) – Umgebungsvariable oder Plugin-Option (/plugin configure); die Umgebungsvariable gewinnt:
+  SKILL_LOG       / skill_log  "0", "off", "aus" oder "false" = nichts protokollieren
+  SKILL_LOG_HOST  / log_host   Name des Rechners im Log (Standard: Hostname)
+  SKILL_LOG_DIR   / log_dir    Ablage (Standard: ~/.claude/skill-log)
   SKILL_LOG_RAW   "1" = zusätzlich die rohen Hook-Daten nach raw-<JJJJ-MM>.jsonl schreiben (nur zur Fehlersuche)
 """
 
@@ -20,6 +20,15 @@ import socket
 import sys
 
 VERSION = 1
+
+OFF = ("aus", "off", "0", "false", "no", "nein")
+
+
+def setting(env, option):
+    """Wert aus der Umgebungsvariable, sonst aus der Plugin-Option (userConfig → CLAUDE_PLUGIN_OPTION_<KEY>)."""
+    return os.environ.get(env) or os.environ.get("CLAUDE_PLUGIN_OPTION_" + option) or ""
+
+
 PROMPT_MAX = 2000
 ARGS_MAX = 300
 
@@ -97,7 +106,7 @@ def build(data):
     entry = {
         "v": VERSION,
         "ts": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "host": os.environ.get("SKILL_LOG_HOST") or socket.gethostname(),
+        "host": setting("SKILL_LOG_HOST", "LOG_HOST") or socket.gethostname(),
         "session": data.get("session_id"),
         "event": event,
         "project": project_of(cwd),
@@ -120,12 +129,12 @@ def append(directory, name, obj):
 
 
 def main():
-    if (os.environ.get("SKILL_LOG") or "").lower() in ("aus", "off", "0"):
+    if setting("SKILL_LOG", "SKILL_LOG").lower() in OFF:
         return 0
     try:
         raw = sys.stdin.read()
         data = json.loads(raw) if raw.strip() else {}
-        directory = os.environ.get("SKILL_LOG_DIR") or os.path.join(os.path.expanduser("~"), ".claude", "skill-log")
+        directory = setting("SKILL_LOG_DIR", "LOG_DIR") or os.path.join(os.path.expanduser("~"), ".claude", "skill-log")
         month = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m")
         if os.environ.get("SKILL_LOG_RAW") == "1":
             append(directory, f"raw-{month}.jsonl", data)

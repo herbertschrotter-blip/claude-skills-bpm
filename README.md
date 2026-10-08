@@ -24,7 +24,24 @@ wer sie nutzen will, ist willkommen – Installation im nächsten Abschnitt. Fü
 **Voraussetzungen:** Claude Code; Python 3 für die Hooks; für den Skill tracker ein ClickUp-Konnektor (MCP). Die Skills
 sprechen Deutsch.
 
-**Installation** (in Claude Code; in der Shell gehen dieselben Befehle als `claude plugin …`):
+**Am einfachsten: Installationsskript.** Es prüft git, Python 3 und Claude Code und installiert Fehlendes nach
+Rückfrage. Dann legt es den Marketplace an bzw. aktualisiert ihn und wählt die Plugins passend zum Rechner. Es setzt den
+Rechnernamen, `autoUpdate` und auf Wunsch `skillOverrides` und probiert die Hooks aus. Jeder Schritt läuft mit Rückfrage,
+ein zweiter Lauf aktualisiert.
+
+```
+# Linux, macOS, Home-Assistant-Add-on
+curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh -s -- --host laptop
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
+```
+
+Optionen: `--modus terminal|desktop`, `--host <name>`, `--ja` (alle Vorschläge annehmen), `--ohne-overrides`; unter
+Windows `-Modus`, `-RechnerName`, `-Ja`, `-OhneOverrides` (mit `powershell -File tools\install.ps1 …` aus einem Klon).
+Die Logik steht in [`tools/einrichten.py`](./tools/einrichten.py).
+
+**Von Hand** (in Claude Code; in der Shell gehen dieselben Befehle als `claude plugin …`):
 
 ```
 /plugin marketplace add herbertschrotter-blip/claude-workbench
@@ -65,16 +82,17 @@ claude plugin update skill-workshop@workbench
 Danach Claude neu starten (mit tmux und dem Skill sitzung: `sitzung.py neustart <fenster>` je Fenster). Stand prüfen:
 `claude plugin list` (Version = Git-Commit). Entfernen: `claude plugin uninstall work@workbench`.
 
-**Einstellungen** (Block `env` in `~/.claude/settings.json`, alle optional), z. B.
-`"env": { "SKILL_LOG_HOST": "laptop" }`:
+**Einstellungen** sind Plugin-Optionen: Claude Code fragt sie beim Aktivieren ab, ändern über `/config` oder
+`/plugin configure work@workbench`, bei der Installation direkt mit `--config log_host=laptop`. Alternativ als Variable
+im Block `env` der `~/.claude/settings.json`; die Variable hat Vorrang.
 
-| Variable | Wirkung |
-|---|---|
-| `SKILL_LOG_HOST` | Name des Rechners im Skill-Log (sonst der Hostname) |
-| `SKILL_LOG_DIR` | Ablage des Skill-Logs (Standard `~/.claude/skill-log/`) |
-| `SKILL_LOG=aus` | Skill-Log abschalten |
-| `SKILL_GUARD=aus` | Skill-Wächter abschalten |
-| `SKILL_GUARD_RULES` | eigene Regeldatei statt `plugins/work-hooks/hooks/regeln.json` |
+| Option | Variable | Wirkung |
+|---|---|---|
+| `log_host` | `SKILL_LOG_HOST` | Name des Rechners im Skill-Log (sonst der Hostname) |
+| `log_dir` | `SKILL_LOG_DIR` | Ablage des Skill-Logs (Standard `~/.claude/skill-log/`) |
+| `skill_log` | `SKILL_LOG=aus` | Skill-Log an/aus |
+| `skill_guard` | `SKILL_GUARD=aus` | Skill-Wächter an/aus |
+| `guard_rules` | `SKILL_GUARD_RULES` | eigene Regeldatei statt `plugins/work-hooks/hooks/regeln.json` |
 
 **Dieselben Skills auch bei claude.ai hochgeladen?** Dann wären sie im Terminal doppelt da (`anthropic-skills:<name>`
 und `work:<name>`). Im Terminal die claude.ai-Fassung je Skill abschalten, in `~/.claude/settings.json`:
@@ -94,8 +112,8 @@ installieren; die Skills kommen dann aus claude.ai.
 
 | Rechner | Plugins | dazu |
 |---|---|---|
-| Terminal (z. B. Home-Assistant-Add-on) | `work`, `skill-workshop` | `env.SKILL_LOG_HOST`, `autoUpdate`, `skillOverrides` (falls bei claude.ai hochgeladen) |
-| Claude-Desktop-App | `work-hooks` | `env.SKILL_LOG_HOST`, `autoUpdate` |
+| Terminal (z. B. Home-Assistant-Add-on) | `work`, `skill-workshop` | `log_host`, `autoUpdate`, `skillOverrides` (falls bei claude.ai hochgeladen) |
+| Claude-Desktop-App | `work-hooks` | `log_host`, `autoUpdate` |
 
 **Skill-Wächter:** Er blockiert ab Werk Änderungen an Code, Doku und Mockups, solange der zuständige Skill nicht geladen
 ist (Claude lädt ihn dann nach), und warnt bei Commits und ClickUp-Aktionen ohne Skill. Regeln und Format:
@@ -154,7 +172,7 @@ claude-workbench/
 ├── quality/               ← Eval-Plugin: evals/ (Testfälle für claude plugin eval), skills → ../skills
 ├── reference/             ← Externe Referenz-Artefakte
 ├── skills/                ← 15 Skills, je ein Ordner mit SKILL.md
-└── tools/                 ← Prüfskript validate-skills.ps1, Auswertung des Skill-Logs (skill-log/)
+└── tools/                 ← Installation (install.sh/.ps1, einrichten.py), Prüfskript, Auswertung des Skill-Logs
 ```
 
 Die folgenden Kapitel erklären jeden dieser Ordner und die darin liegenden Dateien.
@@ -544,6 +562,8 @@ claude-workbench/
 │       └── references.zip                 ← entfällt in Umbau Phase 7
 │
 └── tools/
+    ├── install.sh, install.ps1            ← Installation: Voraussetzungen, Marketplace, dann einrichten.py
+    ├── einrichten.py, test_einrichten.py  ← Plugins, Optionen, autoUpdate, skillOverrides, Probe der Hooks
     ├── skill-log/                         ← skill_log_report.py (Auswertung des Skill-Logs), Tests
     └── validate-skills.ps1                ← Prüfskript (PowerShell 7)
 ```

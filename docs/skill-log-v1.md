@@ -91,8 +91,11 @@ claude plugin install work@workbench
 ```
 
 Das Plugin bringt die Hooks für Skill-Log und Skill-Wächter mit (eingetragen im Plugin-Eintrag `work` in `.claude-plugin/marketplace.json`, Skripte unter `plugins/work-hooks/hooks/`). Den Rechnernamen im Log setzt
-`env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
-HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
+die Plugin-Option `log_host` (`/plugin configure work@workbench` oder `--config log_host=<name>` bei der Installation)
+oder `env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }`; die Variable hat Vorrang. Ohne beides
+steht der Hostname im Log, im HA-Add-on eine Container-ID. Abschalten je Rechner: Optionen `skill_log` bzw.
+`skill_guard` oder `SKILL_LOG=0` bzw. `SKILL_GUARD=0`. Einrichten in einem Zug: `tools/install.sh` bzw. `tools/install.ps1`
+(README, Abschnitt „Nutzung für andere“). Updates:
 `claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, oder Auto-Update einschalten (`/plugin` bzw.
 `"autoUpdate": true` im Marketplace-Eintrag; Befehle und Einstellungen: README, Abschnitt „Nutzung für andere“). Rechner, auf denen die Skills aus claude.ai kommen und `skillOverrides` nicht greift (Claude-Desktop-App), installieren statt `work` und `skill-workshop` nur `work-hooks@workbench` (Hooks ohne Skills); nie `work` und `work-hooks` zusammen.
 

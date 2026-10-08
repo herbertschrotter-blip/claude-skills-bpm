@@ -3,5 +3,37 @@
   "description": "Skill-Log und Skill-Wächter als Hooks, ohne Skills.",
   "author": {
     "name": "Herbert Schrotter"
+  },
+  "userConfig": {
+    "log_host": {
+      "type": "string",
+      "title": "Rechnername im Skill-Log",
+      "description": "Name dieses Rechners im Skill-Log (z. B. laptop). Leer = Hostname.",
+      "default": ""
+    },
+    "skill_log": {
+      "type": "boolean",
+      "title": "Skill-Log",
+      "description": "Prompts und Skill-Zündungen lokal protokollieren (~/.claude/skill-log).",
+      "default": true
+    },
+    "skill_guard": {
+      "type": "boolean",
+      "title": "Skill-Wächter",
+      "description": "Änderungen an Code, Doku und Mockups nur mit dem zuständigen Skill; Commits und ClickUp ohne Skill melden.",
+      "default": true
+    },
+    "guard_rules": {
+      "type": "string",
+      "title": "Eigene Wächter-Regeln",
+      "description": "Pfad zu einer eigenen Regeldatei statt der mitgelieferten regeln.json. Leer = mitgeliefert.",
+      "default": ""
+    },
+    "log_dir": {
+      "type": "string",
+      "title": "Ordner des Skill-Logs",
+      "description": "Ablage des Skill-Logs. Leer = ~/.claude/skill-log.",
+      "default": ""
+    }
   }
 }

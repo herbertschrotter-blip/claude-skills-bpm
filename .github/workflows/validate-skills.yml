@@ -14,3 +14,15 @@ jobs:
       - name: Prüfskript (alle Skills)
         shell: pwsh
         run: ./tools/validate-skills.ps1
+      - name: Tests (Python – Hooks, Skill-Log-Auswertung, Einrichtung)
+        run: |
+          python3 -m unittest discover -s plugins/work-hooks/hooks -p 'test_*.py'
+          python3 -m unittest discover -s tools/skill-log -p 'test_*.py'
+          python3 -m unittest discover -s tools -p 'test_*.py'
+      - name: Syntax der Installationsskripte
+        shell: pwsh
+        run: |
+          sh -n tools/install.sh
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$PWD/tools/install.ps1", [ref]$null, [ref]$errors) | Out-Null
+          if ($errors) { $errors | ForEach-Object { Write-Error $_.Message }; exit 1 }

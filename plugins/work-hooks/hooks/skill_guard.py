@@ -11,11 +11,11 @@ Ereignis "guard" im Skill-Log (<SKILL_LOG_DIR>/<JJJJ-MM>.jsonl).
 
 Ein Fehler im Skript blockiert nie: Exit 0 ohne Ausgabe. Abschalten: Umgebungsvariable SKILL_GUARD=aus.
 
-Umgebungsvariablen (optional):
-  SKILL_GUARD        "aus" = nichts prüfen
-  SKILL_GUARD_RULES  Pfad zur Regeldatei (Standard: regeln.json neben dem Skript)
-  SKILL_LOG_DIR      Ablage des Skill-Logs (Standard: ~/.claude/skill-log)
-  SKILL_LOG_HOST     Name des Rechners im Log (Standard: Hostname)
+Einstellungen (optional) – Umgebungsvariable oder Plugin-Option (/plugin configure); die Umgebungsvariable gewinnt:
+  SKILL_GUARD       / skill_guard  "aus", "off", "0" oder "false" = nichts prüfen
+  SKILL_GUARD_RULES / guard_rules  Pfad zur Regeldatei (Standard: regeln.json neben dem Skript)
+  SKILL_LOG_DIR     / log_dir      Ablage des Skill-Logs (Standard: ~/.claude/skill-log)
+  SKILL_LOG_HOST    / log_host     Name des Rechners im Log (Standard: Hostname)
 """
 
 import datetime
@@ -28,6 +28,15 @@ import socket
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+
+OFF = ("aus", "off", "0", "false", "no", "nein")
+
+
+def setting(env, option):
+    """Wert aus der Umgebungsvariable, sonst aus der Plugin-Option (userConfig → CLAUDE_PLUGIN_OPTION_<KEY>)."""
+    return os.environ.get(env) or os.environ.get("CLAUDE_PLUGIN_OPTION_" + option) or ""
+
+
 FILE_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
 _CLICKUP_WRITE = re.compile(r"^mcp__.*clickup.*__clickup_(create|update|delete|merge|move|add|remove|attach|set)",
                             re.I)
@@ -48,7 +57,7 @@ def short(name):
 
 
 def load_rules(path=None):
-    path = path or os.environ.get("SKILL_GUARD_RULES") or os.path.join(HERE, "regeln.json")
+    path = path or setting("SKILL_GUARD_RULES", "GUARD_RULES") or os.path.join(HERE, "regeln.json")
     with open(path, encoding="utf-8") as fh:
         return json.load(fh)
 
@@ -212,14 +221,14 @@ def violations(rules, acts, project, skills, mode):
 def log(entries, data, project):
     if not entries:
         return
-    directory = os.environ.get("SKILL_LOG_DIR") or os.path.join(os.path.expanduser("~"), ".claude", "skill-log")
+    directory = setting("SKILL_LOG_DIR", "LOG_DIR") or os.path.join(os.path.expanduser("~"), ".claude", "skill-log")
     now = datetime.datetime.now(datetime.timezone.utc)
     os.makedirs(directory, exist_ok=True)
     with open(os.path.join(directory, now.strftime("%Y-%m") + ".jsonl"), "a", encoding="utf-8") as fh:
         for entry in entries:
             fh.write(json.dumps(dict({
                 "v": 1, "ts": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
-                "host": os.environ.get("SKILL_LOG_HOST") or socket.gethostname(),
+                "host": setting("SKILL_LOG_HOST", "LOG_HOST") or socket.gethostname(),
                 "session": data.get("session_id"), "event": "guard", "project": project,
                 "tool": data.get("tool_name"), "tool_use_id": data.get("tool_use_id"),
             }, **entry), ensure_ascii=False) + "\n")
@@ -263,7 +272,7 @@ def decide(data, rules=None, skills=None):
 
 
 def main():
-    if (os.environ.get("SKILL_GUARD") or "").lower() in ("aus", "off", "0"):
+    if setting("SKILL_GUARD", "SKILL_GUARD").lower() in OFF:
         return 0
     try:
         raw = sys.stdin.read()

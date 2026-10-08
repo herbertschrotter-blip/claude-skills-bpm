@@ -331,6 +331,14 @@ function Test-MarketplaceEntry($Entry, [string]$Folder, $Errors, $Warnings, $Own
                 if ($mine -ne (ConvertTo-SortedJson $other['hooks'])) {
                     $Errors.Add("${where}: Hooks weichen von $dir/hooks/hooks.json ab – beide gleich halten (nur der Pfad $dir/ unterscheidet sich)")
                 }
+                # Plugin-Optionen (userConfig) gleich wie im Manifest des Plugin-Ordners, weil die Hooks dieselben Optionen lesen
+                $manifest = Join-Path $Folder "$dir/.claude-plugin/plugin.json"
+                if (Test-Path -LiteralPath $manifest) {
+                    $plugin = Read-Json $manifest $Errors "$dir/.claude-plugin/plugin.json"
+                    if ($null -ne $plugin -and (ConvertTo-SortedJson $Entry['userConfig']) -ne (ConvertTo-SortedJson $plugin['userConfig'])) {
+                        $Errors.Add("${where}: userConfig weicht von $dir/.claude-plugin/plugin.json ab – beide gleich halten")
+                    }
+                }
             }
         }
     }

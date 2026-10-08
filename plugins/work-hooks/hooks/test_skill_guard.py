@@ -144,5 +144,34 @@ class SicherheitTest(unittest.TestCase):
         self.assertEqual(g.decide({}, MECH, set())[0], 0)
 
 
+
+class EinstellungTest(unittest.TestCase):
+    """Umgebungsvariable vor Plugin-Option (userConfig → CLAUDE_PLUGIN_OPTION_<KEY>)."""
+
+    def setUp(self):
+        self._env = {k: os.environ.pop(k) for k in list(os.environ)
+                     if k.startswith("CLAUDE_PLUGIN_OPTION_") or k.startswith("SKILL_")}
+
+    def tearDown(self):
+        for k in [k for k in os.environ if k.startswith("CLAUDE_PLUGIN_OPTION_") or k.startswith("SKILL_")]:
+            del os.environ[k]
+        os.environ.update(self._env)
+
+    def test_plugin_option_wenn_keine_umgebungsvariable(self):
+        os.environ["CLAUDE_PLUGIN_OPTION_LOG_HOST"] = "laptop"
+        self.assertEqual(g.setting("SKILL_LOG_HOST", "LOG_HOST"), "laptop")
+
+    def test_umgebungsvariable_gewinnt(self):
+        os.environ["CLAUDE_PLUGIN_OPTION_LOG_HOST"] = "laptop"
+        os.environ["SKILL_LOG_HOST"] = "ha-pi"
+        self.assertEqual(g.setting("SKILL_LOG_HOST", "LOG_HOST"), "ha-pi")
+
+    def test_ohne_beides_leer(self):
+        self.assertEqual(g.setting("SKILL_GUARD", "SKILL_GUARD"), "")
+
+    def test_waechter_ueber_plugin_option_aus(self):
+        os.environ["CLAUDE_PLUGIN_OPTION_SKILL_GUARD"] = "false"
+        self.assertIn(g.setting("SKILL_GUARD", "SKILL_GUARD").lower(), g.OFF)
+
 if __name__ == "__main__":
     unittest.main()

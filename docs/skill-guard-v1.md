@@ -27,7 +27,7 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
   `<sitzung>/subagents/` → `<sitzung>.jsonl`).
 - Jede Entscheidung landet als Ereignis `guard` im Skill-Log (`docs/skill-log-v1.md`): `regel`, `entscheidung`
   (`geblockt`/`gewarnt`), `tool`, `tool_use_id`, `ziel`, `pflicht`, `aktiv`.
-- Ein Fehler im Wächter blockiert nie (Exit 0). `SKILL_GUARD=aus` schaltet ihn ab.
+- Ein Fehler im Wächter blockiert nie (Exit 0). `SKILL_GUARD=aus` oder die Plugin-Option `skill_guard` schaltet ihn ab.
 
 ## Regeln
 
@@ -73,9 +73,12 @@ claude plugin install work@workbench
 ```
 
 Das Plugin bringt die Hooks für Skill-Log und Wächter mit (eingetragen im Plugin-Eintrag `work` in `.claude-plugin/marketplace.json`, Skripte unter `plugins/work-hooks/hooks/`). Den Rechnernamen im Log setzt
-`env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }` (ohne ihn steht der Hostname im Log, im
-HA-Add-on eine Container-ID). Abschalten je Rechner: `SKILL_LOG=0` bzw. `SKILL_GUARD=0` im selben Block. Updates:
-`claude plugin update work@workbench` oder Auto-Update im Menü `/plugin` einschalten. Rechner, auf denen die Skills aus claude.ai kommen und `skillOverrides` nicht greift (Claude-Desktop-App), installieren statt `work` und `skill-workshop` nur `work-hooks@workbench` (Hooks ohne Skills); nie `work` und `work-hooks` zusammen.
+die Plugin-Option `log_host` (`/plugin configure work@workbench` oder `--config log_host=<name>` bei der Installation)
+oder `env` in `~/.claude/settings.json`: `"env": { "SKILL_LOG_HOST": "<name>" }`; die Variable hat Vorrang. Ohne beides
+steht der Hostname im Log, im HA-Add-on eine Container-ID. Abschalten je Rechner: Optionen `skill_log` bzw.
+`skill_guard` oder `SKILL_LOG=0` bzw. `SKILL_GUARD=0`. Einrichten in einem Zug: `tools/install.sh` bzw. `tools/install.ps1`
+(README, Abschnitt „Nutzung für andere“). Updates:
+`claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, oder Auto-Update einschalten. Rechner, auf denen die Skills aus claude.ai kommen und `skillOverrides` nicht greift (Claude-Desktop-App), installieren statt `work` und `skill-workshop` nur `work-hooks@workbench` (Hooks ohne Skills); nie `work` und `work-hooks` zusammen.
 
 Ohne Plugin (alter Weg) trägt man die Hooks von Hand in `~/.claude/settings.json` ein; Block `hooks`, neben den Hooks des
 Skill-Logs. `<befehl>`:
