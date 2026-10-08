@@ -24,7 +24,7 @@ fehlenden im Bericht nennen.
 
 | Rechner | ausgewertet bis (UTC) |
 |---|---|
-| ha-pi | 2026-10-07T12:56:13Z |
+| ha-pi | 2026-10-08T04:23:08Z |
 | desktop-pc | – |
 | firmen-laptop | – |
 
