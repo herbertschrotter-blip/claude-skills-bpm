@@ -13,6 +13,8 @@ JA=""
 for arg in "$@"; do [ "$arg" = "--ja" ] && JA=1; done
 
 has() { command -v "$1" >/dev/null 2>&1; }
+schritt() { printf '\n%s\n' "$1"; }
+ok() { printf '  OK  %s\n' "$1"; }
 
 frage() {  # frage "Text" → 0 bei ja (Vorschlag: ja)
     [ -n "$JA" ] && return 0
@@ -33,19 +35,20 @@ paket() {  # paket <apk/apt-Name> – installiert mit dem Paketmanager des Syste
     fi
 }
 
-echo "== Voraussetzungen"
-if has git; then echo "git: $(git --version)"
+printf '\n=== Einrichtung workbench (Skills, Skill-Log, Skill-Wächter) ===\n'
+schritt "[1/5] Voraussetzungen"
+if has git; then ok "git: $(git --version)"
 elif frage "git fehlt. Installieren?"; then paket git
 else echo "Ohne git geht es nicht (der Marketplace ist ein Git-Repo)."; exit 1
 fi
 
 if has python3 && python3 -c 'import sys; sys.exit(sys.version_info < (3, 8))'; then
-    echo "Python: $(python3 --version)"
+    ok "Python: $(python3 --version)"
 elif frage "Python 3 (ab 3.8) fehlt. Installieren?"; then paket python3
 else echo "Ohne Python 3 laufen Skill-Log und Skill-Wächter nicht."; exit 1
 fi
 
-if has claude; then echo "Claude Code: $(claude --version 2>/dev/null | head -1)"
+if has claude; then ok "Claude Code: $(claude --version 2>/dev/null | head -1)"
 elif frage "Claude Code fehlt. Mit dem offiziellen Installer installieren (curl -fsSL https://claude.ai/install.sh | bash)?"; then
     curl -fsSL https://claude.ai/install.sh | bash
     PATH="$HOME/.local/bin:$PATH"
@@ -54,7 +57,7 @@ elif frage "Claude Code fehlt. Mit dem offiziellen Installer installieren (curl 
 else echo "Ohne Claude Code geht es nicht."; exit 1
 fi
 
-echo "== Marketplace $MARKETPLACE"
+schritt "[2/5] Marketplace $MARKETPLACE"
 if claude plugin marketplace list --json 2>/dev/null | grep -q "\"name\": *\"$MARKETPLACE\""; then
     claude plugin marketplace update "$MARKETPLACE"
 else
@@ -65,5 +68,11 @@ ORT=$(claude plugin marketplace list --json | python3 -I -c '
 import json, sys
 print(next(m["installLocation"] for m in json.load(sys.stdin) if m["name"] == sys.argv[1]))' "$MARKETPLACE")
 
-echo "== Plugins und Einstellungen"
-exec python3 -I "$ORT/tools/einrichten.py" "$@" </dev/tty
+ok "Marketplace $MARKETPLACE in $ORT"
+
+if python3 -I "$ORT/tools/einrichten.py" --schritt 3 "$@" </dev/tty; then
+    printf '\n=== FERTIG – Claude Code jetzt neu starten ===\n'
+else
+    printf '\n=== NICHT FERTIG – siehe die Meldung oben ===\n'
+    exit 1
+fi

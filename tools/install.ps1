@@ -42,23 +42,27 @@ function Python3-Ok {
     finally { $ErrorActionPreference = $alt }
 }
 
-function Ende([string]$Text) { Write-Host ''; Write-Host $Text -ForegroundColor Red; return }
+function Ende([string]$Text) { Write-Host ''; Write-Host "  ABBRUCH: $Text" -ForegroundColor Red; return }
+function Schritt([string]$Text) { Write-Host ''; Write-Host $Text -ForegroundColor Cyan }
+function Ok([string]$Text) { Write-Host "  OK  $Text" -ForegroundColor Green }
 
-Write-Host '== Voraussetzungen'
-if (Has 'git') { Write-Host "git: $(git --version)" }
+Write-Host ''
+Write-Host '=== Einrichtung workbench (Skills, Skill-Log, Skill-Waechter) ===' -ForegroundColor Cyan
+Schritt '[1/5] Voraussetzungen'
+if (Has 'git') { Ok "git: $(git --version)" }
 elseif ((Has 'winget') -and (Frage 'git fehlt. Mit winget installieren?')) {
     winget install -e --id Git.Git --accept-source-agreements --accept-package-agreements; Neu-Pfad
     if (-not (Has 'git')) { Ende 'git noch nicht gefunden - neues PowerShell-Fenster oeffnen und das Skript erneut starten.'; return }
 } else { Ende 'Ohne git geht es nicht (der Marketplace ist ein Git-Repo).'; return }
 
-if (Python3-Ok) { Write-Host "Python: $(python3 --version)" }
+if (Python3-Ok) { Ok "Python: $(python3 --version)" }
 elseif ((Has 'winget') -and (Frage 'python3 fehlt (die Hooks rufen python3 auf). Python aus dem Microsoft Store mit winget installieren?')) {
     winget install -e --id 9NCVDN91XZQP --source msstore --accept-source-agreements --accept-package-agreements; Neu-Pfad
     if (-not (Python3-Ok)) { Ende 'python3 noch nicht verfuegbar - neues PowerShell-Fenster oeffnen und das Skript erneut starten.'; return }
-    Write-Host "Python: $(python3 --version)"
+    Ok "Python: $(python3 --version)"
 } else { Ende 'Ohne python3 laufen Skill-Log und Skill-Waechter nicht. Python aus dem Microsoft Store installieren und erneut starten.'; return }
 
-if (Has 'claude') { Write-Host "Claude Code: $(claude --version)" }
+if (Has 'claude') { Ok "Claude Code: $(claude --version)" }
 elseif (Frage 'Claude Code fehlt. Mit dem offiziellen Installer installieren (irm https://claude.ai/install.ps1 | iex)?') {
     Invoke-RestMethod https://claude.ai/install.ps1 | Invoke-Expression; Neu-Pfad
     $env:Path += ";$env:USERPROFILE\.local\bin"
@@ -66,18 +70,31 @@ elseif (Frage 'Claude Code fehlt. Mit dem offiziellen Installer installieren (ir
     Write-Host 'Anmelden: claude starten und /login ausfuehren, danach dieses Skript erneut starten.'; return
 } else { Ende 'Ohne Claude Code geht es nicht.'; return }
 
-Write-Host "== Marketplace $Marketplace"
-function Marketplaces { $json = (claude plugin marketplace list --json | Out-String); if ($json.Trim()) { ConvertFrom-Json $json } }
+Schritt "[2/5] Marketplace $Marketplace"
+function Marketplaces {
+    # Unter 5.1 gibt ConvertFrom-Json ein Array als ein einziges Objekt aus - deshalb mit foreach einzeln weitergeben
+    $json = (claude plugin marketplace list --json | Out-String)
+    if (-not $json.Trim()) { return }
+    $list = ConvertFrom-Json $json
+    foreach ($m in $list) { $m }
+}
 if (@(Marketplaces) | Where-Object { $_.name -eq $Marketplace }) { claude plugin marketplace update $Marketplace }
 else { claude plugin marketplace add $Repo }
 $ort = (@(Marketplaces) | Where-Object { $_.name -eq $Marketplace } | Select-Object -First 1).installLocation
 if (-not $ort) { Ende "Marketplace $Marketplace nicht gefunden - Ausgabe oben pruefen."; return }
+Ok "Marketplace $Marketplace in $ort"
 
-Write-Host '== Plugins und Einstellungen'
 $weiter = @()
 if ($Modus) { $weiter += @('--modus', $Modus) }
 if ($RechnerName) { $weiter += @('--host', $RechnerName) }
 if ($Ja) { $weiter += '--ja' }
 if ($OhneOverrides) { $weiter += '--ohne-overrides' }
-& python3 -I (Join-Path $ort 'tools\einrichten.py') @weiter
+& python3 -I (Join-Path $ort 'tools\einrichten.py') --schritt 3 @weiter
+if ($LASTEXITCODE -eq 0) {
+    Write-Host ''
+    Write-Host '=== FERTIG - Claude Code jetzt neu starten (bzw. die Desktop-App beenden und neu oeffnen) ===' -ForegroundColor Green
+} else {
+    Write-Host ''
+    Write-Host '=== NICHT FERTIG - siehe die rote Meldung oben ===' -ForegroundColor Red
+}
 # kein exit: beim Start mit "irm ... | iex" wuerde es das PowerShell-Fenster schliessen

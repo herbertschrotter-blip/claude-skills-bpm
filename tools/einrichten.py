@@ -78,6 +78,14 @@ def ask_text(text, default, yes):
     return answer or default
 
 
+def schritt(nummer, text):
+    print(f"\n[{nummer}/5] {text}")
+
+
+def ok(text):
+    print(f"  OK  {text}")
+
+
 def claude(*args, capture=True, stdin=None):
     exe = shutil.which("claude")
     if not exe:
@@ -127,7 +135,7 @@ def probe(installed):
         print("  python3 nicht gefunden – die Hooks rufen python3 auf (unter Windows: Python aus dem Microsoft Store"
               " oder App-Ausführungsalias python3 einschalten)")
         return False
-    ok = True
+    alles_ok = True
     for name, info in installed.items():
         base = info.get("installPath", "")
         hooks = os.path.join(base, "hooks") if name == "work-hooks" else os.path.join(base, "plugins", "work-hooks", "hooks")
@@ -137,26 +145,31 @@ def probe(installed):
                 continue
             result = subprocess.run([python3, path], input="{}", text=True, capture_output=True,
                                     env=dict(os.environ, **{env: "aus"}))
-            print(f"  {name}: {script} {'ok' if result.returncode == 0 else 'FEHLER ' + str(result.returncode)}")
-            ok = ok and result.returncode == 0
-    return ok
+            print(f"  {'OK    ' if result.returncode == 0 else 'FEHLER'}  {name}: {script}"
+                  + ("" if result.returncode == 0 else f" (Exit {result.returncode}) {result.stderr.strip()[:200]}"))
+            alles_ok = alles_ok and result.returncode == 0
+    return alles_ok
 
 
 def main():
+    sys.stdout.reconfigure(line_buffering=True)  # Überschriften vor der Ausgabe von claude, auch umgeleitet
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--modus", choices=sorted(PLUGINS), help="terminal (work + skill-workshop) oder desktop (work-hooks)")
     parser.add_argument("--host", help="Rechnername im Skill-Log (Plugin-Option log_host)")
     parser.add_argument("--ja", action="store_true", help="alle Rückfragen mit dem Vorschlag beantworten")
     parser.add_argument("--ohne-overrides", action="store_true", help="keine skillOverrides setzen")
+    parser.add_argument("--schritt", type=int, default=3, help=argparse.SUPPRESS)
     args = parser.parse_args()
     yes = args.ja
+    nummer = args.schritt
 
+    schritt(nummer, "Plugins")
     mode = args.modus
     if not mode:
         desktop = ask("Läuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?", False, yes)
         mode = "desktop" if desktop else "terminal"
     host = args.host or ask_text("Rechnername im Skill-Log", socket.gethostname().split(".")[0], yes)
-    print(f"\nModus {mode}: {', '.join(PLUGINS[mode])} · Rechner {host}\n")
+    print(f"  Modus {mode}: {', '.join(PLUGINS[mode])} - Rechner {host}")
 
     installed = installed_plugins()
     install, update, remove = plan(mode, installed)
@@ -170,6 +183,10 @@ def main():
     for name in update:
         claude("plugin", "update", f"{name}@{MARKETPLACE}", capture=False)
         claude("plugin", "configure", f"{name}@{MARKETPLACE}", "--values-stdin", stdin=json.dumps({"log_host": host}))
+    plugins = sorted(installed_plugins())
+    ok("installiert: " + (", ".join(plugins) or "keine"))
+
+    schritt(nummer + 1, "Einstellungen (~/.claude/settings.json)")
 
     settings = load_settings()
     before = json.dumps(settings, sort_keys=True)
@@ -180,15 +197,22 @@ def main():
     if json.dumps(settings, sort_keys=True) != before:
         if ask(f"{SETTINGS} anpassen (autoUpdate{', skillOverrides' if 'skillOverrides' in settings else ''})?", True, yes):
             save_settings(settings)
-            print(f"  gespeichert, Sicherung: {SETTINGS}.bak")
+            ok(f"gespeichert, Sicherung: {SETTINGS}.bak")
     else:
-        print("  settings.json ist schon richtig.")
+        ok("schon richtig")
+    auto = load_settings().get("extraKnownMarketplaces", {}).get(MARKETPLACE, {}).get("autoUpdate")
+    overrides = sum(1 for k in load_settings().get("skillOverrides", {}) if k.startswith("anthropic-skills:"))
 
-    print("\nProbe der Hooks:")
-    ok = probe(installed_plugins())
-    print("\nFertig." if ok else "\nFertig, aber eine Probe ist gescheitert – siehe oben.")
-    print("Claude Code jetzt neu starten (laufende Sitzungen übernehmen Plugins und Einstellungen erst beim Start).")
-    return 0 if ok else 1
+    schritt(nummer + 2, "Probe der Hooks")
+    passt = probe(installed_plugins())
+
+    print("\nZusammenfassung")
+    print(f"  Rechner        {host}")
+    print(f"  Plugins        {', '.join(plugins) or 'keine'}")
+    print(f"  Auto-Update    {'an' if auto else 'aus'}")
+    print(f"  skillOverrides {overrides}")
+    print(f"  Hooks          {'laufen' if passt else 'FEHLER - siehe oben'}")
+    return 0 if passt else 1
 
 
 if __name__ == "__main__":
