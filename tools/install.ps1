@@ -42,13 +42,20 @@ function Python3-Ok {
     finally { $ErrorActionPreference = $alt }
 }
 
-function Ende([string]$Text) { Write-Host ''; Write-Host "  ABBRUCH: $Text" -ForegroundColor Red; return }
-function Schritt([string]$Text) { Write-Host ''; Write-Host $Text -ForegroundColor Cyan }
+function Ende([string]$Text) {
+    Write-Progress -Activity 'Einrichtung workbench' -Completed
+    Write-Host ''; Write-Host "  ABBRUCH: $Text" -ForegroundColor Red; return
+}
+function Schritt([string]$Text, [int]$Nummer) {
+    Write-Host ''; Write-Host $Text -ForegroundColor Cyan
+    # Fortschrittsbalken oben im Fenster; verschwindet am Ende (Write-Progress -Completed)
+    Write-Progress -Activity 'Einrichtung workbench' -Status $Text -PercentComplete ([int](($Nummer - 1) * 100 / 5))
+}
 function Ok([string]$Text) { Write-Host "  OK  $Text" -ForegroundColor Green }
 
 Write-Host ''
 Write-Host '=== Einrichtung workbench (Skills, Skill-Log, Skill-Waechter) ===' -ForegroundColor Cyan
-Schritt '[1/5] Voraussetzungen'
+Schritt '[1/5] Voraussetzungen' 1
 if (Has 'git') { Ok "git: $(git --version)" }
 elseif ((Has 'winget') -and (Frage 'git fehlt. Mit winget installieren?')) {
     winget install -e --id Git.Git --accept-source-agreements --accept-package-agreements; Neu-Pfad
@@ -70,7 +77,7 @@ elseif (Frage 'Claude Code fehlt. Mit dem offiziellen Installer installieren (ir
     Write-Host 'Anmelden: claude starten und /login ausfuehren, danach dieses Skript erneut starten.'; return
 } else { Ende 'Ohne Claude Code geht es nicht.'; return }
 
-Schritt "[2/5] Marketplace $Marketplace"
+Schritt "[2/5] Marketplace $Marketplace" 2
 function Marketplaces {
     # Unter 5.1 gibt ConvertFrom-Json ein Array als ein einziges Objekt aus - deshalb mit foreach einzeln weitergeben
     $json = (claude plugin marketplace list --json | Out-String)
@@ -89,7 +96,9 @@ if ($Modus) { $weiter += @('--modus', $Modus) }
 if ($RechnerName) { $weiter += @('--host', $RechnerName) }
 if ($Ja) { $weiter += '--ja' }
 if ($OhneOverrides) { $weiter += '--ohne-overrides' }
+Write-Progress -Activity 'Einrichtung workbench' -Status '[3-5/5] Plugins, Einstellungen, Probe der Hooks' -PercentComplete 50
 & python3 -I (Join-Path $ort 'tools\einrichten.py') --schritt 3 @weiter
+Write-Progress -Activity 'Einrichtung workbench' -Completed
 if ($LASTEXITCODE -eq 0) {
     Write-Host ''
     Write-Host '=== FERTIG - Claude Code jetzt neu starten (bzw. die Desktop-App beenden und neu oeffnen) ===' -ForegroundColor Green
