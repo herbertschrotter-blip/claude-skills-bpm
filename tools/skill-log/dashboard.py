@@ -54,6 +54,16 @@ def collect(rounds, entries=()):
     gesamt = r.arbeitszeit(entries, key=lambda e: "alle").get("alle", {"aktiv": 0, "claude": 0})
     for day, d in days.items():
         d["aktiv"] = zeit_tag.get(day, {}).get("aktiv", 0)
+    # Feste Farbe je Projekt: die 4 mit der meisten aktiven Zeit, Rest „Andere“ (Farbe folgt dem Projekt, nicht dem Rang)
+    top = [name for name, _ in sorted(zeit_projekt.items(), key=lambda kv: -kv[1]["aktiv"])][:4]
+    bucket = lambda p: p if p in top else "Andere"  # noqa: E731
+    reihen = top + ["Andere"]
+    zeit_tag_projekt = r.arbeitszeit(entries, key=lambda e: (e["ts"][:10], bucket(e.get("project") or "?")))
+    prompts_tag_projekt, skill_projekt = collections.Counter(), collections.defaultdict(collections.Counter)
+    for x in prompts:
+        prompts_tag_projekt[(x["ts"][:10], bucket(x.get("project") or "?"))] += 1
+        for sk in x["skills"]:
+            skill_projekt[r.short(sk["skill"])][bucket(x.get("project") or "?")] += 1
     return {
         "runden": len(rounds), "prompts": len(prompts),
         "mit_skill": sum(1 for x in prompts if x["skills"]),
@@ -61,7 +71,12 @@ def collect(rounds, entries=()):
         "fehler": sum(1 for x in prompts for s in x["skills"] if not s["ok"]),
         "fired": fired.most_common(), "days": list(days.items()), "projects": projects,
         "zeit_projekt": sorted(zeit_projekt.items(), key=lambda kv: -kv[1]["aktiv"]),
-        "zeit_rechner": sorted(zeit_rechner.items(), key=lambda kv: -kv[1]["aktiv"]), "gesamt": gesamt, "guard": guard.most_common(), "hosts": hosts,
+        "zeit_rechner": sorted(zeit_rechner.items(), key=lambda kv: -kv[1]["aktiv"]), "gesamt": gesamt,
+        "reihen": reihen,
+        "zeit_tag_projekt": [(day, [(p, zeit_tag_projekt.get((day, p), {}).get("aktiv", 0) / 3600) for p in reihen])
+                             for day in days],
+        "prompts_tag_projekt": [(day, [(p, prompts_tag_projekt[(day, p)]) for p in reihen]) for day in days],
+        "skill_projekt": [(name, [(p, skill_projekt[name][p]) for p in reihen]) for name, _ in fired.most_common()], "guard": guard.most_common(), "hosts": hosts,
         "von": rounds[0]["ts"][:10] if rounds else "-", "bis": rounds[-1]["ts"][:16].replace("T", " ") if rounds else "-",
     }
 
@@ -115,6 +130,77 @@ def vbars(days, key, unit):
             out.append(f'<text class="axis" x="{x + bw / 2}" y="{h - 6}" text-anchor="middle">{day[8:10]}.{day[5:7]}.</text>')
     out.append("</svg>")
     return "".join(out)
+
+
+def legend(series):
+    return '<div class="legende">' + "".join(
+        f'<span class="lg" style="background:var(--{css})"></span>{html.escape(name)}&nbsp;&nbsp;' for name, css in series) + "</div>"
+
+
+def fmt(value, unit):
+    text = f"{value:.1f}" if isinstance(value, float) else str(value)
+    return f"{text} {unit}" if unit else text
+
+
+def hstack(rows, series, unit):
+    """Waagrechte gestapelte Balken: rows = [(label, [(reihe, wert), …])], series = [(reihe, css-variable)]."""
+    rows = [(label, parts) for label, parts in rows if sum(v for _, v in parts) > 0]
+    if not rows:
+        return '<p class="leer">Keine Daten im Zeitraum.</p>'
+    css = dict(series)
+    top = max(sum(v for _, v in parts) for _, parts in rows)
+    bar_h, gap, label_w, w = 22, 8, 150, 560
+    out = [f'<svg viewBox="0 0 {w} {len(rows) * (bar_h + gap)}" role="img" class="chart">']
+    for i, (label, parts) in enumerate(rows):
+        y, x = i * (bar_h + gap), label_w
+        total = sum(v for _, v in parts)
+        tip = html.escape(f"{label}: " + ", ".join(fmt(v, unit) + " " + n for n, v in parts if v) + f" (gesamt {fmt(total, unit)})")
+        out.append(f'<g class="mark" data-tip="{tip}"><rect class="hit" x="0" y="{y}" width="{w}" height="{bar_h + gap}"/>'
+                   f'<text class="lbl" x="{label_w - 8}" y="{y + bar_h / 2 + 4}" text-anchor="end">{html.escape(label)}</text>')
+        for name, v in parts:
+            bw = (w - label_w - 60) * v / top
+            if bw <= 0:
+                continue
+            out.append(f'<rect class="seg" x="{x}" y="{y}" width="{bw}" height="{bar_h}" rx="3" style="fill:var(--{css[name]})"/>')
+            x += bw
+        out.append(f'<text class="val" x="{x + 6}" y="{y + bar_h / 2 + 4}">{fmt(total, "").strip()}</text></g>')
+    out.append("</svg>")
+    return "".join(out) + legend(series)
+
+
+def vstack(cols, series, unit):
+    """Senkrechte gestapelte Balken je Tag: cols = [(tag, [(reihe, wert), …])]."""
+    if not cols:
+        return '<p class="leer">Keine Daten im Zeitraum.</p>'
+    css = dict(series)
+    top = max(sum(v for _, v in parts) for _, parts in cols) or 1
+    w, h, pad_l, pad_b = 560, 180, 34, 24
+    step = (w - pad_l) / len(cols)
+    bw = max(4, min(28, step - 2))
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" class="chart">']
+    for frac in (0.5, 1.0):
+        y = (h - pad_b) * (1 - frac)
+        label = f"{top * frac:.1f}" if isinstance(top, float) else str(round(top * frac))
+        out.append(f'<line class="grid" x1="{pad_l}" x2="{w}" y1="{y}" y2="{y}"/>'
+                   f'<text class="axis" x="{pad_l - 6}" y="{y + 4}" text-anchor="end">{label}</text>')
+    out.append(f'<line class="base" x1="{pad_l}" x2="{w}" y1="{h - pad_b}" y2="{h - pad_b}"/>')
+    for i, (day, parts) in enumerate(cols):
+        x = pad_l + i * step + (step - bw) / 2
+        total = sum(v for _, v in parts)
+        tip = html.escape(f"{day[8:10]}.{day[5:7]}.: " + (", ".join(fmt(v, unit) + " " + n for n, v in parts if v) or "nichts"))
+        out.append(f'<g class="mark" data-tip="{tip}"><rect class="hit" x="{pad_l + i * step}" y="0" width="{step}" height="{h - pad_b}"/>')
+        base = h - pad_b
+        for name, v in parts:
+            bh = (h - pad_b) * v / top
+            if bh <= 0:
+                continue
+            out.append(f'<rect class="seg" x="{x}" y="{base - bh}" width="{bw}" height="{bh}" rx="3" style="fill:var(--{css[name]})"/>')
+            base -= bh
+        out.append("</g>")
+        if len(cols) <= 14 or i % 2 == 0:
+            out.append(f'<text class="axis" x="{x + bw / 2}" y="{h - 6}" text-anchor="middle">{day[8:10]}.{day[5:7]}.</text>')
+    out.append("</svg>")
+    return "".join(out) + legend(series)
 
 
 def project_section(projects):
@@ -181,12 +267,9 @@ def calendar(days):
 
 
 def zeit_section(zeiten):
-    rows = [(name, round(t["aktiv"] / 3600, 1)) for name, t in zeiten if t["aktiv"] >= 360]
-    chart = hbars(rows, "h aktiv")
-    for name, t in zeiten:
-        old = html.escape(f"{name}: {round(t['aktiv'] / 3600, 1)} h aktiv")
-        chart = chart.replace(f'data-tip="{old}"',
-                              f'data-tip="{html.escape(name + ": " + r.stunden(t["aktiv"]) + " aktiv, " + r.stunden(t["claude"]) + " Claude")}"', 1)
+    rows = [(name, [("Claude rechnet", t["claude"] / 3600), ("Du", max(0, t["aktiv"] - t["claude"]) / 3600)])
+            for name, t in zeiten if t["aktiv"] >= 360]
+    chart = hstack(rows, [("Claude rechnet", "claude"), ("Du", "du")], "h")
     return chart + table(["", "aktiv", "davon Claude"], [(n, r.stunden(t["aktiv"]), r.stunden(t["claude"])) for n, t in zeiten])
 
 
@@ -197,6 +280,7 @@ def table(headers, rows):
 
 
 def page(s, title):
+    projekt_reihen = [(n, "p%d" % (i + 1) if n != "Andere" else "pa") for i, n in enumerate(s["reihen"])]
     tiles = [("Arbeitszeit aktiv", r.stunden(s["gesamt"]["aktiv"])), ("davon Claude", r.stunden(s["gesamt"]["claude"])),
              ("Prompts", s["prompts"]), ("mit Skill-Zündung", s["mit_skill"]), ("ganz ohne Skill", s["ohne_jeden"]),
              ("Wächter-Blockaden", sum(v for _, v in s["guard"])), ("gescheiterte Aufrufe", s["fehler"])]
@@ -207,12 +291,14 @@ def page(s, title):
 <title>{html.escape(title)}</title>
 <style>
 :root {{ --surface: #fcfcfb; --card: #ffffff; --line: #e4e3df; --ink: #0b0b0b; --ink-2: #52514e; --series: #2a78d6;
-  --k0: #f0efec; --k1: #86b6ef; --k2: #5598e7; --k3: #2a78d6; --k4: #1c5cab; }}
+  --k0: #f0efec; --k1: #86b6ef; --k2: #5598e7; --k3: #2a78d6; --k4: #1c5cab;
+  --p1: #2a78d6; --p2: #eb6834; --p3: #1baf7a; --p4: #eda100; --pa: #a3a29d; --claude: #1c5cab; --du: #86b6ef; }}
 @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --surface: #1a1a19; --card: #232321; --line: #383835;
   --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5; --k0: #383835; --k1: #184f95; --k2: #256abf; --k3: #3987e5;
-  --k4: #86b6ef; }} }}
+  --k4: #86b6ef; --p1: #3987e5; --p2: #d95926; --p3: #199e70; --p4: #c98500; --pa: #6f6e69; --claude: #86b6ef; --du: #256abf; }} }}
 :root[data-theme="dark"] {{ --surface: #1a1a19; --card: #232321; --line: #383835; --ink: #ffffff; --ink-2: #c3c2b7; --series: #3987e5;
-  --k0: #383835; --k1: #184f95; --k2: #256abf; --k3: #3987e5; --k4: #86b6ef; }}
+  --k0: #383835; --k1: #184f95; --k2: #256abf; --k3: #3987e5; --k4: #86b6ef;
+  --p1: #3987e5; --p2: #d95926; --p3: #199e70; --p4: #c98500; --pa: #6f6e69; --claude: #86b6ef; --du: #256abf; }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--surface); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }}
 main {{ max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }}
@@ -224,7 +310,7 @@ h1 {{ font-size: 22px; margin: 0 0 4px; }} h2 {{ font-size: 16px; margin: 0 0 12
 .grid2 {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px; }}
 .card {{ margin-bottom: 12px; }}
 .chart {{ width: 100%; height: auto; display: block; overflow: visible; }}
-.bar {{ fill: var(--series); }} .hit {{ fill: transparent; }} .mark:hover .bar {{ opacity: .8; }}
+.bar {{ fill: var(--series); }} .seg {{ stroke: var(--card); stroke-width: 2; }} .mark:hover .seg {{ opacity: .85; }} .hit {{ fill: transparent; }} .mark:hover .bar {{ opacity: .8; }}
 .lbl, .val, .axis {{ fill: var(--ink-2); font-size: 12px; font-variant-numeric: tabular-nums; }} .val {{ fill: var(--ink); }}
 .grid {{ stroke: var(--line); stroke-width: 1; }} .base {{ stroke: var(--ink-2); stroke-width: 1; }}
 .leer {{ color: var(--ink-2); }}
@@ -248,9 +334,10 @@ table {{ border-collapse: collapse; margin-top: 8px; width: 100%; }} td, th {{ t
 <div class="card"><h2>Arbeitszeit je Projekt</h2>{zeit_section(s["zeit_projekt"])}
 <p class="sub" style="margin:8px 0 0">aktiv = Zeit zwischen Ereignissen einer Sitzung, Pausen ab 15 min zählen nicht; Claude = vom Prompt bis zur fertigen Antwort (höchstens 2 h je Antwort); parallele Fenster zählen einmal.</p></div>
 <div class="card"><h2>Projekte (Prompts)</h2>{project_section(s["projects"])}</div>
-<div class="card"><h2>Zündungen je Skill</h2>{hbars(s["fired"], "Zündungen")}{table(["Skill", "Zündungen"], s["fired"])}</div>
+<div class="card"><h2>Arbeitszeit je Tag nach Projekt (h aktiv)</h2>{vstack(s["zeit_tag_projekt"], projekt_reihen, "h")}{table(["Tag"] + s["reihen"], [(d, *[f"{v:.1f}" for _, v in parts]) for d, parts in s["zeit_tag_projekt"]])}</div>
+<div class="card"><h2>Zündungen je Skill nach Projekt</h2>{hstack(s["skill_projekt"], projekt_reihen, "")}{table(["Skill"] + s["reihen"], [(n, *[v for _, v in parts]) for n, parts in s["skill_projekt"]])}</div>
 <div class="grid2">
-<div class="card"><h2>Prompts je Tag</h2>{vbars(s["days"], "prompts", "Prompts")}{table(["Tag", "Prompts", "Zündungen"], [(d, v["prompts"], v["zuendungen"]) for d, v in s["days"]])}</div>
+<div class="card"><h2>Prompts je Tag nach Projekt</h2>{vstack(s["prompts_tag_projekt"], projekt_reihen, "Prompts")}{table(["Tag", "Prompts", "Zündungen"], [(d, v["prompts"], v["zuendungen"]) for d, v in s["days"]])}</div>
 <div class="card"><h2>Skill-Zündungen je Tag</h2>{vbars(s["days"], "zuendungen", "Zündungen")}</div>
 </div>
 <div class="card"><h2>Skill-Wächter: Blockaden je Regel</h2>{hbars(s["guard"], "Blockaden")}{table(["Regel", "Blockaden"], s["guard"])}</div>
