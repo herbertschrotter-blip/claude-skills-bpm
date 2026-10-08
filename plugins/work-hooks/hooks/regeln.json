@@ -88,9 +88,9 @@
       "herkunft": "Skill-Auswertung 06.10.2026: ha-baustelle Teil 3, rund 310 Code-Änderungen ohne code-erstellen; 08.10.2026: regeln.json ausgenommen – skill-auswertung pflegt sie nach Freigabe",
       "stand": {
         "seit": "2026-10-07",
-        "treffer": 0,
+        "treffer": 1,
         "fehlalarm": 0,
-        "zuletzt": null,
+        "zuletzt": "2026-10-08",
         "rueckblick": {
           "bis": "2026-10-07T12:56:13Z",
           "treffer": 316,
@@ -206,9 +206,9 @@
       "herkunft": "Startregel 07.10.2026; 07.10.2026: auf blocken hochgestuft (Rückblick 29.09.–07.10.: 89 Treffer, 0 Fehlalarme; Heidi-Neubau, ha-baustelle Teil 3); 08.10.2026: neue Docs unter docs/ verlangt die Regel doku-neu (doc-pflege)",
       "stand": {
         "seit": "2026-10-07",
-        "treffer": 0,
+        "treffer": 1,
         "fehlalarm": 0,
-        "zuletzt": null,
+        "zuletzt": "2026-10-08",
         "rueckblick": {
           "bis": "2026-10-07T12:56:13Z",
           "treffer": 89,
@@ -310,7 +310,7 @@
         "seit": "2026-10-07",
         "treffer": 0,
         "fehlalarm": 0,
-        "zuletzt": null,
+        "zuletzt": "2026-10-08",
         "rueckblick": {
           "bis": "2026-10-07T12:56:13Z",
           "treffer": 5,
