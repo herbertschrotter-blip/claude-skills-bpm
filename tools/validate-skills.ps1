@@ -198,7 +198,7 @@ $PluginKeys = @('name', 'version', 'description', 'author', 'homepage', 'reposit
 $MarketplaceKeys = @('$schema', 'name', 'owner', 'description', 'version', 'metadata', 'plugins', 'forceRemoveDeletedPlugins')
 $EntryKeys = @('name', 'source', 'description', 'version', 'author', 'homepage', 'repository', 'license', 'keywords',
     'category', 'tags', 'strict', 'commands', 'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers',
-    'dependencies')
+    'userConfig', 'dependencies')
 $PathKeys = @('commands', 'agents', 'skills', 'hooks', 'mcpServers', 'outputStyles', 'lspServers')
 
 function Read-Json([string]$Path, $Errors, [string]$Rel) {
