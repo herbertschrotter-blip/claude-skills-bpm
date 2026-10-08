@@ -319,6 +319,11 @@ Plugins im selben Repo)
    Pi (08.10.2026): `autoUpdate: true` im Eintrag `workbench` unter `extraKnownMarketplaces` nachgetragen – ohne ihn
    blieb der Pi auf `921f403` stehen, obwohl die Plugins keine feste Version haben; von Hand auf `e8e1de5` gebracht.
    Gilt für jeden Rechner: Auto-Update gehört in den Eintrag, sonst nur `claude plugin update` von Hand.
+   Nachgang 08.10.2026: Plugin-Optionen (`userConfig`: `log_host`, `log_dir`, `skill_log`, `skill_guard`, `guard_rules`)
+   statt `env`; Installationsskripte `tools/install.sh` / `tools/install.ps1` mit `tools/einrichten.py` (Voraussetzungen,
+   Marketplace, Plugins je Rechner, `autoUpdate`, `skillOverrides`, Probe der Hooks; `install.ps1` noch nicht unter echtem
+   Windows gelaufen). Prüfskript vergleicht Hooks und `userConfig` von `work` und `work-hooks`. skill-auswertung v0.44.0
+   schärft die Wächter-Regeln nach; `!`-Prompts zählen als Art `befehl` (v0.43.1).
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
    Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist
