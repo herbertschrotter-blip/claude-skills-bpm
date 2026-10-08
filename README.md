@@ -17,12 +17,16 @@ Skill lädt. Alles kommt als Plugin über den Marketplace `workbench`.
 
 ### 2. Installieren – ein Befehl
 
-```
-# Linux, macOS, Home-Assistant-Add-on
-curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh
+**Windows** (PowerShell):
 
-# Windows (PowerShell)
+```powershell
 irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
+```
+
+**Linux, macOS, Home-Assistant-Add-on:**
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh
 ```
 
 Das Skript prüft zuerst ohne Netz, was schon da ist, und stellt dann **alle Fragen auf einmal**:
@@ -95,12 +99,16 @@ Installer, parallel), `~/.local/bin` dauerhaft in den PATH, Marketplace, Plugins
 wöchentliche Aufgabe für git-Updates, zum Schluss die Anmeldung. Ein erneuter Lauf setzt fort bzw. aktualisiert.
 Ablauf, Protokoll, Entfernen und Fehlerquellen: [`docs/installation.md`](./docs/installation.md).
 
-```
-# Linux, macOS, Home-Assistant-Add-on
-curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh -s -- --host laptop
+Windows (PowerShell):
 
-# Windows (PowerShell)
+```powershell
 irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
+```
+
+Linux, macOS, Home-Assistant-Add-on (mit Optionen nach `sh -s --`):
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh -s -- --host laptop
 ```
 
 Optionen: `--modus terminal|desktop`, `--host <name>`, `--log-repo <owner/name>`, `--ja` (alle Vorschläge annehmen),
