@@ -1,5 +1,63 @@
 # claude-workbench
 
+Skills für Claude Code (auf Deutsch) und zwei Helfer im Hintergrund: das **Skill-Log**, das mitschreibt, welcher Skill
+wann gezündet hat, und den **Skill-Wächter**, der darauf achtet, dass Claude für Code, Doku und Mockups den passenden
+Skill lädt. Alles kommt als Plugin über den Marketplace `workbench`.
+
+## Schnellstart
+
+### 1. Was du brauchst
+
+| Was | Wofür | Fehlt es? |
+|---|---|---|
+| **Claude Code**, angemeldet | darin laufen die Skills | Das Skript bietet den offiziellen Installer an; danach einmal `claude` starten und `/login` |
+| **git** | Claude Code holt den Marketplace als Git-Repo | Das Skript installiert es auf Wunsch |
+| **Python 3** (ab 3.8) | Skill-Log und Wächter sind Python-Skripte | Das Skript installiert es auf Wunsch (Windows: aus dem Microsoft Store, damit `python3` funktioniert) |
+| ClickUp-Konnektor (optional) | nur für den Skill tracker | bei claude.ai unter Konnektoren |
+
+### 2. Installieren – ein Befehl
+
+```
+# Linux, macOS, Home-Assistant-Add-on
+curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.sh | sh
+
+# Windows (PowerShell)
+irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
+```
+
+Das Skript prüft die Voraussetzungen und fragt dann drei Dinge:
+
+1. **Desktop-App oder Terminal?** In der Claude-Desktop-App kommen nur die Helfer (`work-hooks`), die Skills holt die
+   App von claude.ai. Im Terminal kommen Skills und Helfer (`work`, dazu `skill-workshop` für die Arbeit an Skills).
+2. **Rechnername** – so heißt der Rechner im Skill-Log (z. B. `laptop`).
+3. **Sind dieselben Skills auch bei claude.ai hochgeladen?** Dann blendet es dort die doppelten aus.
+
+Vor jeder Änderung fragt es nach, und bevor es die `settings.json` ändert, legt es eine Sicherung an. Danach
+**Claude Code neu starten** – fertig.
+
+### 3. Im Alltag
+
+| Du willst … | So geht's |
+|---|---|
+| Updates | kommen von selbst beim Start von Claude Code (das Skript schaltet Auto-Update ein) |
+| sofort aktualisieren | `claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, dann Claude neu starten |
+| Einstellungen ändern (Rechnername, Log oder Wächter aus) | in Claude Code `/plugin configure work@workbench` (bzw. `work-hooks@workbench`) |
+| prüfen, was installiert ist | `claude plugin list` |
+| reparieren oder neuen Rechner einrichten | das Installationsskript einfach noch einmal laufen lassen |
+| entfernen | `claude plugin uninstall work@workbench` (und `skill-workshop@workbench`) |
+
+**Gut zu wissen**
+
+- Der Wächter **blockiert** eine Änderung an Code, Doku oder Mockups, solange der zuständige Skill nicht geladen ist.
+  Claude lädt ihn dann selbst nach und macht weiter. Stört eine Regel, sag es Claude; die Regeln werden mit
+  skill-auswertung nachgeschärft.
+- **Nie `work` und `work-hooks` zusammen** installieren – sonst läuft jeder Helfer doppelt. Das Skript achtet darauf.
+- Das Skill-Log bleibt auf deinem Rechner (`~/.claude/skill-log/`).
+- Damit die Skills in einem Projekt richtig arbeiten, braucht die `CLAUDE.md` des Projekts ein Skill-Profil. Fehlt es,
+  fragen die Skills nach; „richte die Skills hier ein“ legt es an (Skill projekt-anlegen).
+
+## Über dieses Repo
+
 Claude-Skills von Herbert Schrotter für Claude Code, als Plugin-Marketplace `workbench`. Entstanden im Projekt
 BauProjektManager (BPM), heute für C#-, TypeScript-, Python- und Home-Assistant-Projekte im Einsatz.
 
@@ -7,7 +65,7 @@ Dieses Repo enthält 15 Skills samt Evals, Prüfskript, Refactor-Dokumentation u
 (Skill-Log und Skill-Wächter). Die Skills sind projektneutral: Projektwerte (Pfade, Präfixe, IDs, Befehle) kommen aus
 dem Skill-Profil in der `CLAUDE.md` des jeweiligen Repos und dessen Configs unter `.claude/skill-config/`. Sie sind auf
 eine bestimmte Arbeitsweise zugeschnitten (Deutsch, ClickUp, Commit-Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Kapitel 10);
-wer sie nutzen will, ist willkommen – Installation im nächsten Abschnitt. Für generische Skills siehe z.B.
+wer sie nutzen will, ist willkommen. Für generische Skills siehe z.B.
 [obra/superpowers](https://github.com/obra/superpowers) oder
 [alirezarezvani/claude-skills](https://github.com/alirezarezvani/claude-skills).
 
@@ -19,7 +77,7 @@ wer sie nutzen will, ist willkommen – Installation im nächsten Abschnitt. Fü
 
 ---
 
-## Nutzung für andere
+## Installation im Detail
 
 **Voraussetzungen:** Claude Code; Python 3 für die Hooks; für den Skill tracker ein ClickUp-Konnektor (MCP). Die Skills
 sprechen Deutsch.
