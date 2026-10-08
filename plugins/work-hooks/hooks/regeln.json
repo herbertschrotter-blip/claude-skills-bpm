@@ -9,6 +9,35 @@
     "*/.git/*",
     "*/__pycache__/*"
   ],
+  "grenzen": {
+    "commit": {
+      "beschreibung": "erfolgreicher git commit (Bash, Tool-Ergebnis ohne Fehler)",
+      "verbraucht": [
+        "code-erstellen",
+        "doc-pflege",
+        "git-commit-helper"
+      ]
+    },
+    "aufgabenstart": {
+      "beschreibung": "ClickUp-Schreibaufruf setzt eine Aufgabe auf einen dieser Status",
+      "status": [
+        "in development",
+        "in progress"
+      ],
+      "verbraucht": "*",
+      "ausser": [
+        "tracker"
+      ]
+    },
+    "task_id": {
+      "beschreibung": "Nutzer-Nachricht nennt eine Aufgabe oder ein Ticket (z. B. BSM-026, Bsm 026, FE-0012)",
+      "muster": "(?i)\\b(?:BSM|FE|WU|AN)[- ]?\\d{2,4}\\b",
+      "verbraucht": "*",
+      "ausser": [
+        "tracker"
+      ]
+    }
+  },
   "regeln": [
     {
       "id": "code",
@@ -51,6 +80,11 @@
         "projekt-anlegen"
       ],
       "modus": "blocken",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
       "herkunft": "Skill-Auswertung 06.10.2026: ha-baustelle Teil 3, rund 310 Code-Änderungen ohne code-erstellen; 08.10.2026: regeln.json ausgenommen – skill-auswertung pflegt sie nach Freigabe",
       "stand": {
         "seit": "2026-10-07",
@@ -81,6 +115,11 @@
         "mockup-erstellen"
       ],
       "modus": "blocken",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
       "herkunft": "Skill-Auswertung 04.10.2026 (mockup-erstellen-002) und 06.10.2026 (Zustandsvarianten)",
       "stand": {
         "seit": "2026-10-07",
@@ -111,6 +150,11 @@
         "skill-neu"
       ],
       "modus": "warnen",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
       "herkunft": "Startregel 07.10.2026",
       "stand": {
         "seit": "2026-10-07",
@@ -154,7 +198,12 @@
         "projekt-anlegen"
       ],
       "modus": "blocken",
-      "herkunft": "Startregel 07.10.2026; 07.10.2026: auf blocken hochgestuft (Rückblick 29.09.–07.10.: 89 Treffer, 0 Fehlalarme; Heidi-Neubau, ha-baustelle Teil 3)",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
+      "herkunft": "Startregel 07.10.2026; 07.10.2026: auf blocken hochgestuft (Rückblick 29.09.–07.10.: 89 Treffer, 0 Fehlalarme; Heidi-Neubau, ha-baustelle Teil 3); 08.10.2026: neue Docs unter docs/ verlangt die Regel doku-neu (doc-pflege)",
       "stand": {
         "seit": "2026-10-07",
         "treffer": 0,
@@ -165,6 +214,39 @@
           "treffer": 89,
           "fehlalarm": 0
         }
+      }
+    },
+    {
+      "id": "doku-neu",
+      "beschreibung": "Eine neue Doku-Datei unter docs/ braucht doc-pflege (code-erstellen reicht nicht)",
+      "aktion": [
+        "datei:neu"
+      ],
+      "pfad": [
+        "*/docs/*.md"
+      ],
+      "ausser": [],
+      "projekt": "*",
+      "pflicht": [
+        "doc-pflege",
+        "skill-pflege",
+        "skill-neu",
+        "skill-auswertung",
+        "chatgpt-review",
+        "projekt-anlegen"
+      ],
+      "modus": "blocken",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
+      "herkunft": "08.10.2026 (Herbert): Befund ha-baustelle bc267f1c – neue docs/betrieb.md und docs/api-datenbank.md ohne doc-pflege",
+      "stand": {
+        "seit": "2026-10-08",
+        "treffer": 0,
+        "fehlalarm": 0,
+        "zuletzt": null
       }
     },
     {
@@ -183,6 +265,11 @@
         "skill-neu"
       ],
       "modus": "warnen",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
       "herkunft": "Startregel 07.10.2026 (tracker ist einzige Schreibschnittstelle zu ClickUp); 07.10.2026: projekt-anlegen und skill-neu ergänzt (Fehlalarm beim Anlegen von Issue-Listen, 29.09.)",
       "stand": {
         "seit": "2026-10-07",
@@ -207,18 +294,18 @@
       "projekt": "*",
       "pflicht": [
         "git-commit-helper",
-        "code-erstellen",
-        "doc-pflege",
+        "ticket",
         "skill-pflege",
         "skill-neu",
-        "skill-auswertung",
-        "ticket",
-        "tracker",
-        "projekt-anlegen",
-        "chatgpt-review"
+        "skill-auswertung"
       ],
-      "modus": "warnen",
-      "herkunft": "Startregel 07.10.2026",
+      "modus": "blocken",
+      "gilt_bis": [
+        "commit",
+        "aufgabenstart",
+        "task_id"
+      ],
+      "herkunft": "Startregel 07.10.2026; 08.10.2026 (Herbert): nur noch git-commit-helper oder ticket (dazu skill-pflege, skill-neu, skill-auswertung, die selbst committen), blocken – Befund ha-baustelle bc267f1c: alle Commits ohne git-commit-helper",
       "stand": {
         "seit": "2026-10-07",
         "treffer": 0,

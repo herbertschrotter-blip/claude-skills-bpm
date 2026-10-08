@@ -10,6 +10,7 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 
 - Ablauf
 - Regeln
+- Grenzen für geladene Skills
 - Lernen
 - Einrichtung
 - Grenzen
@@ -22,8 +23,8 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
 | `PostToolUse` | `modus: warnen` | Aktion läuft; Claude bekommt danach einen Hinweis (`additionalContext`) und lädt den Skill für die weiteren Schritte |
 
 - Geladene Skills liest der Wächter aus dem Transcript der Sitzung (Skill-Aufrufe, Slash-Befehle und nach einer
-  Compaction der Anhang `invoked_skills`). Ein Skill bleibt
-  bis zum Sitzungsende geladen. Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
+  Compaction der Anhang `invoked_skills`). Ein geladener Skill gilt bis zur nächsten Grenze, die ihn verbraucht
+  (Abschnitt „Grenzen für geladene Skills“), sonst bis zum Sitzungsende. Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
   `<sitzung>/subagents/` → `<sitzung>.jsonl`).
 - Jede Entscheidung landet als Ereignis `guard` im Skill-Log (`docs/skill-log-v1.md`): `regel`, `entscheidung`
   (`geblockt`/`gewarnt`), `tool`, `tool_use_id`, `ziel`, `pflicht`, `aktiv`.
@@ -37,17 +38,44 @@ Datei `plugins/work-hooks/hooks/regeln.json`, für alle Rechner gleich (kommt mi
 |---|---|
 | `id` | eindeutiger Name |
 | `beschreibung` | Satz, den Claude in der Meldung sieht |
-| `aktion` | `datei` (Edit/Write), `bash:schreibt` (Umleitung, `tee`, `sed -i`, Ziel von `cp`/`mv`, Schreiben im Python-Heredoc), `bash:commit`, `mcp:clickup-schreibt` |
+| `aktion` | `datei` (Edit/Write), `datei:neu` (Write auf eine Datei, die es noch nicht gibt), `bash:schreibt` (Umleitung, `tee`, `sed -i`, Ziel von `cp`/`mv`, Schreiben im Python-Heredoc), `bash:commit`, `mcp:clickup-schreibt` |
 | `pfad` / `ausser` | Muster wie `*.py`, `*/mockups/*` (fnmatch auf den absoluten Pfad; `*` passt auch über `/`). Dazu gilt `ausser_immer` für alle Regeln (Scratchpad, `/tmp`, `.claude/`, `.git/`) |
 | `projekt` | `*` oder eine Projekt-ID aus dem Skill-Profil der `CLAUDE.md` |
 | `pflicht` | Skills, von denen einer geladen sein muss |
 | `modus` | `blocken`, `warnen` oder `aus` |
+| `gilt_bis` | Grenzen, nach denen ein vorher geladener Skill für diese Regel nicht mehr zählt (`commit`, `aufgabenstart`, `task_id`) |
 | `herkunft` | Befund oder Entscheidung, aus der die Regel stammt |
 | `stand` | `seit`, `treffer`, `fehlalarm`, `zuletzt` – nachgerechnet von skill-auswertung; `rueckblick` = Abspielen der Regeln gegen alte Transcripts |
 
 Startregeln (07.10.2026): `code` und `mockup` blocken; `skills`, `doku`, `clickup`, `commit` warnen. Nach dem Rückblick
 über 29.09.–07.10. (erste Lernrunde): `doku` blockt (89 Treffer, 0 Fehlalarme), `clickup` erlaubt auch projekt-anlegen
 und skill-neu (Fehlalarm beim Anlegen von Issue-Listen). Der Rückblick steht je Regel unter `stand.rueckblick`.
+
+## Grenzen für geladene Skills
+
+Seit 08.10.2026 (Entscheidung Herbert, Befund ha-baustelle `bc267f1c`: sechs Aufgaben mit nur einem code-erstellen am
+Anfang, alle Commits ohne git-commit-helper, neue Docs ohne doc-pflege) gilt ein Skill nicht mehr bis Sitzungsende.
+`regeln.json` → `grenzen` legt fest, was eine Grenze ist und welche Skills sie verbraucht:
+
+| Grenze | Erkannt an | verbraucht |
+|---|---|---|
+| `commit` | erfolgreicher `git commit` (Bash, Tool-Ergebnis ohne Fehler) | code-erstellen, doc-pflege, git-commit-helper |
+| `aufgabenstart` | ClickUp-Schreibaufruf setzt eine Aufgabe auf `in development` bzw. `in progress` | alle außer tracker |
+| `task_id` | Nutzer-Nachricht nennt eine Aufgabe oder ein Ticket (`BSM-026`, `Bsm 026`, `FE-0012`; Muster in `regeln.json`) | alle außer tracker |
+
+Für eine Regel zählen nur Skills, die nach der letzten Grenze aus ihrem `gilt_bis` geladen wurden. Ein nach der Grenze
+neu geladener Skill gilt wieder. Eine Compaction holt verbrauchte Skills nicht zurück: Der Anhang `invoked_skills`
+zählt nur Skills, die der Verlauf der Datei noch nicht kennt. Die Meldung bei einer Blockade sagt Claude, dass ein früher
+geladener Skill nach einer Grenze neu geladen werden muss.
+
+Dazu seit 08.10.2026: Regel `doku-neu` (neue Datei unter `docs/` braucht doc-pflege bzw. einen Skill, der Doku selbst
+anlegt; code-erstellen reicht nicht – Änderungen an bestehender Doku wie Bauplan oder CHANGELOG bleiben unter `doku`
+mit code-erstellen erlaubt) und `commit` blockt: git-commit-helper oder ticket, dazu skill-pflege, skill-neu und
+skill-auswertung, die laut ihrem Ablauf selbst committen.
+
+Rückblick 08.10.2026 (alle Transcripts seit 29.09., nach jeder Blockade gilt der Skill als nachgeladen): Prüffall
+`bc267f1c` 0 → 43 Blockaden (20 Commit, 21 Code nach Commit, 1 doku, 1 doku-neu); ha-baustelle gesamt rund 300,
+/config 69, Skill-Repo-Sitzungen 47 (davon diese Sitzung 6).
 
 ## Lernen
 

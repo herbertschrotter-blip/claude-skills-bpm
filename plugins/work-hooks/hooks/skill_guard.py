@@ -132,6 +132,102 @@ def loaded_skills(paths):
     return found
 
 
+def _user_text(content):
+    """Text einer Nutzer-Nachricht (ohne Tool-Ergebnisse); None, wenn die Nachricht nur Tool-Ergebnisse enthält."""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        texts = [b.get("text") or "" for b in content if b.get("type") == "text"]
+        return "\n".join(texts) if texts else None
+    return None
+
+
+def events(lines, grenzen):
+    """Verlauf aus Transcript-Zeilen: liefert (zeilennummer, ("skill", name) | ("grenze", id)) in Sitzungsreihenfolge.
+
+    Grenzen (regeln.json → "grenzen"): commit = erfolgreicher git commit (Tool-Ergebnis ohne Fehler); aufgabenstart =
+    ClickUp-Schreibaufruf mit einem der Status; task_id = Nutzer-Nachricht passt auf das Muster. Ein Anhang
+    invoked_skills (Compaction) zählt nur Skills, die der Verlauf noch nicht kennt – verbrauchte kommen nicht zurück.
+    """
+    task = re.compile(grenzen["task_id"]["muster"]) if "task_id" in grenzen else None
+    statuses = {x.lower() for x in (grenzen.get("aufgabenstart") or {}).get("status", [])}
+    seen, commits = set(), set()
+    for index, line in enumerate(lines):
+        try:
+            msg = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        attachment = msg.get("attachment")
+        if isinstance(attachment, dict) and attachment.get("type") == "invoked_skills":
+            for s in attachment.get("skills") or []:
+                name = short(s.get("name"))
+                if name and name not in seen:
+                    seen.add(name)
+                    yield index, ("skill", name)
+            continue
+        content = (msg.get("message") or {}).get("content")
+        if msg.get("type") == "user":
+            text = _user_text(content)
+            if text is not None:
+                for name in _COMMAND_NAME.findall(text):
+                    seen.add(short(name))
+                    yield index, ("skill", short(name))
+                if task and not msg.get("isMeta") and task.search(text):
+                    yield index, ("grenze", "task_id")
+            if isinstance(content, list):
+                for block in content:
+                    if block.get("type") == "tool_result" and block.get("tool_use_id") in commits \
+                            and not block.get("is_error"):
+                        yield index, ("grenze", "commit")
+            continue
+        if not isinstance(content, list):
+            continue
+        for block in content:
+            if block.get("type") != "tool_use":
+                continue
+            name, tin = block.get("name") or "", block.get("input") or {}
+            if name == "Skill":
+                skill = short(tin.get("skill"))
+                seen.add(skill)
+                yield index, ("skill", skill)
+            elif name == "Bash" and _GIT_COMMIT.search(tin.get("command") or "") and "commit" in grenzen:
+                commits.add(block.get("id"))
+            elif statuses and _CLICKUP_WRITE.match(name) and str(tin.get("status", "")).lower() in statuses:
+                yield index, ("grenze", "aufgabenstart")
+
+
+def history(paths, grenzen):
+    """Verlauf je Transcript (Liste je Datei), siehe events()."""
+    out = []
+    for path in paths:
+        try:
+            with open(path, encoding="utf-8") as fh:
+                out.append([event for _, event in events(fh, grenzen)])
+        except OSError:
+            continue
+    return out
+
+
+def active(histories, grenzen, gilt_bis):
+    """Skills, die für eine Regel mit diesen Grenzen gelten: geladen und seither von keiner Grenze verbraucht."""
+    result = set()
+    for events in histories:
+        current = set()
+        for kind, value in events:
+            if kind == "skill":
+                current.add(value)
+            elif value in gilt_bis:
+                spec = grenzen.get(value) or {}
+                used = spec.get("verbraucht", [])
+                if used == "*":
+                    current = {s for s in current if s in spec.get("ausser", [])}
+                else:
+                    current -= set(used)
+        result |= current
+    result.discard("")
+    return result
+
+
 def bash_targets(command):
     """Dateien, die ein Shell-Befehl schreibt: Umleitungen, tee, sed -i, Ziel von cp/mv, Schreiben in Python-Heredocs."""
     targets = []
@@ -178,7 +274,10 @@ def actions(data):
     if tool in FILE_TOOLS:
         path = tin.get("file_path") or tin.get("notebook_path") or ""
         if path:
-            result.append(("datei", os.path.normpath(os.path.join(cwd, os.path.expanduser(path)))))
+            full = os.path.normpath(os.path.join(cwd, os.path.expanduser(path)))
+            result.append(("datei", full))
+            if tool == "Write" and not os.path.exists(full):
+                result.append(("datei:neu", full))
     elif tool == "Bash":
         command = tin.get("command") or ""
         if _GIT_COMMIT.search(command):
@@ -195,7 +294,9 @@ def _match(path, patterns):
 
 
 def violations(rules, acts, project, skills, mode):
-    """Regeln im gegebenen modus, deren Pflicht-Skill fehlt: Liste von (regel, ziel)."""
+    """Regeln im gegebenen modus, deren Pflicht-Skill fehlt: Liste von (regel, ziel).
+
+    skills ist eine Menge (gilt für alle Regeln) oder eine Funktion regel → Menge (Grenzen je Regel)."""
     out = []
     always_except = rules.get("ausser_immer", [])
     for rule in rules.get("regeln", []):
@@ -203,7 +304,8 @@ def violations(rules, acts, project, skills, mode):
             continue
         if rule.get("projekt", "*") not in ("*", project):
             continue
-        if any(p in skills for p in rule.get("pflicht", [])):
+        have = skills(rule) if callable(skills) else skills
+        if any(p in have for p in rule.get("pflicht", [])):
             continue
         for act, target in acts:
             if act not in rule.get("aktion", []):
@@ -252,16 +354,22 @@ def decide(data, rules=None, skills=None):
     if not mode or not acts:
         return 0, "", "", []
     project = project_of(data.get("cwd"))
-    skills = skills if skills is not None else loaded_skills(transcripts(data))
+    if skills is None:
+        grenzen = rules.get("grenzen", {})
+        hist = history(transcripts(data), grenzen)
+        skills = lambda rule: active(hist, grenzen, rule.get("gilt_bis", []))  # noqa: E731
     found = violations(rules, acts, project, skills, mode)
     if not found:
         return 0, "", "", []
     entries = [{"regel": r["id"], "entscheidung": "geblockt" if mode == "blocken" else "gewarnt",
-                "ziel": t[-200:], "pflicht": r["pflicht"], "aktiv": sorted(skills)} for r, t in found]
+                "ziel": t[-200:], "pflicht": r["pflicht"],
+                "aktiv": sorted(skills(r) if callable(skills) else skills)} for r, t in found]
     text = message(found)
     if mode == "blocken":
         err = ("Skill-Wächter: Diese Änderung braucht einen geladenen Skill, der dafür zuständig ist.\n" + text +
-               "\nLade den passenden Skill mit dem Skill-Werkzeug und wiederhole dann die Aktion. "
+               "\nLade den passenden Skill mit dem Skill-Werkzeug und wiederhole dann die Aktion – auch wenn er früher in "
+               "der Sitzung schon geladen war: Nach einem Commit, einem Aufgabenstart oder einer neuen Aufgaben-ID gilt "
+               "er als verbraucht. "
                "Ist die Regel hier falsch, sag es dem Nutzer (wird bei der Skill-Auswertung nachgeschärft).")
         return 2, "", err, entries
     ctx = ("Skill-Wächter (Hinweis): Diese Aktion lief ohne den zuständigen Skill.\n" + text +

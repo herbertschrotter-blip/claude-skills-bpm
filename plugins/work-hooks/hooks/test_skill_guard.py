@@ -30,7 +30,9 @@ class RegelnTest(unittest.TestCase):
         for rule in RULES["regeln"]:
             self.assertIn(rule["modus"], ("blocken", "warnen", "aus"))
             self.assertTrue(rule["pflicht"])
-            self.assertTrue(set(rule["aktion"]) <= {"datei", "bash:schreibt", "bash:commit", "mcp:clickup-schreibt"})
+            self.assertTrue(set(rule["aktion"]) <= {"datei", "datei:neu", "bash:schreibt", "bash:commit",
+                                                    "mcp:clickup-schreibt"})
+            self.assertTrue(set(rule.get("gilt_bis", [])) <= set(RULES.get("grenzen", {})))
 
 
 class BlockenTest(unittest.TestCase):
@@ -172,6 +174,111 @@ class EinstellungTest(unittest.TestCase):
     def test_waechter_ueber_plugin_option_aus(self):
         os.environ["CLAUDE_PLUGIN_OPTION_SKILL_GUARD"] = "false"
         self.assertIn(g.setting("SKILL_GUARD", "SKILL_GUARD").lower(), g.OFF)
+
+
+def _tx(*events):
+    """Transcript-Zeilen wie Claude Code: skill, commit (ok/fehler), user-Text, clickup-Status, compaction."""
+    lines, n = [], 0
+    for ev in events:
+        n += 1
+        kind = ev[0]
+        if kind == "skill":
+            lines.append({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "id": f"s{n}", "name": "Skill", "input": {"skill": ev[1]}}]}})
+        elif kind == "commit":
+            lines.append({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "id": f"c{n}", "name": "Bash", "input": {"command": "git commit -m x"}}]}})
+            lines.append({"type": "user", "message": {"content": [
+                {"type": "tool_result", "tool_use_id": f"c{n}", "is_error": ev[1] != "ok", "content": "x"}]}})
+        elif kind == "user":
+            lines.append({"type": "user", "message": {"content": ev[1]}})
+        elif kind == "status":
+            lines.append({"type": "assistant", "message": {"content": [
+                {"type": "tool_use", "id": f"u{n}", "name": "mcp__claude_ai_ClickUp__clickup_update_task",
+                 "input": {"task_id": "1", "status": ev[1]}}]}})
+        elif kind == "compaction":
+            lines.append({"type": "attachment", "attachment": {"type": "invoked_skills",
+                                                               "skills": [{"name": x} for x in ev[1]]}})
+    fd, path = tempfile.mkstemp(suffix=".jsonl")
+    with os.fdopen(fd, "w", encoding="utf-8") as fh:
+        for line in lines:
+            fh.write(json.dumps(line) + "\n")
+    return path
+
+
+class GrenzenTest(unittest.TestCase):
+    ALLE = ["commit", "aufgabenstart", "task_id"]
+
+    def aktiv(self, *events, gilt_bis=None):
+        path = _tx(*events)
+        try:
+            grenzen = RULES["grenzen"]
+            return g.active(g.history([path], grenzen), grenzen, self.ALLE if gilt_bis is None else gilt_bis)
+        finally:
+            os.unlink(path)
+
+    def test_ohne_grenze_gilt_skill_weiter(self):
+        self.assertEqual(self.aktiv(("skill", "work:code-erstellen"), ("user", "weiter")), {"code-erstellen"})
+
+    def test_commit_verbraucht_code_doku_commit_skills(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("skill", "git-commit-helper"), ("skill", "tracker"),
+                                    ("commit", "ok")), {"tracker"})
+
+    def test_gescheiterter_commit_ist_keine_grenze(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("commit", "fehler")), {"code-erstellen"})
+
+    def test_nach_grenze_neu_geladen_gilt(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("commit", "ok"), ("skill", "code-erstellen")),
+                         {"code-erstellen"})
+
+    def test_aufgabenstart_verbraucht_alles_ausser_tracker(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("skill", "tracker"), ("status", "in development")),
+                         {"tracker"})
+
+    def test_anderer_status_ist_keine_grenze(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("status", "testing")), {"code-erstellen"})
+
+    def test_task_id_in_nachricht(self):
+        for text in ("mach BSM-026", "Bsm 026", "ticket FE-0012"):
+            self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("user", text)), set(), text)
+
+    def test_keine_task_id(self):
+        for text in ("weiter mit .13", "Version 0.8.104", "wie lange noch?"):
+            self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("user", text)), {"code-erstellen"}, text)
+
+    def test_compaction_holt_verbrauchte_nicht_zurueck(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("commit", "ok"),
+                                    ("compaction", ["code-erstellen"])), set())
+
+    def test_compaction_ohne_verlauf_zaehlt(self):
+        self.assertEqual(self.aktiv(("compaction", ["code-erstellen"])), {"code-erstellen"})
+
+    def test_regel_ohne_gilt_bis_ignoriert_grenzen(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("commit", "ok"), gilt_bis=[]), {"code-erstellen"})
+
+
+class NeueRegelnTest(unittest.TestCase):
+    def test_neue_doku_ohne_doc_pflege_wird_geblockt(self):
+        # Pfad außerhalb von /tmp (dort prüft der Wächter nie), den es nicht gibt
+        data = hook("PreToolUse", "Write", {"file_path": "/home/nutzer/projekte/demo/docs/betrieb-neu.md"})
+        code, _, err, _ = g.decide(data, RULES, {"code-erstellen"})
+        self.assertEqual(code, 2)
+        self.assertIn("doku-neu", err)
+        code, _, _, _ = g.decide(data, RULES, {"doc-pflege"})
+        self.assertEqual(code, 0)
+
+    def test_bestehende_doku_mit_code_erstellen_erlaubt(self):
+        with tempfile.TemporaryDirectory() as d:
+            os.makedirs(os.path.join(d, "docs"))
+            path = os.path.join(d, "docs", "bauplan.md")
+            open(path, "w").close()
+            code, _, _, _ = g.decide(hook("PreToolUse", "Edit", {"file_path": path}, cwd=d), RULES, {"code-erstellen"})
+            self.assertEqual(code, 0)
+
+    def test_commit_braucht_git_commit_helper(self):
+        data = hook("PreToolUse", "Bash", {"command": "git commit -m x"})
+        self.assertEqual(g.decide(data, RULES, {"code-erstellen"})[0], 2)
+        self.assertEqual(g.decide(data, RULES, {"git-commit-helper"})[0], 0)
 
 if __name__ == "__main__":
     unittest.main()
