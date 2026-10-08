@@ -288,7 +288,7 @@ Das Eval-System misst, ob ein Skill bei den richtigen Queries triggert und bei d
 ### Neu: automatische Routing-Tests (`quality/evals/`)
 
 Seit Umbau Phase 1 (24.09.2026) gibt es Testfälle für `claude plugin eval` (Manifest `quality/.claude-plugin/plugin.json`,
-nur für Tests). 86 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Logs (Tag `real`); Tabelle aller Fälle in
+nur für Tests). 87 Fälle, davon 32 kritisch und 9 aus echten Prompts des Skill-Logs (Tag `real`); Tabelle aller Fälle in
 [`quality/README.md`](./quality/README.md). Aufruf und Schwellen: Skill-Profil in [`CLAUDE.md`](./CLAUDE.md) und [`docs/skillsystem-umbau.md`](./docs/skillsystem-umbau.md).
 Die mechanische Prüfung aller Skills macht [`tools/validate-skills.ps1`](./tools/validate-skills.ps1), auf Rechnern ohne
 PowerShell (HA) nach jedem Push per GitHub Actions.
@@ -532,7 +532,7 @@ claude-workbench/
 │   ├── .claude-plugin/plugin.json         ← Eval-Manifest (experimental.evals: evals)
 │   ├── skills → ../skills                 ← Symlink, damit die Evals die Skills laden
 │   ├── README.md                          ← Regeln und Tabelle aller Fälle
-│   └── evals/                             ← 86 Fälle (prompt.md + graders/), 9 aus echten Prompts
+│   └── evals/                             ← 87 Fälle (prompt.md + graders/), 9 aus echten Prompts
 │
 ├── reference/
 │   └── anthropic-skill-creator/

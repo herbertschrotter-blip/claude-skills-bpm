@@ -28,7 +28,7 @@ wiederholt sie nicht.
 | **sitzung** | Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü: Projekt → Gespräch → fortsetzen im richtigen Ordner mit Remote Control; Fenster verwalten, wiederherstellen, aufräumen | "sitzung", "alte Sitzung öffnen", "wo sind meine Sitzungen", "Fenster wiederherstellen" |
 | **skill-neu** | Neue Skills für dieses Repo anlegen (Absicht, Kollisionsprüfung, Neutralität, Eval-Fälle) | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills ändern: Safe Patch oder Refactor mit Regel-Inventar; Lieferung | "Skill updaten", "Skill ändern", "Skill erweitern" |
-| **skill-auswertung** | Skill-Log auswerten (Zündungen im Alltag), Modi Schnellblick/Standard/Tiefenanalyse; Befunde → Eval-Fälle, tracker, skill-pflege | "skills auswerten", "skill-log auswerten", "wie zünden die Skills" |
+| **skill-auswertung** | Skill-Log auswerten (Zündungen im Alltag), Modi Schnellblick/Standard/Tiefenanalyse; Befunde → Eval-Fälle, tracker, skill-pflege; Regeln des Skill-Wächters nachschärfen (`regeln.json`, nach Freigabe) | "skills auswerten", "skill-log auswerten", "wie zünden die Skills", "Wächter-Regeln nachschärfen" |
 | **ticket** | Fehler-Tickets eines Projekts einzeln, immer im selben Ablauf, jeder Schritt mit Auswahlfrage | "ticket HT-0007", "ticket liste", "nimm das nächste ticket" |
 | **tracker** | Einzige Schreibschnittstelle für ClickUp-Aufgaben und Skill-Issues | "tracker neu", "tracker done", "tracker issue", "tracker suche" |
 

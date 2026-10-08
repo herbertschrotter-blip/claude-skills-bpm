@@ -39,7 +39,8 @@
         "*/quality/evals/*",
         "*/.claude-plugin/*",
         "*/package-lock.json",
-        "*/secrets.yaml"
+        "*/secrets.yaml",
+        "*/work-hooks/hooks/regeln.json"
       ],
       "projekt": "*",
       "pflicht": [
@@ -50,7 +51,7 @@
         "projekt-anlegen"
       ],
       "modus": "blocken",
-      "herkunft": "Skill-Auswertung 06.10.2026: ha-baustelle Teil 3, rund 310 Code-Änderungen ohne code-erstellen",
+      "herkunft": "Skill-Auswertung 06.10.2026: ha-baustelle Teil 3, rund 310 Code-Änderungen ohne code-erstellen; 08.10.2026: regeln.json ausgenommen – skill-auswertung pflegt sie nach Freigabe",
       "stand": {
         "seit": "2026-10-07",
         "treffer": 0,

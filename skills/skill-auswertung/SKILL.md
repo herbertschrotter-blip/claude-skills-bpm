@@ -3,9 +3,9 @@ name: skill-auswertung
 description: >
   Wertet das Skill-Log aus (Prompts und Skill-Zündungen aus Claude-Code-Hooks, Format skill-log v1) und prüft, ob die
   Skills im Alltag richtig auslösen: Zündungen je Skill, Prompts ohne Skill, Runden mit mehreren Skills, gescheiterte
-  Aufrufe. Bietet Modi von Schnellblick bis Tiefenanalyse an und gibt Befunde weiter als Eval-Fälle, Skill-Issues oder
+  Aufrufe; schärft dazu die Regeln des Skill-Wächters aus seinen Treffern nach. Bietet Modi von Schnellblick bis Tiefenanalyse an und gibt Befunde weiter als Eval-Fälle, Skill-Issues oder
   Vorschläge zum Nachschärfen. Use when users say "skills auswerten", "skill-log auswerten", "wie zünden die Skills",
-  "Fehlzündungen prüfen", "Skill-Nutzung auswerten", "welche Skills haben gezündet", or want a periodic review of real
+  "Fehlzündungen prüfen", "Skill-Nutzung auswerten", "welche Skills haben gezündet", "Wächter-Regeln nachschärfen", or want a periodic review of real
   skill triggering across machines. Do not trigger for running claude plugin eval or benchmarking a single skill
   (skill-creator), changing a skill's text or description (skill-pflege), creating a new skill (skill-neu), read-only
   audits of code against docs (audit), or setting up, fixing or changing the logging hooks themselves.
@@ -17,11 +17,13 @@ description: >
 
 Das Skill-Log hält auf jedem Rechner fest, was eingegeben wurde und welcher Skill darauf gezündet hat (Format:
 `docs/skill-log-v1.md` im Skill-Repo). Dieser Skill liest das Log, findet Fehlzündungen und Fehlausfälle und gibt sie
-dorthin weiter, wo sie behoben werden. Er ändert selbst keinen Skill.
+dorthin weiter, wo sie behoben werden. Er ändert selbst keinen Skill. Die Regeln des Skill-Wächters
+(`plugins/work-hooks/hooks/regeln.json`, Format `docs/skill-guard-v1.md`) schärft er nach Freigabe selbst nach.
 
 - **Abgrenzung:** Skill-Texte ändern → skill-pflege. Künstliche Testläufe (`claude plugin eval`, Benchmarks eines
   Skills) → Check routing-eval bzw. skill-creator. Aufgaben und Skill-Issues anlegen → tracker. Die Hooks einrichten
-  oder reparieren ist keine Auswertung, sondern Arbeit am Werkzeug (`tools/skill-log/` im Skill-Repo).
+  oder reparieren ist keine Auswertung, sondern Arbeit am Werkzeug (`tools/skill-log/` im Skill-Repo); die Regeln des
+  Wächters nachzuschärfen gehört dagegen hierher.
 - **Maßstab**, ob ein Skill hätte zünden müssen: seine Description und die Konfliktpaare in `INDEX.md` des Skill-Repos.
 
 ## Benötigte Werte
@@ -56,7 +58,7 @@ Dann **eine** Auswahlrunde mit drei Fragen (was der Auftrag schon beantwortet, e
 2. **Welcher Bereich?** Zeitraum (seit letzter Auswertung / letzte 7 Tage / alles), Rechner (alle / einzelne), Skills
    (alle / einzelne).
 3. **Was mit den Befunden passiert?** (mehrere möglich) nur Bericht / Eval-Fälle anlegen / Skill-Issues anlegen /
-   Description nachschärfen.
+   Description nachschärfen / Wächter-Regeln nachschärfen.
 
 Bei vielen Runden (über 100 ohne Skill) vor Standard oder Tiefenanalyse sagen, wie viele es sind, und anbieten, auf
 Skills oder Zeitraum einzuschränken.
@@ -92,6 +94,11 @@ Jede Runde ohne Skill und jede mit mehreren Skills bekommt ein Urteil:
   Formulierungsvorschlag machen. Nur lesen – Transcripts nie ändern und nichts daraus weitergeben, was nach Geheimnis
   aussieht.
 
+**Wächter** (ab Standard, wenn das Log `guard`-Ereignisse enthält): Für jede Regel mit Treffern im Bereich die Treffer
+prüfen – berechtigt oder Fehlalarm (der Nutzer widerspricht, Claude lädt den Skill danach nicht, die Aufgabe gehört
+klar zu einem anderen Skill). Dazu Lücken suchen: Runden, in denen eine Aktion ohne zuständigen Skill lief und keine
+Regel griff (Report „ohne aktiven Skill der Sitzung“, bei Tiefenanalyse im Transcript).
+
 ### 4. Bericht
 
 Im Chat, knapp:
@@ -99,6 +106,7 @@ Im Chat, knapp:
 2. Befunde (ab Standard): je Fall Datum, Projekt, Prompt (gekürzt), Urteil, zuständiger Skill; bei Tiefenanalyse die
    Ursache und der Vorschlag.
 3. Muster: derselbe Skill mehrfach betroffen, dasselbe Stichwort mehrfach übersehen.
+4. Wächter (falls ausgewertet): je Regel geblockt/gewarnt, Fehlalarme, Lücken.
 
 ### 5. Weitergeben
 
@@ -110,11 +118,18 @@ alle auf einmal frei:
 - **Skill-Issues:** über tracker (`tracker issue <skill>: …`), mit Prompt, Urteil und Vorschlag.
 - **Description nachschärfen:** an skill-pflege übergeben, mit Befund und Vorschlag. Nie selbst in `skills/**`
   schreiben.
+- **Wächter-Regeln nachschärfen:** Vorschläge nach `docs/skill-guard-v1.md`, Abschnitt „Lernen“ – Lücke → neue Regel
+  mit `warnen`; Fehlalarm → Ausnahme in `ausser`, weiterer Skill in `pflicht` oder zurückstufen; mindestens 10 Treffer
+  ohne Fehlalarm → `blocken`; 30 Tage ohne Treffer → prüfen, ggf. `aus`. Je Vorschlag Auswahlfrage; nur Freigegebenes
+  in `regeln.json` schreiben und in `herkunft` vermerken, danach die Tests des Wächters (`test_skill_guard.py` neben
+  der Datei) laufen lassen.
 
 ### 6. Stand festhalten
 
 Nach der Auswertung „Ausgewertet bis“ in der Config auf den Zeitpunkt der letzten ausgewerteten Runde setzen und mit
-den angelegten Eval-Fällen committen (Format und Push nach dem Skill-Profil). Beim Schnellblick nur auf Wunsch.
+den angelegten Eval-Fällen committen (Format und Push nach dem Skill-Profil). Wurde der Wächter ausgewertet, dazu in
+`regeln.json` je Regel `stand` nachrechnen (`treffer`, `fehlalarm`, `zuletzt`) und mitcommitten. Beim Schnellblick nur
+auf Wunsch.
 
 ## VERBOTEN
 
@@ -124,6 +139,7 @@ den angelegten Eval-Fällen committen (Format und Push nach dem Skill-Profil). B
 - Log- oder Transcript-Dateien ändern oder löschen
 - „Ausgewertet bis“ vorrücken, ohne dass die Runden bis dahin ausgewertet wurden
 - eine Runde als Fehler zählen, ohne die Description des betroffenen Skills gelesen zu haben
+- `regeln.json` ohne Freigabe ändern oder eine Regel ohne Treffer-Grundlage hochstufen
 
 ## VERWEIS
 

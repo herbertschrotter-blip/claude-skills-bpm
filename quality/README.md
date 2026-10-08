@@ -62,9 +62,9 @@ Grenze sie prüfen.
 | ticket | 5 | 2 |
 | cc-steuerung | 3 | 2 |
 | projekt-anlegen | 7 | 3 |
-| skill-auswertung | 5 | 3 |
+| skill-auswertung | 6 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **86** | **32** |
+| **gesamt** | **87** | **32** |
 
 ## Nicht abgedeckt
 
@@ -77,7 +77,7 @@ Grenze sie prüfen.
 
 ## Fälle
 
-Stand 07.10.2026, 86 Fälle.
+Stand 08.10.2026, 87 Fälle.
 
 | Fall | Skill | Testsatz | soll auslösen | darf nicht auslösen | Art |
 |---|---|---|---|---|---|
@@ -157,6 +157,7 @@ Stand 07.10.2026, 86 Fälle.
 | `projekt-anlegen-no-trigger-mockup` | projekt-anlegen | Wie könnte die Dashboard-Karte für die Fensterüberwachung aussehen? Skizzier sie mir als HTML-Entwurf mit zwei Varianten. | mockup-erstellen | projekt-anlegen | normal |
 | `projekt-anlegen-no-trigger-skill` | projekt-anlegen | Ich brauche einen neuen Skill, der beim Start eines Projekts die passenden Ordner und Dateien anlegt. Entwirf mir dafür die SKILL.md. | skill-neu | projekt-anlegen | kritisch |
 | `skill-auswertung-log` | skill-auswertung | Werte bitte das Skill-Log der letzten zwei Wochen aus: Welche Skills haben gezündet, wo hätte einer zünden müssen und hat nicht, und wo haben zwei gleichzeitig ausgelöst? | skill-auswertung | skill-pflege | kritisch |
+| `skill-auswertung-waechter` | skill-auswertung | Schau dir an, wie oft der Skill-Wächter in den letzten zwei Wochen geblockt oder gewarnt hat, und schlag vor, welche Regeln wir verschärfen oder lockern sollten. | skill-auswertung | skill-pflege | normal |
 | `skill-auswertung-kurz` | skill-auswertung | skills auswerten | skill-auswertung | – | normal |
 | `skill-auswertung-no-trigger-pflege` | skill-auswertung | Laut Skill-Log hat der tracker-Skill bei „Aufgabe anlegen“ dreimal nicht gezündet. Schärf seine Description, damit das künftig zuverlässig auslöst. | skill-pflege | skill-auswertung | kritisch |
 | `skill-auswertung-no-trigger-hooks` | skill-auswertung | Richte auf meinem Laptop die Hooks ein, die Prompts und Skill-Aufrufe mitprotokollieren, und prüf, ob sie feuern. | – | skill-auswertung | kritisch |

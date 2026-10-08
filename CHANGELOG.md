@@ -8,6 +8,15 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.44.0] — 2026-10-08
+
+- **skills/skill-auswertung, Feature:** schärft die Regeln des Skill-Wächters nach: wertet die `guard`-Ereignisse aus
+  (Treffer berechtigt oder Fehlalarm, Lücken ohne Regel), schlägt nach `docs/skill-guard-v1.md`, Abschnitt „Lernen“,
+  neue Regeln, Ausnahmen, Hoch- oder Zurückstufen vor, schreibt nur Freigegebenes in `regeln.json` und rechnet `stand`
+  nach. Description nennt den Auslöser (1009 Zeichen); neuer Eval-Fall `skill-auswertung-waechter`.
+- **plugins/work-hooks/hooks/regeln.json:** Regel `code` nimmt `regeln.json` aus, damit skill-auswertung sie pflegen
+  kann.
+
 ## [v0.43.1] — 2026-10-08
 
 - **skills/skill-auswertung, Fix:** Prompts, die mit `!` beginnen, sind Shell-Befehle (die Claude-Desktop-App schickt sie
