@@ -10,7 +10,7 @@ Skill lädt. Alles kommt als Plugin über den Marketplace `workbench`.
 
 | Was | Wofür | Fehlt es? |
 |---|---|---|
-| **Claude Code**, angemeldet | darin laufen die Skills | Das Skript bietet den offiziellen Installer an; danach einmal `claude` starten und `/login` |
+| **Claude Code**, angemeldet | darin laufen die Skills | Das Skript bietet den offiziellen Installer an und meldet am Ende an (`claude auth login`, Browser) |
 | **git** | Claude Code holt den Marketplace als Git-Repo | Das Skript installiert es auf Wunsch |
 | **Python 3** (ab 3.8) | Skill-Log und Wächter sind Python-Skripte | Das Skript installiert es auf Wunsch (Windows: aus dem Microsoft Store, damit `python3` funktioniert) |
 | ClickUp-Konnektor (optional) | nur für den Skill tracker | bei claude.ai unter Konnektoren |
@@ -44,7 +44,7 @@ Updates, Entfernen und was bei Problemen hilft: [`docs/installation.md`](./docs/
 |---|---|
 | Updates | kommen von selbst beim Start von Claude Code (das Skript schaltet Auto-Update ein) |
 | sofort aktualisieren | `claude plugin marketplace update workbench`, dann `claude plugin update work@workbench`, dann Claude neu starten |
-| Einstellungen ändern (Rechnername, Log oder Wächter aus) | in Claude Code `/plugin configure work@workbench` (bzw. `work-hooks@workbench`) |
+| Einstellungen ändern (Rechnername, Sammel-Repo, Log oder Wächter aus) | in Claude Code `/plugin configure work@workbench` (bzw. `work-hooks@workbench`) – oder das Skript noch einmal laufen lassen |
 | prüfen, was installiert ist | `claude plugin list` |
 | Statistik sehen (auch Arbeitszeit je Projekt) | in Claude Code `/statistik` (oder `/statistik ha-baustelle`, `/statistik 2026-10-01`): Dashboard mit Zündungen je Skill und Projekt, Verlauf und Blockaden des Wächters |
 | reparieren oder neuen Rechner einrichten | das Installationsskript einfach noch einmal laufen lassen |
@@ -52,11 +52,13 @@ Updates, Entfernen und was bei Problemen hilft: [`docs/installation.md`](./docs/
 
 **Gut zu wissen**
 
-- Der Wächter **blockiert** eine Änderung an Code, Doku oder Mockups, solange der zuständige Skill nicht geladen ist.
-  Claude lädt ihn dann selbst nach und macht weiter. Stört eine Regel, sag es Claude; die Regeln werden mit
+- Der Wächter **blockiert** Änderungen an Code, Doku und Mockups sowie Commits, solange der zuständige Skill nicht
+  geladen ist. Nach einem Commit, einem Aufgabenstart oder einer neuen Aufgabennummer gilt ein früher geladener Skill
+  als verbraucht. Claude lädt ihn dann selbst nach und macht weiter. Stört eine Regel, sag es Claude; die Regeln werden mit
   skill-auswertung nachgeschärft.
 - **Nie `work` und `work-hooks` zusammen** installieren – sonst läuft jeder Helfer doppelt. Das Skript achtet darauf.
-- Das Skill-Log bleibt auf deinem Rechner (`~/.claude/skill-log/`).
+- Das Skill-Log liegt auf deinem Rechner (`~/.claude/skill-log/`). Nur wenn du ein privates Sammel-Repo angibst,
+  gleicht jeder Rechner es dorthin ab (enthält Prompt-Texte – andere Nutzer sehen es nie).
 - Damit die Skills in einem Projekt richtig arbeiten, braucht die `CLAUDE.md` des Projekts ein Skill-Profil. Fehlt es,
   fragen die Skills nach; „richte die Skills hier ein“ legt es an (Skill projekt-anlegen).
 
@@ -83,13 +85,15 @@ wer sie nutzen will, ist willkommen. Für generische Skills siehe z.B.
 
 ## Installation im Detail
 
-**Voraussetzungen:** Claude Code; Python 3 für die Hooks; für den Skill tracker ein ClickUp-Konnektor (MCP). Die Skills
-sprechen Deutsch.
+**Voraussetzungen:** Claude Code; git; Python 3 (Befehl `python3`) für die Hooks; für den Skill tracker ein
+ClickUp-Konnektor (MCP). Die Skills sprechen Deutsch.
 
-**Am einfachsten: Installationsskript.** Es prüft git, Python 3 und Claude Code und installiert Fehlendes nach
-Rückfrage. Dann legt es den Marketplace an bzw. aktualisiert ihn und wählt die Plugins passend zum Rechner. Es setzt den
-Rechnernamen, `autoUpdate` und auf Wunsch `skillOverrides` und probiert die Hooks aus. Jeder Schritt läuft mit Rückfrage,
-ein zweiter Lauf aktualisiert.
+**Am einfachsten: Installationsskript.** Bestandsaufnahme ohne Netz, dann alle Fragen auf einmal, danach läuft es
+unbeaufsichtigt: Fehlendes installieren (git und Python mit winget bzw. Paketmanager, Claude Code mit dem offiziellen
+Installer, parallel), `~/.local/bin` dauerhaft in den PATH, Marketplace, Plugins passend zum Rechner, Optionen
+`log_host` und `log_repo`, `autoUpdate`, auf Wunsch `skillOverrides`, Probe der Hooks, unter Windows optional eine
+wöchentliche Aufgabe für git-Updates, zum Schluss die Anmeldung. Ein erneuter Lauf setzt fort bzw. aktualisiert.
+Ablauf, Protokoll, Entfernen und Fehlerquellen: [`docs/installation.md`](./docs/installation.md).
 
 ```
 # Linux, macOS, Home-Assistant-Add-on
@@ -99,8 +103,10 @@ curl -fsSL https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbe
 irm https://raw.githubusercontent.com/herbertschrotter-blip/claude-workbench/main/tools/install.ps1 | iex
 ```
 
-Optionen: `--modus terminal|desktop`, `--host <name>`, `--ja` (alle Vorschläge annehmen), `--ohne-overrides`; unter
-Windows `-Modus`, `-RechnerName`, `-Ja`, `-OhneOverrides` (mit `powershell -File tools\install.ps1 …` aus einem Klon).
+Optionen: `--modus terminal|desktop`, `--host <name>`, `--log-repo <owner/name>`, `--ja` (alle Vorschläge annehmen),
+`--ohne-overrides`, `--ohne-login`, `--entfernen`; unter Windows `-Modus`, `-RechnerName`, `-LogRepo`, `-Ja`,
+`-OhneOverrides`, `-OhneLogin`, `-Entfernen` (mit `powershell -File tools\install.ps1 …` aus einem Klon, oder
+`& ([scriptblock]::Create((irm …/install.ps1))) -Entfernen`).
 Die Logik steht in [`tools/einrichten.py`](./tools/einrichten.py).
 
 **Von Hand** (in Claude Code; in der Shell gehen dieselben Befehle als `claude plugin …`):
@@ -142,7 +148,8 @@ claude plugin update skill-workshop@workbench
 ```
 
 Danach Claude neu starten (mit tmux und dem Skill sitzung: `sitzung.py neustart <fenster>` je Fenster). Stand prüfen:
-`claude plugin list` (Version = Git-Commit). Entfernen: `claude plugin uninstall work@workbench`.
+`claude plugin list` (Version = Git-Commit). Entfernen: mit dem Installationsskript (`-Entfernen`/`--entfernen`), von
+Hand nur ohne Protokoll – siehe [`docs/installation.md`](./docs/installation.md).
 
 **Einstellungen** sind Plugin-Optionen: Claude Code fragt sie beim Aktivieren ab, ändern über `/config` oder
 `/plugin configure work@workbench`, bei der Installation direkt mit `--config log_host=laptop`. Alternativ als Variable
@@ -175,13 +182,15 @@ installieren; die Skills kommen dann aus claude.ai.
 
 | Rechner | Plugins | dazu |
 |---|---|---|
-| Terminal (z. B. Home-Assistant-Add-on) | `work`, `skill-workshop` | `log_host`, `autoUpdate`, `skillOverrides` (falls bei claude.ai hochgeladen) |
-| Claude-Desktop-App | `work-hooks` | `log_host`, `autoUpdate` |
+| Terminal (z. B. Home-Assistant-Add-on) | `work`, `skill-workshop` | `log_host`, optional `log_repo`, `autoUpdate`, `skillOverrides` (falls bei claude.ai hochgeladen) |
+| Claude-Desktop-App | `work-hooks` | `log_host`, optional `log_repo`, `autoUpdate`; Desktop-App nach der Einrichtung neu starten (PATH, `python3`) |
 
-**Skill-Wächter:** Er blockiert ab Werk Änderungen an Code, Doku und Mockups, solange der zuständige Skill nicht geladen
-ist (Claude lädt ihn dann nach), und warnt bei Commits und ClickUp-Aktionen ohne Skill. Regeln und Format:
-[`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md). Das Skill-Log hält nur Prompts und Skill-Zündungen fest, lokal auf
-dem Rechner ([`docs/skill-log-v1.md`](./docs/skill-log-v1.md)).
+**Skill-Wächter:** Er blockiert ab Werk Änderungen an Code, Doku und Mockups, neue Docs ohne doc-pflege und Commits
+ohne git-commit-helper (bzw. ticket oder einen Skill, der selbst committet), solange der zuständige Skill nicht geladen
+ist; Claude lädt ihn dann nach. Bei ClickUp-Aktionen ohne tracker warnt er. Ein geladener Skill verfällt nach einem
+Commit, einem Aufgabenstart oder einer neuen Aufgabennummer. Regeln, Grenzen und Format:
+[`docs/skill-guard-v1.md`](./docs/skill-guard-v1.md). Das Skill-Log hält Prompts und Skill-Zündungen fest, lokal auf dem
+Rechner und optional im privaten Sammel-Repo ([`docs/skill-log-v1.md`](./docs/skill-log-v1.md)).
 
 **Projekt einrichten:** Die Skills lesen ihre Werte aus dem Block `## Skill-Profil` der `CLAUDE.md` im Projekt-Repo
 (Schema: [`docs/skill-profile-v1.md`](./docs/skill-profile-v1.md)). Ein Profil ist nicht Pflicht: Fehlt ein Wert, fragt
