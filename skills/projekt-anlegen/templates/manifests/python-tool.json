@@ -1,0 +1,8 @@
+{
+  "id": "python-tool",
+  "version": 1,
+  "beschreibung": "Python-Werkzeug mit Befehlszeile, optional mit SQLite",
+  "features": {
+    "storage": ["none", "sqlite"]
+  }
+}
