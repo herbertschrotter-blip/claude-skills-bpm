@@ -195,9 +195,33 @@ cd "[Arbeitsverzeichnis]" && git add <spezifische-dateien> && git commit -m "[vX
 - `git log -1 --format="%h %s"` am Ende, damit der Nutzer den Commit-Hash sofort sieht
 - Bei Renames: `git mv` als zusätzliches Glied vor `git add`
 - Branch-Name nach den Grundsätzen einsetzen (nie hartkodiert "main" annehmen)
-- Pre-Commit-Checks des Skill-Profils, die für die geänderten Dateien gelten (Pfad-Muster des Checks), laufen als
-  erste Glieder der Sequenz; ohne Skill-Profil der Testbefehl, den das Projekt vor dem Commit verlangt (CLAUDE.md).
-  Bei rotem Ergebnis kein Commit
+- Pre-Commit-Checks des Skill-Profils, die für die geänderten Dateien gelten (Pfad-Muster des Checks), laufen vor dem
+  Commit (Abschnitt „Prüfläufe vor dem Commit“); ohne Skill-Profil der Testbefehl, den das Projekt vor dem Commit
+  verlangt (CLAUDE.md). Bei rotem Ergebnis kein Commit
+
+### Prüfläufe vor dem Commit
+
+Die Checks laufen auf der Maschine, nicht im Modell; ihre Laufzeit ist Wartezeit für den Nutzer.
+
+- **Nur passende Checks:** Ein Check aus `Pre-Commit-Checks` läuft nur, wenn mindestens eine geänderte Datei zu
+  einem seiner Pfad-Muster passt (gestaged, ungestaged und neu, laut `git status --short`). Ein Check ohne
+  Pfad-Muster läuft immer. Jeden übersprungenen Check ausdrücklich melden: `übersprungen: <check> – keine passende
+  Datei`.
+- **Gleichzeitig oder nacheinander:** Unabhängige Checks gleichzeitig starten, wenn sie sich nicht um Kerne, Dateien,
+  Ports oder Datenbanken streiten. Zwei Läufe, die beide alle Kerne nutzen oder dieselbe Test-Datenbank schreiben,
+  laufen nacheinander, die schnellen zuerst, damit ein rotes Ergebnis früh kommt.
+- **Lange Checks** (über etwa eine Minute) im Hintergrund starten, Ausgabe in eine Datei. Danach das Ergebnis
+  vollständig lesen (Zusammenfassung, Fehler, Warnungen), nicht nur die letzte Zeile oder den Exit-Code.
+- **Meldung** als Tabelle, übersprungene Checks eingeschlossen:
+
+  | Check | Dauer | Ergebnis |
+  |---|---|---|
+  | unit | 0:42 | grün |
+  | integration | – | übersprungen – keine passende Datei |
+
+- **Claude Code** führt die Checks vor der Commit-Sequenz aus; die Sequenz folgt erst, wenn alle gelaufenen Checks
+  grün sind. **Cowork:** Die passenden Checks stehen als erste Glieder in der Sequenz, die übersprungenen nennt
+  Claude vor dem Block.
 
 ### Wenn ein Glied der Sequenz fehlschlägt
 
@@ -272,3 +296,4 @@ Checkliste:
 - **Erklärungen zwischen den Befehlen** die das Kopieren stören — Erklärungen kommen vor oder nach dem Block, nie hinein
 - **Versionsquelle oder Doku-Dateien raten** — beides kommt aus dem Skill-Profil oder aus der Suche im Repo, nie aus dem Gedächtnis
 - **Werkzeugnamen fest verdrahten** (Desktop Commander, ask_user_input_v0, AskUserQuestion) — der Skill beschreibt die Handlung, Claude wählt das Werkzeug der Umgebung
+- **Checks ohne passende Datei ausführen oder übersprungene Checks verschweigen** (Abschnitt „Prüfläufe vor dem Commit“)

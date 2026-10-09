@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.45.0] — 2026-10-09
+
+- **skills/git-commit-helper, Feature:** neuer Abschnitt „Prüfläufe vor dem Commit“: Pre-Commit-Checks laufen nur, wenn
+  eine geänderte Datei zu ihrem Pfad-Muster passt, übersprungene werden gemeldet; unabhängige Checks gleichzeitig, sonst
+  die schnellen zuerst; lange Checks im Hintergrund mit Ausgabe in eine Datei, vollständig gelesen; Meldung als Tabelle
+  Check / Dauer / Ergebnis. Befund ha-baustelle 09.10.2026: ein PostgreSQL-Lauf (~24 min) lief auch bei reinen
+  Seiten-Änderungen. ClickUp 123ztrd0nzr.
+
 ## [v0.44.1] — 2026-10-09
 
 - **skills/sitzung, Fix:** `scripts/sitzung.py` ermittelt das eigene Fenster und die Hauptsitzung jetzt über den eigenen
