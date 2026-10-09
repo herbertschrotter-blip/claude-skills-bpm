@@ -86,6 +86,32 @@ class AktivTest(unittest.TestCase):
                                     SKILLS, transcripts_dir=tmp)
         self.assertEqual(rounds[0]["aktiv"], ["mockup-erstellen", "update-config"])
 
+    def test_commit_im_transcript_verbraucht_code_erstellen(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            os.makedirs(os.path.join(tmp, "-config"))
+            lines = [
+                {"timestamp": "2026-10-01T09:00:00.000Z", "type": "assistant", "message": {"content": [
+                    {"type": "tool_use", "name": "Skill", "input": {"skill": "work:code-erstellen"}},
+                    {"type": "tool_use", "name": "Skill", "input": {"skill": "work:tracker"}}]}},
+                {"timestamp": "2026-10-01T10:02:00.000Z", "type": "assistant", "message": {"content": [
+                    {"type": "tool_use", "id": "c1", "name": "Bash", "input": {"command": "git commit -m x"}}]}},
+                {"timestamp": "2026-10-01T10:02:30.000Z", "type": "user", "message": {"content": [
+                    {"type": "tool_result", "tool_use_id": "c1", "content": "ok"}]}},
+            ]
+            with open(os.path.join(tmp, "-config", "g1.jsonl"), "w", encoding="utf-8") as fh:
+                fh.write("\n".join(json.dumps(x) for x in lines))
+            rounds = r.build_rounds([e(1, "prompt", session="g1", text="weiter"), e(2, "turn_end", session="g1"),
+                                     e(3, "prompt", session="g1", text="weiter"), e(4, "turn_end", session="g1")],
+                                    SKILLS, transcripts_dir=tmp)
+        self.assertEqual(rounds[0]["aktiv"], ["code-erstellen", "tracker"])
+        self.assertEqual(rounds[1]["aktiv"], ["tracker"])
+
+    def test_aufgaben_id_im_prompt_verbraucht_alles_ausser_tracker(self):
+        rounds = r.build_rounds([e(1, "prompt", text="x"), e(2, "skill", skill="work:code-erstellen"),
+                                 e(3, "skill", skill="work:tracker"), e(4, "turn_end"),
+                                 e(5, "prompt", text="weiter mit BSM-031"), e(6, "turn_end")], SKILLS)
+        self.assertEqual(rounds[1]["aktiv"], ["tracker"])
+
     def test_ohne_transcript_nichts_aktiv(self):
         rounds = r.build_rounds([e(1, "prompt", text="x"), e(2, "turn_end")], SKILLS, transcripts_dir="/gibt/es/nicht")
         self.assertEqual(rounds[0]["aktiv"], [])

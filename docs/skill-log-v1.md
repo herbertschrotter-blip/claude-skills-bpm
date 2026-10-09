@@ -148,10 +148,11 @@ haben die Option leer und gleichen nicht ab.
 - trennt die Runden nach Art (`art`): `prompt`, `system` (Meldungen von Hintergrundaufgaben und Subagenten,
   `<task-notification>`, `<agent-message>`), `befehl` (beginnt mit `!`: Shell-Befehl, den die Claude-Desktop-App als
   Prompt schickt) und `leer` (nur Bild); bewertet werden nur Prompts
-- führt je Runde die Skills, die in der Sitzung schon geladen waren (`aktiv`); sie bleiben bis zum Sitzungsende im
-  Kontext. Was eine Sitzung vor dem Log geladen hatte (Gabelung `fork`, `resume`), liest das Skript aus ihrem
-  Transcript unter `--transcripts` (Standard `~/.claude/projects`, `''` schaltet es ab). Ein Prompt ohne Skill mit
-  aktivem Skill ist meist kein Fehlausfall
+- führt je Runde die Skills, die in der Sitzung schon geladen waren und laut Skill-Wächter noch gelten (`aktiv`): Die
+  Grenzen aus `regeln.json` (commit, aufgabenstart, task_id; `docs/skill-guard-v1.md`) verbrauchen sie wie im
+  Wächter. Was eine Sitzung vor dem Log geladen hatte (Gabelung `fork`, `resume`), und die Grenzen commit und
+  aufgabenstart liest das Skript aus ihrem Transcript unter `--transcripts` (Standard `~/.claude/projects`, `''`
+  schaltet es ab); task_id erkennt es am Prompt. Ein Prompt ohne Skill mit aktivem Skill ist meist kein Fehlausfall
 - markiert Runden als `unsicher`, wenn der Prompt vor dem `turn_end` der vorigen Runde kam (Nachricht während Claude
   noch arbeitet); ein Skill-Aufruf darin kann zur vorigen Runde gehören
 - listet Runden mit mehreren Skills (möglicher Konflikt), unsicher zugeordnete Runden und Prompts ohne Skill

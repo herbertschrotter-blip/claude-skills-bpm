@@ -6,8 +6,10 @@ und zeigt je Skill, wie oft er gezündet hat, dazu Prompts ohne Skill und Runden
 
 Je Runde führt die Auswertung außerdem:
 - `art`: `prompt`, `system` (Meldung einer Hintergrundaufgabe oder eines Subagenten) oder `leer` (nur Bild o. Ä.)
-- `aktiv`: Skills, die in der Sitzung vorher schon geladen waren; sie bleiben bis zum Sitzungsende im Kontext. Was eine
-  Sitzung vor dem Log geladen hatte (Gabelung mit `fork`, Fortsetzung mit `resume`), kommt aus ihrem Transcript.
+- `aktiv`: Skills, die in der Sitzung vorher schon geladen waren und laut Skill-Wächter noch gelten: Eine Grenze aus
+  `regeln.json` (commit, aufgabenstart, task_id; docs/skill-guard-v1.md) verbraucht sie. Was eine Sitzung vor dem Log
+  geladen hatte (Gabelung mit `fork`, Fortsetzung mit `resume`), und die Grenzen commit und aufgabenstart kommen aus
+  ihrem Transcript; task_id erkennt die Auswertung auch ohne Transcript am Prompt.
 - `unsicher`: der Prompt kam, bevor die vorige Runde mit turn_end endete; Skill-Aufrufe können zur vorigen gehören.
 Ein Slash-Aufruf eines Skills (`/projekt-anlegen`) zählt als Zündung per /name, auch ohne Skill-Ereignis im Log.
 
@@ -30,6 +32,47 @@ _MONTH_FILE = re.compile(r"^\d{4}-\d{2}\.jsonl$")
 _SYSTEM_PREFIXES = ("<task-notification", "<agent-message")
 _COMMAND_NAME = re.compile(r"<command-name>/?([\w:.-]+)</command-name>")
 _REPO_SKILLS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "skills")
+_GUARD_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "plugins", "work-hooks", "hooks")
+
+
+def load_guard():
+    """Wächter-Modul und Grenzen aus regeln.json; ohne Wächter (None, {}) – dann verfällt nichts."""
+    sys.path.insert(0, os.path.abspath(_GUARD_DIR))
+    try:
+        import skill_guard
+        return skill_guard, skill_guard.load_rules().get("grenzen", {})
+    except Exception:  # noqa: BLE001 – Auswertung läuft auch ohne Wächter
+        return None, {}
+    finally:
+        sys.path.pop(0)
+
+
+def verbrauchen(skills, grenze, grenzen):
+    """Skills nach einer Grenze: verbraucht wird die Liste aus regeln.json bzw. alle außer "ausser" (verbraucht = "*")."""
+    spec = grenzen.get(grenze) or {}
+    used = spec.get("verbraucht", [])
+    if used == "*":
+        return {s for s in skills if s in spec.get("ausser", [])}
+    return skills - set(used)
+
+
+def verlauf(path, guard, grenzen):
+    """Skills und Grenzen aus dem Transcript mit Zeitstempel: [(ts, "skill" | "grenze", name)]."""
+    if guard is None:
+        return []
+    try:
+        with open(path, encoding="utf-8") as fh:
+            lines = fh.readlines()
+    except OSError:
+        return []
+    out = []
+    for index, (kind, value) in guard.events(lines, grenzen):
+        try:
+            ts = (json.loads(lines[index]).get("timestamp") or "")[:19]
+        except json.JSONDecodeError:
+            continue
+        out.append((ts, kind, value))
+    return out
 
 
 # Lokales Log und, falls vorhanden, das Sammel-Repo aller Rechner (Plugin-Option log_repo, docs/skill-log-v1.md)
@@ -192,24 +235,41 @@ def skills_before(path, until_ts):
 def build_rounds(entries, skill_names=None, transcripts_dir=None):
     """Eine Runde = ein Prompt mit allen Skill-Aufrufen bis zum nächsten Prompt oder turn_end derselben Sitzung."""
     skill_names = known_skill_names(entries) if skill_names is None else skill_names
+    guard, grenzen = load_guard()
+    task = re.compile(grenzen["task_id"]["muster"]) if "task_id" in grenzen else None
     rounds = []
     open_round = {}
     active = {}
+    pending = {}  # je Sitzung die Grenzen aus dem Transcript, die nach dem ersten Log-Eintrag kommen
     seen = set()
     for entry in entries:
         session = (entry.get("host"), entry.get("session"))
         event = entry.get("event")
+        ts = (entry.get("ts") or "").replace("Z", "")[:19]
         if session not in seen:
             seen.add(session)
             path = transcript_path(transcripts_dir, entry.get("session"))
+            active[session], pending[session] = set(), []
             if path:
                 tool_skills, slash = skills_before(path, entry.get("ts"))
-                active[session] = tool_skills | (slash & skill_names)
-            else:
-                active[session] = set()
+                allowed = tool_skills | (slash & skill_names)
+                spur = verlauf(path, guard, grenzen)
+                for when, kind, value in spur:
+                    if when >= ts:
+                        if kind == "grenze":
+                            pending[session].append((when, value))
+                    elif kind == "skill" and value in allowed:
+                        active[session].add(value)
+                    elif kind == "grenze":
+                        active[session] = verbrauchen(active[session], value, grenzen)
+                active[session] |= allowed - {v for _, k, v in spur if k == "skill"}  # ohne Wächter: wie bisher
+        while pending.get(session) and pending[session][0][0] <= ts:
+            active[session] = verbrauchen(active[session], pending[session].pop(0)[1], grenzen)
         if event == "prompt":
             text = entry.get("text") or ""
             slash = entry.get("slash")
+            if task and prompt_kind(text) == "prompt" and task.search(text):
+                active[session] = verbrauchen(active.get(session, set()), "task_id", grenzen)
             current = {
                 "ts": entry.get("ts"),
                 "host": entry.get("host"),
