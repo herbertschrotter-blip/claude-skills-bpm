@@ -330,6 +330,10 @@ Plugins im selben Repo)
    alle Fragen vorab, Claude-Installer als eigener Prozess parallel zu winget, Anmeldung am Ende (`claude plugin` läuft
    ohne), durchgehender Balken, geplante Aufgabe für git-Updates, Protokoll und `-Entfernen`/`--entfernen`,
    Fehlerquellen in `docs/installation.md`. install.sh mit derselben Logik, echt getestet (isoliertes HOME).
+   Nachgang 09.10.2026: Fortschritt in install.ps1/.sh oben fest mit Teilbalken; Skill-Wächter nennt Skills mit
+   Plugin-Präfix (Claude rief `code-erstellen` ohne Präfix auf und traf die abgeschaltete claude.ai-Kopie); sitzung
+   v0.44.1 ermittelt das eigene Fenster über `$TMUX_PANE`. **Offen:** erster Lauf der überarbeiteten install.ps1 am
+   Surface (Schritte 2–5 fehlen dort noch), danach Firmen-Laptop.
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
    Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist
