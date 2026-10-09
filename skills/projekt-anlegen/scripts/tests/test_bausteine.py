@@ -37,13 +37,14 @@ def katalog_ordner(tmp, katalog=KATALOG, art=ART, inhalte=None):
     """Legt einen Katalog mit Manifesten und Vorlagen in tmp an."""
     root = Path(tmp)
     (root / "manifests" / "components").mkdir(parents=True)
-    (root / "manifests" / f"{art['id']}.json").write_text(json.dumps(art), encoding="utf-8")
+    (root / "manifests" / f"{art['id']}.json").write_text(json.dumps(art), encoding="utf-8", newline="\n")
     for cid, data in katalog.items():
-        (root / "manifests" / "components" / f"{cid}.json").write_text(json.dumps(data), encoding="utf-8")
+        (root / "manifests" / "components" / f"{cid}.json").write_text(json.dumps(data), encoding="utf-8",
+                                                                       newline="\n")
         for f in data.get("files", []):
             datei = root / f["source"]
             datei.parent.mkdir(parents=True, exist_ok=True)
-            datei.write_text((inhalte or {}).get(f["source"], "# {{name}}\n"), encoding="utf-8")
+            datei.write_text((inhalte or {}).get(f["source"], "# {{name}}\n"), encoding="utf-8", newline="\n")
     return root
 
 
