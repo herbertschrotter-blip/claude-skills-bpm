@@ -281,6 +281,11 @@ if ($hatGit) { Ok "git: $((git --version) -replace 'git version ', '')" }
 if ($hatPython) { Ok "Python: $(python3 --version)" }
 if ($hatClaude) { Ok ("Claude Code: $((claude --version) -replace ' \(Claude Code\)', '')" + $(if ($angemeldet) { ', angemeldet' } else { ', nicht angemeldet' })) }
 if ($marketplaceDa) { Ok ("Marketplace $Marketplace" + $(if ($plugins) { ', Plugins: ' + ($plugins -join ', ') } else { '' })) }
+try {
+    # Nur Info: wie viel parallel moeglich ist (Testlaeufe mit -n auto messen die Kerne selbst)
+    $speicher = (Get-CimInstance Win32_ComputerSystem -ErrorAction Stop).TotalPhysicalMemory / 1GB
+    Meldung ("  i   Maschine: {0} Kerne, {1:N0} GB Speicher (nur Info)" -f [Environment]::ProcessorCount, $speicher)
+} catch { }
 Balken 5 'Bestandsaufnahme fertig'
 
 # --- 2. Hintergrund-Pruefungen sofort starten ----------------------------------------------------------------------------

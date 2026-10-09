@@ -194,6 +194,11 @@ fi
 if [ -n "$MP_DA" ]; then protokoll marketplace "$MARKETPLACE" war-da; else protokoll marketplace "$MARKETPLACE" installiert; fi
 # Marketplace sofort im Hintergrund auffrischen
 [ -n "$MP_DA" ] && { claude plugin marketplace update "$MARKETPLACE" > "$TMP/mp.txt" 2>&1 & }
+# Nur Info: wie viel parallel möglich ist (Testläufe mit -n auto messen die Kerne selbst)
+KERNE=$(getconf _NPROCESSORS_ONLN 2>/dev/null || nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null)
+SPEICHER=$(awk '/^MemTotal:/ {printf "%.0f", $2 / 1048576}' /proc/meminfo 2>/dev/null)
+[ -z "$SPEICHER" ] && SPEICHER=$(sysctl -n hw.memsize 2>/dev/null | awk '{printf "%.0f", $1 / 1073741824}')
+[ -n "$KERNE" ] && meldung "  i   Maschine: $KERNE Kerne, ${SPEICHER:-?} GB Speicher (nur Info)"
 balken 5 "Bestandsaufnahme fertig"
 
 # --- 2. Alle Fragen auf einmal ----------------------------------------------------------------------------------------
