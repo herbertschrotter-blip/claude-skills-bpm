@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.48.1] — 2026-10-09
+
+- **skills/code-erstellen, Change:** Load Order, Aufgabenquelle und Pflicht-Docs: Nennt das Profil
+  `Doku.Entscheidungs-Ort`, liest code-erstellen die Grundentscheidungen vor der ersten fachlichen Erweiterung
+  (Projektkontext, keine unveränderliche Architektur). Gegenstück zum Generator von projekt-anlegen.
+
 ## [v0.48.0] — 2026-10-09
 
 - **skills/projekt-anlegen, Feature:** Projekt-Generator. Für unterstützte Stacks entsteht nach wenigen Fragen ein
