@@ -16,7 +16,8 @@ Ergänzt den Schnellstart der [README](../README.md). Die Skripte: `tools/instal
 1. **Bestandsaufnahme ohne Netz:** git, `python3` (wirklich ausgeführt – die Store-Verknüpfung zählt nicht), Claude Code
    samt `%USERPROFILE%\.local\bin` bzw. `~/.local/bin`, winget, Anmeldung (`claude auth status`, Feld `loggedIn`),
    Marketplace, Plugins. Liegt `claude.exe` schon unter `.local\bin`, aber nicht im PATH, repariert das Skript nur den
-   PATH und installiert nicht neu.
+   PATH und installiert nicht neu. Dazu zur Info Kerne und Speicher der Maschine (Testläufe mit `-n auto` messen die
+   Kerne selbst; nichts wird eingetragen).
 2. **Im Hintergrund sofort:** Marketplace auffrischen, `claude update`, git auf Updates prüfen, fehlendes git mit
    `winget download` vorladen (winget ab 1.8). Python aus dem Store lässt sich nicht vorladen.
 3. **Alle Fragen auf einmal:** was installiert werden soll, Desktop-App oder Terminal, Rechnername (Vorschlag: schon

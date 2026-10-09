@@ -342,6 +342,12 @@ Plugins im selben Repo)
    lag das ältere claude des Add-ons (2.1.282, ohne `plugin configure`) vor `~/.local/bin`; die Einrichtung setzte
    deshalb keine Optionen und meldete trotzdem OK. Von Hand nachgeholt; install.sh/einrichten.py nehmen jetzt
    `~/.local/bin/claude` zuerst, schalten Plugins ein und melden Fehler (fce3f21).
+   Prüfläufe schneller (09.10.2026, ClickUp 123ztrd0nzr, Befund ha-baustelle: PostgreSQL-Lauf ~24 min bei reinen
+   Seiten-Änderungen): git-commit-helper v0.45.0, code-erstellen v0.46.0, projekt-anlegen v0.47.0 – Checks nur bei
+   passender Datei, unabhängige gleichzeitig, Laufzeit-Tabelle; Python-Tests parallel (`pytest-xdist -n auto`) und
+   isoliert je Test und Worker, auch im Gerüst neuer Projekte; install.ps1/.sh zeigen Kerne und Speicher. Abnahme im
+   echten Projekt steht aus. Idee für später: Skript, das die Checks aus dem Profil wählt, startet und die Tabelle
+   schreibt.
    **Offen:** Firmen-Laptop (prüft auch den Vorschlag über den Git Credential Manager, den das Surface wegen der
    schon gesetzten Option nicht brauchte).
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
