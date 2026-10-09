@@ -46,12 +46,20 @@ def tmux_da():
         ["tmux", "ls"], capture_output=True).returncode == 0
 
 
+def tmux_eigen(fmt):
+    """Wert für den eigenen Bereich ($TMUX_PANE). Ohne -t liefert tmux das gerade angezeigte Fenster, nicht das eigene."""
+    if not os.environ.get("TMUX"):
+        return ""
+    pane = os.environ.get("TMUX_PANE")
+    return sh("tmux", "display-message", "-p", *(["-t", pane] if pane else []), fmt, check=False).strip()
+
+
 def hauptsitzung(wunsch=None):
     """Ziel-Sitzung: ausdrücklich gewünscht, sonst die des eigenen Fensters, sonst die erste."""
     if wunsch:
         return wunsch
     if os.environ.get("TMUX"):
-        name = sh("tmux", "display-message", "-p", "#S", check=False).strip()
+        name = tmux_eigen("#S")
         if name:
             return name
     if not tmux_da():
@@ -420,7 +428,7 @@ def b_holen(a):
     s = hauptsitzung(a.sitzung)
     geholt = []
     quellen = [ziel(a.fenster)] if a.fenster else [f for f in fenster_liste() if f["sitzung"] != s]
-    eigen = sh("tmux", "display-message", "-p", "#{window_id}", check=False).strip() if os.environ.get("TMUX") else ""
+    eigen = tmux_eigen("#{window_id}")
     for f in quellen:
         if f["sitzung"] == s or f["window_id"] == eigen:
             continue
@@ -433,8 +441,7 @@ def b_schliessen(a):
     f = ziel(a.fenster, a.sitzung)
     if f["zustand"] == "arbeitet" and not a.erzwingen:
         raise Fehler("In „%s“ arbeitet Claude gerade; erst warten oder --erzwingen" % f["name"])
-    if f["aktiv"] and os.environ.get("TMUX") and f["window_id"] == sh(
-            "tmux", "display-message", "-p", "#{window_id}").strip() and not a.erzwingen:
+    if f["window_id"] == tmux_eigen("#{window_id}") and not a.erzwingen:
         raise Fehler("Das ist das eigene Fenster; nicht von hier aus schließen")
     sh("tmux", "kill-window", "-t", f["window_id"])
     if f["gespraech"]:

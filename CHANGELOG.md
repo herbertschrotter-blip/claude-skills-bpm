@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.44.1] — 2026-10-09
+
+- **skills/sitzung, Fix:** `scripts/sitzung.py` ermittelt das eigene Fenster und die Hauptsitzung jetzt über den eigenen
+  Bereich (`tmux display-message -t $TMUX_PANE`). Ohne `-t` lieferte tmux das gerade angezeigte Fenster: `schliessen`
+  verweigerte ein fremdes Fenster als „das eigene“ (Befund 09.10.2026, Ha-baustelle Teil 6) und hätte umgekehrt das
+  eigene nicht geschützt; `holen` und die Wahl der Hauptsitzung waren genauso betroffen. Test `tools/test_sitzung.py`.
+
 ## [v0.44.0] — 2026-10-08
 
 - **skills/skill-auswertung, Feature:** schärft die Regeln des Skill-Wächters nach: wertet die `guard`-Ereignisse aus
