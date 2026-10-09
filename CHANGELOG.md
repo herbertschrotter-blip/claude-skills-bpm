@@ -8,6 +8,11 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.48.2] — 2026-10-09
+
+- **skills/skill-pflege, Change:** `references/delivery.md` – Skripte und Vorlagen, die nur Claude Code ausführt
+  (`scripts/`, `templates/`), gehören nicht in die Zip für claude.ai; dort wird keine Ausführung behauptet.
+
 ## [v0.48.1] — 2026-10-09
 
 - **skills/code-erstellen, Change:** Load Order, Aufgabenquelle und Pflicht-Docs: Nennt das Profil
