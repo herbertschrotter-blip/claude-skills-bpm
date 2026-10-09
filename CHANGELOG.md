@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.47.1] — 2026-10-09
+
+- **skills/projekt-anlegen, Fix:** Test-Isolation: kein Test beeinflusst einen anderen – SQLite und Dateien in
+  `tmp_path` je Test, Server-Datenbank mit Kennung je Lauf und Worker; die Worker-ID allein trennt nur Worker. Beispiel
+  in `references/stacks/python.md` jetzt mit eigener SQLite-Datenbank je Test; Hinweis `--maxprocesses` für kleine
+  Maschinen. Befund CGR-2026-10-09-skillsystem r1, ClickUp 123ztrd0r0p.
+
 ## [v0.47.0] — 2026-10-09
 
 - **skills/projekt-anlegen, Feature:** Testgerüst gleich parallel-fähig (Worker-Zahl misst der Testläufer, Isolation je

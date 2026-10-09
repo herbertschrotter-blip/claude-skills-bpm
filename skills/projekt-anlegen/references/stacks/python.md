@@ -25,20 +25,26 @@ zusätzlich `references/stacks/home-assistant.md` (Art Python-Werkzeug).
   (`pip index versions pytest-xdist`), nicht raten.
 - Befehl: `python -m pytest -n auto`. `-n auto` misst die Kerne zur Laufzeit, auch virtuelle; keine Zahl eintragen,
   auch nicht im Profil. Bei sehr kleinen Läufen kostet das ein, zwei Sekunden Start, dafür muss später nichts
-  umgestellt werden.
+  umgestellt werden. Auf Maschinen mit wenig Speicher eine Obergrenze mit `--maxprocesses`.
 - Isolation je Test: Tests schreiben nur in `tmp_path`, nie in feste Ordner oder ins Repo.
-- Isolation je Worker: geteilte Ressourcen (Test-Datenbank, Datei, Port) tragen die Worker-ID im Namen.
+- Kein Test beeinflusst einen anderen: SQLite und Dateien in `tmp_path` je Test; eine Server-Datenbank bekommt eine
+  Kennung je Lauf und Worker, die Fixture legt sie an und räumt sie ab. Die Worker-ID allein trennt nur Worker, nicht
+  Tests desselben Workers.
 - Gerüst mit einem grünen Beispieltest:
 
   ```python
   # tests/conftest.py
+  import sqlite3
+
   import pytest
 
 
-  @pytest.fixture(scope="session")
-  def db_name(worker_id):
-      """Eigene Test-Datenbank je Worker (worker_id von pytest-xdist: gw0, gw1, …; ohne -n: master)."""
-      return f"<projekt>_test_{worker_id}"
+  @pytest.fixture
+  def db(tmp_path):
+      """Eigene SQLite-Datenbank je Test – unabhängig von Worker, Reihenfolge und Wiederholung."""
+      con = sqlite3.connect(tmp_path / "test.db")
+      yield con
+      con.close()
   ```
 
   ```python

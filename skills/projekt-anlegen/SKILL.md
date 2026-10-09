@@ -95,8 +95,8 @@ Auswahlfrage: anlegen / anpassen / abbrechen.
 
 - Ordner und Grunddateien nach der Stack-Reference. Nur das Gerüst: lauffähige Minimalfassung, keine Fachlogik.
 - **Testgerüst parallel-fähig**, wenn der Stack einen Testläufer mit Parallelbetrieb hat (Stack-Reference): Die Zahl
-  der Worker misst der Testläufer zur Laufzeit, nie fest eintragen. Isolation je Test (eigener temporärer Ordner) und
-  je Worker (Datenbank- oder Dateiname mit Worker-ID). Versionen der Testwerkzeuge angeheftet. Der Testbefehl kommt mit
+  der Worker misst der Testläufer zur Laufzeit, nie fest eintragen. Kein Test beeinflusst einen anderen (eigener
+  temporärer Ordner bzw. eigene Datenbank je Test, bei einer Server-Datenbank Kennung je Lauf und Worker). Versionen der Testwerkzeuge angeheftet. Der Testbefehl kommt mit
   Pfad-Mustern unter `### Checks` ins Skill-Profil und unter `Pre-Commit-Checks`.
 - Zur Info Kerne und Speicher der Maschine einmal nennen (z. B. `nproc`, `free -h`); nichts davon ins Profil.
 - Bei eigenem Repo: `git init`, `.gitignore` nach Stack, `README.md`, `CHANGELOG.md`, `CLAUDE.md` mit Skill-Profil
