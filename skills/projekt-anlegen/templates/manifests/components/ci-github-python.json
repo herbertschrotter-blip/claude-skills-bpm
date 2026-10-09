@@ -1,0 +1,8 @@
+{
+  "id": "ci-github-python",
+  "requires": ["python-tool"],
+  "conflicts": [],
+  "files": [
+    {"source": "ci-github-python/ci.yml.tpl", "target": ".github/workflows/ci.yml"}
+  ]
+}

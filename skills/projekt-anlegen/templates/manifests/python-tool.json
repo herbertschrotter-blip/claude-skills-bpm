@@ -4,10 +4,10 @@
   "beschreibung": "Python-Werkzeug mit Befehlszeile, optional mit SQLite",
   "components": ["common", "python-tool"],
   "features": {
-    "storage": {"none": [], "sqlite": ["storage-sqlite"]}
+    "storage": {"none": ["storage-memory"], "sqlite": ["storage-sqlite"]}
   },
   "delivery": {
-    "github": ["ci-github"]
+    "github": ["ci-github-python"]
   },
   "kombinationen": [
     {"storage": "none"},

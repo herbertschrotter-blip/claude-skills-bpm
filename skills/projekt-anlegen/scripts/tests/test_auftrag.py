@@ -71,7 +71,7 @@ class FehlerTest(unittest.TestCase):
         self.assertIn("schema_version", self.fehler(mit(schema_version=True)))
 
     def test_slug(self):
-        for slug in ("Beispiel", "-a", "a-", "a--b", "a_b", "../x", "a/b", "", "x" * 65, 7):
+        for slug in ("Beispiel", "-a", "a-", "a--b", "a_b", "../x", "a/b", "", "x" * 41, 7):
             self.assertIn("project.slug", self.fehler(mit(project__slug=slug)), slug)
 
     def test_package(self):

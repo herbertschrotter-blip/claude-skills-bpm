@@ -13,7 +13,25 @@ from pathlib import Path, PurePosixPath
 from auftrag import TEMPLATES, AuftragFehler
 
 PLATZHALTER = re.compile(r"\{\{\s*([A-Za-z_][A-Za-z0-9_]*)\s*\}\}")
-ERLAUBTE_PLATZHALTER = {"name", "slug", "package", "storage", "github"}
+ERLAUBTE_PLATZHALTER = {"name", "slug", "package", "package_upper", "storage", "github"}
+VERSION_PRAEFIX = "v_"  # {{v_<paket>}}: Version aus templates/versions.json (Bindestriche als _)
+
+
+def erlaubt(key, versionen=None):
+    """Fester Platzhalter oder eine Version aus dem Versionskatalog."""
+    if key in ERLAUBTE_PLATZHALTER:
+        return True
+    return versionen is not None and key.startswith(VERSION_PRAEFIX) and key in versionen
+
+
+def versionen(templates=TEMPLATES):
+    """Versionskatalog als Platzhalter: {"v_pytest_xdist": "3.8.0", …}."""
+    path = Path(templates) / "versions.json"
+    if not path.is_file():
+        return {}
+    with open(path, encoding="utf-8") as fh:
+        data = json.load(fh)
+    return {VERSION_PRAEFIX + name.replace("-", "_").replace(".", "_"): str(v) for name, v in data.items()}
 
 
 def komponenten(templates=TEMPLATES):
@@ -26,13 +44,15 @@ def komponenten(templates=TEMPLATES):
     return result
 
 
-def werte(auftrag):
-    """Platzhalterwerte aus dem Auftrag (nur Texte, keine Pfade aus Nutzereingaben)."""
+def werte(auftrag, katalog_versionen=None):
+    """Platzhalterwerte aus dem Auftrag (nur Texte, keine Pfade aus Nutzereingaben) und dem Versionskatalog."""
     project = auftrag["project"]
     return {
+        **(katalog_versionen or {}),
         "name": project["name"],
         "slug": project["slug"],
         "package": project["package"],
+        "package_upper": project["package"].upper(),
         "storage": auftrag["features"].get("storage", "none"),
         "github": "true" if auftrag["delivery"]["github"] else "false",
     }
@@ -44,7 +64,7 @@ def ersetzen(text, werte_, wo="Vorlage"):
 
     def eins(match):
         key = match.group(1)
-        if key not in ERLAUBTE_PLATZHALTER or key not in werte_:
+        if not erlaubt(key, werte_) or key not in werte_:
             fehler.append(f"{wo}: unbekannter Platzhalter {{{{{key}}}}}")
             return match.group(0)
         return str(werte_[key])

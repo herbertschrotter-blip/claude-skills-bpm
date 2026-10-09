@@ -13,7 +13,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from auftrag import TEMPLATES, AuftragFehler, manifeste  # noqa: E402
-from bausteine import ERLAUBTE_PLATZHALTER, PLATZHALTER, auswahl, aufloesen, dateiplan, komponenten  # noqa: E402
+from bausteine import (  # noqa: E402
+    ERLAUBTE_PLATZHALTER, PLATZHALTER, auswahl, aufloesen, dateiplan, erlaubt, komponenten, versionen,
+)
 
 # Werte, die in einer projektneutralen Vorlage nichts verloren haben
 VERBOTEN = [
@@ -33,7 +35,7 @@ def pruefen(templates=TEMPLATES):
     templates = Path(templates)
     befunde = []
     try:
-        arten, katalog = manifeste(templates), komponenten(templates)
+        arten, katalog, katalog_versionen = manifeste(templates), komponenten(templates), versionen(templates)
     except (OSError, ValueError, KeyError) as exc:
         return [f"Manifeste nicht lesbar: {exc}"]
 
@@ -61,7 +63,8 @@ def pruefen(templates=TEMPLATES):
             continue
         if "\r\n" in text:
             befunde.append(f"{rel}: Zeilenenden CRLF statt LF")
-        for key in sorted({m.group(1) for m in PLATZHALTER.finditer(text)} - ERLAUBTE_PLATZHALTER):
+        for key in sorted(k for k in {m.group(1) for m in PLATZHALTER.finditer(text)}
+                          if not erlaubt(k, katalog_versionen)):
             befunde.append(f"{rel}: unbekannter Platzhalter {{{{{key}}}}}")
         for muster, art_ in VERBOTEN:
             if muster.search(text):

@@ -1,6 +1,0 @@
-{
-  "id": "ci-github",
-  "requires": ["common"],
-  "conflicts": [],
-  "files": []
-}

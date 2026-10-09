@@ -1,6 +1,9 @@
 {
   "id": "storage-sqlite",
   "requires": ["python-tool"],
-  "conflicts": [],
-  "files": []
+  "conflicts": ["storage-memory"],
+  "files": [
+    {"source": "storage-sqlite/speicher.py.tpl", "target": "{{package}}/speicher.py"},
+    {"source": "storage-sqlite/test_speicher.py.tpl", "target": "tests/test_speicher.py"}
+  ]
 }

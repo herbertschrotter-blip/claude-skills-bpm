@@ -2,5 +2,20 @@
   "id": "python-tool",
   "requires": ["common"],
   "conflicts": [],
-  "files": []
+  "files": [
+    {"source": "python-tool/README.md.tpl", "target": "README.md"},
+    {"source": "python-tool/CLAUDE.md.tpl", "target": "CLAUDE.md"},
+    {"source": "python-tool/gitignore.tpl", "target": ".gitignore"},
+    {"source": "python-tool/env.example.tpl", "target": ".env.example"},
+    {"source": "python-tool/pyproject.toml.tpl", "target": "pyproject.toml"},
+    {"source": "python-tool/pkg/__init__.py.tpl", "target": "{{package}}/__init__.py"},
+    {"source": "python-tool/pkg/__main__.py.tpl", "target": "{{package}}/__main__.py"},
+    {"source": "python-tool/pkg/cli.py.tpl", "target": "{{package}}/cli.py"},
+    {"source": "python-tool/pkg/config.py.tpl", "target": "{{package}}/config.py"},
+    {"source": "python-tool/pkg/service.py.tpl", "target": "{{package}}/service.py"},
+    {"source": "python-tool/tests/__init__.py.tpl", "target": "tests/__init__.py"},
+    {"source": "python-tool/tests/conftest.py.tpl", "target": "tests/conftest.py"},
+    {"source": "python-tool/tests/test_cli.py.tpl", "target": "tests/test_cli.py"},
+    {"source": "python-tool/tests/test_service.py.tpl", "target": "tests/test_service.py"}
+  ]
 }

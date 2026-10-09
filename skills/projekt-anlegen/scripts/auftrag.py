@@ -74,8 +74,8 @@ def _name(value, fehler):
         fehler.append("project.name: höchstens 80 Zeichen")
     if any(unicodedata.category(c).startswith("C") for c in value):
         fehler.append("project.name: keine Steuerzeichen")
-    if any(s in value for s in ("/", "\\", "..", "{{", "}}", "`", "$(")):
-        fehler.append("project.name: keine Pfad-, Platzhalter- oder Befehlszeichen (/ \\ .. {{ }} ` $()")
+    if any(s in value for s in ("/", "\\", "..", "{{", "}}", "`", "$(", '"')):
+        fehler.append("project.name: keine Pfad-, Platzhalter-, Anführungs- oder Befehlszeichen (/ \\ .. {{ }} ` $( \")")
 
 
 def pruefen(data, katalog=None):
@@ -93,12 +93,12 @@ def pruefen(data, katalog=None):
         if "name" in project:
             _name(project["name"], fehler)
         slug = project.get("slug")
-        if "slug" in project and (not isinstance(slug, str) or len(slug) > 64 or not _SLUG.match(slug)):
-            fehler.append("project.slug: nur Kleinbuchstaben, Ziffern und einzelne Bindestriche, höchstens 64 Zeichen")
+        if "slug" in project and (not isinstance(slug, str) or len(slug) > 40 or not _SLUG.match(slug)):
+            fehler.append("project.slug: nur Kleinbuchstaben, Ziffern und einzelne Bindestriche, höchstens 40 Zeichen")
         package = project.get("package")
         if "package" in project:
-            if not isinstance(package, str) or len(package) > 64 or not _PACKAGE.match(package):
-                fehler.append("project.package: gültiger Python-Modulname (Kleinbuchstaben, Ziffern, _), höchstens 64")
+            if not isinstance(package, str) or len(package) > 40 or not _PACKAGE.match(package):
+                fehler.append("project.package: gültiger Python-Modulname (Kleinbuchstaben, Ziffern, _), höchstens 40")
             elif keyword.iskeyword(package) or package in sys.stdlib_module_names:
                 fehler.append(f"project.package: »{package}« ist ein Schlüsselwort oder ein Modul der Standardbibliothek")
 
