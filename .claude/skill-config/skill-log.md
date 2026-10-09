@@ -25,7 +25,8 @@ fehlenden im Bericht nennen.
 
 | Rechner | ausgewertet bis (UTC) |
 |---|---|
-| ha-pi | 2026-10-08T16:08:33Z |
+| ha-pi | 2026-10-09T10:11:53Z |
+| surface7 | 2026-10-09T10:05:02Z (bis dahin nur Testprompt im Projekt `home`) |
 | desktop-pc | – |
 | firmen-laptop | – |
 

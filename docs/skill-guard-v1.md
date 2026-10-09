@@ -64,7 +64,7 @@ Anfang, alle Commits ohne git-commit-helper, neue Docs ohne doc-pflege) gilt ein
 
 | Grenze | Erkannt an | verbraucht |
 |---|---|---|
-| `commit` | erfolgreicher `git commit` (Bash, Tool-Ergebnis ohne Fehler) | code-erstellen, doc-pflege, git-commit-helper |
+| `commit` | erfolgreicher `git commit` (Bash, Tool-Ergebnis ohne Fehler) | code-erstellen, doc-pflege, git-commit-helper, skill-pflege, skill-neu, skill-auswertung |
 | `aufgabenstart` | ClickUp-Schreibaufruf setzt eine Aufgabe auf `in development` bzw. `in progress` | alle außer tracker |
 | `task_id` | Nutzer-Nachricht nennt eine Aufgabe oder ein Ticket (`BSM-026`, `Bsm 026`, `FE-0012`; Muster in `regeln.json`) | alle außer tracker |
 
