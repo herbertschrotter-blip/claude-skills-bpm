@@ -379,7 +379,7 @@ Plugins im selben Repo)
 Ziel: projekt-anlegen liefert nach wenigen gezielten Fragen ein lauffähiges, getestetes Grundgerüst (Walking Skeleton):
 alle Schichten verbunden, eine technische Beispiel-Funktion läuft durch, Start- und Tests grün, Skill-Profil fertig –
 ohne Fachlogik. Erarbeitet in [CGR-2026-10-09-skillsystem](./chatgpt-reviews/CGR-2026-10-09-skillsystem/README.md)
-(drei Runden). ClickUp: Aufgabe in ClaudeSkills (Link folgt beim Anlegen).
+(drei Runden). ClickUp: [📦 Projekt-Generator · P1](https://app.clickup.com/t/123ztrd0r0p).
 
 **Entscheidungen**
 
