@@ -144,5 +144,7 @@ Keine. Keine Regel entfällt.
 - **Neu→Alt:** normative Aussagen in `SKILL.md`, `references/generator.md`, `references/grundsatz.md` und
   `references/stacks/python.md` gesichtet; vier ohne Zuordnung als N011–N014 nachgetragen, keine ungewollte.
 - **Description:** 839 Zeichen (vorher 1020).
-- **Prüfskript:** GitHub Actions nach dem Push (auf dem Pi kein PowerShell).
-- **Routing-Eval:** offen (Schritt 7, 17 Fälle).
+- **Prüfskript:** GitHub Actions auf dem Zweig grün; projekt-anlegen 0 Fehler, 0 Warnungen.
+- **Routing-Eval** (09.10.2026, `--tag projekt-anlegen`, 3 Läufe): 17 von 17 Fällen bestanden, jeder 3/3 (kritisch
+  5/5); kein bisher bestandener Negativfall gekippt. 963 s, 9,79 $.
+- **Generator-CI:** Linux und Windows grün (jede Kombination echt erzeugt und geprüft).
