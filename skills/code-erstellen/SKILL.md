@@ -334,10 +334,15 @@ verdrahten, was das Profil als dynamisch nennt.
    (Unit für Domäne/Selektoren, E2E für Bedienung; Muster und Orte laut Stack-Referenz „Tests“)
 2. **Claude Code:** Testbefehl des Profils ausführen (plus Build/Lint-Befehle des Profils).
    Exit-Code 0 ist Bedingung für Schritt 9.
+   Es laufen nur Checks, deren Pfad-Muster eine geänderte Datei trifft; übersprungene werden genannt. Unabhängige
+   Checks laufen gleichzeitig, lange im Hintergrund mit Ausgabe in eine Datei, die vollständig gelesen wird – Regeln in
+   `skills/git-commit-helper/SKILL.md#Prüfläufe vor dem Commit`. Ist ein Pre-Commit-Check hier schon grün gelaufen und
+   seitdem keine Datei mehr geändert, läuft er vor dem Commit nicht noch einmal.
    **Cowork:** Testbefehl im Commit-Block mitliefern; der User führt aus und meldet das Ergebnis.
 3. **Tests rot** → Auswahlfrage: „Fix jetzt“ / „Test anpassen (Begründung in Aufgabenquelle)“ /
    „Abbrechen“. Nie einen roten Test still löschen oder überspringen.
-4. Ergebnis kurz melden (Anzahl, Dauer, was rot war und warum). Kein „Tests laufen“ ohne Ausgabe.
+4. Ergebnis melden als Tabelle Check / Dauer / Ergebnis, übersprungene Checks eingeschlossen; dazu Anzahl der
+   Tests, was rot war und warum. Kein „Tests laufen“ ohne Ausgabe.
 
 ### 8. Ausgabeformat (nur Cowork-Chat → suche-ersetze)
 
@@ -447,6 +452,7 @@ Beispiel-Ausgabe nach Commit:
 - **Prosa-Fragen bei festen Entscheidungsoptionen** — IMMER Auswahlfrage (Branch-Auswahl, wenn die Shell ihn nicht liefert; Task-Zuordnung nach Commit; Modus-Auswahl bei Unsicherheit; Blocking-Condition-Auflösung, wenn Kandidaten bekannt)
 - **Commit bei roten Tests** oder ohne den Testbefehl des Profils ausgeführt zu haben (Claude Code)
 - **Roten Test löschen oder überspringen** ohne Auswahlfrage und Begründung
+- **Checks laufen lassen, deren Pfad-Muster keine geänderte Datei trifft**, oder übersprungene Checks verschweigen
 - **Akzeptanzkriterien der Aufgabenquelle ignorieren** — sie sind die Testliste
 - **Deep-UI-Umbau ohne Mockup**, wenn das Profil Mockup-Pflicht sagt — außer der User entscheidet es per Auswahlfrage
 - **Auslieferung vergessen**, wenn das Profil eine nennt — nach dem Commit ist die Änderung erst fertig, wenn sie läuft

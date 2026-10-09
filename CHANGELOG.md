@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.46.0] — 2026-10-09
+
+- **skills/code-erstellen, Feature:** Schritt 7b „Tests“ wählt Checks nach Pfad-Muster wie git-commit-helper, meldet
+  als Tabelle Check / Dauer / Ergebnis und lässt einen schon grünen Check vor dem Commit nicht noch einmal laufen.
+  `references/stacks/python.md`: parallele Tests mit `pytest-xdist -n auto` ab etwa einer Minute Laufzeit, Isolation je
+  Test (`tmp_path`) und je Worker (Worker-ID im Namen). ClickUp 123ztrd0nzr.
+
 ## [v0.45.0] — 2026-10-09
 
 - **skills/git-commit-helper, Feature:** neuer Abschnitt „Prüfläufe vor dem Commit“: Pre-Commit-Checks laufen nur, wenn

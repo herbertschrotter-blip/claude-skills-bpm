@@ -46,6 +46,13 @@ steht im Code-Profil, nicht hier.
 - Befehl aus dem Profil (z.B. `python -m pytest tests/`); wenn auf dem PC kein Python ist:
   auf dem Host ausführen oder als Aufgabe für den User markieren – nicht ungetestet committen
 - Exit-Code 0 vor Commit
+- **Parallel** bei Testläufen über etwa eine Minute: `pytest-xdist` mit `-n auto`. Es misst die Kerne zur Laufzeit,
+  auch virtuelle; nie eine feste Zahl eintragen. Version im Projekt angeheftet. Kurze Läufe (Sekunden) bleiben, wie
+  sie sind
+- **Isolation je Test:** geschrieben wird nur in `tmp_path` (oder eine Fixture darauf), nie in feste Ordner oder ins
+  Repo; ein gemeinsamer Konfigurationsordner wird je Test kopiert
+- **Isolation je Worker:** Namen geteilter Ressourcen (Test-Datenbank, Datei, Port) enthalten die Worker-ID
+  (Fixture `worker_id` von pytest-xdist bzw. `PYTEST_XDIST_WORKER`, z. B. `<projekt>_test_gw0`)
 
 ## Typische Fehler
 
@@ -53,3 +60,4 @@ steht im Code-Profil, nicht hier.
 - Ausgabe-Attribut umbenannt, Sensor/Karte nicht nachgezogen
 - Datei mit personenbezogenen Daten ins Repo
 - Rundungs-/Zeitzonenunterschiede zwischen Python und TypeScript nicht in Vektoren festgehalten
+- Tests teilen Ordner oder Datenbank: einzeln grün, parallel zufällig rot
