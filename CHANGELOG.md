@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.47.2] — 2026-10-09
+
+- **skills/code-erstellen, Fix:** `references/stacks/python.md` – Test-Isolation: kein Test beeinflusst einen
+  anderen (SQLite und Dateien in `tmp_path` je Test, Server-Datenbank mit Kennung je Lauf und Worker, jeder Test mit
+  leeren Daten); die Worker-ID allein trennt nur Worker. Hinweis `--maxprocesses`. Befund CGR-2026-10-09-skillsystem r1.
+
 ## [v0.47.1] — 2026-10-09
 
 - **skills/projekt-anlegen, Fix:** Test-Isolation: kein Test beeinflusst einen anderen – SQLite und Dateien in

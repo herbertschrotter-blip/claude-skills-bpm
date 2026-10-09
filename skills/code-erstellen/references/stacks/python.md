@@ -48,11 +48,15 @@ steht im Code-Profil, nicht hier.
 - Exit-Code 0 vor Commit
 - **Parallel** bei Testläufen über etwa eine Minute: `pytest-xdist` mit `-n auto`. Es misst die Kerne zur Laufzeit,
   auch virtuelle; nie eine feste Zahl eintragen. Version im Projekt angeheftet. Kurze Läufe (Sekunden) bleiben, wie
-  sie sind
+  sie sind. Auf Maschinen mit wenig Speicher eine Obergrenze mit `--maxprocesses`
 - **Isolation je Test:** geschrieben wird nur in `tmp_path` (oder eine Fixture darauf), nie in feste Ordner oder ins
   Repo; ein gemeinsamer Konfigurationsordner wird je Test kopiert
-- **Isolation je Worker:** Namen geteilter Ressourcen (Test-Datenbank, Datei, Port) enthalten die Worker-ID
-  (Fixture `worker_id` von pytest-xdist bzw. `PYTEST_XDIST_WORKER`, z. B. `<projekt>_test_gw0`)
+- **Kein Test beeinflusst einen anderen**, unabhängig von Worker-Zahl, Reihenfolge und Wiederholung: SQLite und
+  Dateien in `tmp_path` je Test; eine Server-Datenbank (z. B. PostgreSQL) bekommt eine eindeutige Kennung je Testlauf
+  und Worker (Worker-ID aus der Fixture `worker_id` von pytest-xdist bzw. `PYTEST_XDIST_WORKER`, dazu eine Lauf-ID),
+  die Fixture legt sie an und räumt sie ab, und jeder Test beginnt mit leeren Daten (eigene Transaktion, eigenes Schema
+  oder vorher geleert). Die Worker-ID allein trennt nur Worker, nicht Tests desselben Workers und nicht zwei
+  gleichzeitige Läufe
 
 ## Typische Fehler
 
