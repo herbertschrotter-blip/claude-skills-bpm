@@ -94,6 +94,11 @@ Auswahlfrage: anlegen / anpassen / abbrechen.
 ### 5. Anlegen
 
 - Ordner und Grunddateien nach der Stack-Reference. Nur das Gerüst: lauffähige Minimalfassung, keine Fachlogik.
+- **Testgerüst parallel-fähig**, wenn der Stack einen Testläufer mit Parallelbetrieb hat (Stack-Reference): Die Zahl
+  der Worker misst der Testläufer zur Laufzeit, nie fest eintragen. Isolation je Test (eigener temporärer Ordner) und
+  je Worker (Datenbank- oder Dateiname mit Worker-ID). Versionen der Testwerkzeuge angeheftet. Der Testbefehl kommt mit
+  Pfad-Mustern unter `### Checks` ins Skill-Profil und unter `Pre-Commit-Checks`.
+- Zur Info Kerne und Speicher der Maschine einmal nennen (z. B. `nproc`, `free -h`); nichts davon ins Profil.
 - Bei eigenem Repo: `git init`, `.gitignore` nach Stack, `README.md`, `CHANGELOG.md`, `CLAUDE.md` mit Skill-Profil
   (Grundfelder, Commit, Code, Doku; unbekannte Werte als `fehlt`, bewusst leere als `none`).
 - Erster Commit im Format von git-commit-helper. Pushen nur nach der Push-Policy des neuen Profils.
@@ -126,8 +131,8 @@ Grunddateien, kein GitHub – nur Profil und Configs. Jeder Schritt läuft wie o
 4. **Anlegen:** Den Profil-Block an die `CLAUDE.md` anhängen; vorhandener Text bleibt. Steht ein Wert schon als Prosa
    oder in einem älteren Profil-Abschnitt, die Stelle nennen und per Auswahlfrage klären, ob sie auf das Profil verweist
    oder bleibt (Werte genau einmal). Commit im Format des neuen Profils, Push nach seiner Push-Policy.
-5. **Übergeben:** Zusammenfassung, welche Felder noch `fehlt` sind und welcher Skill sie braucht; nächsten Schritt wie
-   oben anbieten.
+5. **Übergeben:** Zusammenfassung, welche Felder noch `fehlt` sind und welcher Skill sie braucht; zur Info Kerne und
+   Speicher der Maschine; nächsten Schritt wie oben anbieten.
 
 ## Stacks
 
@@ -135,6 +140,7 @@ Die Arten, Orte, Grunddateien und `.gitignore` eines Stacks stehen in `reference
 aus `Code.Stacks`. Geladen wird nur die genannte Datei.
 
 - Home Assistant: `references/stacks/home-assistant.md`
+- Python: `references/stacks/python.md`
 
 Gibt es für einen Stack keine Reference, fragt der Skill nach Art und Grunddateien und legt nur das an, was der Nutzer
 bestätigt. Keine Vorlagen erfinden.
@@ -154,6 +160,7 @@ bestätigt. Keine Vorlagen erfinden.
 
 - GitHub (erstellen, klonen, Anmeldung): `references/github.md`
 - Stack Home Assistant: `references/stacks/home-assistant.md`
+- Stack Python: `references/stacks/python.md`
 - Skill-Profil und fehlende Werte: `docs/skill-profile-v1.md` im Skill-Repo
 - Commit-Format: git-commit-helper. Code: code-erstellen. Entwürfe: mockup-erstellen. Aufgaben: tracker.
 - Im Cowork-Chat laufen Datei- und Shell-Aktionen über cc-steuerung; der Ablauf bleibt gleich.

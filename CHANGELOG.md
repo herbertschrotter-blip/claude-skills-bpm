@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.47.0] — 2026-10-09
+
+- **skills/projekt-anlegen, Feature:** Testgerüst gleich parallel-fähig (Worker-Zahl misst der Testläufer, Isolation je
+  Test und Worker, Versionen angeheftet, Check mit Pfad-Mustern im Skill-Profil); Kerne und Speicher der Maschine als
+  Info. Neue Reference `references/stacks/python.md` (Arten, Grunddateien, Testgerüst mit `pytest-xdist`, Profilwerte).
+  ClickUp 123ztrd0nzr.
+
 ## [v0.46.0] — 2026-10-09
 
 - **skills/code-erstellen, Feature:** Schritt 7b „Tests“ wählt Checks nach Pfad-Muster wie git-commit-helper, meldet
