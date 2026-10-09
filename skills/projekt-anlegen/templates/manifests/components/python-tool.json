@@ -1,0 +1,6 @@
+{
+  "id": "python-tool",
+  "requires": ["common"],
+  "conflicts": [],
+  "files": []
+}

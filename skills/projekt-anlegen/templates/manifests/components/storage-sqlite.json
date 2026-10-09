@@ -1,0 +1,6 @@
+{
+  "id": "storage-sqlite",
+  "requires": ["python-tool"],
+  "conflicts": [],
+  "files": []
+}

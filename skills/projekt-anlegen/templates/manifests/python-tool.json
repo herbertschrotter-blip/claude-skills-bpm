@@ -2,7 +2,15 @@
   "id": "python-tool",
   "version": 1,
   "beschreibung": "Python-Werkzeug mit Befehlszeile, optional mit SQLite",
+  "components": ["common", "python-tool"],
   "features": {
-    "storage": ["none", "sqlite"]
-  }
+    "storage": {"none": [], "sqlite": ["storage-sqlite"]}
+  },
+  "delivery": {
+    "github": ["ci-github"]
+  },
+  "kombinationen": [
+    {"storage": "none"},
+    {"storage": "sqlite"}
+  ]
 }

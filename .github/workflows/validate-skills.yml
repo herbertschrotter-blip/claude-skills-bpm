@@ -20,6 +20,7 @@ jobs:
           python3 -m unittest discover -s tools/skill-log -p 'test_*.py'
           python3 -m unittest discover -s tools -p 'test_*.py'
           python3 -m unittest discover -s skills/projekt-anlegen/scripts/tests -p 'test_*.py'
+          python3 skills/projekt-anlegen/scripts/validate.py
       - name: Syntax der Installationsskripte
         shell: pwsh
         run: |

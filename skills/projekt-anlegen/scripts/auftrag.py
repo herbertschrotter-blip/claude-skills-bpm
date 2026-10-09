@@ -124,6 +124,10 @@ def pruefen(data, katalog=None):
                 fehler.append(f"features.{key}: fehlt (erlaubt: {', '.join(werte)})")
             elif features[key] not in werte:
                 fehler.append(f"features.{key}: »{features[key]}« nicht erlaubt (erlaubt: {', '.join(werte)})")
+        freigegeben = manifest.get("kombinationen")
+        if freigegeben is not None and not any(features == k for k in freigegeben) and not any(
+                f.startswith("features.") for f in fehler):
+            fehler.append(f"features: diese Kombination ist für {manifest['id']} nicht freigegeben")
 
     delivery = data.get("delivery")
     if delivery is not None and _schluessel(delivery, "delivery", fehler):
