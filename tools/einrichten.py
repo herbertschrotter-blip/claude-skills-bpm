@@ -136,7 +136,9 @@ def ok(text):
 
 
 def claude(*args, capture=True, stdin=None):
-    exe = shutil.which("claude")
+    # nativer Installer unter ~/.local/bin zuerst: ein älteres claude im PATH kennt nicht alle Befehle
+    lokal = os.path.join(os.path.expanduser("~"), ".local", "bin", "claude.exe" if os.name == "nt" else "claude")
+    exe = lokal if os.access(lokal, os.X_OK) else shutil.which("claude")
     if not exe:
         sys.exit("Claude Code (claude) nicht gefunden.")
     result = subprocess.run([exe, *args], capture_output=capture, text=True, input=stdin)
@@ -312,6 +314,7 @@ def main():
     install, update, remove = plan(mode, installed)
     schritte = max(1, len(install) + len(update) + len(remove))
     getan = 0
+    fehler_optionen = False
     for name in remove:
         if ask(f"{name} ist installiert und verträgt sich nicht mit {', '.join(PLUGINS[mode])}. Entfernen?", True, yes):
             balken(int(60 * getan / schritte), f"{name} entfernen")
@@ -330,8 +333,16 @@ def main():
         getan += 1
         balken(int(60 * (getan - 1) / schritte), f"{name} aktualisieren")
         claude("plugin", "update", f"{name}@{MARKETPLACE}", capture=False)
+        if installed[name].get("enabled") is False:
+            if claude("plugin", "enable", f"{name}@{MARKETPLACE}").returncode == 0:
+                ok(f"{name} eingeschaltet (war ausgeschaltet)")
+            else:
+                fehler_optionen = True
         if name in MIT_HOOKS:
-            claude("plugin", "configure", f"{name}@{MARKETPLACE}", "--values-stdin", stdin=json.dumps(options))
+            if claude("plugin", "configure", f"{name}@{MARKETPLACE}", "--values-stdin",
+                      stdin=json.dumps(options)).returncode != 0:
+                print(f"  FEHLER  Optionen für {name} nicht gesetzt (claude zu alt? claude update)")
+                fehler_optionen = True
         neue.append({"was": "plugin", "wert": name, "aktion": "war-da"})
     installed = installed_plugins()  # zweiter und letzter Aufruf: installPath für die Probe
     plugins = sorted(installed)
@@ -381,7 +392,9 @@ def main():
     print(f"  Auto-Update    {'an' if auto else ('?' if fehler else 'aus')}")
     print(f"  skillOverrides {overrides}")
     print(f"  Hooks          {'laufen' if passt else 'FEHLER - siehe oben'}")
-    return 0 if passt and not fehler else 1
+    if fehler_optionen:
+        print("  Plugins        FEHLER - siehe oben (einschalten oder Optionen)")
+    return 0 if passt and not fehler and not fehler_optionen else 1
 
 
 if __name__ == "__main__":

@@ -177,7 +177,11 @@ fi
 fest_an
 printf '\n=== Einrichtung workbench (Skills, Skill-Log, Skill-Wächter) ===\n'
 balken 1 "Bestandsaufnahme"
-if [ -x "$LOCALBIN/claude" ] && ! has claude; then pfad_dauerhaft; fi
+if [ -x "$LOCALBIN/claude" ] && [ "$(command -v claude)" != "$LOCALBIN/claude" ]; then
+    # nativer Installer unter ~/.local/bin hat Vorrang (ein älteres claude, etwa im Add-on, kennt nicht alle Befehle)
+    has claude && hinweis "Älteres claude unter $(command -v claude) - verwendet wird $LOCALBIN/claude"
+    pfad_dauerhaft; PATH="$LOCALBIN:$PATH"; export PATH
+fi
 HAT_GIT=""; HAT_PY=""; HAT_CLAUDE=""; ANGEMELDET=""; MP_DA=""
 has git && HAT_GIT=1 && ok "git: $(git --version | sed 's/git version //')" && protokoll git git war-da
 python3_ok && HAT_PY=1 && ok "Python: $(python3 --version)" && protokoll python python3 war-da

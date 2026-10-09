@@ -95,6 +95,8 @@ Was das Skript selbst abfängt, steht mit ✓; sonst die Lösung.
 | ✓ PowerShell „Als Administrator“ oder als anderer Benutzer | Rückfrage; eingerichtet wird immer für das Profil des laufenden Kontos → normales Fenster verwenden |
 | ✓ PowerShell ISE | ohne Balken, Hinweis; besser ein normales Fenster |
 | ✓ Mehrere Claude-Installationen (npm und nativ) | Hinweis; prüfen mit `claude doctor` |
+| ✓ Älteres `claude` vor `~/.local/bin` im PATH (z. B. das mitgelieferte im Home-Assistant-Add-on, ohne `plugin configure`) | install.sh und einrichten.py nehmen `~/.local/bin/claude` zuerst, mit Hinweis. Befund Pi 09.10.2026: Optionen wurden mit 2.1.282 nicht gesetzt |
+| ✓ Plugin installiert, aber ausgeschaltet (`enabledPlugins` leer) | einrichten.py schaltet es ein; scheitern Einschalten oder Optionen, endet es mit FEHLER statt OK |
 | ✓ Kaputte `~/.claude/settings.json` | `einrichten.py` meldet Zeile/Spalte, ändert nichts; reparieren oder `settings.json.bak` zurückholen |
 | ✓ Verwaltete Einstellungen (`managed-settings`, `strictKnownMarketplaces`) erlauben den Marketplace nicht | Meldung; IT fragen |
 | ✓ Download von Claude Code scheitert (Region, Proxy, Firewall, Virenscanner blockiert `claude.exe`) | Meldung mit den letzten Zeilen des Installers; Region: [unterstützte Länder](https://www.anthropic.com/supported-countries); Proxy: `HTTPS_PROXY` setzen; Virenscanner: Ausnahme für `%USERPROFILE%\.local\bin` |
