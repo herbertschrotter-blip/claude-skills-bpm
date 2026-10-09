@@ -12,6 +12,7 @@
 
 REPO="${WORKBENCH_REPO:-herbertschrotter-blip/claude-workbench}"  # WORKBENCH_REPO: anderes Repo oder lokaler Ordner (Tests)
 MARKETPLACE="workbench"
+SAMMEL_NAME="skill-log"  # Sammel-Repo für das Skill-Log: eines je GitHub-Konto, <konto>/skill-log
 JA=""; MODUS=""; HOST=""; LOGREPO="-"; OHNE_OVERRIDES=""; ENTFERNEN=""; OHNE_LOGIN=""
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -109,6 +110,20 @@ marketplace_ort() {
 import json, sys
 print(next((m["installLocation"] for m in json.load(sys.stdin) if m["name"] == sys.argv[1]), ""))' "$MARKETPLACE" 2>/dev/null
 }
+git_leise() { GIT_TERMINAL_PROMPT=0 GCM_INTERACTIVE=never git "$@" 2>/dev/null; }  # nur gespeicherte Zugangsdaten
+github_konto() {  # GitHub-Konto des Nutzers: gh, sonst die gespeicherten git-Zugangsdaten
+    if has gh; then k=$(gh api user --jq .login 2>/dev/null) && [ -n "$k" ] && { printf '%s' "$k"; return; }; fi
+    printf 'protocol=https\nhost=github.com\n\n' | git_leise credential fill | sed -n 's/^username=//p' | head -1
+}
+frueher_log_repo() {  # schon gesetzte Option log_repo von work oder work-hooks
+    for id in "work@$MARKETPLACE" "work-hooks@$MARKETPLACE"; do
+        r=$(claude plugin configure "$id" --json 2>/dev/null | python3 -I -c '
+import json, sys
+try: print(json.load(sys.stdin).get("inputs", {}).get("log_repo") or "")
+except Exception: pass' 2>/dev/null)
+        [ -n "$r" ] && { printf '%s' "$r"; return; }
+    done
+}
 
 # --- Entfernen --------------------------------------------------------------------------------------------------------
 if [ -n "$ENTFERNEN" ]; then
@@ -188,7 +203,34 @@ if [ -z "$MODUS" ]; then
     if frage "Läuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?" n; then MODUS=desktop; else MODUS=terminal; fi
 fi
 if [ -z "$HOST" ]; then eingabe "Rechnername im Skill-Log (Enter = Vorschlag)" "$(hostname 2>/dev/null | cut -d. -f1 | tr 'A-Z' 'a-z')"; HOST=$ANTWORT; fi
-if [ "$LOGREPO" = "-" ]; then eingabe "Privates Sammel-Repo für das Skill-Log (owner/name, leer = keins)" ""; LOGREPO=$ANTWORT; fi
+if [ "$LOGREPO" = "-" ]; then
+    # Ein Sammel-Repo je GitHub-Konto, auf allen Rechnern dasselbe: schon gesetzte Option, lokaler Klon, sonst
+    # <konto>/skill-log, wenn es das Repo gibt; fehlt es, mit gh anlegen
+    balken 9 "Suche Sammel-Repo"
+    VORSCHLAG=""; KONTO=""; LOGREPO=""
+    FRAGE_REPO="Sammel-Repo für das Skill-Log (eines je GitHub-Konto, auf allen Rechnern gleich; - = keins)"
+    [ -n "$HAT_CLAUDE" ] && [ -n "$HAT_PY" ] && VORSCHLAG=$(frueher_log_repo)
+    if [ -z "$VORSCHLAG" ] && [ -n "$HAT_GIT" ] && [ -d "$HOME/.claude/skill-log-sammel/.git" ]; then
+        VORSCHLAG=$(git_leise -C "$HOME/.claude/skill-log-sammel" remote get-url origin | sed -n 's#.*github\.com[/:]\([^/]*/[^/]*\)$#\1#p' | sed 's/\.git$//')
+    fi
+    if [ -z "$VORSCHLAG" ] && [ -n "$HAT_GIT" ]; then
+        KONTO=$(github_konto)
+        [ -n "$KONTO" ] && git_leise ls-remote "https://github.com/$KONTO/$SAMMEL_NAME.git" HEAD >/dev/null && VORSCHLAG="$KONTO/$SAMMEL_NAME"
+    fi
+    if [ -n "$VORSCHLAG" ]; then
+        eingabe "$FRAGE_REPO" "$VORSCHLAG"; LOGREPO=$ANTWORT
+    elif [ -n "$KONTO" ] && has gh; then
+        if frage "Kein Sammel-Repo $KONTO/$SAMMEL_NAME gefunden. Jetzt als privates Repo anlegen (Skill-Log aller Rechner, enthält Prompt-Texte)?" n; then
+            if gh repo create "$KONTO/$SAMMEL_NAME" --private --add-readme --description "Skill-Log aller Rechner (claude-workbench)" > "$TMP/gh.txt" 2>&1; then
+                ok "Sammel-Repo $KONTO/$SAMMEL_NAME angelegt (privat)"; LOGREPO="$KONTO/$SAMMEL_NAME"
+            else hinweis "Sammel-Repo nicht angelegt: $(tail -1 "$TMP/gh.txt")"; fi
+        fi
+    else
+        [ -n "$KONTO" ] && hinweis "Kein Sammel-Repo $KONTO/$SAMMEL_NAME gefunden. Anlegen auf github.com: privat, mit README; dann hier eintragen."
+        eingabe "$FRAGE_REPO" ""; LOGREPO=$ANTWORT
+    fi
+    [ "$LOGREPO" = "-" ] && LOGREPO=""
+fi
 OVERRIDES="--ohne-overrides"
 if [ "$MODUS" = terminal ] && [ -z "$OHNE_OVERRIDES" ] && frage "Sind dieselben Skills auch bei claude.ai hochgeladen (doppelte ausblenden)?" n; then OVERRIDES="--mit-overrides"; fi
 

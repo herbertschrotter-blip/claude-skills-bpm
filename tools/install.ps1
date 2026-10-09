@@ -17,6 +17,7 @@
 
 $Repo = 'herbertschrotter-blip/claude-workbench'
 $Marketplace = 'workbench'
+$SammelName = 'skill-log'  # Sammel-Repo fuer das Skill-Log: eines je GitHub-Konto, <konto>/skill-log
 $Modus = ''; $RechnerName = ''; $LogRepo = $null; $Ja = $false; $OhneOverrides = $false; $Entfernen = $false; $OhneLogin = $false
 for ($i = 0; $i -lt $args.Count; $i++) {
     switch ($args[$i]) {
@@ -135,6 +136,25 @@ function Json([string]$Text) {
 }
 
 function Claude-Json([string[]]$Argumente) { Json ((& claude @Argumente 2>$null) | Out-String) }
+
+function Git-Leise([string[]]$Argumente, [string]$Eingabe = '') {
+    # Nur gespeicherte Zugangsdaten: kein Anmeldefenster, keine Rueckfrage. Ausgabe bei Exit 0, sonst $null.
+    $alt = @($env:GIT_TERMINAL_PROMPT, $env:GCM_INTERACTIVE)
+    $env:GIT_TERMINAL_PROMPT = '0'; $env:GCM_INTERACTIVE = 'never'
+    try {
+        $out = if ($Eingabe) { $Eingabe | & git @Argumente 2>$null } else { & git @Argumente 2>$null }
+        if ($LASTEXITCODE -eq 0) { return ($out | Out-String) }
+    } catch { } finally { $env:GIT_TERMINAL_PROMPT = $alt[0]; $env:GCM_INTERACTIVE = $alt[1] }
+    return $null
+}
+
+function GitHub-Konto {
+    # GitHub-Konto des Nutzers: gh, sonst die gespeicherten git-Zugangsdaten (Git Credential Manager)
+    if (Has 'gh') { try { $l = (& gh api user --jq .login 2>$null | Out-String).Trim(); if ($LASTEXITCODE -eq 0 -and $l) { return $l } } catch { } }
+    $c = Git-Leise @('credential', 'fill') "protocol=https`nhost=github.com`n"
+    if ($c -match '(?m)^username=(\S+)') { return $Matches[1] }
+    return ''
+}
 
 function Quote([string[]]$Argumente) {
     # Start-Process fuegt Argumente unter 5.1 ungequotet zusammen: leere Werte und Leerzeichen selbst quoten
@@ -306,18 +326,52 @@ if (-not $Modus) {
     $desktop = Frage 'Laeuft Claude hier in der Claude-Desktop-App (Skills kommen aus claude.ai)?' $false
     $Modus = if ($desktop) { 'desktop' } else { 'terminal' }
 }
-if (-not $RechnerName) {
-    # Vorschlag: schon eingerichteter Name (frueherer Lauf), sonst der Windows-Computername
-    $vorschlag = $env:COMPUTERNAME.ToLower()
-    if ($hatClaude) {
-        foreach ($id in @("work@$Marketplace", "work-hooks@$Marketplace")) {
-            $cfg = Claude-Json @('plugin', 'configure', $id, '--json')
-            if ($cfg -and $cfg.inputs -and $cfg.inputs.log_host) { $vorschlag = [string]$cfg.inputs.log_host; break }
+# Schon eingerichtete Werte (frueherer Lauf) als Vorschlag
+$frueher = @{ log_host = ''; log_repo = '' }
+if ($hatClaude -and (-not $RechnerName -or $null -eq $LogRepo)) {
+    foreach ($id in @("work@$Marketplace", "work-hooks@$Marketplace")) {
+        $cfg = Claude-Json @('plugin', 'configure', $id, '--json')
+        if ($cfg -and $cfg.inputs) {
+            foreach ($k in @('log_host', 'log_repo')) { if (-not $frueher[$k] -and $cfg.inputs.$k) { $frueher[$k] = [string]$cfg.inputs.$k } }
         }
     }
+}
+if (-not $RechnerName) {
+    # Vorschlag: schon eingerichteter Name, sonst der Windows-Computername
+    $vorschlag = if ($frueher.log_host) { $frueher.log_host } else { $env:COMPUTERNAME.ToLower() }
     $RechnerName = Eingabe 'Rechnername im Skill-Log (Enter = Vorschlag)' $vorschlag
 }
-if ($null -eq $LogRepo) { $LogRepo = Eingabe 'Privates Sammel-Repo fuer das Skill-Log (owner/name, leer = keins)' '' }
+if ($null -eq $LogRepo) {
+    # Ein Sammel-Repo je GitHub-Konto, auf allen Rechnern dasselbe: schon gesetzte Option, lokaler Klon, sonst
+    # <konto>/skill-log, wenn es das Repo gibt; fehlt es, mit gh anlegen
+    Balken 9 'Suche Sammel-Repo'
+    $vorschlag = $frueher.log_repo
+    $klon = Join-Path $env:USERPROFILE '.claude\skill-log-sammel'
+    if (-not $vorschlag -and $hatGit -and (Test-Path (Join-Path $klon '.git'))) {
+        $url = Git-Leise @('-C', $klon, 'remote', 'get-url', 'origin')
+        if ($url -match 'github\.com[/:]([\w.-]+/[\w.-]+?)(\.git)?\s*$') { $vorschlag = $Matches[1] }
+    }
+    $konto = ''
+    if (-not $vorschlag -and $hatGit) {
+        $konto = GitHub-Konto
+        if ($konto -and $null -ne (Git-Leise @('ls-remote', "https://github.com/$konto/$SammelName.git", 'HEAD'))) { $vorschlag = "$konto/$SammelName" }
+    }
+    $frageText = 'Sammel-Repo fuer das Skill-Log (eines je GitHub-Konto, auf allen Rechnern gleich; - = keins)'
+    if ($vorschlag) {
+        $LogRepo = Eingabe $frageText $vorschlag
+    } elseif ($konto -and (Has 'gh')) {
+        $LogRepo = ''
+        if (Frage "Kein Sammel-Repo $konto/$SammelName gefunden. Jetzt als privates Repo anlegen (Skill-Log aller Rechner, enthaelt Prompt-Texte)?" $false) {
+            $out = & gh repo create "$konto/$SammelName" --private --add-readme --description 'Skill-Log aller Rechner (claude-workbench)' 2>&1 | Out-String
+            if ($LASTEXITCODE -eq 0) { Ok "Sammel-Repo $konto/$SammelName angelegt (privat)"; $LogRepo = "$konto/$SammelName" }
+            else { Hinweis "Sammel-Repo nicht angelegt: $($out.Trim())" }
+        }
+    } else {
+        if ($konto) { Hinweis "Kein Sammel-Repo $konto/$SammelName gefunden. Anlegen auf github.com: privat, mit README; dann hier eintragen." }
+        $LogRepo = Eingabe $frageText ''
+    }
+}
+if ($LogRepo -eq '-') { $LogRepo = '' }
 $mitOverrides = $false
 if ($Modus -eq 'terminal' -and -not $OhneOverrides) {
     $mitOverrides = Frage 'Sind dieselben Skills auch bei claude.ai hochgeladen (dann doppelte im Terminal ausblenden)?' $false

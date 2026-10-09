@@ -304,7 +304,7 @@ def main():
         mode = "desktop" if desktop else "terminal"
     host = args.host or ask_text("Rechnername im Skill-Log", socket.gethostname().split(".")[0], yes)
     repo = args.log_repo if args.log_repo is not None else ask_text(
-        "Privates Sammel-Repo für das Skill-Log (owner/name, leer = keins)", "", yes)
+        "Sammel-Repo für das Skill-Log (owner/name, eines je GitHub-Konto; leer = keins)", "", yes)
     options = {"log_host": host, "log_repo": repo}
     print(f"  Modus {mode}: {', '.join(PLUGINS[mode])} - Rechner {host}")
 

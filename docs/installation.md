@@ -22,6 +22,11 @@ Ergänzt den Schnellstart der [README](../README.md). Die Skripte: `tools/instal
 3. **Alle Fragen auf einmal:** was installiert werden soll, Desktop-App oder Terminal, Rechnername (Vorschlag: schon
    eingerichteter Name, sonst der Windows-Computername), Sammel-Repo, `skillOverrides`, geplante Aufgabe für git-Updates.
    Danach läuft alles ohne Rückfrage.
+   **Sammel-Repo:** eines je GitHub-Konto, auf allen Rechnern dasselbe. Vorschlag in dieser Reihenfolge: schon gesetzte
+   Option `log_repo`, `origin` des Klons `~/.claude/skill-log-sammel`, sonst `<konto>/skill-log`, wenn das Repo
+   erreichbar ist. Das Konto kommt aus `gh` oder den gespeicherten git-Zugangsdaten (Git Credential Manager), geprüft
+   wird mit `git ls-remote` – ohne Anmeldefenster. Fehlt das Repo und ist `gh` da, bietet das Skript an, es privat mit
+   README anzulegen (Vorschlag „nein“; `--entfernen` löscht es nicht). `-` = kein Sammel-Repo.
 4. **Installieren:** winget-Pakete nacheinander (Sperren, UAC), der offizielle Claude-Installer gleichzeitig in einem
    eigenen Prozess – er setzt `Set-StrictMode`, `$ErrorActionPreference = "Stop"` und endet bei Fehlern mit `exit`, was
    im selben Fenster das Skript bzw. das Fenster beenden würde.
