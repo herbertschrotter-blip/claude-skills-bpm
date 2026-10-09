@@ -61,10 +61,10 @@ Grenze sie prüfen.
 | git-commit-helper | 3 | 2 |
 | ticket | 5 | 2 |
 | cc-steuerung | 3 | 2 |
-| projekt-anlegen | 7 | 3 |
+| projekt-anlegen | 17 | 5 |
 | skill-auswertung | 6 | 3 |
 | sitzung | 6 | 3 |
-| **gesamt** | **87** | **32** |
+| **gesamt** | **97** | **34** |
 
 ## Nicht abgedeckt
 
@@ -156,6 +156,16 @@ Stand 08.10.2026, 87 Fälle.
 | `projekt-anlegen-no-trigger-code` | projekt-anlegen | Füge im bestehenden Netzwerk-Paket von Home Assistant einen Sensor hinzu, der die Ping-Zeit zum Router misst. | code-erstellen | projekt-anlegen | kritisch |
 | `projekt-anlegen-no-trigger-mockup` | projekt-anlegen | Wie könnte die Dashboard-Karte für die Fensterüberwachung aussehen? Skizzier sie mir als HTML-Entwurf mit zwei Varianten. | mockup-erstellen | projekt-anlegen | normal |
 | `projekt-anlegen-no-trigger-skill` | projekt-anlegen | Ich brauche einen neuen Skill, der beim Start eines Projekts die passenden Ordner und Dateien anlegt. Entwirf mir dafür die SKILL.md. | skill-neu | projekt-anlegen | kritisch |
+| `projekt-anlegen-new-simple` | projekt-anlegen | neues Projekt: Bewässerungssteuerung | projekt-anlegen | – | kritisch |
+| `projekt-anlegen-python-repo` | projekt-anlegen | mach mir ein Repo für ein kleines Python-Tool, das CSVs zusammenführt | projekt-anlegen | – (code-erstellen danach erlaubt) | normal |
+| `projekt-anlegen-ha-card` | projekt-anlegen | ich will eine eigene Karte für meinen Pool bauen | projekt-anlegen | mockup-erstellen | normal |
+| `projekt-anlegen-ha-integration-en` | projekt-anlegen | set up a new Home Assistant integration for my heat pump | projekt-anlegen | code-erstellen | normal |
+| `projekt-anlegen-python-sqlite` | projekt-anlegen | leg ein Python-Werkzeug mit Datenbank an, das meine Stromzähler speichert | projekt-anlegen | code-erstellen | normal |
+| `projekt-anlegen-no-clickup` | projekt-anlegen | leg in ClickUp ein neues Projekt an | tracker | projekt-anlegen | normal |
+| `projekt-anlegen-no-readme` | projekt-anlegen | schreib die README für das neue Projekt | doc-pflege | projekt-anlegen | normal |
+| `projekt-anlegen-no-session` | projekt-anlegen | öffne mein Projekt ha-baustelle | sitzung | projekt-anlegen | normal |
+| `projekt-anlegen-no-commit` | projekt-anlegen | commit und push das neue Repo | git-commit-helper | projekt-anlegen | normal |
+| `projekt-anlegen-no-feature` | projekt-anlegen | In meiner bestehenden Integration fehlt noch die Berechnung der Baustellenstunden. Bau die ein. | code-erstellen | projekt-anlegen | kritisch |
 | `skill-auswertung-log` | skill-auswertung | Werte bitte das Skill-Log der letzten zwei Wochen aus: Welche Skills haben gezündet, wo hätte einer zünden müssen und hat nicht, und wo haben zwei gleichzeitig ausgelöst? | skill-auswertung | skill-pflege | kritisch |
 | `skill-auswertung-waechter` | skill-auswertung | Schau dir an, wie oft der Skill-Wächter in den letzten zwei Wochen geblockt oder gewarnt hat, und schlag vor, welche Regeln wir verschärfen oder lockern sollten. | skill-auswertung | skill-pflege | normal |
 | `skill-auswertung-kurz` | skill-auswertung | skills auswerten | skill-auswertung | – | normal |
