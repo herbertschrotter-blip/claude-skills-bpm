@@ -8,6 +8,18 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.48.0] — 2026-10-09
+
+- **skills/projekt-anlegen, Feature:** Projekt-Generator. Für unterstützte Stacks entsteht nach wenigen Fragen ein
+  lauffähiges, geprüftes Grundgerüst ohne Fachlogik (Walking Skeleton): Generator unter `scripts/` (Auftrag prüfen,
+  Bausteine auflösen, zweimal erzeugen, Formatierung/Lint/Tests/Start prüfen, nur bei Grün veröffentlichen),
+  Bausteine unter `templates/` (Python-Werkzeug ohne Speicher oder mit SQLite, GitHub-Prüfung). Neue References
+  `generator.md` und `grundsatz.md` (drei Pflichtklärungen, Technik leitet Claude ab, Grundentscheidungen im neuen
+  Projekt); Grenze: technische Funktionsfähigkeit hier, Fachliches in code-erstellen. Description neu (839 statt 1020
+  Zeichen), Auslöser unverändert. Refactor mit Regel-Inventar `docs/skill-refactors/2026-10-09-projekt-anlegen.md`
+  (63 Regeln, keine entfallen, 14 neu). Workflow `test-project-generator.yml` (Linux, Windows). CGR-2026-10-09-skillsystem,
+  ClickUp 123ztrd0r0p.
+
 ## [v0.47.2] — 2026-10-09
 
 - **skills/code-erstellen, Fix:** `references/stacks/python.md` – Test-Isolation: kein Test beeinflusst einen
