@@ -29,6 +29,8 @@ geladen sein. Die Regeln dafür sind lernbar: skill-auswertung schärft sie anha
   neuer sind als die letzte Transcript-Zeile (Befund Auswertung 08.10.2026: drei Fehlalarme 4–7 s nach dem Laden).
   Subagenten und Workflows erben die Skills der Hauptsitzung (Transcript unter
   `<sitzung>/subagents/` → `<sitzung>.jsonl`).
+- Die Meldung nennt die zuständigen Skills mit Plugin-Präfix (`work:code-erstellen`, aus der `marketplace.json` des
+  Plugins). Ohne Präfix kann Claude Code eine per `skillOverrides` abgeschaltete Kopie treffen (Befund 09.10.2026).
 - Jede Entscheidung landet als Ereignis `guard` im Skill-Log (`docs/skill-log-v1.md`): `regel`, `entscheidung`
   (`geblockt`/`gewarnt`), `tool`, `tool_use_id`, `ziel`, `pflicht`, `aktiv`.
 - Ein Fehler im Wächter blockiert nie (Exit 0). `SKILL_GUARD=aus` oder die Plugin-Option `skill_guard` schaltet ihn ab.

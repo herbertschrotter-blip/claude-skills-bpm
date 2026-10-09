@@ -320,5 +320,23 @@ class VerzoegerungTest(unittest.TestCase):
         finally:
             os.unlink(path)
 
+
+class NamenTest(unittest.TestCase):
+    def test_volle_namen_aus_marketplace(self):
+        names = g.plugin_names()
+        self.assertEqual(names.get("code-erstellen"), "work:code-erstellen")
+        self.assertEqual(names.get("skill-pflege"), "skill-workshop:skill-pflege")
+
+    def test_meldung_nennt_volle_namen_und_hinweis(self):
+        code, _, err, _ = g.decide(hook("PreToolUse", "Edit", {"file_path": "logik/rechte.py"}), MECH, set())
+        self.assertEqual(code, 2)
+        self.assertIn("work:code-erstellen", err)
+        self.assertIn("vollen Namen samt Präfix", err)
+
+    def test_ohne_marketplace_ohne_praefix(self):
+        self.assertEqual(g.plugin_names("/gibt/es/nicht.json"), {})
+        rule = {"id": "code", "beschreibung": "x", "pflicht": ["code-erstellen"]}
+        self.assertIn("Zuständig: code-erstellen", g.message([(rule, "")], names={}))
+
 if __name__ == "__main__":
     unittest.main()

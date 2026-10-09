@@ -384,13 +384,36 @@ def log(entries, data, project):
             }, **entry), ensure_ascii=False) + "\n")
 
 
-def message(found):
+def plugin_names(path=None):
+    """Skill → Name mit Plugin-Präfix (work:code-erstellen) aus der marketplace.json des Plugins. Als work-hooks gibt es
+    keine (die Skills kommen dann aus claude.ai) – dann bleibt der Name ohne Präfix."""
+    path = path or os.path.join(HERE, "..", "..", "..", ".claude-plugin", "marketplace.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            data = json.load(fh)
+    except (OSError, json.JSONDecodeError):
+        return {}
+    names = {}
+    for entry in data.get("plugins", []):
+        for skill in entry.get("skills", []) if isinstance(entry.get("skills"), list) else []:
+            names[os.path.basename(str(skill).rstrip("/"))] = f"{entry.get('name')}:{os.path.basename(str(skill).rstrip('/'))}"
+    return names
+
+
+def message(found, names=None):
+    names = plugin_names() if names is None else names
     lines = []
     for rule, target in found:
         where = f" ({target})" if target else ""
         lines.append(f"- Regel „{rule['id']}“{where}: {rule.get('beschreibung', '')}. "
-                     f"Zuständig: {', '.join(rule['pflicht'])}")
+                     f"Zuständig: {', '.join(names.get(p, p) for p in rule['pflicht'])}")
     return "\n".join(lines)
+
+
+# Ohne Präfix ordnet Claude Code den Namen womöglich einer abgeschalteten Kopie zu (skillOverrides, z. B. die Fassung
+# aus claude.ai) – Befund 09.10.2026: „Skill code-erstellen is disabled for model invocation“.
+NAME_HINWEIS = ("Den Skill mit dem vollen Namen samt Präfix laden, wie er in der Skill-Liste steht (z. B. "
+                "work:code-erstellen) – ohne Präfix kann eine abgeschaltete Kopie getroffen werden. ")
 
 
 def decide(data, rules=None, skills=None):
@@ -421,11 +444,11 @@ def decide(data, rules=None, skills=None):
         err = ("Skill-Wächter: Diese Änderung braucht einen geladenen Skill, der dafür zuständig ist.\n" + text +
                "\nLade den passenden Skill mit dem Skill-Werkzeug und wiederhole dann die Aktion – auch wenn er früher in "
                "der Sitzung schon geladen war: Nach einem Commit, einem Aufgabenstart oder einer neuen Aufgaben-ID gilt "
-               "er als verbraucht. "
+               "er als verbraucht. " + NAME_HINWEIS +
                "Ist die Regel hier falsch, sag es dem Nutzer (wird bei der Skill-Auswertung nachgeschärft).")
         return 2, "", err, entries
     ctx = ("Skill-Wächter (Hinweis): Diese Aktion lief ohne den zuständigen Skill.\n" + text +
-           "\nLade den passenden Skill, bevor du weitermachst, damit sein Ablauf (Profil, Tests, Commit) gilt.")
+           "\nLade den passenden Skill, bevor du weitermachst, damit sein Ablauf (Profil, Tests, Commit) gilt. " + NAME_HINWEIS)
     out = json.dumps({"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext": ctx}},
                      ensure_ascii=False)
     return 0, out, "", entries
