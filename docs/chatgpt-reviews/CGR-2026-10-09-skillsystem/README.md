@@ -5,7 +5,9 @@
 Stack-Reihenfolge.
 **Zeitraum:** 2026-10-09
 **Branch:** `main`
-**Status:** Runde 3 offen
+**Status:** Abgeschlossen (09.10.2026)
+**Ergebnis:** Plan „projekt-anlegen als Projekt-Generator“ in [docs/skillsystem-umbau.md](../../skillsystem-umbau.md),
+ClickUp-Aufgabe in der Liste ClaudeSkills
 
 ---
 
@@ -33,4 +35,15 @@ Stack-Reihenfolge.
 - **Artefakte:** [r3/](./r3/)
 - **Fokus:** Description um 900 Zeichen mit allen Auslösern; ~10 neue Routing-Fälle; `scripts/` + `templates/`,
   Lieferung bei claude.ai, Prüfskript; Herkunftsdatei, TOML-Renderer, Linux/Windows
-- **Kernergebnis:** offen
+- **Kernergebnis:** Description 839 Zeichen mit allen Auslösern; 7 + 10 Routing-Fälle; `scripts/` + `templates/`,
+  eigener Validator, claude.ai nur SKILL.md + references/; `.projekt-anlegen.json` ohne Datum; begrenzter
+  TOML-Renderer mit `tomllib`-Prüfung; UTF-8 ohne BOM, LF; Veröffentlichen per `rename` ins nicht existierende Ziel,
+  auf Linux und Windows getestet; unterstützte Kombinationen nur explizit und CI-getestet. Keine Blocker.
+
+## Ergebnis
+
+Projekt-anlegen wird ein Generator für ein Walking Skeleton: Bauweise C (deterministischer Kern aus Bausteinen mit
+Manifesten, eigenes Skript mit Standardbibliothek), Grenze „technische Funktionsfähigkeit (projekt-anlegen) vs.
+fachliches Verhalten (code-erstellen)“, drei Pflichtklärungen, Technik leitet Claude ab, nur die benötigte Datenbank
+mit Schema-Version, Prepare / Verify & Publish, eigener CI-Workflow, Pilot Python-Werkzeug (optional SQLite), danach
+HA-Integration (automatischer HA-Test). Umsetzung in sieben Schritten auf dem Zweig `umbau-projekt-anlegen`.

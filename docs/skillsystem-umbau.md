@@ -374,6 +374,51 @@ Plugins im selben Repo)
      hochgeladen 08.10.2026. **Schritt 8 abgeschlossen.**
 9. **Merge** nach Herberts Freigabe.
 
+### Plan (09.10.2026, von Herbert freigegeben) – projekt-anlegen als Projekt-Generator
+
+Ziel: projekt-anlegen liefert nach wenigen gezielten Fragen ein lauffähiges, getestetes Grundgerüst (Walking Skeleton):
+alle Schichten verbunden, eine technische Beispiel-Funktion läuft durch, Start- und Tests grün, Skill-Profil fertig –
+ohne Fachlogik. Erarbeitet in [CGR-2026-10-09-skillsystem](./chatgpt-reviews/CGR-2026-10-09-skillsystem/README.md)
+(drei Runden). ClickUp: Aufgabe in ClaudeSkills (Link folgt beim Anlegen).
+
+**Entscheidungen**
+
+- Bauweise: deterministischer Kern aus Bausteinen mit Manifesten (Voraussetzungen, Konflikte, explizit freigegebene
+  Kombinationen), eigenes Skript nur mit Standardbibliothek. Der Generator kennt keine Stack-Sonderfälle; Struktur und
+  Checks kommen aus den Manifesten.
+- Grenze: projekt-anlegen erzeugt technische Funktionsfähigkeit, code-erstellen fachliches Verhalten. Enthält ein
+  Auftrag beides, erst das Gerüst, dann Übergabe an code-erstellen. Kein eigener Generator-Skill.
+- Fragen: drei Pflichtklärungen (Zweck, Ort, erste Fassung); Technik leitet Claude ab und erklärt sie im Plan
+  (z. B. „Soll es Daten dauerhaft speichern?“ statt „SQLite oder PostgreSQL?“).
+- Grundsatz-Prüfung in drei Ebenen: Standards im Generator, echte Produktentscheidungen als Auswahlfragen,
+  Entscheidungen in die Projektdoku am `Doku.Entscheidungs-Ort`; code-erstellen liest sie vor der ersten fachlichen
+  Erweiterung.
+- Daten: nur die benötigte Datenbank, Schema-Version ab Tag 1, kein Migrationsframework auf Vorrat; kein Test
+  beeinflusst einen anderen.
+- Ablauf im Skript: JSON-Auftrag v1 (streng, keine Befehle) → Prepare (Staging) → Verify (Tests, Lint, Starttest) →
+  Publish (`rename` ins nicht existierende Ziel). GitHub-Repo und Push danach im bestätigungspflichtigen Ablauf des
+  Skills. Erzeugte Projekte werden nie wieder angefasst; Herkunft in `.projekt-anlegen.json`.
+- Ablage: `skills/projekt-anlegen/scripts/` (Generator, Validator, Tests) und `templates/` (Bausteine, Manifeste,
+  `versions.json`); bei claude.ai nur SKILL.md und `references/` (dort nur Plan). Eigener Workflow
+  `test-project-generator.yml` erzeugt und prüft jede unterstützte Kombination auf Linux; Abnahme zusätzlich auf
+  Windows.
+- Description (839 Zeichen) und 10 neue Routing-Fälle laut Runde 3; Pilot Python-Werkzeug (ohne Speicher, mit SQLite),
+  danach HA-Integration (lauffähig = automatischer HA-Test mit `pytest-homeassistant-custom-component`).
+
+**Schritte** (Zweig `umbau-projekt-anlegen` im Worktree, Merge nach Freigabe)
+
+0. Vorab auf `main`: Safe Patch Test-Isolation in `skills/projekt-anlegen/references/stacks/python.md` und
+   `skills/code-erstellen/references/stacks/python.md` (Befund Runde 1).
+1. Regel-Inventar für projekt-anlegen (Refactor) und Zweig.
+2. Generatorvertrag und Validierung (Schema v1, Werte, Pfade, Negativtests; noch keine Vorlagen).
+3. Bausteinauflösung (Manifeste, Abhängigkeiten, Konflikte, Zyklen, Dateikollisionen).
+4. Python-Pilot: ohne Speicher und mit SQLite, Starttest, Ruff, Tests parallel.
+5. Transaktionale Erzeugung (Staging, Verifikation, Veröffentlichen, Rückbau), Linux und Windows.
+6. Skill-Integration: projekt-anlegen (SKILL.md, `references/generator.md`, `grundsatz.md`, Stack-Referenzen,
+   Description), Regel in code-erstellen, INDEX-Konfliktpaar, `skill-pflege/references/delivery.md`.
+7. Abnahme: Generator-CI, 17 Routing-Fälle (kritisch 3/3, sonst ≥ 2/3, kein Negativfall kippt),
+   `validate-skills`, Praxistest mit Herbert. Danach HA-Integration als nächster Baustein.
+
 ## Was Herbert selbst tut
 
 - nach jeder Skill-Änderung die SKILL.md bzw. Zip bei claude.ai hochladen
