@@ -332,8 +332,18 @@ Plugins im selben Repo)
    Fehlerquellen in `docs/installation.md`. install.sh mit derselben Logik, echt getestet (isoliertes HOME).
    Nachgang 09.10.2026: Fortschritt in install.ps1/.sh oben fest mit Teilbalken; Skill-Wächter nennt Skills mit
    Plugin-Präfix (Claude rief `code-erstellen` ohne Präfix auf und traf die abgeschaltete claude.ai-Kopie); sitzung
-   v0.44.1 ermittelt das eigene Fenster über `$TMUX_PANE`. **Offen:** erster Lauf der überarbeiteten install.ps1 am
-   Surface (Schritte 2–5 fehlen dort noch), danach Firmen-Laptop.
+   v0.44.1 ermittelt das eigene Fenster über `$TMUX_PANE`.
+   ✅ Surface eingerichtet (09.10.2026, überarbeitete install.ps1): `work-hooks`, Rechner `surface7`, Sammel-Repo
+   gesetzt; nach Neustart der Desktop-App erster Abgleich (`logs/surface7/`, `push: ok`). Die Sammel-Repo-Frage schlägt
+   jetzt ein Repo vor (gesetzte Option, lokaler Klon, sonst `<konto>/skill-log` über gh bzw. Git Credential Manager,
+   geprüft mit `git ls-remote`; fehlt es, Anlegen mit gh), d8c872d.
+   Befund Pi (09.10.2026): `enabledPlugins` und `extraKnownMarketplaces` in `~/.claude/settings.json` waren seit
+   08.10.2026 21:12 leer (Ursache unbekannt) – neue Sitzungen ohne Skills, Skill-Log und Wächter. In der tmux-Shell
+   lag das ältere claude des Add-ons (2.1.282, ohne `plugin configure`) vor `~/.local/bin`; die Einrichtung setzte
+   deshalb keine Optionen und meldete trotzdem OK. Von Hand nachgeholt; install.sh/einrichten.py nehmen jetzt
+   `~/.local/bin/claude` zuerst, schalten Plugins ein und melden Fehler (fce3f21).
+   **Offen:** Firmen-Laptop (prüft auch den Vorschlag über den Git Credential Manager, den das Surface wegen der
+   schon gesetzten Option nicht brauchte).
 8. **Für andere:** private Daten (Projektnamen, ClickUp-IDs, `projects/`) aus dem geteilten Teil, Einrichtungsbefehl,
    README für fremde Nutzer. Bestandsaufnahme 07.10.2026: keine Zugangsdaten im Repo (Tokens, Schlüssel, Mails, IPs).
    Herbert hat entschieden (07.10.2026): **nur der aktuelle Stand** wird bereinigt, die Git-Historie bleibt (Repo ist

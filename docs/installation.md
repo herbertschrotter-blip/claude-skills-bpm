@@ -115,5 +115,9 @@ Was das Skript selbst abfängt, steht mit ✓; sonst die Lösung.
    am Ende „FERTIG“.
 4. Neues Fenster: `claude --version` (PATH dauerhaft), `claude plugin list`, `Get-Content ~\.claude\workbench-einrichtung.json`.
 5. Skript noch einmal starten: alles „OK“, nichts wird neu installiert.
-6. Optional: `Get-ScheduledTask 'workbench git-Update'`.
-7. Optional Entfernen (siehe oben) und danach erneut einrichten.
+6. Mit Sammel-Repo: Claude-Desktop-App ganz beenden (Infobereich), neu starten, eine Nachricht schicken; dann
+   `Get-Content ~\.claude\skill-log\sammel-status.json` zeigt `"push": "ok"` und den Rechnernamen.
+7. Optional: `Get-ScheduledTask 'workbench git-Update'`.
+8. Optional Entfernen (siehe oben) und danach erneut einrichten.
+
+Gelaufen: Surface (09.10.2026) mit allen Schritten bis 6.
