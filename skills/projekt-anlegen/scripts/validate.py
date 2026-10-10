@@ -95,7 +95,9 @@ def alle_erzeugen(ablage, templates=TEMPLATES):
                                template={"id": art["id"], "version": art["version"]},
                                features=dict(kombination), delivery={"github": github})
                 r = anlegen(auftrag, ablage, templates)
-                zeilen = ", ".join(f"{x['name']} {x['dauer']} s {'grün' if x['ok'] else 'ROT'}" for x in r["pruefungen"])
+                zeilen = ", ".join(
+                    f"{x['name']} übersprungen ({x['uebersprungen']})" if "uebersprungen" in x
+                    else f"{x['name']} {x['dauer']} s {'grün' if x['ok'] else 'ROT'}" for x in r["pruefungen"])
                 print(f"{slug} {kombination}: {'OK' if r['ok'] else 'FEHLER'} – {zeilen}", flush=True)
                 if not r["ok"]:
                     befunde += [f"{slug}: {f}" for f in r.get("fehler", [])]

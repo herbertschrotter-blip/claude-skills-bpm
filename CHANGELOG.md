@@ -14,6 +14,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
   Plattformen beschränkt werden (`plattform`, anderswo „übersprungen“); Features einer Projektart sind allgemein als
   Platzhalter verfügbar (`{{storage}}`, `{{quelle}}`); die Grundentscheidungen kommen je Projektart statt aus
   `common`.
+- **skills/projekt-anlegen, Feature:** Neue Projektart `ha-integration` v1 mit `quelle: aufsatz` (nutzt die Entität
+  einer vorhandenen Integration, hängt am fremden Gerät, meldet eine fehlende Quelle) und `quelle: abruf`
+  (Coordinator mit Beispiel-Verbindung ohne Netz). Gerüst mit Einrichtungsdialog, Status-Sensor, Diagnose,
+  Übersetzungen de/en, `hacs.json`, Fachlogik ohne HA mit eigenen Tests; Prüfung vor dem Veröffentlichen mit
+  Format, Lint, Logik-Tests und HA-Tests (`pytest-homeassistant-custom-component` 0.13.367 = HA 2026.9.4, Python
+  3.14 über `uv`, nur Linux). `references/generator.md` und `references/stacks/home-assistant.md` ergänzt; zwei
+  Routing-Fälle (`projekt-anlegen-ha-aufsatz`, `projekt-anlegen-ha-abruf`).
 
 ## [v0.48.4] — 2026-10-10
 

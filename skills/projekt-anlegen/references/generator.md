@@ -34,9 +34,17 @@ Nur was im Manifest freigegeben und in der CI des Generators geprüft ist:
 |---|---|---|---|
 | `python-tool` – Python-Werkzeug mit Befehlszeile | 1 | `storage`: `none` | common, python-tool, storage-memory |
 | `python-tool` | 1 | `storage`: `sqlite` | common, python-tool, storage-sqlite |
+| `ha-integration` – eigene Home-Assistant-Integration | 1 | `quelle`: `aufsatz` | common, ha-integration, quelle-aufsatz |
+| `ha-integration` | 1 | `quelle`: `abruf` | common, ha-integration, quelle-abruf |
 
-Bei `delivery.github: true` kommt `ci-github-python` dazu (automatische Prüfung bei jedem Push). Alles andere geht
-den Weg nach der Stack-Reference; nie eine Kombination improvisieren.
+Bei `delivery.github: true` kommt `ci-github-python` bzw. `ci-github-ha` dazu (automatische Prüfung bei jedem
+Push). Alles andere geht den Weg nach der Stack-Reference; nie eine Kombination improvisieren.
+
+Bei `ha-integration` entscheidet die Quelle: `aufsatz`, wenn die Integration die Entitäten einer vorhandenen
+Integration nutzt (das Gerät ist schon in Home Assistant); `abruf`, wenn sie selbst ein Gerät oder einen Dienst
+abfragt. `package` ist zugleich die Domain und darf nicht wie eine vorhandene Integration heißen. Die Tests gegen
+Home Assistant brauchen `uv` und Python 3.14 und laufen nur unter Linux; unter Windows meldet der Generator sie als
+übersprungen.
 
 ## Aufruf
 
@@ -46,7 +54,8 @@ python3 <skill>/scripts/generate.py --auftrag <datei.json> --ablage <Projekte.Ab
 
 `<skill>` ist der Ordner dieses Skills; den Auftrag schreibt Claude in den Scratchpad, nie ins Projekt. Unter Windows
 heißt der Interpreter je nach Installation `python`. Die Prüfung installiert die Werkzeuge in eine eigene Umgebung im
-Zwischenordner; das braucht Netz und auf einem Raspberry Pi etwa eine halbe Minute.
+Zwischenordner; das braucht Netz und auf einem Raspberry Pi etwa eine halbe Minute (HA-Integration: knapp eine
+Minute).
 
 ## Erzeugungsauftrag
 
@@ -87,7 +96,9 @@ Prozess, der denselben Ordner anlegt. Für einen Nutzer an einer Ablage genügt 
 ## Ergebnis und Fehler
 
 Ausgabe ist JSON: `ok`, `phase` (auftrag, erzeugen, pruefen, veroeffentlichen, fertig), `ziel`, `dateien`,
-`pruefungen` (je Schritt `name`, `dauer`, `ok`, bei Fehler `ausgabe` mit den letzten Zeilen) und `fehler`.
+`pruefungen` (je Schritt `name`, `dauer`, `ok`, bei Fehler `ausgabe` mit den letzten Zeilen, bei einem Schritt nur
+für eine andere Plattform `uebersprungen`) und `fehler`. Übersprungene Schritte stehen in der Tabelle als
+„übersprungen“, mit Grund.
 
 - `ok: true` → Tabelle Prüfung / Dauer / Ergebnis zeigen, weiter mit Grundentscheidungen, Commit, GitHub, Eintrag.
 - `ok: false` → es wurde nichts angelegt. Phase, Schritt und Ursache in einem Satz nennen; bei `auftrag` den Auftrag
@@ -103,7 +114,10 @@ behaupten.
 ## Pflege der Vorlagen
 
 - Vorlagen liegen unter `templates/<baustein>/`, UTF-8 ohne BOM, Zeilenenden LF, Platzhalter nur aus der festen Liste
-  (`{{name}}`, `{{slug}}`, `{{package}}`, `{{package_upper}}`, `{{storage}}`, `{{github}}`, `{{v_<paket>}}`).
+  (`{{name}}`, `{{slug}}`, `{{package}}`, `{{package_upper}}`, `{{github}}`, `{{v_<paket>}}`) und den Features der
+  Projektarten (`{{storage}}`, `{{quelle}}`). Zeilen mit `{{package}}` oder `{{name}}` so schreiben, dass Ruff sie
+  bei jeder erlaubten Länge gleich formatiert; `scripts/validate.py --erzeugen` prüft das nicht für jede Länge.
+- Prüfschritte stehen im Manifest der Projektart; ein Schritt mit `plattform` (z. B. `["linux"]`) läuft nur dort.
 - Versionen der Werkzeuge stehen nur in `templates/versions.json`; neue Versionen erst nach grüner CI des Generators
   übernehmen.
 - Vor jedem Commit: `python3 scripts/validate.py` (Katalog) und die Tests unter `scripts/tests/`; jede Kombination echt
