@@ -98,5 +98,43 @@ class ErzeugenTest(unittest.TestCase):
             self.assertEqual(os.listdir(tmp), [])
 
 
+
+class HaIntegrationTest(unittest.TestCase):
+    """Projektart ha-integration: Dateien beider Quellen; die HA-Tests selbst laufen in der Verifikation."""
+
+    def erzeugen(self, quelle):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        daten = {
+            "schema_version": 1,
+            "project": {"name": "Rasen Planer", "slug": "ha-rasen", "package": "rasen"},
+            "template": {"id": "ha-integration", "version": 1},
+            "features": {"quelle": quelle},
+            "delivery": {"github": True},
+        }
+        return Path(tmp.name), g.erzeugen(daten, tmp.name)
+
+    def test_aufsatz(self):
+        root, dateien = self.erzeugen("aufsatz")
+        manifest = json.loads((root / "custom_components/rasen/manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual((manifest["domain"], manifest["iot_class"]), ("rasen", "calculated"))
+        self.assertNotIn("custom_components/rasen/coordinator.py", dateien)
+        self.assertIn("aufsatz", (root / "docs/entscheidungen.md").read_text(encoding="utf-8"))
+
+    def test_abruf(self):
+        root, dateien = self.erzeugen("abruf")
+        manifest = json.loads((root / "custom_components/rasen/manifest.json").read_text(encoding="utf-8"))
+        self.assertEqual(manifest["iot_class"], "local_polling")
+        for datei in ("custom_components/rasen/coordinator.py", "custom_components/rasen/api.py",
+                      "tests/logik/test_api.py", ".github/workflows/ci.yml", "hacs.json"):
+            self.assertIn(datei, dateien)
+
+    def test_python_dateien_sind_gueltig(self):
+        for quelle in ("aufsatz", "abruf"):
+            root, dateien = self.erzeugen(quelle)
+            for datei in (d for d in dateien if d.endswith(".py")):
+                compile((root / datei).read_text(encoding="utf-8"), datei, "exec")
+
+
 if __name__ == "__main__":
     unittest.main()

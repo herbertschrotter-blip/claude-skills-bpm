@@ -1,0 +1,69 @@
+{
+  "id": "ha-integration",
+  "requires": [
+    "common"
+  ],
+  "conflicts": [],
+  "files": [
+    {
+      "source": "ha-integration/CLAUDE.md.tpl",
+      "target": "CLAUDE.md"
+    },
+    {
+      "source": "ha-integration/README.md.tpl",
+      "target": "README.md"
+    },
+    {
+      "source": "ha-integration/gitignore.tpl",
+      "target": ".gitignore"
+    },
+    {
+      "source": "ha-integration/pyproject.toml.tpl",
+      "target": "pyproject.toml"
+    },
+    {
+      "source": "ha-integration/requirements-logik.txt.tpl",
+      "target": "requirements-logik.txt"
+    },
+    {
+      "source": "ha-integration/requirements-ha.txt.tpl",
+      "target": "requirements-ha.txt"
+    },
+    {
+      "source": "ha-integration/hacs.json.tpl",
+      "target": "hacs.json"
+    },
+    {
+      "source": "ha-integration/cc/diagnostics.py.tpl",
+      "target": "custom_components/{{package}}/diagnostics.py"
+    },
+    {
+      "source": "ha-integration/cc/logik/__init__.py.tpl",
+      "target": "custom_components/{{package}}/logik/__init__.py"
+    },
+    {
+      "source": "ha-integration/cc/logik/status.py.tpl",
+      "target": "custom_components/{{package}}/logik/status.py"
+    },
+    {
+      "source": "ha-integration/tests/__init__.py.tpl",
+      "target": "tests/__init__.py"
+    },
+    {
+      "source": "ha-integration/tests/integration/__init__.py.tpl",
+      "target": "tests/integration/__init__.py"
+    },
+    {
+      "source": "ha-integration/tests/integration/conftest.py.tpl",
+      "target": "tests/integration/conftest.py"
+    },
+    {
+      "source": "ha-integration/tests/logik/conftest.py.tpl",
+      "target": "tests/logik/conftest.py"
+    },
+    {
+      "source": "ha-integration/tests/logik/test_status.py.tpl",
+      "target": "tests/logik/test_status.py"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "quelle-abruf",
+  "requires": [
+    "ha-integration"
+  ],
+  "conflicts": [
+    "quelle-aufsatz"
+  ],
+  "files": [
+    {
+      "source": "quelle-abruf/docs/entscheidungen.md.tpl",
+      "target": "docs/entscheidungen.md"
+    },
+    {
+      "source": "quelle-abruf/cc/manifest.json.tpl",
+      "target": "custom_components/{{package}}/manifest.json"
+    },
+    {
+      "source": "quelle-abruf/cc/const.py.tpl",
+      "target": "custom_components/{{package}}/const.py"
+    },
+    {
+      "source": "quelle-abruf/cc/api.py.tpl",
+      "target": "custom_components/{{package}}/api.py"
+    },
+    {
+      "source": "quelle-abruf/cc/coordinator.py.tpl",
+      "target": "custom_components/{{package}}/coordinator.py"
+    },
+    {
+      "source": "quelle-abruf/cc/__init__.py.tpl",
+      "target": "custom_components/{{package}}/__init__.py"
+    },
+    {
+      "source": "quelle-abruf/cc/config_flow.py.tpl",
+      "target": "custom_components/{{package}}/config_flow.py"
+    },
+    {
+      "source": "quelle-abruf/cc/sensor.py.tpl",
+      "target": "custom_components/{{package}}/sensor.py"
+    },
+    {
+      "source": "quelle-abruf/cc/translations/de.json.tpl",
+      "target": "custom_components/{{package}}/translations/de.json"
+    },
+    {
+      "source": "quelle-abruf/cc/translations/en.json.tpl",
+      "target": "custom_components/{{package}}/translations/en.json"
+    },
+    {
+      "source": "quelle-abruf/tests/logik/test_api.py.tpl",
+      "target": "tests/logik/test_api.py"
+    },
+    {
+      "source": "quelle-abruf/tests/integration/test_config_flow.py.tpl",
+      "target": "tests/integration/test_config_flow.py"
+    },
+    {
+      "source": "quelle-abruf/tests/integration/test_init.py.tpl",
+      "target": "tests/integration/test_init.py"
+    }
+  ]
+}
