@@ -18,9 +18,10 @@
         "git-commit-helper",
         "skill-pflege",
         "skill-neu",
-        "skill-auswertung"
+        "skill-auswertung",
+        "projekt-anlegen"
       ],
-      "herkunft": "skill-pflege, skill-neu, skill-auswertung seit Skill-Auswertung 09.10.2026: blieben sonst bis Sitzungsende gültig und ließen code, doku und commit offen (claude-workbench Teil 3, 8 Commits ohne Skill)"
+      "herkunft": "skill-pflege, skill-neu, skill-auswertung seit Skill-Auswertung 09.10.2026: blieben sonst bis Sitzungsende gültig und ließen code, doku und commit offen (claude-workbench Teil 3, 8 Commits ohne Skill); projekt-anlegen seit 10.10.2026 (committet beim Anlegen selbst, danach übernimmt code-erstellen)"
     },
     "aufgabenstart": {
       "beschreibung": "ClickUp-Schreibaufruf setzt eine Aufgabe auf einen dieser Status",
@@ -301,7 +302,8 @@
         "ticket",
         "skill-pflege",
         "skill-neu",
-        "skill-auswertung"
+        "skill-auswertung",
+        "projekt-anlegen"
       ],
       "modus": "blocken",
       "gilt_bis": [
@@ -309,12 +311,12 @@
         "aufgabenstart",
         "task_id"
       ],
-      "herkunft": "Startregel 07.10.2026; 08.10.2026 (Herbert): nur noch git-commit-helper oder ticket (dazu skill-pflege, skill-neu, skill-auswertung, die selbst committen), blocken – Befund ha-baustelle bc267f1c: alle Commits ohne git-commit-helper",
+      "herkunft": "Startregel 07.10.2026; 08.10.2026 (Herbert): nur noch git-commit-helper oder ticket (dazu skill-pflege, skill-neu, skill-auswertung, die selbst committen), blocken – Befund ha-baustelle bc267f1c: alle Commits ohne git-commit-helper; 10.10.2026 (Herbert): projekt-anlegen ergänzt – Fehlalarm beim ersten Commit von ha-rasenmaeher (Praxistest projekt-anlegen); zweiter Fehlalarm am selben Tag (Text „git commit“ in einem Python-Heredoc) behebt die Erkennung in skill_guard.py",
       "stand": {
         "seit": "2026-10-07",
-        "treffer": 3,
-        "fehlalarm": 0,
-        "zuletzt": "2026-10-09",
+        "treffer": 5,
+        "fehlalarm": 2,
+        "zuletzt": "2026-10-10",
         "rueckblick": {
           "bis": "2026-10-07T12:56:13Z",
           "treffer": 5,
