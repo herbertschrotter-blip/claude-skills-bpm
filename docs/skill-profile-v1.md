@@ -44,7 +44,7 @@ Review-Serie [CGR-2026-09-24-skillsystem](./chatgpt-reviews/CGR-2026-09-24-skill
 - Branch-Policy: current | fixed:<branch>
 
 ### Checks
-- <check-name>: <befehl; befehl> [<pfad-glob>; <pfad-glob>]
+- <check-name>: <befehl; befehl> [(allein)] [<pfad-glob>; <pfad-glob>]
 
 ### Commit
 - Format: <format>
@@ -128,6 +128,9 @@ Ein Check ist ein benannter Befehl mit Geltungsbereich:
 ```
 
 - Ein Check gilt, wenn mindestens eine geänderte Datei zu einem seiner Pfad-Muster passt.
+- Mehrere Befehle eines Checks laufen nacheinander in einer Shell (`cd` gilt für die folgenden), Abbruch beim ersten
+  Fehler. Checks laufen gleichzeitig; `(allein)` vor den Pfad-Mustern lässt einen Check für sich laufen, wenn er
+  alle Kerne, einen Port oder eine Test-Datenbank braucht.
 - `Pre-Commit-Checks` nennt die Checks, die vor einem Commit laufen; es laufen nur die, die gelten.
 - Checks mit echten Modellaufrufen wie `claude plugin eval` sind keine Pre-Commit-Checks, weil jeder Lauf das Kontingent
   belastet. Sie laufen als Tor vor der Auslieferung (siehe [skill-quality.md](./skill-quality.md), Abschnitt „Verhalten“).

@@ -203,6 +203,13 @@ cd "[Arbeitsverzeichnis]" && git add <spezifische-dateien> && git commit -m "[vX
 
 Die Checks laufen auf der Maschine, nicht im Modell; ihre Laufzeit ist Wartezeit für den Nutzer.
 
+**Claude Code:** Die Regeln unten setzt das Skript `scripts/checks.py` dieses Skills um:
+`python3 <Skill-Ordner>/scripts/checks.py --vor-commit` (unter Windows je nach Installation `python`). Es liest das
+Skill-Profil, wählt die passenden Checks, lässt sie gleichzeitig laufen (`(allein)` im Profil für sich), merkt sich
+grüne Läufe und gibt die Tabelle aus. Exit 0 grün; 1 rot; 2 ein Befehl fehlt auf diesem Rechner (dann sagen, wo der
+Check läuft, z. B. per CI); 3 Profil oder git nicht lesbar. Die Tabelle des Skripts wird unverändert gemeldet; bei Rot
+die Ausgabe aus der Log-Datei lesen. Läuft das Skript nicht (kein Python), gelten die Regeln von Hand.
+
 - **Nur passende Checks:** Ein Check aus `Pre-Commit-Checks` läuft nur, wenn mindestens eine geänderte Datei zu
   einem seiner Pfad-Muster passt (gestaged, ungestaged und neu, laut `git status --short`). Ein Check ohne
   Pfad-Muster läuft immer. Jeden übersprungenen Check ausdrücklich melden: `übersprungen: <check> – keine passende

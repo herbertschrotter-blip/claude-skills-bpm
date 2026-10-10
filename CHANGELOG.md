@@ -8,6 +8,16 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.51.0] — 2026-10-10
+
+- **skills/git-commit-helper, Feature:** Check-Skript `scripts/checks.py` (nur Standardbibliothek): liest `### Checks`
+  und `Pre-Commit-Checks` aus dem Skill-Profil, wählt die Checks mit passender geänderter Datei, lässt sie gleichzeitig
+  laufen (`(allein)` für sich), merkt sich grüne Läufe in `.git/`, Ausgabe je Check in eine Datei und Tabelle Check /
+  Dauer / Ergebnis; Exit 0/1/2/3 (grün/rot/Befehl fehlt/Profil). „Prüfläufe vor dem Commit“ ruft es in Claude Code
+  auf; 14 Tests, in `validate-skills.yml`. ClickUp: Prüfläufe schneller · P2.
+- **skills/code-erstellen, Change:** Tests rufen in Claude Code das Check-Skript von git-commit-helper auf.
+- **docs/skill-profile-v1.md:** optionales `(allein)` bei Checks; mehrere Befehle laufen nacheinander in einer Shell.
+
 ## [v0.50.0] — 2026-10-10
 
 - **skills/code-erstellen, Feature:** Selbst-Review vor jedem Commit (neuer Abschnitt „7c. Selbst-Review“): in

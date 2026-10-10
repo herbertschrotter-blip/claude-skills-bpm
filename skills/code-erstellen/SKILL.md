@@ -341,7 +341,9 @@ verdrahten, was das Profil als dynamisch nennt.
    Es laufen nur Checks, deren Pfad-Muster eine geänderte Datei trifft; übersprungene werden genannt. Unabhängige
    Checks laufen gleichzeitig, lange im Hintergrund mit Ausgabe in eine Datei, die vollständig gelesen wird – Regeln in
    `skills/git-commit-helper/SKILL.md#Prüfläufe vor dem Commit`. Ist ein Pre-Commit-Check hier schon grün gelaufen und
-   seitdem keine Datei mehr geändert, läuft er vor dem Commit nicht noch einmal.
+   seitdem keine Datei mehr geändert, läuft er vor dem Commit nicht noch einmal. In Claude Code übernimmt das das
+   Skript von git-commit-helper: `python3 <Skills-Ordner>/git-commit-helper/scripts/checks.py --checks <Tests des
+   Profils, mit Komma>`.
    **Cowork:** Testbefehl im Commit-Block mitliefern; der User führt aus und meldet das Ergebnis.
 3. **Tests rot** → Auswahlfrage: „Fix jetzt“ / „Test anpassen (Begründung in Aufgabenquelle)“ /
    „Abbrechen“. Nie einen roten Test still löschen oder überspringen.
