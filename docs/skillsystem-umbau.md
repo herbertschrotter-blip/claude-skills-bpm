@@ -374,7 +374,7 @@ Plugins im selben Repo)
      hochgeladen 08.10.2026. **Schritt 8 abgeschlossen.**
 9. **Merge** nach Herberts Freigabe.
 
-### Plan (09.10.2026, von Herbert freigegeben) – projekt-anlegen als Projekt-Generator
+### Plan (09.10.2026, von Herbert freigegeben; Schritte 0–7 erledigt, offen Praxistest) – projekt-anlegen als Projekt-Generator
 
 Ziel: projekt-anlegen liefert nach wenigen gezielten Fragen ein lauffähiges, getestetes Grundgerüst (Walking Skeleton):
 alle Schichten verbunden, eine technische Beispiel-Funktion läuft durch, Start- und Tests grün, Skill-Profil fertig –
@@ -418,6 +418,16 @@ ohne Fachlogik. Erarbeitet in [CGR-2026-10-09-skillsystem](./chatgpt-reviews/CGR
    Description), Regel in code-erstellen, INDEX-Konfliktpaar, `skill-pflege/references/delivery.md`.
 7. Abnahme: Generator-CI, 17 Routing-Fälle (kritisch 3/3, sonst ≥ 2/3, kein Negativfall kippt),
    `validate-skills`, Praxistest mit Herbert. Danach HA-Integration als nächster Baustein.
+
+✅ Stand 10.10.2026: Schritte 0–7 umgesetzt und gemergt (PR #1, cf9e994); projekt-anlegen v0.48.0, code-erstellen
+v0.48.1, skill-pflege v0.48.2 bei claude.ai hochgeladen. Abnahme: Generator auf dem Pi, in der CI unter Linux und
+Windows grün (jede Kombination echt erzeugt und geprüft); Routing-Eval 17/17, jeder Fall 3/3; Regel-Inventar
+`docs/skill-refactors/2026-10-09-projekt-anlegen.md` (63 Regeln erhalten, 14 neu). Befund beim Bau: die erste Fassung
+der Vorlagen hatte Ruff-Befunde und brach bei langen Namen anders um – genau das fängt die Prüfung vor dem
+Veröffentlichen ab. **Offen:** Praxistest mit Herbert in einer neuen Sitzung; danach ClickUp-Aufgabe schließen.
+**Nächste Bausteine:** HA-Integration (P2, mit Coordinator, Config Flow, Diagnose, Tests mit
+`pytest-homeassistant-custom-component`; vorher Abgleich mit `docs/ha-grundsatz/` und den Best-Practices des
+HA-MCP-Servers); danach Typprüfung, Lizenz bei öffentlichen Repos, vorbereitete Auslieferung.
 
 ## Was Herbert selbst tut
 
