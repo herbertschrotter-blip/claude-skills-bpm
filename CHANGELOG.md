@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.51.1] — 2026-10-11
+
+- **skills/code-erstellen, Fix:** Selbst-Review: `code-review` meldet nur, beheben, testen und committen macht
+  code-erstellen; hat das Review doch geändert oder committet, dem Nutzer sagen und den Stand prüfen (Befund beim
+  ersten echten Lauf: der abgezweigte Review-Agent hatte selbst committet und gepusht).
+
 ## [v0.51.0] — 2026-10-10
 
 - **skills/git-commit-helper, Feature:** Check-Skript `scripts/checks.py` (nur Standardbibliothek): liest `### Checks`

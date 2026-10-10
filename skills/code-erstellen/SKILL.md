@@ -356,7 +356,9 @@ Tests finden nicht alles. Vor dem Commit den eigenen Diff mit frischem Blick pr�
 unnötige Komplexität.
 
 1. **Claude Code:** den eingebauten Skill `code-review` auf den aktuellen Diff laden (Stufe `low`, im Modus Deep
-   `medium`). **Cowork:** den Diff selbst lesen, mit denselben vier Fragen.
+   `medium`). **Cowork:** den Diff selbst lesen, mit denselben vier Fragen. Das Review meldet nur; beheben, testen
+   und committen macht dieser Skill. Hat es doch Dateien geändert oder committet (`git status`, `git log`), das dem
+   Nutzer sagen und den Stand prüfen, bevor es weitergeht.
 2. Jeden Befund beheben oder mit Begründung stehen lassen; nach einer Korrektur die betroffenen Checks aus „Tests“
    erneut laufen lassen.
 3. Ergebnis als Zeile im Commit-Bericht (`🔍 Selbst-Review`).
