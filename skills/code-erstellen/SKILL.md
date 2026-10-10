@@ -348,6 +348,19 @@ verdrahten, was das Profil als dynamisch nennt.
 4. Ergebnis melden als Tabelle Check / Dauer / Ergebnis, übersprungene Checks eingeschlossen; dazu Anzahl der
    Tests, was rot war und warum. Kein „Tests laufen“ ohne Ausgabe.
 
+### 7c. Selbst-Review (Pflicht vor dem Commit)
+
+Tests finden nicht alles. Vor dem Commit den eigenen Diff mit frischem Blick prüfen: Fehler, Randfälle, Sicherheit,
+unnötige Komplexität.
+
+1. **Claude Code:** den eingebauten Skill `code-review` auf den aktuellen Diff laden (Stufe `low`, im Modus Deep
+   `medium`). **Cowork:** den Diff selbst lesen, mit denselben vier Fragen.
+2. Jeden Befund beheben oder mit Begründung stehen lassen; nach einer Korrektur die betroffenen Checks aus „Tests“
+   erneut laufen lassen.
+3. Ergebnis als Zeile im Commit-Bericht (`🔍 Selbst-Review`).
+
+Entfällt nur, wenn der Diff keinen Code enthält (nur Doku); dann im Bericht „entfällt: kein Code“.
+
 ### 8. Ausgabeformat (nur Cowork-Chat → suche-ersetze)
 
 **Claude Code:** entfällt – Dateien werden direkt mit Edit/Write geändert; Ausgabe im Chat ist
@@ -380,6 +393,7 @@ Abschnitt 4 + contract.ts bei neuen Entitäten.
 - Quickload: [welche Docs]
 
 🧪 Tests: [Befehl, Ergebnis, Exit-Code]
+🔍 Selbst-Review: [Stufe, Befunde, behoben / begründet offen]
 📂 Gelesene Dateien: [Liste]
 📋 Quickload-Only: [Liste]
 ⚠️ Annahmen: [falls vorhanden]
@@ -467,3 +481,4 @@ Beispiel-Ausgabe nach Commit:
 - **Auto-Anker bei vagen Themen setzen** — lieber keinen Anker als einen unscharfen
 - **Anker mit generischen Beschreibungen** ("Feature X", "TODO") — immer konkret benennen
 - **Anker setzen ohne Memory-Update** (Cowork) — Chat-Zeile UND `[ANKER-LIVE]`-Eintrag gehören zusammen; in Claude Code stattdessen Auswahlfrage tracker neu / Notiz-Ort
+- **Commit ohne Selbst-Review des Diffs** (Abschnitt „Selbst-Review“) oder mit offenem Befund ohne Begründung

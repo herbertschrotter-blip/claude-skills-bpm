@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.50.0] — 2026-10-10
+
+- **skills/code-erstellen, Feature:** Selbst-Review vor jedem Commit (neuer Abschnitt „7c. Selbst-Review“): in
+  Claude Code den eingebauten Skill `code-review` auf den Diff (Stufe `low`, im Modus Deep `medium`), im Cowork-Chat
+  den Diff selbst lesen; Befunde beheben oder begründet stehen lassen, danach betroffene Checks erneut; Zeile
+  `🔍 Selbst-Review` im Commit-Bericht; neuer VERBOTEN-Punkt. ClickUp: Entwickler-Gewohnheiten · 1.
+
 ## [v0.49.1] — 2026-10-10
 
 - **skills/projekt-anlegen, Change:** neue Reference `references/windows-netzlaufwerk.md`: HA-Projekt aus einer
