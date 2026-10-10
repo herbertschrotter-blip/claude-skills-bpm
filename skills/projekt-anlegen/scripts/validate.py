@@ -18,7 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from auftrag import TEMPLATES, AuftragFehler, manifeste  # noqa: E402
 from pruefung import tokens_pruefen  # noqa: E402
 from bausteine import (  # noqa: E402
-    ERLAUBTE_PLATZHALTER, PLATZHALTER, auswahl, aufloesen, dateiplan, erlaubt, komponenten, versionen,
+    ERLAUBTE_PLATZHALTER, PLATZHALTER, auswahl, aufloesen, dateiplan, erlaubt, feature_namen, komponenten,
+    versionen,
 )
 
 # Werte, die in einer projektneutralen Vorlage nichts verloren haben
@@ -42,6 +43,7 @@ def pruefen(templates=TEMPLATES):
         arten, katalog, katalog_versionen = manifeste(templates), komponenten(templates), versionen(templates)
     except (OSError, ValueError, KeyError) as exc:
         return [f"Manifeste nicht lesbar: {exc}"]
+    features = feature_namen(arten)
 
     for art in arten.values():
         befunde += [f"{art['id']}: {f}" for f in tokens_pruefen(art.get("pruefung", {}))]
@@ -52,7 +54,8 @@ def pruefen(templates=TEMPLATES):
                 wo = f"{art['id']} {kombination}{' + GitHub' if github else ''}"
                 try:
                     ids = auswahl(auftrag, art)
-                    dateiplan(aufloesen(ids, katalog), katalog, {k: "x" for k in ERLAUBTE_PLATZHALTER}, templates)
+                    dateiplan(aufloesen(ids, katalog), katalog, {k: "x" for k in ERLAUBTE_PLATZHALTER | features},
+                              templates)
                 except (AuftragFehler, KeyError) as exc:
                     befunde += [f"{wo}: {f}" for f in getattr(exc, "fehler", [repr(exc)])]
 
@@ -69,7 +72,7 @@ def pruefen(templates=TEMPLATES):
         if "\r\n" in text:
             befunde.append(f"{rel}: Zeilenenden CRLF statt LF")
         for key in sorted(k for k in {m.group(1) for m in PLATZHALTER.finditer(text)}
-                          if not erlaubt(k, katalog_versionen)):
+                          if not erlaubt(k, katalog_versionen, features)):
             befunde.append(f"{rel}: unbekannter Platzhalter {{{{{key}}}}}")
         for muster, art_ in VERBOTEN:
             if muster.search(text):
@@ -92,7 +95,9 @@ def alle_erzeugen(ablage, templates=TEMPLATES):
                                template={"id": art["id"], "version": art["version"]},
                                features=dict(kombination), delivery={"github": github})
                 r = anlegen(auftrag, ablage, templates)
-                zeilen = ", ".join(f"{x['name']} {x['dauer']} s {'grün' if x['ok'] else 'ROT'}" for x in r["pruefungen"])
+                zeilen = ", ".join(
+                    f"{x['name']} übersprungen ({x['uebersprungen']})" if "uebersprungen" in x
+                    else f"{x['name']} {x['dauer']} s {'grün' if x['ok'] else 'ROT'}" for x in r["pruefungen"])
                 print(f"{slug} {kombination}: {'OK' if r['ok'] else 'FEHLER'} – {zeilen}", flush=True)
                 if not r["ok"]:
                     befunde += [f"{slug}: {f}" for f in r.get("fehler", [])]

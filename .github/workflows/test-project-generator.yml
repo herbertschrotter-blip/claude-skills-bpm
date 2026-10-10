@@ -1,7 +1,8 @@
 name: test-project-generator
 
 # Der Projekt-Generator von projekt-anlegen: Unit-Tests, Katalog-Prüfung und jede freigegebene Kombination echt
-# erzeugt und geprüft (Formatierung, Lint, Tests, Start) – auf Linux und Windows.
+# erzeugt und geprüft (Formatierung, Lint, Tests, Start) – auf Linux und Windows. Die Tests gegen Home Assistant
+# laufen nur unter Linux (Prüfschritte mit "plattform"); unter Windows melden sie sich als übersprungen.
 
 on:
   push:
@@ -23,6 +24,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
       - name: Generator-Tests
         run: python -m unittest discover -s skills/projekt-anlegen/scripts/tests -p "test_*.py"
       - name: Katalog

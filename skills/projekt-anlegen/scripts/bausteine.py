@@ -3,7 +3,8 @@
 Der Generator kennt keine Stack-Sonderfälle. Was ein Projekt enthält, steht in den Manifesten unter
 templates/manifests/: die Projektart (<id>.json) nennt ihre Grundbausteine, die Bausteine je Feature und je
 Auslieferung; jeder Baustein (components/<id>.json) nennt, was er voraussetzt, womit er sich nicht verträgt und
-welche Vorlagen er wohin schreibt. Platzhalter haben die Form {{name}} und kommen nur aus einer festen Liste.
+welche Vorlagen er wohin schreibt. Platzhalter haben die Form {{name}} und kommen nur aus einer festen Liste,
+den Features der Projektarten ({{storage}}, {{quelle}} …) und dem Versionskatalog.
 """
 
 import json
@@ -13,15 +14,20 @@ from pathlib import Path, PurePosixPath
 from auftrag import TEMPLATES, AuftragFehler
 
 PLATZHALTER = re.compile(r"\{\{\s*([A-Za-z_][A-Za-z0-9_]*)\s*\}\}")
-ERLAUBTE_PLATZHALTER = {"name", "slug", "package", "package_upper", "storage", "github"}
+ERLAUBTE_PLATZHALTER = {"name", "slug", "package", "package_upper", "github"}
 VERSION_PRAEFIX = "v_"  # {{v_<paket>}}: Version aus templates/versions.json (Bindestriche als _)
 
 
-def erlaubt(key, versionen=None):
-    """Fester Platzhalter oder eine Version aus dem Versionskatalog."""
-    if key in ERLAUBTE_PLATZHALTER:
+def erlaubt(key, versionen=None, features=()):
+    """Fester Platzhalter, ein Feature einer Projektart oder eine Version aus dem Versionskatalog."""
+    if key in ERLAUBTE_PLATZHALTER or key in features:
         return True
     return versionen is not None and key.startswith(VERSION_PRAEFIX) and key in versionen
+
+
+def feature_namen(arten):
+    """Namen aller Features der Projektarten; jedes ist in Vorlagen als {{<feature>}} verfügbar."""
+    return {key for art in arten.values() for key in art.get("features", {})}
 
 
 def versionen(templates=TEMPLATES):
@@ -53,7 +59,7 @@ def werte(auftrag, katalog_versionen=None):
         "slug": project["slug"],
         "package": project["package"],
         "package_upper": project["package"].upper(),
-        "storage": auftrag["features"].get("storage", "none"),
+        **{key: str(wert) for key, wert in auftrag["features"].items()},
         "github": "true" if auftrag["delivery"]["github"] else "false",
     }
 
@@ -64,7 +70,7 @@ def ersetzen(text, werte_, wo="Vorlage"):
 
     def eins(match):
         key = match.group(1)
-        if not erlaubt(key, werte_) or key not in werte_:
+        if key not in werte_:
             fehler.append(f"{wo}: unbekannter Platzhalter {{{{{key}}}}}")
             return match.group(0)
         return str(werte_[key])

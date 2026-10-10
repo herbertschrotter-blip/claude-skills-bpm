@@ -94,6 +94,11 @@ class PlatzhalterTest(unittest.TestCase):
         with self.assertRaises(a.AuftragFehler):
             b.ersetzen("{{owner}}", b.werte(AUFTRAG))
 
+    def test_feature_als_platzhalter(self):
+        werte = b.werte(dict(AUFTRAG, features={"storage": "sqlite", "quelle": "abruf"}))
+        self.assertEqual(b.ersetzen("{{storage}}/{{quelle}}", werte), "sqlite/abruf")
+        self.assertEqual(b.feature_namen({"x": ART}), {"storage"})
+
     def test_wert_wird_nicht_erneut_ersetzt(self):
         werte = dict(b.werte(AUFTRAG), name="{{slug}}")
         self.assertEqual(b.ersetzen("{{name}}", werte), "{{slug}}")

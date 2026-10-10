@@ -1,0 +1,126 @@
+{
+  "id": "ha-integration",
+  "version": 1,
+  "beschreibung": "Eigene Home-Assistant-Integration: Aufsatz auf vorhandene Entitäten oder eigener Abruf",
+  "components": [
+    "common",
+    "ha-integration"
+  ],
+  "features": {
+    "quelle": {
+      "aufsatz": [
+        "quelle-aufsatz"
+      ],
+      "abruf": [
+        "quelle-abruf"
+      ]
+    }
+  },
+  "delivery": {
+    "github": [
+      "ci-github-ha"
+    ]
+  },
+  "kombinationen": [
+    {
+      "quelle": "aufsatz"
+    },
+    {
+      "quelle": "abruf"
+    }
+  ],
+  "pruefung": {
+    "einrichten": [
+      [
+        "uv",
+        "venv",
+        "--quiet",
+        "--python",
+        "3.14",
+        ".venv"
+      ],
+      [
+        "uv",
+        "pip",
+        "install",
+        "--quiet",
+        "--python",
+        "{venv_python}",
+        "--index-strategy",
+        "unsafe-best-match",
+        "-r",
+        "requirements-logik.txt"
+      ]
+    ],
+    "checks": [
+      {
+        "name": "format",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ]
+      },
+      {
+        "name": "lint",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ]
+      },
+      {
+        "name": "logik",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "tests/logik"
+        ]
+      },
+      {
+        "name": "ha-einrichten",
+        "plattform": [
+          "linux"
+        ],
+        "befehl": [
+          "uv",
+          "pip",
+          "install",
+          "--quiet",
+          "--python",
+          "{venv_python}",
+          "--index-strategy",
+          "unsafe-best-match",
+          "-r",
+          "requirements-ha.txt"
+        ]
+      },
+      {
+        "name": "ha-tests",
+        "plattform": [
+          "linux"
+        ],
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider",
+          "-n",
+          "auto",
+          "tests/integration"
+        ]
+      }
+    ]
+  }
+}
