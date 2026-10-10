@@ -8,6 +8,12 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.48.4] — 2026-10-10
+
+- **skills/projekt-anlegen, Fix:** Plan zeigen: „gezeigt“ heißt als Text im Chat oder in der Vorschau der
+  Auswahlfrage, bevor gefragt wird; ein Plan nur im eigenen Denken gilt nicht (Befund Praxistest Pool: „Plan so
+  anlegen?“ ohne sichtbaren Plan).
+
 ## [v0.48.3] — 2026-10-10
 
 - **skills/projekt-anlegen, Fix:** Befunde aus dem Praxistest (HA-Integration ohne Generator): Grundentscheidungen

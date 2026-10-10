@@ -98,7 +98,8 @@ das Skill-Profil des neuen Projekts, Einträge an anderen Stellen (Übersicht, R
 Grundentscheidungen und die abgeleitete Technik in Alltagssprache (z. B. „Daten bleiben auf diesem Gerät, in einer
 kleinen Datenbankdatei“) und welche Prüfungen vor dem Anlegen laufen. Der Plan ist für den Nutzer geschrieben: die
 Grundentscheidungen zuerst, Erklärungen im Ordnerbaum ohne Fachbegriffe (keine Manifest-Felder, Paket- oder
-Werkzeugnamen); die stehen danach im Projekt. Auswahlfrage: anlegen / anpassen / abbrechen.
+Werkzeugnamen); die stehen danach im Projekt. Gezeigt heißt: als Text im Chat oder in der Vorschau der Auswahlfrage,
+bevor gefragt wird; ein Plan nur im eigenen Denken gilt nicht als gezeigt. Auswahlfrage: anlegen / anpassen / abbrechen.
 
 ### 5. Erzeugen
 
