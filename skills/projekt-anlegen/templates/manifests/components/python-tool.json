@@ -5,6 +5,7 @@
   "files": [
     {"source": "python-tool/README.md.tpl", "target": "README.md"},
     {"source": "python-tool/CLAUDE.md.tpl", "target": "CLAUDE.md"},
+    {"source": "python-tool/docs/entscheidungen.md.tpl", "target": "docs/entscheidungen.md"},
     {"source": "python-tool/gitignore.tpl", "target": ".gitignore"},
     {"source": "python-tool/env.example.tpl", "target": ".env.example"},
     {"source": "python-tool/pyproject.toml.tpl", "target": "pyproject.toml"},

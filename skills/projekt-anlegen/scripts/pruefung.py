@@ -3,6 +3,7 @@
 Die Befehle stehen deklarativ im Manifest der Projektart (`pruefung`: `einrichten` und `checks`), nie im Auftrag.
 Als Platzhalter gibt es nur {python} (dieser Interpreter), {venv_python} (Interpreter der .venv im Projekt),
 {package}, {package_upper} und {tmp} (eigener leerer Ordner je Check). Ausgeführt wird ohne Shell.
+Ein Check mit `plattform` (z. B. ["linux"]) läuft nur dort; anderswo meldet er sich als übersprungen.
 """
 
 import json
@@ -17,6 +18,14 @@ from pathlib import Path
 TOKEN = re.compile(r"\{([a-z_]+)\}")
 TOKENS = {"python", "venv_python", "package", "package_upper", "tmp"}
 TIMEOUT = 900  # Sekunden je Befehl; die Installation der Werkzeuge braucht auf dem Pi am längsten
+PLATTFORMEN = {"linux", "windows", "macos"}
+
+
+def plattform():
+    """Name der laufenden Plattform wie im Manifest: linux, windows oder macos."""
+    if sys.platform.startswith("win"):
+        return "windows"
+    return "macos" if sys.platform == "darwin" else "linux"
 
 
 def venv_python(projekt):
@@ -45,6 +54,10 @@ def tokens_pruefen(pruefung):
         for key in TOKEN.findall(text):
             if key not in TOKENS:
                 befunde.append(f"Prüfbefehl: unbekannter Platzhalter {{{key}}}")
+    for check in pruefung.get("checks", []):
+        unbekannt = set(check.get("plattform", [])) - PLATTFORMEN
+        if unbekannt or ("plattform" in check and not check["plattform"]):
+            befunde.append(f"Prüfschritt {check.get('name')}: plattform nur aus {', '.join(sorted(PLATTFORMEN))}")
     return befunde
 
 
@@ -72,6 +85,10 @@ def ausfuehren(pruefung, projekt, package):
     schritte = [{"name": "einrichten", "befehle": pruefung.get("einrichten", [])}]
     schritte += [dict(c, befehle=[c["befehl"]]) for c in pruefung.get("checks", [])]
     for schritt in schritte:
+        if "plattform" in schritt and plattform() not in schritt["plattform"]:
+            ergebnisse.append({"name": schritt["name"], "dauer": 0.0, "ok": True,
+                               "uebersprungen": f"nur {', '.join(schritt['plattform'])}"})
+            continue
         with tempfile.TemporaryDirectory() as tmp:
             werte["tmp"] = tmp
             env = dict(basis_env)

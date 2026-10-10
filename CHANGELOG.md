@@ -8,6 +8,13 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.49.0] — 2026-10-10 (in Arbeit, Zweig umbau-ha-integration)
+
+- **skills/projekt-anlegen, Feature:** Generator für HA-Integrationen (P2). Generator-Kern: Prüfschritte können auf
+  Plattformen beschränkt werden (`plattform`, anderswo „übersprungen“); Features einer Projektart sind allgemein als
+  Platzhalter verfügbar (`{{storage}}`, `{{quelle}}`); die Grundentscheidungen kommen je Projektart statt aus
+  `common`.
+
 ## [v0.48.4] — 2026-10-10
 
 - **skills/projekt-anlegen, Fix:** Plan zeigen: „gezeigt“ heißt als Text im Chat oder in der Vorschau der
