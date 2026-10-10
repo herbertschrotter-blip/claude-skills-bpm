@@ -43,7 +43,7 @@ Datei `plugins/work-hooks/hooks/regeln.json`, für alle Rechner gleich (kommt mi
 |---|---|
 | `id` | eindeutiger Name |
 | `beschreibung` | Satz, den Claude in der Meldung sieht |
-| `aktion` | `datei` (Edit/Write), `datei:neu` (Write auf eine Datei, die es noch nicht gibt), `bash:schreibt` (Umleitung, `tee`, `sed -i`, Ziel von `cp`/`mv`, Schreiben im Python-Heredoc), `bash:commit`, `mcp:clickup-schreibt` |
+| `aktion` | `datei` (Edit/Write), `datei:neu` (Write auf eine Datei, die es noch nicht gibt), `bash:schreibt` (Umleitung, `tee`, `sed -i`, Ziel von `cp`/`mv`, Schreiben im Python-Heredoc), `bash:commit` (Text in Heredocs zählt nicht), `mcp:clickup-schreibt` |
 | `pfad` / `ausser` | Muster wie `*.py`, `*/mockups/*` (fnmatch auf den absoluten Pfad; `*` passt auch über `/`). Dazu gilt `ausser_immer` für alle Regeln (Scratchpad, `/tmp`, `.claude/`, `.git/`) |
 | `projekt` | `*` oder eine Projekt-ID aus dem Skill-Profil der `CLAUDE.md` |
 | `pflicht` | Skills, von denen einer geladen sein muss |

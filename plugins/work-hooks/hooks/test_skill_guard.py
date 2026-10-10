@@ -101,6 +101,19 @@ class WarnenTest(unittest.TestCase):
         data = hook("PostToolUse", "Bash", {"command": "git add x && git commit -q -m 'x'"})
         self.assertIn("commit", g.decide(data, MECH, set())[1])
 
+    def test_commit_text_im_heredoc_ist_kein_commit(self):
+        # Befund 10.10.2026: ein Python-Leseskript mit dem Suchwort git commit wurde als Commit geblockt
+        for command in ("python3 - log.jsonl <<'EOF'\nkeys = ['git commit', 'gh repo']\nEOF",
+                        "cat <<-EOF > notiz.txt\n\tgit commit -m x\n\tEOF\n"):
+            acts = g.actions(hook("PreToolUse", "Bash", {"command": command}))
+            self.assertNotIn("bash:commit", [a for a, _ in acts], command)
+
+    def test_commit_vor_und_nach_heredoc_bleibt_commit(self):
+        for command in ("git add -A && git commit -q -F - <<'EOF'\n[v0.1.0] Modul, Neu: x\nEOF",
+                        "cat > a.txt <<'EOF'\nx\nEOF\ngit commit -m y",
+                        "git -C /repo commit -m x"):
+            self.assertTrue(g.is_commit(command), command)
+
     def test_blockregel_warnt_nicht_nochmal(self):
         data = hook("PostToolUse", "Edit", {"file_path": "logik/rechte.py"})
         self.assertEqual(g.decide(data, MECH, set())[1], "")
@@ -177,7 +190,7 @@ class EinstellungTest(unittest.TestCase):
 
 
 def _tx(*events):
-    """Transcript-Zeilen wie Claude Code: skill, commit (ok/fehler), user-Text, clickup-Status, compaction."""
+    """Transcript-Zeilen wie Claude Code: skill, commit (ok/fehler, optional Befehl), user-Text, clickup-Status, compaction."""
     lines, n = [], 0
     for ev in events:
         n += 1
@@ -187,7 +200,7 @@ def _tx(*events):
                 {"type": "tool_use", "id": f"s{n}", "name": "Skill", "input": {"skill": ev[1]}}]}})
         elif kind == "commit":
             lines.append({"type": "assistant", "message": {"content": [
-                {"type": "tool_use", "id": f"c{n}", "name": "Bash", "input": {"command": "git commit -m x"}}]}})
+                {"type": "tool_use", "id": f"c{n}", "name": "Bash", "input": {"command": ev[2] if len(ev) > 2 else "git commit -m x"}}]}})
             lines.append({"type": "user", "message": {"content": [
                 {"type": "tool_result", "tool_use_id": f"c{n}", "is_error": ev[1] != "ok", "content": "x"}]}})
         elif kind == "user":
@@ -223,6 +236,10 @@ class GrenzenTest(unittest.TestCase):
     def test_commit_verbraucht_code_doku_commit_skills(self):
         self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("skill", "git-commit-helper"), ("skill", "tracker"),
                                     ("commit", "ok")), {"tracker"})
+
+    def test_commit_text_im_heredoc_ist_keine_grenze(self):
+        self.assertEqual(self.aktiv(("skill", "code-erstellen"),
+                                    ("commit", "ok", "python3 - <<'EOF'\nprint('git commit')\nEOF")), {"code-erstellen"})
 
     def test_gescheiterter_commit_ist_keine_grenze(self):
         self.assertEqual(self.aktiv(("skill", "code-erstellen"), ("commit", "fehler")), {"code-erstellen"})

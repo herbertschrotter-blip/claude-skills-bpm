@@ -42,6 +42,7 @@ FILE_TOOLS = {"Edit", "Write", "MultiEdit", "NotebookEdit"}
 _CLICKUP_WRITE = re.compile(r"^mcp__.*clickup.*__clickup_(create|update|delete|merge|move|add|remove|attach|set)",
                             re.I)
 _GIT_COMMIT = re.compile(r"\bgit\b(?:\s+-C\s+\S+)?\s+commit\b")
+_HEREDOC = re.compile(r"(?<!<)<<(?!<)(-?)\s*(['\"]?)([A-Za-z_][\w.-]*)\2")
 _REDIRECT = re.compile(r"(?:^|[^0-9&<>])>>?\s*([^\s;|&<>()]+)")
 _TEE = re.compile(r"\btee\s+(?:-a\s+)?([^\s;|&<>()]+)")
 _SED_I = re.compile(r"\bsed\s+(?:-[^i\s]*\s+)*-i\S*\s+(.*)")
@@ -192,7 +193,7 @@ def events(lines, grenzen):
                 skill = short(tin.get("skill"))
                 seen.add(skill)
                 yield index, ("skill", skill)
-            elif name == "Bash" and _GIT_COMMIT.search(tin.get("command") or "") and "commit" in grenzen:
+            elif name == "Bash" and is_commit(tin.get("command") or "") and "commit" in grenzen:
                 commits.add(block.get("id"))
             elif statuses and _CLICKUP_WRITE.match(name) and str(tin.get("status", "")).lower() in statuses:
                 yield index, ("grenze", "aufgabenstart")
@@ -276,6 +277,24 @@ def active(histories, grenzen, gilt_bis):
     return result
 
 
+def without_heredocs(command):
+    """Shell-Befehl ohne den Inhalt seiner Heredocs: Text darin (Skripte, Commit-Messages) ist kein Befehl."""
+    kept, ends = [], []
+    for line in command.split("\n"):
+        if ends:
+            dash, end = ends[0]
+            if (line.lstrip("\t") if dash else line) == end:
+                ends.pop(0)
+            continue
+        kept.append(line)
+        ends = [(m.group(1) == "-", m.group(3)) for m in _HEREDOC.finditer(line)]
+    return "\n".join(kept)
+
+
+def is_commit(command):
+    return bool(_GIT_COMMIT.search(without_heredocs(command)))
+
+
 def bash_targets(command):
     """Dateien, die ein Shell-Befehl schreibt: Umleitungen, tee, sed -i, Ziel von cp/mv, Schreiben in Python-Heredocs."""
     targets = []
@@ -328,7 +347,7 @@ def actions(data):
                 result.append(("datei:neu", full))
     elif tool == "Bash":
         command = tin.get("command") or ""
-        if _GIT_COMMIT.search(command):
+        if is_commit(command):
             result.append(("bash:commit", ""))
         for target in bash_targets(command):
             result.append(("bash:schreibt", os.path.normpath(os.path.join(cwd, os.path.expanduser(target)))))
