@@ -1,0 +1,9 @@
+{
+  "id": "common",
+  "requires": [],
+  "conflicts": [],
+  "files": [
+    {"source": "common/CHANGELOG.md.tpl", "target": "CHANGELOG.md"},
+    {"source": "common/docs/entscheidungen.md.tpl", "target": "docs/entscheidungen.md"}
+  ]
+}

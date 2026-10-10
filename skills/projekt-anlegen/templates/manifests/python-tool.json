@@ -1,0 +1,101 @@
+{
+  "id": "python-tool",
+  "version": 1,
+  "beschreibung": "Python-Werkzeug mit Befehlszeile, optional mit SQLite",
+  "components": [
+    "common",
+    "python-tool"
+  ],
+  "features": {
+    "storage": {
+      "none": [
+        "storage-memory"
+      ],
+      "sqlite": [
+        "storage-sqlite"
+      ]
+    }
+  },
+  "delivery": {
+    "github": [
+      "ci-github-python"
+    ]
+  },
+  "kombinationen": [
+    {
+      "storage": "none"
+    },
+    {
+      "storage": "sqlite"
+    }
+  ],
+  "pruefung": {
+    "einrichten": [
+      [
+        "{python}",
+        "-m",
+        "venv",
+        ".venv"
+      ],
+      [
+        "{venv_python}",
+        "-m",
+        "pip",
+        "install",
+        "--quiet",
+        "--disable-pip-version-check",
+        "-e",
+        ".[dev]"
+      ]
+    ],
+    "checks": [
+      {
+        "name": "format",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "ruff",
+          "format",
+          "--check",
+          "."
+        ]
+      },
+      {
+        "name": "lint",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "ruff",
+          "check",
+          "."
+        ]
+      },
+      {
+        "name": "tests",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "pytest",
+          "-q",
+          "-p",
+          "no:cacheprovider"
+        ]
+      },
+      {
+        "name": "start",
+        "befehl": [
+          "{venv_python}",
+          "-m",
+          "{package}",
+          "status"
+        ],
+        "umgebung": {
+          "{package_upper}_DATEN": "{tmp}"
+        },
+        "ausgabe_json": {
+          "status": "ready"
+        }
+      }
+    ]
+  }
+}

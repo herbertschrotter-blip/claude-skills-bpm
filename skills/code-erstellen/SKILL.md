@@ -246,6 +246,10 @@ Ausnahme nur per Auswahlfrage („Ohne Mockup weiter“).
 2. **Pflicht-Docs** in der Reihenfolge des Profils laden. BPM: INDEX.md → Task-to-Doc
    Routing → Primary/Secondary/Reference. Heidi: CLAUDE.md (automatisch), HANDOFF.md
    Abschnitt 3e, BAUPLAN.md Abschnitt 2 und 4, bei Domänen-Logik Abschnitt 6.
+3. **Grundentscheidungen:** Nennt das Profil `Doku.Entscheidungs-Ort`, die dort dokumentierten
+   Grundentscheidungen (Zweck, Grenzen, Datenhaltung, Auslieferung) vor der ersten fachlichen
+   Erweiterung lesen. Sie sind Projektkontext, keine unveränderliche Architektur; eine Änderung
+   daran wird dort nachgetragen.
 
 ### 3. Quickload-First-Pass (BPM: DOC-STANDARD Kapitel 8; andere Projekte: Ladereihenfolge des Profils)
 

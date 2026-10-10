@@ -14,11 +14,13 @@ jobs:
       - name: Prüfskript (alle Skills)
         shell: pwsh
         run: ./tools/validate-skills.ps1
-      - name: Tests (Python – Hooks, Skill-Log-Auswertung, Einrichtung)
+      - name: Tests (Python – Hooks, Skill-Log-Auswertung, Einrichtung, Projekt-Generator)
         run: |
           python3 -m unittest discover -s plugins/work-hooks/hooks -p 'test_*.py'
           python3 -m unittest discover -s tools/skill-log -p 'test_*.py'
           python3 -m unittest discover -s tools -p 'test_*.py'
+          python3 -m unittest discover -s skills/projekt-anlegen/scripts/tests -p 'test_*.py'
+          python3 skills/projekt-anlegen/scripts/validate.py
       - name: Syntax der Installationsskripte
         shell: pwsh
         run: |

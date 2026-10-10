@@ -274,7 +274,7 @@ Die Skills sind in drei konzeptionelle Gruppen einteilbar: **Fachskills**, **Met
 | **code-erstellen** | Master-Orchestrator für Code-Änderungen (Code-Profil in der CLAUDE.md des Projekts). | "implementiere das Feature", "erstelle DocumentTypeRecognizer.cs", "baue Recovery-Logik ein" |
 | **mockup-erstellen** | HTML-UI-Mockups nach Mockup-Profil. | "Mockup für ProfileWizard", "Screen-Design", "UI-Mockup" |
 | **doc-pflege** | Erstellt und pflegt Projektdokumentation nach Doku-Profil (BPM: DOC-STANDARD.md). | "pflege die docs", "schreib ein ADR", "neues Konzept für X" |
-| **projekt-anlegen** | Neue Projekte anlegen und einrichten: klären, Plan zeigen, Ordner, Git, Skill-Profil, GitHub nach Rückfrage. | "neues Projekt", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
+| **projekt-anlegen** | Neue Projekte anlegen und einrichten: klären, Plan zeigen, lauffähiges und geprüftes Grundgerüst (Generator für unterstützte Stacks), Git, Skill-Profil, GitHub nach Rückfrage. | "neues Projekt", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten" |
 | **ticket** | Fehler-Tickets eines Projekts einzeln und immer im selben Ablauf bearbeiten (acht Schritte). | "ticket liste", "ticket HT-0007", "nimm das nächste ticket" |
 | **chatgpt-review** | Strukturierte Cross-LLM-Review-Prompts zwischen Claude und ChatGPT. | "besprich das mit ChatGPT", "zweite Meinung", "Folgeprompt für Runde 3" |
 | **audit** | Strikt read-only Konsistenzprüfung zwischen Code, Docs, Frontmatter und Quickload. | "audit", "prüfe alles", "konsistenzcheck" |
@@ -573,7 +573,8 @@ claude-workbench/
 │   └── tracker.md                         ← Config für tracker (Space Claude Skills Entwicklung)
 │
 ├── .github/workflows/
-│   └── validate-skills.yml                ← Prüfskript nach jedem Push
+│   ├── validate-skills.yml                ← Prüfskript nach jedem Push
+│   └── test-project-generator.yml         ← Projekt-Generator: jede Kombination erzeugt und geprüft (Linux, Windows)
 │
 ├── .claude-plugin/
 │   └── marketplace.json                   ← Marketplace workbench: Plugins work und skill-workshop (strict: false,
@@ -631,7 +632,7 @@ claude-workbench/
 │   ├── doc-pflege/SKILL.md
 │   ├── git-commit-helper/SKILL.md
 │   ├── mockup-erstellen/SKILL.md
-│   ├── projekt-anlegen/                   ← SKILL.md + references/ (github, stacks/home-assistant)
+│   ├── projekt-anlegen/                   ← SKILL.md + references/ (generator, grundsatz, github, stacks) + scripts/ (Generator, Tests) + templates/ (Bausteine)
 │   ├── sitzung/                           ← SKILL.md + references/ (befehle, umgebung) + scripts/sitzung.py
 │   ├── skill-auswertung/SKILL.md
 │   ├── skill-neu/                         ← SKILL.md + references/ (cowork)

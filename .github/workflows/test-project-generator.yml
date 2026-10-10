@@ -1,0 +1,34 @@
+name: test-project-generator
+
+# Der Projekt-Generator von projekt-anlegen: Unit-Tests, Katalog-Prüfung und jede freigegebene Kombination echt
+# erzeugt und geprüft (Formatierung, Lint, Tests, Start) – auf Linux und Windows.
+
+on:
+  push:
+    branches: [main]
+    paths: ["skills/projekt-anlegen/**", ".github/workflows/test-project-generator.yml"]
+  pull_request:
+    paths: ["skills/projekt-anlegen/**", ".github/workflows/test-project-generator.yml"]
+  workflow_dispatch:
+
+jobs:
+  generator:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generator-Tests
+        run: python -m unittest discover -s skills/projekt-anlegen/scripts/tests -p "test_*.py"
+      - name: Katalog
+        run: python skills/projekt-anlegen/scripts/validate.py
+      - name: Jede Kombination erzeugen und prüfen
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/ablage"
+          python skills/projekt-anlegen/scripts/validate.py --erzeugen "$RUNNER_TEMP/ablage"

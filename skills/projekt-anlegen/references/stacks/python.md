@@ -4,6 +4,9 @@ Arten, Orte und Grunddateien für neue Python-Projekte. Regeln für Code und Tes
 code-erstellen (`skills/code-erstellen/references/stacks/python.md`). Läuft das Werkzeug neben Home Assistant, gilt
 zusätzlich `references/stacks/home-assistant.md` (Art Python-Werkzeug).
 
+Das **Werkzeug** erzeugt der Generator (`references/generator.md`, Projektart `python-tool`, ohne Speicher oder mit
+SQLite); die Vorlagen unter `templates/` setzen alles unten um. Bibliothek und Dienst entstehen nach dieser Reference.
+
 ## Arten
 
 | Art | Wofür | Grunddateien |
@@ -14,14 +17,15 @@ zusätzlich `references/stacks/home-assistant.md` (Art Python-Werkzeug).
 
 ## Grunddateien
 
-- `pyproject.toml`: Name, Version, `requires-python`; Testwerkzeuge als optionale Abhängigkeiten
-  (`[project.optional-dependencies] test = [...]`) mit fester Version.
+- `pyproject.toml`: Name, Version, `requires-python`; Prüfwerkzeuge (pytest, pytest-xdist, Ruff) als optionale
+  Abhängigkeiten (`[project.optional-dependencies] dev = [...]`) mit fester Version.
 - `README.md` mit Aufruf und Testbefehl.
 - `.gitignore`: `__pycache__/`, `*.pyc`, `.venv/`, `.pytest_cache/`, `build/`, `dist/`, `*.egg-info/`, `.env`.
 
 ## Testgerüst (parallel-fähig)
 
-- `pytest` und `pytest-xdist` mit fester Version (`==`). Die aktuelle Version beim Anlegen nachsehen
+- `pytest`, `pytest-xdist` und `ruff` mit fester Version (`==`). Die Versionen stehen in `templates/versions.json`
+  (vom Generator geprüft); ohne Generator die aktuelle Version beim Anlegen nachsehen
   (`pip index versions pytest-xdist`), nicht raten.
 - Befehl: `python -m pytest -n auto`. `-n auto` misst die Kerne zur Laufzeit, auch virtuelle; keine Zahl eintragen,
   auch nicht im Profil. Bei sehr kleinen Läufen kostet das ein, zwei Sekunden Start, dafür muss später nichts
@@ -57,16 +61,23 @@ zusätzlich `references/stacks/home-assistant.md` (Art Python-Werkzeug).
 
 ## Skill-Profil
 
-Werte für die `CLAUDE.md` des neuen Projekts (Pfade an die Art anpassen):
+Werte für die `CLAUDE.md` des neuen Projekts (Pfade an die Art anpassen; beim Werkzeug schreibt sie der Generator,
+`-n auto` steht dort in `pyproject.toml`):
 
 ```
 ### Checks
+- format: python -m ruff format --check . [**/*.py; pyproject.toml]
+- lint: python -m ruff check . [**/*.py; pyproject.toml]
 - tests: python -m pytest -n auto [<paket>/**; tests/**; pyproject.toml]
+- start: python -m <paket> <befehl> [<paket>/**; pyproject.toml]
 
 ### Commit
-- Pre-Commit-Checks: tests
+- Pre-Commit-Checks: format; lint; tests; start
 
 ### Code
 - Stacks: python
-- Tests: tests
+- Tests: format; lint; tests; start
+
+### Doku
+- Entscheidungs-Ort: docs/entscheidungen.md
 ```

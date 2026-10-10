@@ -24,7 +24,7 @@ wiederholt sie nicht.
 | **doc-pflege** | Projektdoku anlegen, pflegen, validieren; Sitzungsabschluss | "pflege docs", "schreib ADR", "neues Konzept", "Sitzung abschließen" |
 | **git-commit-helper** | Commit-Befehle und -Messages im Format `[vX.Y.Z] Modul, Typ: Kurztitel`, Version-Bump | "commit", "git commit", "PATCH oder MINOR?" |
 | **mockup-erstellen** | HTML-Mockups nach dem Mockup-Profil, Token-Abgleich, Abnahme festhalten | "Mockup für", "Screen-Design", "UI-Mockup", "erst ins Mockup einbauen" |
-| **projekt-anlegen** | Neue Projekte anlegen und einrichten, nach Stack; bestehendes Repo für die Skills einrichten (Skill-Profil, Configs); Übergabe an mockup-erstellen, code-erstellen oder tracker | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten", "richte die Skills hier ein" |
+| **projekt-anlegen** | Neue Projekte anlegen und einrichten, nach Stack: für unterstützte Stacks ein lauffähiges, geprüftes Grundgerüst ohne Fachlogik (Generator); bestehendes Repo für die Skills einrichten (Skill-Profil, Configs); Übergabe an mockup-erstellen, code-erstellen oder tracker | "neues Projekt", "leg mir ein Projekt an", "ich will X bauen, weiß aber nicht wie", "Repo holen und einrichten", "richte die Skills hier ein" |
 | **sitzung** | Claude-Code-Gespräche und tmux-Fenster per Auswahlmenü: Projekt → Gespräch → fortsetzen im richtigen Ordner mit Remote Control; Fenster verwalten, wiederherstellen, aufräumen | "sitzung", "alte Sitzung öffnen", "wo sind meine Sitzungen", "Fenster wiederherstellen" |
 | **skill-neu** | Neue Skills für dieses Repo anlegen (Absicht, Kollisionsprüfung, Neutralität, Eval-Fälle) | "neuer Skill für X", "erstelle einen Skill" |
 | **skill-pflege** | Bestehende Skills ändern: Safe Patch oder Refactor mit Regel-Inventar; Lieferung | "Skill updaten", "Skill ändern", "Skill erweitern" |
@@ -57,7 +57,7 @@ Abschnitt „Vorrang / Delegation“.
 | audit ↔ code-erstellen | read-only Prüfung → audit; Fixes → code-erstellen (nach Auswahlfrage) |
 | chat-wechsel ↔ sitzung | Übergabe mit Handover-Prompt (auch mit neuem Fenster) → chat-wechsel; vorhandenes Gespräch finden, fortsetzen, Fenster verwalten oder wiederherstellen → sitzung |
 | chat-wechsel ↔ chatgpt-review | Übergabe an Claude → chat-wechsel; Review-Prompt für ChatGPT → chatgpt-review; unklar → Auswahlfrage |
-| projekt-anlegen ↔ code-erstellen | neues Projekt anlegen, Repo holen und einrichten oder ein bestehendes Repo für die Skills einrichten (Skill-Profil, Configs) → projekt-anlegen; Änderung in einem bestehenden Projekt → code-erstellen |
+| projekt-anlegen ↔ code-erstellen | neues Projekt anlegen, Repo holen und einrichten oder ein bestehendes Repo für die Skills einrichten (Skill-Profil, Configs) → projekt-anlegen; ein neues Projekt bekommt dort nur technische Funktionsfähigkeit (Start, Schichten verbunden, Konfiguration, Tests, gegebenenfalls neutrale Datenhaltung). Fachliches Verhalten und jede Änderung in einem bestehenden Projekt → code-erstellen. Enthält ein Auftrag beides: erst das Grundgerüst (projekt-anlegen), dann code-erstellen |
 | projekt-anlegen ↔ mockup-erstellen | neues Projekt aufsetzen, auch bei offener Art → projekt-anlegen (bietet mockup-erstellen an); nur Aussehen entwerfen → mockup-erstellen |
 | projekt-anlegen ↔ skill-neu | neues Projekt → projekt-anlegen; neuer Skill → skill-neu |
 | skill-neu ↔ skill-pflege | Die SKILL.md gibt es schon → skill-pflege; ganz neuer Skill → skill-neu |

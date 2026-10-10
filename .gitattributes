@@ -1,0 +1,2 @@
+# Vorlagen des Projekt-Generators: immer LF, auch in Windows-Klonen (sonst CRLF in erzeugten Projekten)
+skills/projekt-anlegen/templates/** text eol=lf
