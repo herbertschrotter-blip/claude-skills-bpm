@@ -163,6 +163,8 @@ aus `Code.Stacks`. Geladen wird nur die genannte Datei. Welche Arten der Generat
 
 - Home Assistant: `references/stacks/home-assistant.md`
 - Python: `references/stacks/python.md`
+- Home-Assistant-Projekt aus einer Windows-Sitzung (Netzlaufwerk finden, einrichten, je Rechner merken):
+  `references/windows-netzlaufwerk.md`
 
 Gibt es für einen Stack keine Reference, fragt der Skill nach Art und Grunddateien und legt nur das an, was der Nutzer
 bestätigt. Keine Vorlagen erfinden. Eine Kombination, die der Generator nicht kennt, wird nicht improvisiert: dann gilt
@@ -189,6 +191,7 @@ der Weg nach der Stack-Reference.
 - GitHub (erstellen, klonen, Anmeldung): `references/github.md`
 - Stack Home Assistant: `references/stacks/home-assistant.md`
 - Stack Python: `references/stacks/python.md`
+- Windows und Netzlaufwerk zu Home Assistant: `references/windows-netzlaufwerk.md`
 - Skill-Profil und fehlende Werte: `docs/skill-profile-v1.md` im Skill-Repo
 - Commit-Format: git-commit-helper. Code: code-erstellen. Entwürfe: mockup-erstellen. Aufgaben: tracker.
 - Im Cowork-Chat laufen Datei- und Shell-Aktionen über cc-steuerung; der Ablauf bleibt gleich.

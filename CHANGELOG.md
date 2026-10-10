@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.49.1] — 2026-10-10
+
+- **skills/projekt-anlegen, Change:** neue Reference `references/windows-netzlaufwerk.md`: HA-Projekt aus einer
+  Windows-Sitzung – Netzlaufwerk zum Konfigurationsordner finden oder mit dem Nutzer einrichten (Passwort tippt er
+  selbst), als Merker je Rechner in `~/.claude/CLAUDE.md` (Abschnitt `## Rechner`) festhalten, HA-Tests danach auf
+  dem HA-Rechner. `references/generator.md`: unter Windows zuerst Auswahlfrage (HA-Rechner / Netzlaufwerk /
+  abbrechen); übersprungene Prüfungen auch in der Zusammenfassung nennen. Verweise in SKILL.md.
+
 ## [v0.49.0] — 2026-10-10
 
 - **skills/projekt-anlegen, Feature:** Generator für HA-Integrationen (P2). Generator-Kern: Prüfschritte können auf

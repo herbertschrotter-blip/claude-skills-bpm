@@ -44,7 +44,8 @@ Bei `ha-integration` entscheidet die Quelle: `aufsatz`, wenn die Integration die
 Integration nutzt (das Gerät ist schon in Home Assistant); `abruf`, wenn sie selbst ein Gerät oder einen Dienst
 abfragt. `package` ist zugleich die Domain und darf nicht wie eine vorhandene Integration heißen. Die Tests gegen
 Home Assistant brauchen `uv` und Python 3.14 und laufen nur unter Linux; unter Windows meldet der Generator sie als
-übersprungen.
+übersprungen. Läuft die Sitzung unter Windows, zuerst per Auswahlfrage: auf dem HA-Rechner anlegen (empfohlen) / über
+das Netzlaufwerk anlegen (`references/windows-netzlaufwerk.md`) / abbrechen.
 
 ## Aufruf
 
@@ -98,7 +99,7 @@ Prozess, der denselben Ordner anlegt. Für einen Nutzer an einer Ablage genügt 
 Ausgabe ist JSON: `ok`, `phase` (auftrag, erzeugen, pruefen, veroeffentlichen, fertig), `ziel`, `dateien`,
 `pruefungen` (je Schritt `name`, `dauer`, `ok`, bei Fehler `ausgabe` mit den letzten Zeilen, bei einem Schritt nur
 für eine andere Plattform `uebersprungen`) und `fehler`. Übersprungene Schritte stehen in der Tabelle als
-„übersprungen“, mit Grund.
+„übersprungen“, mit Grund, und in der Zusammenfassung als eigener Satz (z. B. „Die HA-Tests sind nicht gelaufen“).
 
 - `ok: true` → Tabelle Prüfung / Dauer / Ergebnis zeigen, weiter mit Grundentscheidungen, Commit, GitHub, Eintrag.
 - `ok: false` → es wurde nichts angelegt. Phase, Schritt und Ursache in einem Satz nennen; bei `auftrag` den Auftrag
