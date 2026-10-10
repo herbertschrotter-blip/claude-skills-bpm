@@ -374,7 +374,7 @@ Plugins im selben Repo)
      hochgeladen 08.10.2026. **Schritt 8 abgeschlossen.**
 9. **Merge** nach Herberts Freigabe.
 
-### Plan (09.10.2026, von Herbert freigegeben; Schritte 0–7 erledigt, offen Praxistest) – projekt-anlegen als Projekt-Generator
+### Plan (09.10.2026, von Herbert freigegeben; abgeschlossen 10.10.2026) – projekt-anlegen als Projekt-Generator
 
 Ziel: projekt-anlegen liefert nach wenigen gezielten Fragen ein lauffähiges, getestetes Grundgerüst (Walking Skeleton):
 alle Schichten verbunden, eine technische Beispiel-Funktion läuft durch, Start- und Tests grün, Skill-Profil fertig –
@@ -424,7 +424,14 @@ v0.48.1, skill-pflege v0.48.2 bei claude.ai hochgeladen. Abnahme: Generator auf 
 Windows grün (jede Kombination echt erzeugt und geprüft); Routing-Eval 17/17, jeder Fall 3/3; Regel-Inventar
 `docs/skill-refactors/2026-10-09-projekt-anlegen.md` (63 Regeln erhalten, 14 neu). Befund beim Bau: die erste Fassung
 der Vorlagen hatte Ruff-Befunde und brach bei langen Namen anders um – genau das fängt die Prüfung vor dem
-Veröffentlichen ab. **Offen:** Praxistest mit Herbert in einer neuen Sitzung; danach ClickUp-Aufgabe schließen.
+Veröffentlichen ab.
+✅ Stand 10.10.2026: abgeschlossen, ClickUp-Aufgabe P1 done. Praxistests mit Herbert (Teil 5): Rasenmäher
+(HA-Integration, danach auf Wunsch gelöscht) und Pool (Paket mit YAML-Dashboard). Beide Male war zu Recht kein
+Python-Werkzeug die passende Art, deshalb lief der Generator nicht; Herbert nahm ihn über die CI ab. Befunde behoben in
+projekt-anlegen v0.48.3 (Grundentscheidungen auch ohne Generator in `docs/entscheidungen.md`, Plan in Alltagssprache,
+Selbst-Prüfbares nicht fragen, erste Fassung bei vielen Funktionen) und v0.48.4 (Plan sichtbar zeigen, nie nur im
+Denken); Skill-Wächter: projekt-anlegen darf committen (1e3b1e4), Text in Heredocs zählt nicht als Commit (e764930).
+Folgerung: Der echte Bedarf war eine HA-Integration, P2 ist der nächste Baustein.
 **Nächste Bausteine:** HA-Integration (P2, mit Coordinator, Config Flow, Diagnose, Tests mit
 `pytest-homeassistant-custom-component`; vorher Abgleich mit `docs/ha-grundsatz/` und den Best-Practices des
 HA-MCP-Servers); danach Typprüfung, Lizenz bei öffentlichen Repos, vorbereitete Auslieferung.
