@@ -8,6 +8,14 @@ Format: Umgekehrte Chronologie (neueste zuerst). Versions-Tags folgen Semantic V
 
 ---
 
+## [v0.48.3] — 2026-10-10
+
+- **skills/projekt-anlegen, Fix:** Befunde aus dem Praxistest (HA-Integration ohne Generator): Grundentscheidungen
+  auch ohne Generator in `docs/entscheidungen.md` als `Doku.Entscheidungs-Ort`, nie `none` (neuer VERBOTEN-Punkt);
+  Plan für den Nutzer geschrieben, Grundentscheidungen zuerst, Ordnerbaum ohne Fachbegriffe; was Claude selbst
+  nachsehen kann, wird nicht gefragt; bei vielen genannten Funktionen Auswahlfrage, welche zuerst kommt
+  (`references/grundsatz.md`).
+
 ## [v0.48.2] — 2026-10-09
 
 - **skills/skill-pflege, Change:** `references/delivery.md` – Skripte und Vorlagen, die nur Claude Code ausführt

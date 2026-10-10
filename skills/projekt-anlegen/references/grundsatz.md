@@ -23,7 +23,8 @@ technische Folgen, die Claude ableitet.
 Pflicht, wenn der Auftrag es nicht schon sagt:
 - **Was soll es tun?** – Was soll am Ende passieren oder sichtbar sein?
 - **Wo soll es laufen?** – Aus dem Kontext ableiten, sonst fragen.
-- **Was soll die erste Fassung können?** – Die kleinste nützliche Funktion und was ausdrücklich noch nicht.
+- **Was soll die erste Fassung können?** – Die kleinste nützliche Funktion und was ausdrücklich noch nicht. Nennt
+  der Auftrag viele Funktionen: Auswahlfrage, welche zuerst kommt; die übrigen werden Ausbaustufen.
 
 Nur bei Bedarf, jeweils als Auswahlfrage mit Vorschlägen:
 - Woher kommen die Daten (Gerät, Dienst, vorhandene Entitäten, Datei)? – nur, wenn mehrere Wege sinnvoll sind.
@@ -40,7 +41,8 @@ Daten braucht jede Schemaänderung eine ausdrückliche Entscheidung.
 
 ## Grundentscheidungen im neuen Projekt
 
-Die Antworten landen am `Doku.Entscheidungs-Ort` des neuen Projekts (beim Generator `docs/entscheidungen.md`):
+Die Antworten landen am `Doku.Entscheidungs-Ort` des neuen Projekts (beim Generator wie auf dem Weg nach der
+Stack-Reference `docs/entscheidungen.md`):
 - Zweck, erste Fassung, ausdrücklich nicht
 - Technik: Datenhaltung, Anbindung, Oberfläche, Auslieferung und Rückweg
 - Offene Entscheidungen

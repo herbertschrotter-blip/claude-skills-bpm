@@ -59,9 +59,10 @@ einmal gefragt.
 ### 1. Klären, was es werden soll
 
 Pflicht sind drei Klärungen: Was soll es tun? Wo soll es laufen? Was soll die erste Fassung können (und was
-ausdrücklich nicht)? Was der Auftrag schon sagt, wird nicht gefragt. Technische Entscheidungen (Datenbank, Oberfläche,
-Bausteine) leitet Claude daraus ab und erklärt sie im Plan, statt sie abzufragen. Fragen in Alltagssprache und weitere
-Fragen nur bei Bedarf: `references/grundsatz.md`.
+ausdrücklich nicht)? Was der Auftrag schon sagt, wird nicht gefragt. Was Claude selbst nachsehen kann (vorhandene
+Integrationen, Geräte, Entitäten, Dateien), sieht es nach, statt zu fragen. Technische Entscheidungen (Datenbank,
+Oberfläche, Bausteine) leitet Claude daraus ab und erklärt sie im Plan, statt sie abzufragen. Fragen in Alltagssprache
+und weitere Fragen nur bei Bedarf: `references/grundsatz.md`.
 
 Für „Was soll es tun?“: Auswahlfrage mit den Arten, die der Stack kennt (Liste in der Stack-Reference), dazu immer
 „weiß ich noch nicht“; dann die Idee in wenigen Fragen schärfen (`references/grundsatz.md`).
@@ -95,7 +96,9 @@ etwas angelegt wird.
 Kurz und vollständig: Name, Art, Ort, Ordnerbaum mit Dateien, Git ja/nein, GitHub ja/nein (Sichtbarkeit), die Werte für
 das Skill-Profil des neuen Projekts, Einträge an anderen Stellen (Übersicht, Registrierung in der Umgebung). Dazu die
 Grundentscheidungen und die abgeleitete Technik in Alltagssprache (z. B. „Daten bleiben auf diesem Gerät, in einer
-kleinen Datenbankdatei“) und welche Prüfungen vor dem Anlegen laufen. Auswahlfrage: anlegen / anpassen / abbrechen.
+kleinen Datenbankdatei“) und welche Prüfungen vor dem Anlegen laufen. Der Plan ist für den Nutzer geschrieben: die
+Grundentscheidungen zuerst, Erklärungen im Ordnerbaum ohne Fachbegriffe (keine Manifest-Felder, Paket- oder
+Werkzeugnamen); die stehen danach im Projekt. Auswahlfrage: anlegen / anpassen / abbrechen.
 
 ### 5. Erzeugen
 
@@ -112,7 +115,9 @@ kleinen Datenbankdatei“) und welche Prüfungen vor dem Anlegen laufen. Auswahl
 - Zur Info Kerne und Speicher der Maschine einmal nennen (z. B. `nproc`, `free -h`); nichts davon ins Profil.
 - Bei eigenem Repo: `git init`, `.gitignore` nach Stack, `README.md`, `CHANGELOG.md`, `CLAUDE.md` mit Skill-Profil
   (Grundfelder, Commit, Code, Doku; unbekannte Werte als `fehlt`, bewusst leere als `none`). Beim Generator liefert
-  das der Baustein; Claude ergänzt danach Zweck und Grenzen in den Grundentscheidungen.
+  das der Baustein; Claude ergänzt danach Zweck und Grenzen in den Grundentscheidungen. Ohne Generator legt Claude
+  die Grundentscheidungen selbst in `docs/entscheidungen.md` an und trägt sie als `Doku.Entscheidungs-Ort` ein, nie
+  `none`.
 - Erster Commit im Format von git-commit-helper, erst wenn die Prüfungen grün sind. Pushen nur nach der Push-Policy
   des neuen Profils.
 - GitHub nur nach Auswahlfrage: erstellen (privat als Standard) / später / nie, erst nach dem lokalen Anlegen. Ablauf in
@@ -174,6 +179,7 @@ der Weg nach der Stack-Reference.
 - Beim Einrichten eines bestehenden Repos vorhandenen Text der `CLAUDE.md` überschreiben oder still entfernen
 - Ein Projekt mit roter Prüfung als angelegt melden oder den Generator in ein vorhandenes Ziel schreiben lassen
 - Ohne ausführbare Umgebung (z. B. bei claude.ai) eine Erzeugung behaupten – dort entsteht nur der Plan
+- Ein neues Projekt ohne Grundentscheidungen anlegen (`Doku.Entscheidungs-Ort` leer oder `none`)
 
 ## VERWEIS
 
